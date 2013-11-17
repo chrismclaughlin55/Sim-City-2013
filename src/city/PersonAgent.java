@@ -28,6 +28,7 @@ public class PersonAgent extends Agent
 			if(r == role)
 			{
 				r.setActive();
+				super.stateChanged();
 				return;
 			}
 		}
@@ -35,6 +36,7 @@ public class PersonAgent extends Agent
 		//If this part is reached, then 'role' is not in the list of roles
 		roles.add(role);
 		role.setActive();
+		super.stateChanged();
 	}
 	
 	/*SCHEDULER*/
