@@ -7,37 +7,43 @@ import agent.Agent;
 
 public class PersonAgent extends Agent
 {
-	//DATA MEMBERS
+	/*DATA MEMBERS*/
 	String name;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
-	//CONSTRUCTORS
-	public PersonAgent()
+	
+	/*CONSTRUCTORS*/
+	public PersonAgent(String name)
 	{
-		
+		this.name = name;
 	}
 	
-	public void assignRole(Role role)
+	
+	/*Messages*/
+	public void msgAssignRole(Role role)
 	{
 		for(Role r : roles)
 		{
 			if(r == role)
 			{
 				r.setActive();
+				return;
 			}
 		}
+		
+		//If this part is reached, then 'role' is not in the list of roles
+		roles.add(role);
+		role.setActive();
 	}
 	
-	protected void stateChanged()
-	{
-		super.stateChanged();
-	}
-	
+	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() 
 	{
+		//Iterate through the list of roles
 		for(Role role : roles)
 		{
+			//If a role is active, attempt to run its scheduler
 			if(role.isActive())
 			{
 				if(role.pickAndExecuteAnAction())
@@ -49,4 +55,9 @@ public class PersonAgent extends Agent
 		return false;
 	}
 	
+	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
+	protected void stateChanged()
+	{
+		super.stateChanged();
+	}
 }
