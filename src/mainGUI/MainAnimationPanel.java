@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +15,8 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import restaurantMQ.gui.Gui;
+import city.gui.Gui;
+import city.gui.PersonGui;
 
 public class MainAnimationPanel extends JPanel implements ActionListener {
 
@@ -62,9 +62,10 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	/*public void addGui(CustomerGui gui) {
+	public void addGui(PersonGui gui) {
 		guis.add(gui);
-	}*/
+		System.out.println ("added gui!");
+	}
 
 
 

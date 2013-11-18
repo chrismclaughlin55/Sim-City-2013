@@ -7,18 +7,16 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import city.PersonAgent;
+import city.gui.PersonGui;
 import restaurantMQ.CustomerAgent;
 import restaurantMQ.WaiterAgent;
-import restaurantMQ.gui.AnimationPanel;
 import restaurantMQ.gui.RestaurantGui;
-import restaurantMQ.gui.RestaurantPanel;
 import restaurantMQ.interfaces.Customer;
 
 /**
@@ -61,7 +59,7 @@ public class MainGui extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainAnimationPanel = new MainAnimationPanel();
         mainAnimationPanel.setVisible(true);
-        personPanel = new PersonCreationPanel("person");
+        personPanel = new PersonCreationPanel(this);
         personPanel.setVisible(true);
     	
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -210,6 +208,26 @@ public class MainGui extends JFrame implements ActionListener {
         
        
     }
+    
+    
+public void addPerson(String name, String role) {
+		PersonAgent p = new PersonAgent(name);
+		mainAnimationPanel.addGui(new PersonGui(p));
+		p.startThread();
+			/*custnum++;
+			if (custnum == 2)
+				custnum = -1;
+			CustomerAgent c = new CustomerAgent(name);	
+			CustomerGui g = new CustomerGui(c, gui, custnum);
+			gui.animationPanel.addGui(g);
+			c.setHost(host);
+			c.setCashier(cashier);
+			c.setGui(g);
+			g.setAnimationPanel(gui.animationPanel);
+			customers.add(c);
+			c.startThread();	*/
+	}
+    
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
