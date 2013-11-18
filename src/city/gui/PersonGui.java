@@ -41,6 +41,7 @@ public class PersonGui implements Gui{
 			yPos--;
 
 	}
+	
 
 	@Override
 	public void draw(Graphics2D g) {

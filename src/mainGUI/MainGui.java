@@ -31,16 +31,9 @@ public class MainGui extends JFrame implements ActionListener {
 	//public AnimationPanel animationPanel;
 	//JPanel InfoLayout;
 	
-
-    /* restPanel holds 2 panels
-     * 1) the staff listing, menu, and lists of current customers all constructed
-     *    in RestaurantPanel()
-     * 2) the infoPanel about the clicked Customer (created just below)
-     */    
+ 
     private PersonCreationPanel personPanel;
     private MainAnimationPanel mainAnimationPanel;
-    
-    /* infoPanel holds information about the clicked customer, if there is one*/
     private JLabel infoLabel; //part of infoPanel
     private JCheckBox stateCB;//part of infoLabel
     private JPanel InfoLayout; 
