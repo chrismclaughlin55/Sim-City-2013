@@ -49,9 +49,11 @@ public class Building extends Rectangle2D.Double {
 	}
 	
 	//only manager have access to the setClosed
-	protected void setClosed(PersonAgent manager) {
+	protected void setClosed() {
 		isClosed = true;
 	}
+	
+	//assign customer/waiter/cook role
 	
 	protected void setManager(Manager m) {
 		manager = m;
