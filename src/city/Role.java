@@ -33,6 +33,19 @@ public abstract class Role
 		isActive = false;
 	}
 	
+	//To be called when a role leaves the building it is associated with
+	protected void doneWithRole()
+	{
+		isActive = false;
+		person.stateChanged();
+	}
+	
+	//Pause the PersonAgent
+	protected void msgPause()
+	{
+		person.msgPause();
+	}
+	
 	
 	/*Person-Role interaction methods*/
 	
@@ -44,4 +57,10 @@ public abstract class Role
 	
 	//All roles must have a scheduler
 	public abstract boolean pickAndExecuteAnAction();
+	
+	/*GETTERS*/
+	public String getName()
+	{
+		return person.getName();
+	}
 }
