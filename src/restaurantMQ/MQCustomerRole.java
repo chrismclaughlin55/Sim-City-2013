@@ -1,24 +1,23 @@
 package restaurantMQ;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
+
+import restaurantMQ.CustomerAgent.AgentEvent;
+import restaurantMQ.CustomerAgent.AgentState;
 import restaurantMQ.gui.CustomerGui;
-import restaurantMQ.gui.RestaurantGui;
 import restaurantMQ.gui.RestaurantPanel;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
-import agent.Agent;
+import city.PersonAgent;
+import city.Role;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Semaphore;
-
-/**
- * Restaurant customer agent.
- */
-public class CustomerAgent extends Agent implements Customer 
+public class MQCustomerRole extends Role implements Customer
 {
-	private Semaphore actionDone = new Semaphore(0, true); //used to pause agent during animation
+private Semaphore actionDone = new Semaphore(0, true); //used to pause agent during animation
 	
 	private String name;
 	private int hungerLevel = 1;        // determines length of meal
@@ -48,15 +47,11 @@ public class CustomerAgent extends Agent implements Customer
 	{none, dontWait, gotHungry, followWaiter, seated, readyToOrder, takingOrder, receivedFood, doneEating, NeedToPay, receivedCheck, leave, doneLeaving};
 	AgentEvent event = AgentEvent.none;
 
-	/**
-	 * Constructor for CustomerAgent class
-	 *
-	 * @param name name of the customer
-	 * @param gui  reference to the customergui so the customer can send it messages
-	 */
-	public CustomerAgent(String name, Timer timer, RestaurantPanel rp){
-		super();
-		this.name = name;
+	/*CONSTRUCTOR*/
+	public MQCustomerRole(PersonAgent person, Timer timer, RestaurantPanel rp) 
+	{
+		super(person);
+		this.name = super.getName();
 		this.timer = timer;
 		this.rp = rp; //hack to set up scenarios
 		
@@ -82,10 +77,8 @@ public class CustomerAgent extends Agent implements Customer
 			money = 0;
 		}
 	}
-
-	/**
-	 * hack to establish connection to Host agent.
-	 */
+	
+	/*SETTERS*/
 	public void setHost(Host host) {
 		this.host = host;
 	}
@@ -98,10 +91,16 @@ public class CustomerAgent extends Agent implements Customer
 	public String getCustomerName() {
 		return name;
 	}
-	// Messages
-
+	
+	
+	/* Messages*/
+	public void msgPause()
+	{
+		super.msgPause();
+	}
+	
 	public void gotHungry() {//from animation
-		print(name + ": I'm hungry");
+		System.out.println(name + ": I'm hungry");
 		event = AgentEvent.gotHungry;
 		stateChanged();
 	}
@@ -125,21 +124,13 @@ public class CustomerAgent extends Agent implements Customer
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgHereIsCheck(double)
-	 */
-	@Override
 	public void msgHereIsCheck(double balance)
 	{
 		this.balance = balance;
 		event = AgentEvent.receivedCheck;
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgFollowMe(restaurant.interfaces.Waiter)
-	 */
-	@Override
+
 	public void msgFollowMe(Waiter waiter)
 	{
 		event = AgentEvent.followWaiter;
@@ -147,10 +138,6 @@ public class CustomerAgent extends Agent implements Customer
 		stateChanged();
 	}
 	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgFollowMe(restaurant.interfaces.Waiter, int)
-	 */
-	@Override
 	public void msgFollowMe(Waiter waiter, int table)
 	{
 		this.table = table;
@@ -159,10 +146,6 @@ public class CustomerAgent extends Agent implements Customer
 		stateChanged();
 	}
 	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgFollowMe(restaurant.interfaces.Waiter, int, restaurant.Menu)
-	 */
-	@Override
 	public void msgFollowMe(Waiter waiter, int table, Menu menu)
 	{
 		this.table = table;
@@ -172,69 +155,41 @@ public class CustomerAgent extends Agent implements Customer
 		stateChanged();
 	}
 
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgAnimationFinishedGoToSeat()
-	 */
-	@Override
 	public void msgAnimationFinishedGoToSeat() {
 		//from animation
 		event = AgentEvent.seated;
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgReadyToOrder()
-	 */
-	@Override
+
 	public void msgReadyToOrder()
 	{
 		state = AgentState.ReadyToOrder;
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgWhatDoYouWant()
-	 */
-	@Override
+
 	public void msgWhatDoYouWant()
 	{
 		event = AgentEvent.takingOrder;
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgHereIsFood()
-	 */
-	@Override
+
 	public void msgHereIsFood()
 	{
 		event = AgentEvent.receivedFood;
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgAnimationFinishedLeaveRestaurant()
-	 */
-	@Override
+
 	public void msgAnimationFinishedLeaveRestaurant() {
 		//from animation
 		event = AgentEvent.doneLeaving;
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgAnimationDone()
-	 */
-	@Override
+
 	public void msgAnimationDone()
 	{
 		actionDone.release();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgPleaseChooseSomethingElse(restaurant.Menu)
-	 */
-	@Override
+
 	public void msgPleaseChooseSomethingElse(Menu menu)
 	{
 		this.menu = menu;
@@ -242,32 +197,24 @@ public class CustomerAgent extends Agent implements Customer
 		event = AgentEvent.seated;
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgGoodToGo()
-	 */
-	@Override
+
 	public void msgGoodToGo()
 	{
 		event = AgentEvent.leave;
 		stateChanged();
 	}
 	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgNotEnough()
-	 */
-	@Override
 	public void msgNotEnough()
 	{
 		event = AgentEvent.leave;
 		stateChanged();
 	}
 
-	/**
-	 * Scheduler.  Determine what action is called for, and do it.
-	 */
-	protected boolean pickAndExecuteAnAction() {
-		//	CustomerAgent is a finite state machine
+	
+	/*SCHEDULER*/
+	public boolean pickAndExecuteAnAction() 
+	{
+//		CustomerAgent is a finite state machine
 		if(waitingNumber != 0)
 		{
 			GoToSpot(waitingNumber);
@@ -298,7 +245,7 @@ public class CustomerAgent extends Agent implements Customer
 			ChooseOrder();
 			return true;
 		}
-		
+			
 		if(state == AgentState.ReadyToOrder && event == AgentEvent.takingOrder)
 		{
 			GiveOrder();
@@ -315,31 +262,32 @@ public class CustomerAgent extends Agent implements Customer
 			leaveTable();
 			return true;
 		}
-		
+			
 		if(state == AgentState.Leaving && event == AgentEvent.receivedCheck)
 		{
 			state = AgentState.Paying;
 			PayCashier();
 			return true;
 		}
-		
+			
 		if(state == AgentState.Paying && event == AgentEvent.leave)
 		{
 			state = AgentState.Leaving;
 			LeaveRestaurant();
 			return true;
 		}
-		
+			
 		if (state == AgentState.Leaving && event == AgentEvent.doneLeaving){
 			state = AgentState.DoingNothing;
 			//no action
 			return true;
 		}
+		
 		return false;
 	}
 
-	// Actions
-
+	
+	/*ACTIONS*/
 	private void LeaveNow()
 	{
 		System.out.println(name + " Leaving then.");
@@ -348,12 +296,12 @@ public class CustomerAgent extends Agent implements Customer
 	}
 	
 	private void goToRestaurant() {
-		Do("Going to restaurant");
+		System.out.println(name + "Going to restaurant");
 		host.msgIWantFood(this);//send our instance, so he can respond to us
 	}
 
 	private void SitDown() {
-		Do("Being seated. Going to table");
+		System.out.println(name + "Being seated. Going to table");
 		//customerGui.DoGoToSeat(1);//hack; only one table
 	}
 	
@@ -419,7 +367,7 @@ public class CustomerAgent extends Agent implements Customer
 	
 	private void EatFood() {
 		customerGui.setEatingOrder(choice);
-		Do("Eating Food");
+		System.out.println(name + "Eating Food");
 		//This next complicated line creates and starts a timer thread.
 		//We schedule a deadline of getHungerLevel()*1000 milliseconds.
 		//When that time elapses, it will call back to the run routine
@@ -431,7 +379,7 @@ public class CustomerAgent extends Agent implements Customer
 		timer.schedule(new TimerTask() {
 			Object cookie = 1;
 			public void run() {
-				print("Done eating, cookie=" + cookie);
+				System.out.println(name + "Done eating, cookie=" + cookie);
 				event = AgentEvent.doneEating;
 				customerGui.clearOrder();
 				//isHungry = false;
@@ -443,7 +391,7 @@ public class CustomerAgent extends Agent implements Customer
 
 	private void leaveTable() {
 		event = AgentEvent.NeedToPay;
-		Do("Leaving.");
+		System.out.println(name + "Leaving.");
 		waiter.msgDoneEating(this);
 	}
 	
@@ -471,10 +419,18 @@ public class CustomerAgent extends Agent implements Customer
 		cashier.msgHereIsMoney(this, payment);
 	}
 	
+	//THIS IS THE LAST ACTION CALLED BY THE ROLE
 	private void LeaveRestaurant()
 	{
 		event = AgentEvent.doneLeaving;
 		customerGui.DoExitRestaurant();
+		try
+		{
+			actionDone.acquire();
+		}
+		catch(Exception e){}
+		//NOW DEACTIVATE THE ROLE
+		doneWithRole();
 	}
 	
 	private void GoToSpot(int number)
@@ -515,4 +471,3 @@ public class CustomerAgent extends Agent implements Customer
 		return customerGui;
 	}
 }
-

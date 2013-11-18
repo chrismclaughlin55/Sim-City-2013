@@ -42,17 +42,24 @@ public class PersonAgent extends Agent
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() 
 	{
+		boolean activeRole = false;
 		//Iterate through the list of roles
 		for(Role role : roles)
 		{
 			//If a role is active, attempt to run its scheduler
 			if(role.isActive())
 			{
+				activeRole = true;
 				if(role.pickAndExecuteAnAction())
 				{
 					return true;
 				}
 			}
+		}
+		
+		if(!activeRole)
+		{
+			System.out.println("No active roles detected");
 		}
 		return false;
 	}
@@ -61,5 +68,11 @@ public class PersonAgent extends Agent
 	protected void stateChanged()
 	{
 		super.stateChanged();
+	}
+	
+	/*GETTERS*/
+	public String getName()
+	{
+		return name;
 	}
 }

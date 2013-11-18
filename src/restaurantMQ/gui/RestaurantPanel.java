@@ -4,6 +4,7 @@ import restaurantMQ.CashierAgent;
 import restaurantMQ.CookAgent;
 import restaurantMQ.CustomerAgent;
 import restaurantMQ.HostAgent;
+import restaurantMQ.MQCustomerRole;
 import restaurantMQ.MarketAgent;
 import restaurantMQ.Menu;
 import restaurantMQ.WaiterAgent;
@@ -13,6 +14,7 @@ import restaurantMQ.interfaces.Waiter;
 
 import javax.swing.*;
 
+import city.PersonAgent;
 import agent.Agent;
 
 import java.awt.*;
@@ -260,8 +262,11 @@ public class RestaurantPanel extends JPanel {
     //This is the one which is used!!!!
     public void addPerson(String type, String name, JCheckBox hungry, boolean hunger) {
 
-    	if (type.equals("Customers")) {
-    		CustomerAgent c = new CustomerAgent(name, timer, this);	
+    	//THIS WILL BE CALLED BY THE PERSON AGENT
+    	if (type.equals("Customers"))
+    	{
+    		PersonAgent p = new PersonAgent(name);
+    		MQCustomerRole c = new MQCustomerRole(p, timer, this);	
     		CustomerGui g = new CustomerGui(c, gui);
     		
     		hungry.addActionListener(gui);
@@ -271,10 +276,11 @@ public class RestaurantPanel extends JPanel {
     		c.setHost(host);
     		c.setCashier(cashier);
     		c.setGui(g);
-    		if(hunger)
+    		if(hunger) //This allows the user to control it, later we should let the PersonAgent handle this
     			hungry.doClick();
     		customers.add(c);
-    		c.startThread();
+    		p.msgAssignRole(c);
+    		p.startThread(); //Hack. PersonAgent's thread should already be going
     	}
     }
     

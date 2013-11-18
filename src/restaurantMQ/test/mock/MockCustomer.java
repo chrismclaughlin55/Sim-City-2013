@@ -156,4 +156,10 @@ public class MockCustomer extends Mock implements Customer {
 		
 	}
 
+	@Override
+	public void gotHungry() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

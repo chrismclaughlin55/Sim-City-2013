@@ -2,6 +2,8 @@ package restaurantMQ.gui;
 
 import restaurantMQ.CustomerAgent;
 import restaurantMQ.HostAgent;
+import restaurantMQ.MQCustomerRole;
+import restaurantMQ.interfaces.Customer;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -14,7 +16,7 @@ public class CustomerGui implements Gui{
 	private static final int WINDOWX = 550;
     private static final int WINDOWY = 350;
 	
-	private CustomerAgent agent = null;
+	private Customer agent = null;
 	private boolean isPresent = false;
 	private boolean isHungry = false;
 	private boolean moving = false;
@@ -52,7 +54,29 @@ public class CustomerGui implements Gui{
 	private Map<Integer, Coordinates> tableMap = new HashMap<Integer, Coordinates>();
 	private Map<Integer, Coordinates> waitingMap = new HashMap<Integer, Coordinates>();
 
+	//For CustomerAgents
 	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //HostAgent m) {
+		agent = c;
+		xPos = INITX;
+		yPos = INITY;
+		xDestination = INITX;
+		yDestination = INITY;
+		//maitreD = m;
+		this.gui = gui;
+		
+		for(int i = 1; i <= NTABLES; ++i)
+		{
+			tableMap.put(i, new Coordinates(xTable + (((i -1) / NUMROWS)*TABLEDIST), (yTable + ((i-1) % NUMROWS)*TABLEDIST)));
+		}
+		
+		for(int i = 1; i <= NSPOTS; ++i)
+		{
+			waitingMap.put(i, new Coordinates(WIDTH + 2*(((i-1) / NUMROWS)*WIDTH), (WIDTH + 2*((i - 1) % NUMROWS)*WIDTH)));
+		}
+	}
+	
+	//For Roles
+	public CustomerGui(MQCustomerRole c, RestaurantGui gui){ //HostAgent m) {
 		agent = c;
 		xPos = INITX;
 		yPos = INITY;
@@ -93,6 +117,7 @@ public class CustomerGui implements Gui{
 			if (command==Command.GoToSeat) agent.msgAnimationFinishedGoToSeat();
 			else if (command==Command.LeaveRestaurant) {
 				agent.msgAnimationFinishedLeaveRestaurant();
+				agent.msgAnimationDone();
 				isHungry = false;
 				gui.setCustomerEnabled(agent);
 			}
