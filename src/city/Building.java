@@ -2,19 +2,26 @@ package city;
 
 import java.util.*;
 import java.awt.geom.Rectangle2D;
+import city.*;
 
 public class Building extends Rectangle2D.Double {
 	String name;
 	boolean isClosed;
 	Manager manager;
-	Map<String, Manager> managers = new HashMap<String, Manager>();
 	List<PersonAgent> waitingPeople;
 	
 	public Building(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
 	}
 	
-	public void msgCanIComeIn(PersonAgent p) {
+	protected boolean msgIsItOpen() {
+		if (isClosed)
+			return false;
+		else
+			return true;
+	}
+	
+	protected void msgGoIntoBuilding(PersonAgent p) {
 		waitingPeople.add(p);
 	}
 	
@@ -32,30 +39,26 @@ public class Building extends Rectangle2D.Double {
 		return false;
 	}
 	
-	private void LeaveBuilding(PersonAgent p) {
+	protected void LeaveBuilding(PersonAgent p) {
 		waitingPeople.remove(p);
 	}
 	
-	private void GoIntoBuilding(PersonAgent p) {
-		manager = managers.get(name);
+	protected void GoIntoBuilding(PersonAgent p) {
 		p.msgAssignRole(manager.personRole);
 		waitingPeople.remove(p);
 	}
 	
-	public void setClosed() {
+	//only manager have access to the setClosed
+	protected void setClosed(PersonAgent manager) {
 		isClosed = true;
 	}
 	
-	public void setManager(Manager m) {
+	protected void setManager(Manager m) {
 		manager = m;
 	}
 	
-	public Manager getManager() {
+	protected Manager getManager() {
 		return manager;
-	}
-	
-	public void addManager(Manager m, String name) {
-		managers.put(name, m);
 	}
 	
 	class Manager {
