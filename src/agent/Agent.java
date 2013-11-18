@@ -10,7 +10,7 @@ public abstract class Agent {
 	Semaphore pause = new Semaphore(0, true);
 	boolean isPaused = false;
 	private AgentThread agentThread;
-
+	
 	protected Agent() {
 	}
 
