@@ -20,7 +20,7 @@ public class PersonAgent extends Agent
 	}
 	
 	
-	/*Messages*/
+	/*MESSAGES*/
 	public void msgAssignRole(Role role)
 	{
 		for(Role r : roles)
