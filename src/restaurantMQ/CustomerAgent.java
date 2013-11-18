@@ -106,24 +106,6 @@ public class CustomerAgent extends Agent implements Customer
 		stateChanged();
 	}
 	
-	/*
-	public void msgSitAtTable() {
-		print("Received msgSitAtTable");
-		event = AgentEvent.followHost;
-		stateChanged();
-	}
-
-	public void msgSitAtTable(int tableNum) {
-		print("Received msgSitAtTable");
-		event = AgentEvent.followHost;
-		table = tableNum;
-		stateChanged();
-	}*/
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Customer#msgTablesFull()
-	 */
-	
 	public void msgGoToSpot(int number)
 	{
 		waitingNumber = number;

@@ -3,13 +3,14 @@ package restaurantMQ.gui;
 import javax.swing.JCheckBox;
 
 import restaurantMQ.CustomerAgent;
+import restaurantMQ.interfaces.Customer;
 
 public class RestaurantCustomer 
 {
-	CustomerAgent customer;
+	Customer customer;
 	JCheckBox hungerCB;
 	
-	public RestaurantCustomer(CustomerAgent customer, JCheckBox hungerCB)
+	public RestaurantCustomer(Customer customer, JCheckBox hungerCB)
 	{
 		this.customer = customer;
 		this.hungerCB = hungerCB;

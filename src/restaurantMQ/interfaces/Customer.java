@@ -41,4 +41,6 @@ public interface Customer {
 
 	public abstract void msgPause();
 
+	public abstract void gotHungry();
+
 }
