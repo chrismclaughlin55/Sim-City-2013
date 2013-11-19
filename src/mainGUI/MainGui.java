@@ -2,10 +2,14 @@ package mainGUI;
 
 
 import java.awt.Dimension;
+
+import config.ConfigParser;
+
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -31,7 +35,7 @@ public class MainGui extends JFrame implements ActionListener {
 	//public AnimationPanel animationPanel;
 	//JPanel InfoLayout;
 	
- 
+	private ConfigParser parser;
     private PersonCreationPanel personPanel;
     private MainAnimationPanel mainAnimationPanel;
     private JLabel infoLabel; //part of infoPanel
@@ -47,8 +51,16 @@ public class MainGui extends JFrame implements ActionListener {
     public MainGui() {
     	    	
     	//1. create person
-    	
-
+    	/*
+    	try {
+			parser = new ConfigParser(this);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("what");
+		}
+    	parser.ParseAndCreatePeople();
+    	*/
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainAnimationPanel = new MainAnimationPanel();
         mainAnimationPanel.setVisible(true);

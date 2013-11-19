@@ -12,7 +12,7 @@ public class ConfigParser{
 	MainGui main;
 	public ConfigParser(MainGui m) throws FileNotFoundException {
 		//ConfigParser cp = new ConfigParser();
-		scan = new Scanner( new File ("config.txt"));
+		scan = new Scanner( new File ("./config.txt"));
 		main = m;
 	}
 	
