@@ -9,6 +9,7 @@ public class PersonAgent extends Agent
 {
 	/*DATA MEMBERS*/
 	String name;
+	public double money;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
