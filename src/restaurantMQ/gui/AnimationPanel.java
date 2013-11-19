@@ -49,7 +49,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
-        g2.fillRect(0, 0, WINDOWX, WINDOWY );
+        g2.fillRect(0, 0, WINDOWX+300, WINDOWY+300 );
 
         //Here are the tables
         g2.setColor(Color.ORANGE);

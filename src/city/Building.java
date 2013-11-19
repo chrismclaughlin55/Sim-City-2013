@@ -3,7 +3,7 @@ package city;
 import java.util.*;
 import java.awt.geom.Rectangle2D;
 
-public abstract class Building extends Rectangle2D.Double {
+public class Building extends Rectangle2D.Double {
 	String name;
 	boolean isOpen;
 	Manager manager;
@@ -41,8 +41,6 @@ public abstract class Building extends Rectangle2D.Double {
 	protected void setOpen() {
 		isOpen = true;
 	}
-	
-	public abstract boolean pickAndExecuteAnAction();
 	
 	class Manager {
 		PersonAgent person;
