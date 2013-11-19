@@ -1,4 +1,5 @@
 package config;
+import mainGUI.MainGui;
 import java.io.*;
 import java.util.*;
 public class ConfigParser{
@@ -8,13 +9,18 @@ public class ConfigParser{
 	 */
 	//File config = new File("config.txt");
 	Scanner scan;
-	public ConfigParser() throws FileNotFoundException {
+	MainGui main;
+	public ConfigParser(MainGui m) throws FileNotFoundException {
 		//ConfigParser cp = new ConfigParser();
 		scan = new Scanner( new File ("config.txt"));
+		main = m;
 	}
 	
 	public void ParseAndCreatePeople() {
-		if(scan.hasNext()) {
+		if(scan.hasNextLine()) {
+			String name = scan.next();
+			String title = scan.next();
+			main.addPerson(name,title);
 			//MAKE A New Person OBJECT
 			//WORK WITH MAINGUI TO CREATE OBJECT WITH THESE PROPERTIES THAT ARE PARSED IN
 			
