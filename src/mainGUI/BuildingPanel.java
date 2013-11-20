@@ -2,6 +2,7 @@ package mainGUI;
 
 import javax.swing.JFrame;
 
+import market.gui.MarketGui;
 import restaurantMQ.gui.RestaurantGui;
 import city.Building;
 import city.Building.BuildingType;
@@ -29,7 +30,11 @@ public class BuildingPanel {
 			// add home panel and gui later
 		}
 		if (building.type == BuildingType.market) {
-			// add market panel and gui later
+			MarketGui marketGui = new MarketGui();
+			marketGui.setTitle("market");
+			marketGui.setVisible(true);
+			marketGui.setResizable(false);
+			marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		}
 	}
 }
