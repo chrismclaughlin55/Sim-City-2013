@@ -41,7 +41,7 @@ public abstract class Role
 	}
 	
 	//Pause the PersonAgent
-	protected void msgPause()
+	public void msgPause()
 	{
 		person.msgPause();
 	}
