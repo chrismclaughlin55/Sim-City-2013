@@ -9,6 +9,8 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
 
 import javax.swing.JCheckBox;
@@ -16,7 +18,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import city.Building;
 import city.PersonAgent;
+import city.Building.BuildingType;
 import city.gui.PersonGui;
 import restaurantMQ.CustomerAgent;
 import restaurantMQ.WaiterAgent;
@@ -27,7 +31,7 @@ import restaurantMQ.interfaces.Customer;
  * Main GUI class.
  * Contains the main frame and subsequent panels
  */
-public class MainGui extends JFrame implements ActionListener {
+public class MainGui extends JFrame implements MouseListener {
     /* The GUI has two frames, the control frame (in variable gui) 
      * and the animation frame, (in variable animationFrame within gui)
      */
@@ -111,6 +115,8 @@ public class MainGui extends JFrame implements ActionListener {
         //animationPanel.setPreferredSize(dim);
         add (mainAnimationPanel);
        // System.out.println (animationPanel.getPreferredSize());
+        
+        addMouseListener(this);
     }
     /**
      * updateInfoPanel() takes the given customer (or, for v3, Host) object and
@@ -198,12 +204,12 @@ public class MainGui extends JFrame implements ActionListener {
      */
     public static void main(String[] args) {
     	
-    	RestaurantGui restGui = new RestaurantGui();
+    	/*RestaurantGui restGui = new RestaurantGui();
         restGui.setTitle("csci201 Restaurant");
         restGui.setVisible(true);
         restGui.setResizable(false);
         restGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        restGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        restGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);*/
          
         MainGui gui = new MainGui();
         gui.setTitle("Sim City - Team 15");
@@ -214,8 +220,7 @@ public class MainGui extends JFrame implements ActionListener {
        
     }
     
-    
-public void addPerson(String name, String role) {
+    public void addPerson(String name, String role) {
 		PersonAgent p = new PersonAgent(name);
 		mainAnimationPanel.addGui(new PersonGui(p));
 		p.startThread();
@@ -233,9 +238,39 @@ public void addPerson(String name, String role) {
 			c.startThread();	*/
 	}
     
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    	//Check to see which building was clicked
+    	for (int i = 0; i < mainAnimationPanel.buildings.size(); i++) {
+    		Building b = mainAnimationPanel.buildings.get(i);
+    		if (b.contains(e.getX()-620, e.getY()-25)) {
+    			//System.out.print("Building " + i + " clicked\n");
+    			b.display(b);
+    		}
+    	}
+    }
+    
+    @Override
+    public void mousePressed(MouseEvent e) {
+    	// TODO Auto-generated method stub	
+    	
+    }
+    
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    	// TODO Auto-generated method stub
+	
+    }
+    
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    	// TODO Auto-generated method stub
+	
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    	// TODO Auto-generated method stub
+	
+    }
 }

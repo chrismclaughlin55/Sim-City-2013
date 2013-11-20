@@ -3,11 +3,16 @@ package city;
 import java.util.*;
 import java.awt.geom.Rectangle2D;
 
+import mainGUI.BuildingPanel;
+
 public class Building extends Rectangle2D.Double {
-	String name;
+	public String name;
+	public BuildingType type;
+	public enum BuildingType {home, apartment, restaurant, bank, market};
 	boolean isOpen;
 	Manager manager;
 	List<PersonAgent> waitingPeople;
+	BuildingPanel buildingPanel = new BuildingPanel();
 	
 	// need a list of all roles that have been in the building (for non-norm)
 	List<Role> existedRoles = new ArrayList<Role>();
@@ -17,6 +22,12 @@ public class Building extends Rectangle2D.Double {
 	
 	public Building(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
+	}
+	
+	public Building(int xPos, int yPos, int width, int height, String name, BuildingType type) {
+		super(xPos, yPos, width, height);
+		this.name = name;
+		this.type = type;
 	}
 	
 	protected boolean msgIsItOpen() {
@@ -48,5 +59,18 @@ public class Building extends Rectangle2D.Double {
 		
 		Manager() {
 		}
+	}
+	
+	public void setType(BuildingType type) {
+		this.type = type;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void display(Building building) {
+		System.out.println("Building clicked");
+		buildingPanel.displayBuildingPanel(building);
 	}
 }
