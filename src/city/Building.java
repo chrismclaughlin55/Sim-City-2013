@@ -4,6 +4,7 @@ import java.util.*;
 import java.awt.geom.Rectangle2D;
 
 import mainGUI.BuildingPanel;
+import mainGUI.MainGui;
 
 public class Building extends Rectangle2D.Double {
 	public String name;
@@ -12,22 +13,26 @@ public class Building extends Rectangle2D.Double {
 	boolean isOpen;
 	Manager manager;
 	List<PersonAgent> waitingPeople;
-	BuildingPanel buildingPanel = new BuildingPanel();
-	
+	BuildingPanel buildingPanel;
+	MainGui mainGui;
 	// need a list of all roles that have been in the building (for non-norm)
 	List<Role> existedRoles = new ArrayList<Role>();
 	
 	// need a list of all roles
 	List<Role> roles = new ArrayList<Role>();
 	
-	public Building(int xPos, int yPos, int width, int height) {
+	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
+		this.mainGui = mainGui;
+		buildingPanel = new BuildingPanel(mainGui);
 	}
 	
-	public Building(int xPos, int yPos, int width, int height, String name, BuildingType type) {
+	public Building(int xPos, int yPos, int width, int height, String name, BuildingType type, MainGui mainGui) {
 		super(xPos, yPos, width, height);
 		this.name = name;
 		this.type = type;
+		this.mainGui = mainGui;
+		buildingPanel = new BuildingPanel(mainGui);
 	}
 	
 	protected boolean msgIsItOpen() {

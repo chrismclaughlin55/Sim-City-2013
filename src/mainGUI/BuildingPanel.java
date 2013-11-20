@@ -8,8 +8,11 @@ import city.Building;
 import city.Building.BuildingType;
 
 public class BuildingPanel {
-	public BuildingPanel() {
-		
+	
+	MainGui mainGui;
+
+	public BuildingPanel(MainGui mainGui) {
+		this.mainGui = mainGui;
 	}
 	
 	public void displayBuildingPanel(Building building) {
@@ -30,11 +33,7 @@ public class BuildingPanel {
 			// add home panel and gui later
 		}
 		if (building.type == BuildingType.market) {
-			MarketGui marketGui = new MarketGui();
-			marketGui.setTitle("market");
-			marketGui.setVisible(true);
-			marketGui.setResizable(false);
-			marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			mainGui.marketGui1.setVisible(true);
 		}
 	}
 }

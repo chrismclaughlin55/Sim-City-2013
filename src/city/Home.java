@@ -2,6 +2,8 @@ package city;
 
 import java.util.*;
 
+import mainGUI.MainGui;
+
 public class Home extends Building {
 
 	//temporary hack
@@ -9,8 +11,8 @@ public class Home extends Building {
 	
 	
 	//constructor for non-apartment homes
-	public Home(int xPos, int yPos, int width, int height) {
-		super(xPos, yPos, width, height);
+	public Home(int xPos, int yPos, int width, int height, MainGui mainGui) {
+		super(xPos, yPos, width, height, mainGui);
 	}
 
 	public void GoIntoBuilding(PersonAgent p){

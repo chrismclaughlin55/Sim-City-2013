@@ -1,45 +1,84 @@
 package market.gui;
 
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Vector;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import market.Inventory;
+import market.MarketData;
+
+
 /**
  * Main GUI class.
  * Contains the main frame and subsequent panels
  */
 public class MarketGui extends JFrame implements ActionListener {
-    /* The GUI has two frames, the control frame (in variable gui) 
-     * and the animation frame, (in variable animationFrame within gui)
-     */
-	AnimationPanel animationPanel = new AnimationPanel();
-	
-    /* marketPanel holds 2 panels
-     * 1) the staff listing, and lists of current customers all constructed
-     *    in MarketPanel()
-     * 2) the infoPanel about the clicked Customer (created just below)
-     */    
-    private MarketPanel marketPanel = new MarketPanel(this);
-    
-    public static final int WINDOWX = 1000;
-    public static final int WINDOWY = 550;
-    private static final int MARGIN = 100;
-    private static final int WIDTH = 50;
 
-    /**
-     * Constructor for MarketGui class.
-     * Sets up all the gui components.
-     */
-    public MarketGui() {
-        setBounds(WIDTH, WIDTH , WINDOWX, WINDOWY);
-        setVisible(true);
-    	
-    }
-    
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+	public AnimationPanel animationPanel;
+	private MarketPanel marketPanel;
+
+	public MarketGui() {
+
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setBounds(0,0,screenSize.width/2, screenSize.height/2);
+		setLocation(screenSize.width/2-this.getSize().width/2, screenSize.height/2-this.getSize().height/2);
+		setLayout(new GridLayout(0,2));
+
+		MarketData chickenData = new MarketData("chicken", 10, 5.99);
+		MarketData saladData = new MarketData("salad", 10, 3.99);
+		MarketData steakData = new MarketData("steak", 10, 11.99);
+		MarketData pizzaData = new MarketData("pizza", 10, 7.99);
+		Inventory inventory = new Inventory(chickenData, saladData, steakData, pizzaData);
+
+		animationPanel = new AnimationPanel();
+		animationPanel.setVisible(true);
 		
+		marketPanel = new MarketPanel(inventory);
+		marketPanel.setVisible(true);
+
+
+		add (marketPanel);
+		add (animationPanel);
+
 	}
-    
+	/**
+	 * updateInfoPanel() takes the given customer (or, for v3, Host) object and
+	 * changes the information panel to hold that person's info.
+	 *
+	 * @param person customer (or waiter) object
+	 */
+	public void updateMarketPanel(Inventory inventory) {
+
+		for (JLabel label : marketPanel.labels) {
+			label.setText("Quantity of steak: " + inventory.inventory.get("steak").amount);
+			label.setText("Quantity of salad: " + inventory.inventory.get("salad").amount);
+			label.setText("Quantity of chicken: " + inventory.inventory.get("chicken").amount);
+			label.setText("Quantity of pizza: " + inventory.inventory.get("pizza").amount);
+		}
+
+		marketPanel.validate();
+	}
+
+
+	/*public static void main(String[] args) {
+		MarketGui gui = new MarketGui();
+		gui.setTitle("Market");
+		gui.setVisible(true);
+		gui.setResizable(true);        
+
+		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}*/
+
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
 }

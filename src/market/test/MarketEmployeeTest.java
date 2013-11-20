@@ -1,6 +1,7 @@
 package market.test;
 
 import junit.framework.TestCase;
+import market.Inventory;
 import market.MarketData;
 import market.MarketEmployeeRole;
 import market.test.mock.MockMarketCustomer;
@@ -32,18 +33,19 @@ public class MarketEmployeeTest extends TestCase
 	 */
 	public void setUp() throws Exception{
 		super.setUp();		
-		customer = new MockMarketCustomer("mockcustomer");
-		manager = new MockMarketManager("mockmanager");
-		employee = new MarketEmployeeRole(person, 1, manager);
 		
 		MarketData chickenData = new MarketData("chicken", 10, 5.99);
 		MarketData saladData = new MarketData("salad", 10, 3.99);
 		MarketData steakData = new MarketData("steak", 10, 11.99);
 		MarketData pizzaData = new MarketData("pizza", 10, 7.99);
-		employee.inventory.put("chicken", chickenData);
-		employee.inventory.put("salad", saladData);
-		employee.inventory.put("steak", steakData);
-		employee.inventory.put("pizza", pizzaData);
+		
+		Inventory inventory = new Inventory(chickenData, saladData, steakData, pizzaData);
+		customer = new MockMarketCustomer("mockcustomer");
+		manager = new MockMarketManager("mockmanager");
+		employee = new MarketEmployeeRole(person, 1, manager, inventory);
+		
+		
+		
 	}	
 	
 	//Make sure the cashier properly pays a market when the order is delivered
@@ -65,9 +67,8 @@ public class MarketEmployeeTest extends TestCase
 		assertTrue("Employee's scheduler should return true, but didn't.", employee.pickAndExecuteAnAction());
 		
 		//Step 3, test to see if the employee fulfills the order
-		assertEquals("Quantity of pizza should equal 5. It doesn't", employee.inventory.get("pizza").amount, 5);
-		assertTrue("Emplyee should have logged that order was fulfilled. Instead, the log reads: " +
-				employee.log.getLastLoggedEvent().toString(), employee.log.containsString("Order fulfilled"));
+		assertEquals("Quantity of pizza should equal 5. It doesn't", employee.inventory.inventory.get("pizza").amount, 5);
+		
 
 		//Step 4, test to see if the employee receives the payment
 		employee.msgHereIsPayment(7.99);
@@ -78,6 +79,5 @@ public class MarketEmployeeTest extends TestCase
 		assertEquals("Payments should have 0 payments. It doesn't", employee.payments.size(), 0);
 		assertTrue("Manager should have logged that money was received. Instead, the log reads: " +
 				manager.log.getLastLoggedEvent().toString(), manager.log.containsString("Money received"));
-
 	}
 }

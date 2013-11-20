@@ -11,9 +11,11 @@ public class MarketManagerRole extends Role implements MarketManager{
 	boolean endOfDay = false;
 	int bankAccountNum;
 	BankManagerRole bankManager;
+	Inventory inventory;
 
-	public MarketManagerRole(PersonAgent person) {
+	public MarketManagerRole(PersonAgent person, Inventory inventory) {
 		super(person);
+		this.inventory = inventory;
 		// TODO Auto-generated constructor stub
 	}
 	

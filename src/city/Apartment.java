@@ -2,13 +2,15 @@ package city;
 
 import java.util.*;
 
+import mainGUI.MainGui;
+
 public class Apartment extends Building {
 
 	List<PersonAgent> tenants;
 	List<Room> rooms;
 	
-	public Apartment(int xPos, int yPos, int width, int height) {
-		super(xPos, yPos, width, height);
+	public Apartment(int xPos, int yPos, int width, int height, MainGui mainGui) {
+		super(xPos, yPos, width, height, mainGui);
 		
 	}
 	
