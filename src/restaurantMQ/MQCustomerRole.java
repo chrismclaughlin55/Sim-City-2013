@@ -102,6 +102,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 	public void gotHungry() {//from animation
 		System.out.println(name + ": I'm hungry");
 		event = AgentEvent.gotHungry;
+		setActive();
 		stateChanged();
 	}
 	
@@ -430,6 +431,8 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 		}
 		catch(Exception e){}
 		//NOW DEACTIVATE THE ROLE
+		state = AgentState.DoingNothing;
+		
 		doneWithRole();
 	}
 	
