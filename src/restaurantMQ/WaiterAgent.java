@@ -4,6 +4,7 @@ import restaurantMQ.gui.CustomerGui;
 import restaurantMQ.gui.RestaurantGui;
 import restaurantMQ.gui.WaiterGui;
 import restaurantMQ.interfaces.Cashier;
+import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
@@ -28,7 +29,7 @@ public class WaiterAgent extends Agent implements Waiter
 	private Host host; //assigned in constructor
 	private WaiterGui gui = null;
 	private Cashier cashier;
-	private List<CookAgent> cooks = new ArrayList<CookAgent>();
+	private List<Cook> cooks = new ArrayList<Cook>();
 	public String name;
 	int waitingSpot;
 	enum BreakStatus {None, WantBreak, AskedForBreak, BreakOK, OnBreak, Back};
@@ -107,20 +108,20 @@ public class WaiterAgent extends Agent implements Waiter
 		this.host = host;
 	}
 	
-	public WaiterAgent(Host host, List<CookAgent> cooks)
+	public WaiterAgent(Host host, List<Cook> cooks)
 	{
 		this.host = host;
 		this.cooks = cooks;
 	}
 	
-	public WaiterAgent(String name, Host host, List<CookAgent> cooks)
+	public WaiterAgent(String name, Host host, List<Cook> cooks)
 	{
 		this.name = name;
 		this.host = host;
 		this.cooks = cooks;
 	}
 	
-	public WaiterAgent(String name, Host host, List<CookAgent> cooks, Menu menu)
+	public WaiterAgent(String name, Host host, List<Cook> cooks, Menu menu)
 	{
 		this.name = name;
 		this.host = host;
@@ -128,7 +129,7 @@ public class WaiterAgent extends Agent implements Waiter
 		this.menu = menu;
 	}
 	
-	public WaiterAgent(String name, int waiterNumber, Host host, List<CookAgent> cooks, Cashier cashier, Menu menu, JCheckBox breakBox)
+	public WaiterAgent(String name, int waiterNumber, Host host, List<Cook> cooks, Cashier cashier, Menu menu, JCheckBox breakBox)
 	{
 		this.name = name;
 		this.waiterNumber = waiterNumber;
