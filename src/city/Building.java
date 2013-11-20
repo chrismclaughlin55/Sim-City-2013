@@ -75,7 +75,6 @@ public class Building extends Rectangle2D.Double {
 	}
 	
 	public void display(Building building) {
-		System.out.println("Building clicked");
 		buildingPanel.displayBuildingPanel(building);
 	}
 }

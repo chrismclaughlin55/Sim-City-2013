@@ -34,7 +34,7 @@ public class MainGui extends JFrame implements MouseListener {
     private PersonCreationPanel personPanel;
     private MainAnimationPanel mainAnimationPanel;
    
-    public MarketGui marketGui1;
+    //public MarketGui marketGui1;
     /**
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
@@ -73,10 +73,10 @@ public class MainGui extends JFrame implements MouseListener {
         addMouseListener(this);
         
         
-        marketGui1 = new MarketGui();
+        /*marketGui1 = new MarketGui();
         marketGui1.setTitle("Market 1");
         marketGui1.setVisible(false);
-        marketGui1.setResizable(false);
+        marketGui1.setResizable(false);*/
         //marketGui1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     

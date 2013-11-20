@@ -20,6 +20,8 @@ public class BuildingPanel {
 			if (building.name.equals("restaurant")) {
 				RestaurantGui restGui = new RestaurantGui();
 				restGui.setTitle("restaurantMQ");
+				restGui.setVisible(true);
+				restGui.setResizable(false);
 				restGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			}
 		}
@@ -33,7 +35,12 @@ public class BuildingPanel {
 			// add home panel and gui later
 		}
 		if (building.type == BuildingType.market) {
-			mainGui.marketGui1.setVisible(true);
+			//mainGui.marketGui1.setVisible(true);
+			MarketGui marketGui = new MarketGui();
+			marketGui.setTitle("market1");
+			marketGui.setVisible(true);
+			marketGui.setResizable(false);
+			marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		}
 	}
 }
