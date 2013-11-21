@@ -26,6 +26,8 @@ public class MainGui extends JFrame implements MouseListener {
     /* The GUI has two frames, the control frame (in variable gui) 
      * and the animation frame, (in variable animationFrame within gui)
      */
+	private int WIDTH = 1230;
+	private int HEIGHT = 800;
 	
 	//public AnimationPanel animationPanel;
 	//JPanel InfoLayout;
@@ -40,7 +42,6 @@ public class MainGui extends JFrame implements MouseListener {
      * Sets up all the gui components.
      */
     public MainGui() {
-    	    	
     	//1. create person
     	/*
     	try {
@@ -52,6 +53,7 @@ public class MainGui extends JFrame implements MouseListener {
 		}
     	parser.ParseAndCreatePeople();
     	*/
+    	
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainAnimationPanel = new MainAnimationPanel(this);
         mainAnimationPanel.setVisible(true);
@@ -59,8 +61,8 @@ public class MainGui extends JFrame implements MouseListener {
         personPanel.setVisible(true);
     	
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    	setBounds(0,0,screenSize.width-200, screenSize.height-100);
-    	setLocation(screenSize.width/2-this.getSize().width/2, screenSize.height/2-this.getSize().height/2);
+    	setBounds(0, 0, WIDTH, HEIGHT);
+    	setLocation(50, 50);
         
         setLayout(new GridLayout(0,2));
         
@@ -112,10 +114,13 @@ public class MainGui extends JFrame implements MouseListener {
     	//Check to see which building was clicked
     	for (int i = 0; i < mainAnimationPanel.buildings.size(); i++) {
     		Building b = mainAnimationPanel.buildings.get(i);
+    		
     		if (b.contains(e.getX()-620, e.getY()-25)) {
     			System.out.print("Building " + i + " clicked\n");
     			b.display(b);
     		}
+    		System.out.println("**"+b.x+"**"+b.y+"\n");
+    		System.out.print(e.getX()-620);
     	}
     }
     
