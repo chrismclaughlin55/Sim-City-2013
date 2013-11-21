@@ -9,8 +9,15 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import city.PersonAgent;
+import city.Role;
 import market.Inventory;
+import market.MarketCustomerRole;
 import market.MarketData;
+import market.MarketEmployeeRole;
+import market.MarketManagerRole;
+import market.interfaces.MarketEmployee;
+import market.interfaces.MarketManager;
 
 
 /**
@@ -45,6 +52,28 @@ public class MarketGui extends JFrame implements ActionListener {
 
 		add (marketPanel);
 		add (animationPanel);
+		
+		PersonAgent p1 = new PersonAgent("Manager");
+		MarketManagerRole manager = new MarketManagerRole(p1, inventory);
+		p1.msgAssignRole(manager);
+		p1.startThread();
+		ManagerGui managerGui = new ManagerGui();
+		animationPanel.addGui(managerGui);
+		
+		
+		PersonAgent p2 = new PersonAgent("Employee1");
+		MarketEmployeeRole employee = new MarketEmployeeRole(p2, 1, manager, inventory);
+		p2.msgAssignRole(employee);
+		EmployeeGui employeeGui = new EmployeeGui();
+		animationPanel.addGui(employeeGui);
+		
+		PersonAgent p3 = new PersonAgent("Customer1");
+		MarketCustomerRole customer = new MarketCustomerRole(p3, employee, 1);
+		p3.msgAssignRole(customer);
+		CustomerGui custGui = new CustomerGui();
+		animationPanel.addGui(custGui);
+		
+		
 
 	}
 	/**
