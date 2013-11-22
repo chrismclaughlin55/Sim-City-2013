@@ -15,7 +15,7 @@ public class Home extends Building {
 	}
 
 	public void GoIntoBuilding(PersonAgent p){
-		if (p == allowedPerson) {
+		if (p == manager.person) { //fix once brian and kartik fix manager
 			//allow the person into the building
 			
 		}
