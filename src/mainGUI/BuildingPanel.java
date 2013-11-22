@@ -25,7 +25,31 @@ public class BuildingPanel {
 				restGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			}
 		}
-		if (building.type == BuildingType.apartment) {
+		
+		switch (building.type) {	
+		
+		case bank:
+			//add bank panel and gui later
+			break;
+			
+		case home:
+		case room:
+			//add home panel and gui later
+			break;
+			
+		case market:
+			//mainGui.marketGui1.setVisible(true);
+			MarketGui marketGui = new MarketGui();
+			marketGui.setTitle("market1");
+			marketGui.setVisible(true);
+			marketGui.setResizable(false);
+			marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			break;
+			
+		default: 
+			break;
+		}
+		/*if (building.type == BuildingType.apartment) {
 			// add apartment panel and gui later
 		}
 		if (building.type == BuildingType.bank) {
@@ -41,6 +65,6 @@ public class BuildingPanel {
 			marketGui.setVisible(true);
 			marketGui.setResizable(false);
 			marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		}
+		}*/
 	}
 }
