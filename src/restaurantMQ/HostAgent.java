@@ -3,6 +3,7 @@ package restaurantMQ;
 import agent.Agent;
 import restaurantMQ.gui.HostGui;
 import restaurantMQ.gui.TableGui;
+import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
@@ -30,7 +31,7 @@ public class HostAgent extends Agent implements Host {
 	public Collection<Table> tables;
 	public Collection<WaitingSpot> waitingSpots;
 	public List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
-	private List<CookAgent> cooks = new ArrayList<CookAgent>();
+	private List<Cook> cooks = new ArrayList<Cook>();
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 	
@@ -77,7 +78,7 @@ public class HostAgent extends Agent implements Host {
 		}
 	}
 	
-	public HostAgent(String name, CookAgent cook) {
+	public HostAgent(String name, Cook cook) {
 		super();
 
 		this.name = name;
@@ -89,7 +90,7 @@ public class HostAgent extends Agent implements Host {
 		}
 	}
 	
-	public void setCooks(List<CookAgent> cooks)
+	public void setCooks(List<Cook> cooks)
 	{
 		this.cooks = cooks;
 	}

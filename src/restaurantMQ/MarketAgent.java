@@ -9,8 +9,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import restaurantMQ.interfaces.Cashier;
+import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Market;
-
 import agent.Agent;
 
 public class MarketAgent extends Agent implements Market
@@ -39,11 +39,11 @@ public class MarketAgent extends Agent implements Market
 	private class Order
 	{
 		String choice;
-		CookAgent cook;
+		Cook cook;
 		Cashier cashier;
 		int amount;
 		
-		Order(CookAgent cook, Cashier cashier, String choice, int amount)
+		Order(Cook cook, Cashier cashier, String choice, int amount)
 		{
 			this.choice = choice;
 			this.cook = cook;
@@ -103,7 +103,7 @@ public class MarketAgent extends Agent implements Market
 	}
 	
 	//MESSAGES
-	public void msgNewOrders(CookAgent cook, Cashier cashier, List<MarketOrder> marketOrders)
+	public void msgNewOrders(Cook cook, Cashier cashier, List<MarketOrder> marketOrders)
 	{
 		synchronized(orders)
 		{
@@ -115,7 +115,7 @@ public class MarketAgent extends Agent implements Market
 		stateChanged();
 	}
 	
-	public void msgNewOrder(CookAgent cook, Cashier cashier, String name, int quantity)
+	public void msgNewOrder(Cook cook, Cashier cashier, String name, int quantity)
 	{
 		orders.add(new Order(cook, cashier, name, quantity));
 		stateChanged();

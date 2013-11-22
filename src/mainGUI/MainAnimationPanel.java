@@ -34,41 +34,44 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	private int WIDTH = 100;
 	private int HEIGHT = 100;
 	
-	public MainAnimationPanel() {
+	private MainGui mainGui;
+	
+	public MainAnimationPanel(MainGui mainGui) {
 		//Add buildings
+		this.mainGui = mainGui;
 		for (int i = 0; i < 2; i++) {
-			Building b = new Building(10, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home);
-			buildings.add(b);
-		}
-		for (int i = 0; i < 2; i++) {
-			Building b = new Building(10, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home);
+			Building b = new Building(10, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
 			buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
-			Building b = new Building(190+i*130, 680, WIDTH, HEIGHT, "home", BuildingType.home);
+			Building b = new Building(10, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
+			buildings.add(b);
+		}
+		for (int i = 0; i < 2; i++) {
+			Building b = new Building(190+i*130, 680, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
 			buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			Building b = new Building(500, 410+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment);
+			Building b = new Building(500, 410+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui);
 			buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			Building b = new Building(500, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment);
+			Building b = new Building(500, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui);
 			buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			Building b = new Building(190+i*130, 0, WIDTH, HEIGHT, "apartment", BuildingType.apartment);
+			Building b = new Building(190+i*130, 0, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui);
 			buildings.add(b);
 		}
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
-				Building b = new Building(190+i*130, 140+j*130, WIDTH, HEIGHT);
+				Building b = new Building(190+i*130, 140+j*130, WIDTH, HEIGHT, mainGui);
 				buildings.add(b);
 			}
 		}
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
-				Building b = new Building(190+i*130, 410+j*130, WIDTH, HEIGHT);
+				Building b = new Building(190+i*130, 410+j*130, WIDTH, HEIGHT, mainGui);
 				buildings.add(b);
 			}
 		}

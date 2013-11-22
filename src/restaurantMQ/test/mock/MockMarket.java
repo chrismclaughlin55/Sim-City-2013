@@ -2,9 +2,9 @@ package restaurantMQ.test.mock;
 
 import java.util.List;
 
-import restaurantMQ.CookAgent;
 import restaurantMQ.MarketOrder;
 import restaurantMQ.interfaces.Cashier;
+import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Market;
 
 public class MockMarket extends Mock implements Market
@@ -16,14 +16,14 @@ public class MockMarket extends Mock implements Market
 		super(name);
 	}
 
-	public void msgNewOrders(CookAgent cook, Cashier cashier,
+	public void msgNewOrders(Cook cook, Cashier cashier,
 			List<MarketOrder> marketOrders) {
 		
 		
 	}
 
 	@Override
-	public void msgNewOrder(CookAgent cook, Cashier cashier, String name,
+	public void msgNewOrder(Cook cook, Cashier cashier, String name,
 			int quantity) {
 		
 		

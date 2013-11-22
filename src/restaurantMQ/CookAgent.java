@@ -8,18 +8,19 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import restaurantMQ.CookOrder.OrderState;
 import restaurantMQ.interfaces.Cashier;
+import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Waiter;
-
 import agent.Agent;
 
-public class CookAgent extends Agent
+public class CookAgent extends Agent implements Cook
 {
 	//DATA MEMBERS
 	private Map<String, Food> foodMap = Collections.synchronizedMap(new HashMap<String, Food>());
 	private List<MarketOrder> marketOrders = new ArrayList<MarketOrder>();
 	//Only the cook's own thread ever tampers with marketOrders, so this does not need to be synchronized
-	private List<WaiterAgent> waiters = new ArrayList<WaiterAgent>();
+	private List<Waiter> waiters = new ArrayList<Waiter>();
 	private List<MarketAgent> markets = new ArrayList<MarketAgent>();
 	Cashier cashier;
 	
@@ -45,24 +46,7 @@ public class CookAgent extends Agent
 		}
 	}
 	
-	private enum OrderState {Received, Cooking, Reject, Done};
-	
-	private class Order
-	{
-		String choice;
-		int table;
-		OrderState orderState = OrderState.Received;
-		Waiter waiter;
-		
-		Order(String choice, int table, Waiter waiter)
-		{
-			this.choice = choice;
-			this.table = table;
-			this.waiter = waiter;
-		}
-	}
-	
-	private List<Order> orders = Collections.synchronizedList(new ArrayList<Order>());
+	private List<CookOrder> orders = Collections.synchronizedList(new ArrayList<CookOrder>());
 	
 	Timer timer;
 	Menu menu = new Menu();
@@ -70,10 +54,10 @@ public class CookAgent extends Agent
 	//CONSTRUCTORS
 	public CookAgent()
 	{
-		foodMap.put("Steak", new Food("Steak", 4, 0, 3, 1));
-		foodMap.put("Chicken", new Food("Chicken", 2, 0, 3, 1));
-		foodMap.put("Pizza", new Food("Pizza", 3, 0, 3, 1));
-		foodMap.put("Salad", new Food("Salad", 1, 0, 3, 1));
+		foodMap.put("Steak", new Food("Steak", 4, 100, 300, 1));
+		foodMap.put("Chicken", new Food("Chicken", 2, 100, 300, 1));
+		foodMap.put("Pizza", new Food("Pizza", 3, 100, 300, 1));
+		foodMap.put("Salad", new Food("Salad", 1, 100, 300, 1));
 	}
 	
 	public CookAgent(List<MarketAgent> markets, Cashier c, Timer timer)
@@ -84,31 +68,39 @@ public class CookAgent extends Agent
 		}
 		cashier = c;
 		this.timer = timer;
-		foodMap.put("Steak", new Food("Steak", 4, 0, 3, 1));
-		foodMap.put("Chicken", new Food("Chicken", 2, 0, 3, 1));
-		foodMap.put("Pizza", new Food("Pizza", 3, 0, 3, 1));
-		foodMap.put("Salad", new Food("Salad", 1, 0, 3, 1));
+		foodMap.put("Steak", new Food("Steak", 4, 100, 300, 1));
+		foodMap.put("Chicken", new Food("Chicken", 2, 100, 300, 1));
+		foodMap.put("Pizza", new Food("Pizza", 3, 100, 300, 1));
+		foodMap.put("Salad", new Food("Salad", 1, 100, 300, 1));
 	}
 	
-	public void addWaiter(WaiterAgent waiter)
+	public void addWaiter(Waiter waiter)
 	{
 		waiters.add(waiter);
 	}
 	
 	//MESSAGES
-	void msgHereIsOrder(String choice, int table, Waiter waiter)
+	public void msgHereIsOrder(String choice, int table, Waiter waiter)
 	{
-		orders.add(new Order(choice, table, waiter));
+		orders.add(new CookOrder(choice, table, waiter));
 		stateChanged();
 	}
 	
-	void msgFoodDone(Order order)
+	/* (non-Javadoc)
+	 * @see restaurantMQ.MQCookRole#msgFoodDone(restaurantMQ.CookAgent.Order)
+	 */
+	@Override
+	public void msgFoodDone(CookOrder order)
 	{
 		order.orderState = OrderState.Done;
 		stateChanged();
 	}
 	
-	void msgFoodDelivered(String name, int quantity)
+	/* (non-Javadoc)
+	 * @see restaurantMQ.MQCookRole#msgFoodDelivered(java.lang.String, int)
+	 */
+	@Override
+	public void msgFoodDelivered(String name, int quantity)
 	{
 		synchronized(foodMap)
 		{
@@ -133,7 +125,7 @@ public class CookAgent extends Agent
 		//Send out finished orders
 			synchronized(orders)
 			{
-				for(Order o : orders)
+				for(CookOrder o : orders)
 				{
 					if(o.orderState == OrderState.Done)
 					{
@@ -147,7 +139,7 @@ public class CookAgent extends Agent
 				//Send back rejected orders
 			synchronized(orders)
 			{
-				for(Order o : orders)
+				for(CookOrder o : orders)
 				{
 					if(o.orderState == OrderState.Reject)
 					{
@@ -162,7 +154,7 @@ public class CookAgent extends Agent
 				//Cook pending orders
 			synchronized(orders)
 			{
-				for(Order o : orders)
+				for(CookOrder o : orders)
 				{
 					if(o.orderState == OrderState.Received)
 					{
@@ -208,7 +200,7 @@ public class CookAgent extends Agent
 	}
 	
 	//ACTIONS
-	private void CookIt(final Order order)
+	private void CookIt(final CookOrder order)
 	{
 		Food food = foodMap.get(order.choice);
 		
@@ -234,7 +226,7 @@ public class CookAgent extends Agent
 		}
 	}
 	
-	private void PlateIt(Order order)
+	private void PlateIt(CookOrder order)
 	{
 		System.out.println("Cook: Done cooking");
 		order.waiter.msgOrderDone(order.choice, order.table);
@@ -324,12 +316,20 @@ public class CookAgent extends Agent
 	}
 	
 	//hacks
+	/* (non-Javadoc)
+	 * @see restaurantMQ.MQCookRole#OutOfFoodHack()
+	 */
+	@Override
 	public void OutOfFoodHack()
 	{
 		Food steak = foodMap.get("Steak");
 		steak.amount = 0;
 	}
 	
+	/* (non-Javadoc)
+	 * @see restaurantMQ.MQCookRole#OutOfSaladHack()
+	 */
+	@Override
 	public void OutOfSaladHack()
 	{
 		Food salad = foodMap.get("Salad");

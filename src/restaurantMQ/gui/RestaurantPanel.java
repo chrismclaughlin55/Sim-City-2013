@@ -4,11 +4,13 @@ import restaurantMQ.CashierAgent;
 import restaurantMQ.CookAgent;
 import restaurantMQ.CustomerAgent;
 import restaurantMQ.HostAgent;
+import restaurantMQ.MQCookRole;
 import restaurantMQ.MQCustomerRole;
 import restaurantMQ.MarketAgent;
 import restaurantMQ.Menu;
 import restaurantMQ.WaiterAgent;
 import restaurantMQ.interfaces.Cashier;
+import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Waiter;
 
@@ -47,7 +49,7 @@ public class RestaurantPanel extends JPanel {
 
     private List<Customer> customers = new ArrayList<Customer>();
     private List<Waiter> waiters = new ArrayList<Waiter>();
-    private List<CookAgent> cooks = new ArrayList<CookAgent>();
+    private List<Cook> cooks = new ArrayList<Cook>();
     private List<MarketAgent> markets = new ArrayList<MarketAgent>();
     private Cashier cashier = new CashierAgent();
     //private Vector<HungerListener> hungerListeners = new Vector<HungerListener>();
@@ -104,8 +106,11 @@ public class RestaurantPanel extends JPanel {
         
         for(int i = 0; i < NCOOKS; ++i)
 		{
-			cooks.add(new CookAgent(markets, cashier, timer));
-			cooks.get(i).startThread();
+        	PersonAgent p = new PersonAgent("Mike");
+        	MQCookRole c = new MQCookRole(p, markets, cashier, timer);
+			cooks.add(c);
+			p.msgAssignRole(c);
+			p.startThread();
 		}
         
         host.setCooks(cooks);
@@ -175,7 +180,7 @@ public class RestaurantPanel extends JPanel {
     		{
     			c.msgPause();
     		}
-    		for(CookAgent c : cooks)
+    		for(Cook c : cooks)
     		{
     			c.msgPause();
     		}
@@ -193,7 +198,7 @@ public class RestaurantPanel extends JPanel {
     		{
     			c.msgPause();
     		}
-    		for(CookAgent c : cooks)
+    		for(Cook c : cooks)
     		{
     			c.msgPause();
     		}
@@ -289,7 +294,7 @@ public class RestaurantPanel extends JPanel {
     	WaiterAgent waiter = new WaiterAgent(name, waiters.size(), host, cooks, cashier, new Menu(menu), breakBox);
     	waiters.add(waiter);
     	host.addWaiter(waiter);
-    	for(CookAgent c : cooks)
+    	for(Cook c : cooks)
     	{
     		c.addWaiter(waiter);
     	}

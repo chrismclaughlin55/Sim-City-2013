@@ -2,30 +2,21 @@ package mainGUI;
 
 
 import java.awt.Dimension;
-
-import config.ConfigParser;
-
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.FileNotFoundException;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import market.gui.MarketGui;
 import city.Building;
 import city.PersonAgent;
-import city.Building.BuildingType;
 import city.gui.PersonGui;
-import restaurantMQ.CustomerAgent;
-import restaurantMQ.WaiterAgent;
-import restaurantMQ.gui.RestaurantGui;
-import restaurantMQ.interfaces.Customer;
+import config.ConfigParser;
 
 /**
  * Main GUI class.
@@ -35,6 +26,8 @@ public class MainGui extends JFrame implements MouseListener {
     /* The GUI has two frames, the control frame (in variable gui) 
      * and the animation frame, (in variable animationFrame within gui)
      */
+	private int WIDTH = 1230;
+	private int HEIGHT = 800;
 	
 	//public AnimationPanel animationPanel;
 	//JPanel InfoLayout;
@@ -42,18 +35,13 @@ public class MainGui extends JFrame implements MouseListener {
 	private ConfigParser parser;
     private PersonCreationPanel personPanel;
     private MainAnimationPanel mainAnimationPanel;
-    private JLabel infoLabel; //part of infoPanel
-    private JCheckBox stateCB;//part of infoLabel
-    private JPanel InfoLayout; 
-    private Object currentPerson;/* Holds the agent that the info is about.
-    								Seems like a hack */
-
+   
+    //public MarketGui marketGui1;
     /**
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
      */
     public MainGui() {
-    	    	
     	//1. create person
     	/*
     	try {
@@ -65,143 +53,36 @@ public class MainGui extends JFrame implements MouseListener {
 		}
     	parser.ParseAndCreatePeople();
     	*/
+    	
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainAnimationPanel = new MainAnimationPanel();
+        mainAnimationPanel = new MainAnimationPanel(this);
         mainAnimationPanel.setVisible(true);
         personPanel = new PersonCreationPanel(this);
         personPanel.setVisible(true);
     	
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    	setBounds(0,0,screenSize.width-200, screenSize.height-100);
-    	setLocation(screenSize.width/2-this.getSize().width/2, screenSize.height/2-this.getSize().height/2);
-
-       
-
-        /*Dimension restDim = new Dimension(screenSize.width/2, (int) (screenSize.height * .75));
-        restPanel = new RestaurantPanel(this);
-        restPanel.setPreferredSize(restDim);
-        restPanel.setMinimumSize(restDim);
-        restPanel.setMaximumSize(restDim);*/
-        
-        // Now, setup the info panel
-        /*Dimension infoDim = new Dimension(screenSize.width/2, (int) (screenSize.height * .22));
-        infoPanel = new JPanel();
-        infoPanel.setPreferredSize(infoDim);
-        infoPanel.setMinimumSize(infoDim);
-        infoPanel.setMaximumSize(infoDim);
-        infoPanel.setBorder(BorderFactory.createTitledBorder("Information"));
-
-        
-        stateCB = new JCheckBox();
-        stateCB.setVisible(false);
-        stateCB.addActionListener(this);
-
-        infoPanel.setLayout(new GridLayout(1, 2, 30, 0));
-        
-        infoLabel = new JLabel(); 
-        infoLabel.setText("<html><pre><i>Click Add to make customers</i></pre></html>");
-        infoPanel.add(infoLabel);
-        infoPanel.add(stateCB);*/
-        
-        
-        //InfoLayout.add(infoPanel);
+    	setBounds(0, 0, WIDTH, HEIGHT);
+    	setLocation(50, 50);
         
         setLayout(new GridLayout(0,2));
         
         
-        //Dimension dim = new Dimension (screenSize.width/2, screenSize.height);
-        //InfoLayout.setPreferredSize(dim);
+       
         add (personPanel);
-        //animationPanel.setPreferredSize(dim);
         add (mainAnimationPanel);
-       // System.out.println (animationPanel.getPreferredSize());
+      
         
         addMouseListener(this);
-    }
-    /**
-     * updateInfoPanel() takes the given customer (or, for v3, Host) object and
-     * changes the information panel to hold that person's info.
-     *
-     * @param person customer (or waiter) object
-     */
-    /*public void updateInfoPanel(Object person) {
-        stateCB.setVisible(true);
-        currentPerson = person;
-
-        if (person instanceof CustomerAgent) {
-            CustomerAgent customer = (CustomerAgent) person;
-            stateCB.setText("Hungry?");
-          //Should checkmark be there? 
-            stateCB.setSelected(customer.getGui().isHungry());
-          //Is customer hungry? Hack. Should ask customerGui
-            stateCB.setEnabled(!customer.getGui().isHungry());
-          // Hack. Should ask customerGui
-            infoLabel.setText(
-               "<html><pre>     Name: " + customer.getName() + " </pre></html>");
-            infoPanel.validate();
-        }
         
-        if (person instanceof WaiterAgent) {
-            WaiterAgent waiter = (WaiterAgent) person;
-            stateCB.setText("Break?");
-          //Should checkmark be there? 
-            stateCB.setSelected(waiter.getGui().IsOnBreak());
-            stateCB.setEnabled(!waiter.getGui().IsOnBreak());
-            infoLabel.setText(
-               "<html><pre>     Name: " + waiter.getName() + " </pre></html>");
-            infoPanel.validate();
-        }
-        infoPanel.validate();
-    }*/
-    /**
-     * Action listener method that reacts to the checkbox being clicked;
-     * If it's the customer's checkbox, it will make him hungry
-     * For v3, it will propose a break for the waiter.
-     */
-   /* public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == stateCB) {
-            if (currentPerson instanceof CustomerAgent) {
-                CustomerAgent c = (CustomerAgent) currentPerson;
-                c.getGui().setHungry();
-                stateCB.setEnabled(false);
-            }
-        }
-        if (e.getSource() == stateCB) {
-            if (currentPerson instanceof WaiterAgent) {
-                WaiterAgent w = (WaiterAgent) currentPerson;
-                w.getGui().setBreak();
-                stateCB.setEnabled(false);
-            }
-        }
-    }*/
-    /**
-     * Message sent from a customer gui to enable that customer's
-     * "I'm hungry" checkbox.
-     *
-     * @param agent reference to the customer
-     */
-    public void setCustomerEnabled(Customer agent) {
-        if (currentPerson instanceof CustomerAgent) {
-            CustomerAgent cust = (CustomerAgent) currentPerson;
-            if (agent.equals(cust)) {
-                stateCB.setEnabled(true);
-                stateCB.setSelected(false);
-            }
-        }
+        
+        /*marketGui1 = new MarketGui();
+        marketGui1.setTitle("Market 1");
+        marketGui1.setVisible(false);
+        marketGui1.setResizable(false);*/
+        //marketGui1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
-    public void setWaiterEnabled(WaiterAgent w) {
-        if (currentPerson instanceof WaiterAgent) {
-            WaiterAgent waiter = (WaiterAgent) currentPerson;
-            if (w.equals(waiter)) {
-                stateCB.setEnabled(true);
-                stateCB.setSelected(false);
-            }
-        }
-    }
-    /**
-     * Main routine to get gui started
-     */
+  
     public static void main(String[] args) {
     	
     	/*RestaurantGui restGui = new RestaurantGui();
@@ -210,6 +91,8 @@ public class MainGui extends JFrame implements MouseListener {
         restGui.setResizable(false);
         restGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         restGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);*/
+    	
+    	
          
         MainGui gui = new MainGui();
         gui.setTitle("Sim City - Team 15");
@@ -224,18 +107,6 @@ public class MainGui extends JFrame implements MouseListener {
 		PersonAgent p = new PersonAgent(name);
 		mainAnimationPanel.addGui(new PersonGui(p));
 		p.startThread();
-			/*custnum++;
-			if (custnum == 2)
-				custnum = -1;
-			CustomerAgent c = new CustomerAgent(name);	
-			CustomerGui g = new CustomerGui(c, gui, custnum);
-			gui.animationPanel.addGui(g);
-			c.setHost(host);
-			c.setCashier(cashier);
-			c.setGui(g);
-			g.setAnimationPanel(gui.animationPanel);
-			customers.add(c);
-			c.startThread();	*/
 	}
     
     @Override
@@ -243,10 +114,13 @@ public class MainGui extends JFrame implements MouseListener {
     	//Check to see which building was clicked
     	for (int i = 0; i < mainAnimationPanel.buildings.size(); i++) {
     		Building b = mainAnimationPanel.buildings.get(i);
+    		
     		if (b.contains(e.getX()-620, e.getY()-25)) {
-    			//System.out.print("Building " + i + " clicked\n");
+    			System.out.print("Building " + i + " clicked\n");
     			b.display(b);
     		}
+    		System.out.println("**"+b.x+"**"+b.y+"\n");
+    		System.out.print(e.getX()-620);
     	}
     }
     
