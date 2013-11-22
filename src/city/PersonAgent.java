@@ -16,19 +16,15 @@ public class PersonAgent extends Agent
 	
 	
 	/*CONSTRUCTORS*/
-	public PersonAgent(String name)
-	{
+	public PersonAgent(String name) {
 		this.name = name;
 	}
 	
 	
 	/*MESSAGES*/
-	public void msgAssignRole(Role role)
-	{
-		for(Role r : roles)
-		{
-			if(r == role)
-			{
+	public void msgAssignRole(Role role) {
+		for (Role r : roles) {
+			if (r == role) {
 				r.setActive();
 				super.stateChanged();
 				return;
@@ -42,16 +38,12 @@ public class PersonAgent extends Agent
 	}
 	
 	/*SCHEDULER*/
-	protected boolean pickAndExecuteAnAction() 
-	{
+	protected boolean pickAndExecuteAnAction() {
 		//Iterate through the list of roles
-		for(Role role : roles)
-		{
+		for (Role role : roles) {
 			//If a role is active, attempt to run its scheduler
-			if(role.isActive())
-			{
-				if(role.pickAndExecuteAnAction())
-				{
+			if (role.isActive()) {
+				if (role.pickAndExecuteAnAction()) {
 					return true;
 				}
 			}
@@ -61,14 +53,12 @@ public class PersonAgent extends Agent
 	}
 	
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
-	protected void stateChanged()
-	{
+	protected void stateChanged() {
 		super.stateChanged();
 	}
 	
 	/*GETTERS*/
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 }

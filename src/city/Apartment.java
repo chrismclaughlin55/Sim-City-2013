@@ -14,7 +14,7 @@ public class Apartment extends Building {
 		
 	}
 	
-	public boolean isFull(){
+	public boolean isFull() {
 		return tenants.size() >= 8;
 	}
 

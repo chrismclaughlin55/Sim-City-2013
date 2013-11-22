@@ -52,15 +52,15 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			Building b = new Building(500, 410+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui);
+			Building b = new Building(500, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
 			buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			Building b = new Building(500, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui);
+			Building b = new Building(500, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
 			buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			Building b = new Building(190+i*130, 0, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui);
+			Building b = new Building(190+i*130, 0, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
 			buildings.add(b);
 		}
 		for (int j = 0; j < 2; j++) {
