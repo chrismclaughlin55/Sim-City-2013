@@ -9,24 +9,22 @@ public class PersonAgent extends Agent
 {
 	/*DATA MEMBERS*/
 	String name;
+	public double money;
+	boolean ranonce = false;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
 	
 	/*CONSTRUCTORS*/
-	public PersonAgent(String name)
-	{
+	public PersonAgent(String name) {
 		this.name = name;
 	}
 	
 	
-	/*Messages*/
-	public void msgAssignRole(Role role)
-	{
-		for(Role r : roles)
-		{
-			if(r == role)
-			{
+	/*MESSAGES*/
+	public void msgAssignRole(Role role) {
+		for (Role r : roles) {
+			if (r == role) {
 				r.setActive();
 				super.stateChanged();
 				return;
@@ -40,26 +38,27 @@ public class PersonAgent extends Agent
 	}
 	
 	/*SCHEDULER*/
-	protected boolean pickAndExecuteAnAction() 
-	{
+	protected boolean pickAndExecuteAnAction() {
 		//Iterate through the list of roles
-		for(Role role : roles)
-		{
+		for (Role role : roles) {
 			//If a role is active, attempt to run its scheduler
-			if(role.isActive())
-			{
-				if(role.pickAndExecuteAnAction())
-				{
+			if (role.isActive()) {
+				if (role.pickAndExecuteAnAction()) {
 					return true;
 				}
 			}
 		}
+		
 		return false;
 	}
 	
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
-	protected void stateChanged()
-	{
+	protected void stateChanged() {
 		super.stateChanged();
+	}
+	
+	/*GETTERS*/
+	public String getName() {
+		return name;
 	}
 }

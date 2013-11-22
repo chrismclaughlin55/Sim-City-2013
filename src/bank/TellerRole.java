@@ -1,7 +1,9 @@
 package bank;
+
 import city.*;
 
-public class TellerRole extends Role{
+public class TellerRole extends Role {
+
 
 	public TellerRole(PersonAgent person) {
 		super(person);
