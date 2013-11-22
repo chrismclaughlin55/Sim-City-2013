@@ -49,22 +49,6 @@ public class BuildingPanel {
 		default: 
 			break;
 		}
-		/*if (building.type == BuildingType.apartment) {
-			// add apartment panel and gui later
-		}
-		if (building.type == BuildingType.bank) {
-			// add bank panel and gui later
-		}
-		if (building.type == BuildingType.home) {
-			// add home panel and gui later
-		}
-		if (building.type == BuildingType.market) {
-			//mainGui.marketGui1.setVisible(true);
-			MarketGui marketGui = new MarketGui();
-			marketGui.setTitle("market1");
-			marketGui.setVisible(true);
-			marketGui.setResizable(false);
-			marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		}*/
+
 	}
 }
