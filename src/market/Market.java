@@ -3,7 +3,7 @@ package market;
 import mainGUI.MainGui;
 import city.Building;
 
-public class Market extends Building{
+public class Market extends Building {
 	
 	public Inventory inventory = null;
 	MarketManagerRole manager = null;

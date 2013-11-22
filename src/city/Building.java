@@ -11,12 +11,11 @@ public class Building extends Rectangle2D.Double {
 	public BuildingType type;
 	public enum BuildingType {home, apartment, restaurant, bank, market};
 	boolean isOpen;
-	Manager manager;
+	PersonAgent manager;
 	List<PersonAgent> waitingPeople;
 	BuildingPanel buildingPanel;
 	MainGui mainGui;
 	// need a list of all roles that have been in the building (for non-norm)
-	List<Role> existedRoles = new ArrayList<Role>();
 	
 	// need a list of all roles
 	List<Role> roles = new ArrayList<Role>();
