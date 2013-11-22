@@ -8,7 +8,6 @@ public class Home extends Building {
 	PersonAgent allowedPerson;
 	
 	
-	//constructor for non-apartment homes
 	public Home(int xPos, int yPos, int width, int height) {
 		super(xPos, yPos, width, height);
 	}
