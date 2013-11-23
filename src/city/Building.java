@@ -100,7 +100,7 @@ public class Building extends Rectangle2D.Double {
 
 	public void setClosed(PersonAgent p) {
 		if (p.equals(manager)) {
-			isOpen = true;
+			isOpen = false;
 		}
 	}
 
