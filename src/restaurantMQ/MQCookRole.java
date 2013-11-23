@@ -20,6 +20,7 @@ public class MQCookRole extends Role implements Cook
 	//DATA MEMBERS
 	private Map<String, Food> foodMap = Collections.synchronizedMap(new HashMap<String, Food>());
 	private List<MarketOrder> marketOrders = new ArrayList<MarketOrder>();
+	
 	//Only the cook's own thread ever tampers with marketOrders, so this does not need to be synchronized
 	private List<Waiter> waiters = new ArrayList<Waiter>();
 	private List<MarketAgent> markets = new ArrayList<MarketAgent>();

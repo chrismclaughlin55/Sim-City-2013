@@ -12,11 +12,12 @@ import Gui.Gui;
 import restaurantMQ.HostAgent;
 import restaurantMQ.WaiterAgent;
 import restaurantMQ.interfaces.Customer;
+import restaurantMQ.interfaces.Waiter;
 
 public class WaiterGui implements Gui 
 {
 
-    private WaiterAgent agent = null;
+    private Waiter agent = null;
 
     private int xPos = -20, yPos = -20;//default waiter position
     private int xDestination = -20, yDestination = -20;//default start position
@@ -71,7 +72,7 @@ public class WaiterGui implements Gui
     
     private boolean moving = false;
 
-    public WaiterGui(WaiterAgent agent) 
+    public WaiterGui(Waiter agent) 
     {
         this.agent = agent;
         
@@ -86,7 +87,7 @@ public class WaiterGui implements Gui
 		}
     }
 
-    public void updatePosition() {
+	public void updatePosition() {
         if (xPos < xDestination)
             xPos++;
         else if (xPos > xDestination)

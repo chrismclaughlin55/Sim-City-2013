@@ -43,11 +43,11 @@ public class HostAgent extends Agent implements Host {
 	
 	private class MyWaiter
 	{
-		WaiterAgent waiter;
+		Waiter waiter;
 		int numCust = 0;
 		WaiterState state;
 		
-		MyWaiter(WaiterAgent waiter)
+		MyWaiter(Waiter waiter)
 		{
 			this.waiter = waiter;
 		}
@@ -100,7 +100,7 @@ public class HostAgent extends Agent implements Host {
 		this.waiters = waiters;
 	}
 	
-	public void addWaiter(WaiterAgent waiter)
+	public void addWaiter(Waiter waiter)
 	{
 		waiters.add(waiter);
 		myWaiters.add(new MyWaiter(waiter));
@@ -331,7 +331,7 @@ public class HostAgent extends Agent implements Host {
 	{
 		w.state = WaiterState.OnBreak;
 		workingWaiters--;
-		System.out.println("Host: " + w.waiter.name + " is cleared to go on break.");
+		System.out.println("Host: " + ((MQWaiterRole)w.waiter).getName() + " is cleared to go on break.");
 		w.waiter.msgGoOnBreak();
 	}
 	
