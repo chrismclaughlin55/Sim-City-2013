@@ -1,7 +1,11 @@
-package market.gui;
-import Gui.*;
+package city;
+
 import javax.swing.*;
 
+import city.gui.PersonGui;
+
+
+import Gui.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +14,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-public class AnimationPanel extends JPanel implements ActionListener {
+public class HomePanel extends JPanel implements ActionListener {
 
 	private Image bufferImage;
 	private Dimension bufferSize;
@@ -18,14 +22,14 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 
-	public AnimationPanel() {
+	public HomePanel() {
 		setBackground(Color.WHITE);
 
 		setVisible(true);
 
 		bufferSize = this.getSize();
 
-		Timer timer = new Timer(frameDisplay, this );
+		Timer timer = new Timer(frameDisplay, this);
 		timer.start();
 
 	}
@@ -36,25 +40,12 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-		Color roomColor = new Color(236, 240, 241);
-		Color shelfColor = new Color(230, 126, 34);
-		Color deskColor = new Color(52, 73, 94);
-		
+
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
 		//Clear the screen by painting a rectangle the size of the frame
 		g2.setColor(getBackground());
-		g2.fillRect(0, 0, screenSize.width/4, screenSize.height/2 );
-		
-		g2.setColor(roomColor);
-		g2.fillRect(270, 355, 150, 150);
-		
-		g2.setColor(shelfColor);
-		g2.fillRect(0, 355, 270, 150);
-		
-		g2.setColor(deskColor);
-		g2.fillRect(50, 150, 600, 50);
-		
+		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
 
 		synchronized(guis){
 			for(Gui gui : guis) {
@@ -72,19 +63,9 @@ public class AnimationPanel extends JPanel implements ActionListener {
 		}
 	}
 
-	public void addGui(CustomerGui gui) {
+	public void addGui(PersonGui gui) {
 		guis.add(gui);
 	}
-
-	public void addGui(EmployeeGui gui) {
-		guis.remove(gui);
-	}
-
-	public void addGui(ManagerGui gui) {
-		guis.add(gui);
-	}
-
-	
 
 
 }

@@ -1,5 +1,5 @@
 package restaurantMQ.gui;
-
+import Gui.*;
 import javax.swing.*;
 
 import java.awt.*;

@@ -9,6 +9,8 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import Gui.Gui;
+
 public class CustomerGui implements Gui{
 
 	private static final int NTABLES = 4;

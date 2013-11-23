@@ -1,27 +1,26 @@
 package city;
 
+import java.util.*;
 import java.awt.geom.Rectangle2D;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import mainGUI.BuildingPanel;
 import mainGUI.MainGui;
 
 public class Building extends Rectangle2D.Double {
-
 	public String name;
 	public BuildingType type;
-	public enum BuildingType {home, apartment, restaurant, bank, market};
 
-	private boolean isOpen = false;
+	public enum BuildingType {home, apartment, restaurant, bank, market, room};
+	boolean isOpen;
 	protected PersonAgent manager;
-
+	List<PersonAgent> waitingPeople;
 	BuildingPanel buildingPanel;
 	MainGui mainGui;
+	// need a list of all roles that have been in the building (for non-norm)
 
 	//private List<Role> roles = Collections.synchronizedList(new ArrayList<Role>());
 	protected Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
+
 
 
 
@@ -38,7 +37,6 @@ public class Building extends Rectangle2D.Double {
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
 	}
-
 
 	public void EnterBuilding(PersonAgent p, String roleRequest) {
 
@@ -73,26 +71,10 @@ public class Building extends Rectangle2D.Double {
 		 * 
 		 */
 	}
-
-	// assign relations between new comer and person in charge both ways
-	/*protected void GoIntoBuilding(PersonAgent p) {
-		p.msgAssignRole(manager.role);
-		waitingPeople.add(p);
-	}
-
-	protected void ComeIntoBuilding() {
-		manager = new Manager();
-	}
-
-	protected void LeaveBuilding(PersonAgent p) {
-		waitingPeople.remove(p);
-	}*/
-
-	//only manager can set the building to Open or Closed
-
 	public boolean isOpen() {
 		return isOpen;
 	}
+	
 	public void setOpen(PersonAgent p) {
 		if (p.equals(manager)) {
 			isOpen = true;
@@ -101,17 +83,9 @@ public class Building extends Rectangle2D.Double {
 
 	public void setClosed(PersonAgent p) {
 		if (p.equals(manager)) {
-			isOpen = true;
+			isOpen = false;
 		}
 	}
-
-	/*class Manager {
-		PersonAgent person;
-		Role role;
-
-		Manager() {
-		}
-	}*/
 
 	public void setType(BuildingType type) {
 		this.type = type;

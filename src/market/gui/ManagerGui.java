@@ -7,6 +7,8 @@ import javax.swing.ImageIcon;
 
 import market.MarketManagerRole;
 
+import Gui.Gui;
+
 public class ManagerGui implements Gui{
 	
 	 private MarketManagerRole role = null;

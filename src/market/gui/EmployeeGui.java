@@ -2,6 +2,8 @@ package market.gui;
 
 import java.awt.Graphics2D;
 
+import Gui.Gui;
+
 public class EmployeeGui implements Gui {
 
 	@Override

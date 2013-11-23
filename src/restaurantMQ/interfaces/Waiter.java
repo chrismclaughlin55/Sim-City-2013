@@ -2,6 +2,7 @@ package restaurantMQ.interfaces;
 
 import restaurantMQ.CustomerAgent;
 import restaurantMQ.Menu;
+import restaurantMQ.gui.WaiterGui;
 
 public interface Waiter {
 
@@ -9,6 +10,8 @@ public interface Waiter {
 	public abstract void msgLeaving(Customer customer);
 
 	public abstract void msgSeatCustomer(Customer customer, int table);
+	
+	public abstract void msgSeatCustomer(Customer customer, int spot, int table);
 
 	public abstract void msgReadyToOrder(Customer customer);
 
@@ -29,4 +32,8 @@ public interface Waiter {
 	public abstract void msgHereIsCheck(Customer customer, double price);
 
 	public abstract void msgBackFromBreak();
+
+	public abstract void setGui(WaiterGui waiterGui);
+
+	public abstract void msgAnimationDone();
 }

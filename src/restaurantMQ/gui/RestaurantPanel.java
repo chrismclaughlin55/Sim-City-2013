@@ -6,6 +6,7 @@ import restaurantMQ.CustomerAgent;
 import restaurantMQ.HostAgent;
 import restaurantMQ.MQCookRole;
 import restaurantMQ.MQCustomerRole;
+import restaurantMQ.MQWaiterRole;
 import restaurantMQ.MarketAgent;
 import restaurantMQ.Menu;
 import restaurantMQ.WaiterAgent;
@@ -291,15 +292,16 @@ public class RestaurantPanel extends JPanel {
     
     public void addWaiter(String name, final JCheckBox breakBox)
     {
-    	WaiterAgent waiter = new WaiterAgent(name, waiters.size(), host, cooks, cashier, new Menu(menu), breakBox);
-    	waiters.add(waiter);
-    	host.addWaiter(waiter);
+    	PersonAgent p = new PersonAgent(name);
+    	MQWaiterRole w = new MQWaiterRole(p, waiters.size(), host, cooks, cashier, new Menu(menu), breakBox);
+    	waiters.add(w);
+    	host.addWaiter(w);
     	for(Cook c : cooks)
     	{
-    		c.addWaiter(waiter);
+    		c.addWaiter(w);
     	}
     	
-    	final Waiter w = waiter;
+    	final Waiter waiter = w;
     	breakBoxes.add(breakBox);
     	breakBox.addActionListener(new ActionListener()
     		{
@@ -308,20 +310,23 @@ public class RestaurantPanel extends JPanel {
     				if(breakBox.getText().equals("Want Break"))
     				{
     					breakBox.setEnabled(true);
-    					w.msgWantBreak();
+    					waiter.msgWantBreak();
     				}
     				else if(breakBox.getText().equals("Back to Work"))
     				{
     					breakBox.setEnabled(true);
-    					w.msgBackFromBreak();
+    					waiter.msgBackFromBreak();
     				}
     			}
     		});
     	
-		WaiterGui waiterGui = new WaiterGui(waiter);
-		waiter.setGui(waiterGui);
+		WaiterGui waiterGui = new WaiterGui(w);
+		w.setGui(waiterGui);
 		gui.animationPanel.addGui(waiterGui);
-		waiter.startThread();
+		
+		//Start the thread
+		p.msgAssignRole(w);
+		p.startThread(); //hack. PersonAgent's thread should already be running
     }
     
     //Hacks to demonstrate program

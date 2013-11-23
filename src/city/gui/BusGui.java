@@ -2,6 +2,7 @@ package city.gui;
 
 import java.awt.Graphics2D;
 
+import Gui.Gui;
 import city.BusAgent;
 
 public class BusGui implements Gui {
