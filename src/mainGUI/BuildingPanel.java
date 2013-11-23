@@ -6,6 +6,7 @@ import market.gui.MarketGui;
 import restaurantMQ.gui.RestaurantGui;
 import city.Building;
 import city.Building.BuildingType;
+import city.HomeGui;
 
 public class BuildingPanel {
 	
@@ -34,7 +35,11 @@ public class BuildingPanel {
 			
 		case home:
 		case room:
-			//add home panel and gui later
+			HomeGui homeGui = new HomeGui();
+			homeGui.setTitle("home");
+			homeGui.setVisible(true);
+			homeGui.setResizable(false);
+			homeGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			break;
 			
 		case market:

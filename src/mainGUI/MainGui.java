@@ -97,10 +97,7 @@ public class MainGui extends JFrame implements MouseListener {
         MainGui gui = new MainGui();
         gui.setTitle("Sim City - Team 15");
         gui.setVisible(true);
-        gui.setResizable(true);        
-
-        
-       
+        gui.setResizable(true);
     }
     
     public void addPerson(String name, String role) {
