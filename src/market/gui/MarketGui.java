@@ -52,7 +52,7 @@ public class MarketGui extends JFrame implements ActionListener {
 		add (marketPanel);
 		add (animationPanel);
 		
-		PersonAgent p1 = new PersonAgent("Manager");
+		/*PersonAgent p1 = new PersonAgent("Manager");
 		MarketManagerRole manager = new MarketManagerRole(p1, inventory);
 		p1.msgAssignRole(manager);
 		p1.startThread();
@@ -70,7 +70,7 @@ public class MarketGui extends JFrame implements ActionListener {
 		MarketCustomerRole customer = new MarketCustomerRole(p3, employee, 1);
 		p3.msgAssignRole(customer);
 		CustomerGui custGui = new CustomerGui();
-		animationPanel.addGui(custGui);
+		animationPanel.addGui(custGui);*/
 		
 		
 

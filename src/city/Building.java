@@ -21,7 +21,7 @@ public class Building extends Rectangle2D.Double {
 	MainGui mainGui;
 
 	//private List<Role> roles = Collections.synchronizedList(new ArrayList<Role>());
-	private Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
+	protected Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
 
 
 
@@ -40,7 +40,7 @@ public class Building extends Rectangle2D.Double {
 	}
 
 
-	public  void EnterBuilding(PersonAgent p, String roleRequest) {
+	public void EnterBuilding(PersonAgent p, String roleRequest) {
 
 		/* Each specific building that extends Building.java will have to override this function according to its needs/capabilities.
 		 * 

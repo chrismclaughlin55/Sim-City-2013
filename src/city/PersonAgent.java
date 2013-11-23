@@ -1,8 +1,10 @@
 package city;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import market.MarketCustomerRole.MyOrder;
 import agent.Agent;
 
 public class PersonAgent extends Agent
@@ -13,7 +15,7 @@ public class PersonAgent extends Agent
 	boolean ranonce = false;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
-	
+	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());;
 	
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
