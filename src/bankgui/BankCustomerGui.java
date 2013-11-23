@@ -1,6 +1,7 @@
 package bankgui;
 
 import java.awt.Graphics2D;
+import Gui.*;
 
 public class BankCustomerGui implements Gui {
 

@@ -21,7 +21,7 @@ import javax.swing.Timer;
 
 import city.Building;
 import city.Building.BuildingType;
-import city.gui.Gui;
+import Gui.*;
 import city.gui.PersonGui;
 
 public class MainAnimationPanel extends JPanel implements ActionListener {

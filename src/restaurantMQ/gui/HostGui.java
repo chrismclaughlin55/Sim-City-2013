@@ -6,6 +6,8 @@ import restaurantMQ.interfaces.Host;
 
 import java.awt.*;
 
+import Gui.Gui;
+
 public class HostGui implements Gui {
 
     private Host agent = null;

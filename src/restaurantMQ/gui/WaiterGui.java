@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Gui.Gui;
 import restaurantMQ.HostAgent;
 import restaurantMQ.WaiterAgent;
 import restaurantMQ.interfaces.Customer;

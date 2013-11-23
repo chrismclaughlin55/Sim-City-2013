@@ -5,6 +5,8 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
+import Gui.Gui;
+
 public class CustomerGui implements Gui{
 	
 	int xPos = 0;

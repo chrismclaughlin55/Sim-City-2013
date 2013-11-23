@@ -1,5 +1,5 @@
 package bankgui;
-
+import Gui.*;
 import java.awt.Graphics2D;
 
 public class TellerGui implements Gui {

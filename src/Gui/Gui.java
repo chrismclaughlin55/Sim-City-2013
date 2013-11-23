@@ -1,4 +1,4 @@
-package city.gui;
+package Gui;
 
 import java.awt.Graphics2D;
 
