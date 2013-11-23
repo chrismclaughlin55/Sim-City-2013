@@ -4,6 +4,7 @@ import restaurantMQ.CashierAgent;
 import restaurantMQ.CookAgent;
 import restaurantMQ.CustomerAgent;
 import restaurantMQ.HostAgent;
+import restaurantMQ.MQCashierRole;
 import restaurantMQ.MQCookRole;
 import restaurantMQ.MQCustomerRole;
 import restaurantMQ.MQWaiterRole;
@@ -52,7 +53,8 @@ public class RestaurantPanel extends JPanel {
     private List<Waiter> waiters = new ArrayList<Waiter>();
     private List<Cook> cooks = new ArrayList<Cook>();
     private List<MarketAgent> markets = new ArrayList<MarketAgent>();
-    private Cashier cashier = new CashierAgent();
+    private List<Cashier> cashiers = new ArrayList<Cashier>();
+    private Cashier cashier;
     //private Vector<HungerListener> hungerListeners = new Vector<HungerListener>();
 
     private JPanel restLabel = new JPanel();
@@ -97,7 +99,12 @@ public class RestaurantPanel extends JPanel {
 
         gui.animationPanel.addGui(hostGui);
         
-        cashier.startThread();
+        //hack
+        PersonAgent p1 = new PersonAgent("Cashier");
+        cashier = new MQCashierRole(p1);
+        cashiers.add(cashier);
+        p1.msgAssignRole((MQCashierRole)cashier);
+        p1.startThread();
         
         for(int i = 0; i < NMARKETS; ++i)
         {
