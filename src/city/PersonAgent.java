@@ -19,10 +19,11 @@ public class PersonAgent extends Agent
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
-	public enum state {doingNothing, goToRestaurant, goToBank, goToMarket, goHome};
+	public enum state {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome};
 	public state personState = state.doingNothing;
 	
 	private Semaphore atBuilding = new Semaphore(0, true);
+	private Semaphore isMoving = new Semaphore(0, true);
 	
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
@@ -35,8 +36,11 @@ public class PersonAgent extends Agent
 		personGui = new PersonGui(this, gui);
 	}
 	
-	
 	/*MESSAGES*/
+	public void msgDoneMoving() {
+		isMoving.release();
+	}
+	
 	public void msgAssignRole(Role role) {
 		for (Role r : roles) {
 			if (r == role) {
@@ -62,20 +66,22 @@ public class PersonAgent extends Agent
 	protected boolean pickAndExecuteAnAction() {
 		if (personState == state.goToRestaurant) {
 			goToRestaurant();
+			return true;
 		}
 		if (personState == state.goHome) {
 			goHome();
+			return true;
 		}
 		if (personState == state.goToBank) {
 			goToBank();
+			return true;
 		}
 		if (personState == state.goToMarket) {
 			goToMarket();
+			return true;
 		}
 		
-		//Iterate through the list of roles
 		for (Role role : roles) {
-			//If a role is active, attempt to run its scheduler
 			if (role.isActive()) {
 				if (role.pickAndExecuteAnAction()) {
 					return true;

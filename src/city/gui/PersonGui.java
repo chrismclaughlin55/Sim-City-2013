@@ -16,6 +16,7 @@ public class PersonGui implements Gui{
 	
 	private PersonAgent agent = null;
 	private boolean isPresent = true;
+	boolean moving = false;
 	
 	
 	private static final int INITX = 40;
@@ -56,6 +57,10 @@ public class PersonGui implements Gui{
         		agent.msgAtBuilding();
         	}
         }
+		if (xPos == xDestination && yPos == yDestination && moving == true) {
+            moving = false;
+            agent.msgDoneMoving();
+		}
 	}
 	
 
@@ -69,31 +74,37 @@ public class PersonGui implements Gui{
 	}
 	
 	public void DoGoToEntrance() {
+		moving = true;
 		xDestination = 0;
 		yDestination = 340;
 	}
 	
 	public void DoGoToRefridgerator() {
+		moving = true;
 		xDestination = 30;
 		yDestination = 30;
 	}
 	
 	public void DoGoToBed() {
+		moving = true;
 		xDestination = 360;
 		yDestination = 20;
 	}
 	
 	public void DoGoToStove() {
+		moving = true;
 		xDestination = 105;
 		yDestination = 25;
 	}
 	
 	public void DoGoToWall() {
+		moving = true;
 		xDestination = 190;
 		yDestination = 340;
 	}
 	
 	public void DoGoToCouch() {
+		moving = true;
 		xDestination = 170;
 		yDestination = 190;
 	}
