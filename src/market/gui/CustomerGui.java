@@ -5,6 +5,8 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
+import Gui.Gui;
+
 public class CustomerGui implements Gui{
 	
 	int xPos = 0;
@@ -26,6 +28,12 @@ public class CustomerGui implements Gui{
 	public boolean isPresent() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void setPresent(boolean b) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

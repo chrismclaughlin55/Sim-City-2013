@@ -1,6 +1,5 @@
 package restaurantMQ.gui;
 
-import restaurantMQ.CustomerAgent;
 import restaurantMQ.interfaces.Customer;
 
 import javax.swing.*;
@@ -55,7 +54,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(WIDTH, WIDTH , WINDOWX, WINDOWY);
-        setVisible(true);
+        setVisible(false);
     	mainPanel.setLayout(new GridLayout(1, 2));
     	
     	//setBounds(WIDTH, WIDTH, WINDOWX, WINDOWY);

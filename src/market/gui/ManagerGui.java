@@ -2,6 +2,8 @@ package market.gui;
 
 import java.awt.Graphics2D;
 
+import Gui.Gui;
+
 public class ManagerGui implements Gui{
 
 	@Override
@@ -20,6 +22,12 @@ public class ManagerGui implements Gui{
 	public boolean isPresent() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void setPresent(boolean b) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

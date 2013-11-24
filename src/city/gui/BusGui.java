@@ -2,6 +2,7 @@ package city.gui;
 
 import java.awt.Graphics2D;
 
+import Gui.Gui;
 import city.BusAgent;
 
 public class BusGui implements Gui {
@@ -29,6 +30,13 @@ public class BusGui implements Gui {
 	
 	public void DoGoToNextStop(int x, int y) {
 		
+		
+	}
+
+
+	@Override
+	public void setPresent(boolean b) {
+		// TODO Auto-generated method stub
 		
 	}
 }

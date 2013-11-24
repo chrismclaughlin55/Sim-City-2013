@@ -6,6 +6,8 @@ import restaurantMQ.interfaces.Host;
 
 import java.awt.*;
 
+import Gui.Gui;
+
 public class HostGui implements Gui {
 
     private Host agent = null;
@@ -88,4 +90,10 @@ public class HostGui implements Gui {
     public int getYPos() {
         return yPos;
     }
+
+	@Override
+	public void setPresent(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
 }

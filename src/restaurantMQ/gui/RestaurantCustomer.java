@@ -2,7 +2,6 @@ package restaurantMQ.gui;
 
 import javax.swing.JCheckBox;
 
-import restaurantMQ.CustomerAgent;
 import restaurantMQ.interfaces.Customer;
 
 public class RestaurantCustomer 

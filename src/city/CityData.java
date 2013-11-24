@@ -1,5 +1,7 @@
 package city;
 import java.util.*;
+
+import Gui.Gui;
 public class CityData {
 	
 	class Coordinate {
@@ -20,12 +22,22 @@ public class CityData {
 	public static Map<BusStopAgent,Coordinate> busStopPositions; //given a busstopagent, will return pixel position in city.
 	public static ArrayList<BusStopAgent> busStops; //has busstops in order of the route the bus will take.
 	public static ArrayList<BusAgent> buses;
-	public static ArrayList<Building> buildings;
+	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
+	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	//ALSO needs a 2-d array of the entire place
 	
 	public CityData() {
 		
 	}
+	
+	public void removeGui(Gui g) {
+		guis.remove(g);
+	}
+	
+	public void addGui(Gui g) {
+		guis.add(g);
+	}
+	
 	/*
 	CityData will hold all information regarding bus routes,
 	restaurants available and their type, and whatever else

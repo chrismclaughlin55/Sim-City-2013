@@ -1,5 +1,5 @@
 package market.gui;
-
+import Gui.*;
 import javax.swing.*;
 
 import java.awt.*;
@@ -20,7 +20,6 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
 	public AnimationPanel() {
 		setBackground(Color.WHITE);
-
 		setVisible(true);
 
 		bufferSize = this.getSize();

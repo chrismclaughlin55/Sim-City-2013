@@ -1,17 +1,17 @@
 package restaurantMQ.gui;
 
-import restaurantMQ.CashierAgent;
-import restaurantMQ.CookAgent;
-import restaurantMQ.CustomerAgent;
-import restaurantMQ.HostAgent;
+import restaurantMQ.CookOrder;
+import restaurantMQ.MQCashierRole;
 import restaurantMQ.MQCookRole;
 import restaurantMQ.MQCustomerRole;
+import restaurantMQ.MQHostRole;
+import restaurantMQ.MQWaiterRole;
 import restaurantMQ.MarketAgent;
 import restaurantMQ.Menu;
-import restaurantMQ.WaiterAgent;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
+import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
 
 import javax.swing.*;
@@ -21,6 +21,7 @@ import agent.Agent;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -44,15 +45,18 @@ public class RestaurantPanel extends JPanel {
 	private static final int NMARKETS = 3;
 	
     //Host, cook, waiters and customers
-    private HostAgent host = new HostAgent("Sarah");
-    private HostGui hostGui = new HostGui(host);
+	private List<Host> hosts = new ArrayList<Host>();
+    private Host host;
 
     private List<Customer> customers = new ArrayList<Customer>();
     private List<Waiter> waiters = new ArrayList<Waiter>();
     private List<Cook> cooks = new ArrayList<Cook>();
     private List<MarketAgent> markets = new ArrayList<MarketAgent>();
-    private Cashier cashier = new CashierAgent();
+    private List<Cashier> cashiers = new ArrayList<Cashier>();
+    private Cashier cashier;
     //private Vector<HungerListener> hungerListeners = new Vector<HungerListener>();
+    
+    private List<CookOrder> cookOrders = Collections.synchronizedList(new ArrayList<CookOrder>());
 
     private JPanel restLabel = new JPanel();
     private ListPanel customerPanel = new ListPanel(this, "Customers");
@@ -92,31 +96,40 @@ public class RestaurantPanel extends JPanel {
 
     public RestaurantPanel(RestaurantGui gui) {
         this.gui = gui;
-        host.setGui(hostGui);
-
-        gui.animationPanel.addGui(hostGui);
         
-        cashier.startThread();
+        //Cashier instantiation (hack)
+        PersonAgent p1 = new PersonAgent("Cashier");
+        cashier = new MQCashierRole(p1);
+        cashiers.add(cashier);
+        p1.msgAssignRole((MQCashierRole)cashier);
+        p1.startThread();
         
+        //Market instantiation (hack)
         for(int i = 0; i < NMARKETS; ++i)
         {
         	markets.add(new MarketAgent(("Market" + (i+1)), timer, i));
         	markets.get(i).startThread();
         }
         
+        //Cook instantiation (hack)
         for(int i = 0; i < NCOOKS; ++i)
 		{
         	PersonAgent p = new PersonAgent("Mike");
-        	MQCookRole c = new MQCookRole(p, markets, cashier, timer);
+        	MQCookRole c = new MQCookRole(p, cookOrders, markets, cashier, timer);
 			cooks.add(c);
 			p.msgAssignRole(c);
 			p.startThread();
 		}
         
-        host.setCooks(cooks);
         
-        host.setWaiters(waiters);
-        host.startThread();
+        //Host instantiation (hack)
+        PersonAgent p2 = new PersonAgent("Host");
+        host = new MQHostRole(p2);
+        hosts.add(host);
+        ((MQHostRole)host).setCooks(cooks);
+        ((MQHostRole)host).setWaiters(waiters);
+        p2.msgAssignRole((MQHostRole)host);
+        p2.startThread();
 
         setLayout(new GridLayout(MAINGRIDROWS, MAINGRIDCOLS));
         group.setLayout(new GridLayout(SECGRIDROWS, SECGRIDCOLS));
@@ -140,7 +153,7 @@ public class RestaurantPanel extends JPanel {
         //restLabel.setLayout(new BoxLayout((Container)restLabel, BoxLayout.Y_AXIS));
         restLabel.setLayout(new BorderLayout());
         label.setText(
-                "<html><h3><u>Tonight's Staff</u></h3><table><tr><td>host:</td><td>" + host.getName() + "</td></tr></table><h3><u> Menu</u></h3><table><tr><td>Steak</td><td>$15.99</td></tr><tr><td>Chicken</td><td>$10.99</td></tr><tr><td>Salad</td><td>$5.99</td></tr><tr><td>Pizza</td><td>$8.99</td></tr></table><br></html>");
+                "<html><h3><u>Tonight's Staff</u></h3><table><tr><td>host:</td><td>" + ((MQHostRole)host).getName() + "</td></tr></table><h3><u> Menu</u></h3><table><tr><td>Steak</td><td>$15.99</td></tr><tr><td>Chicken</td><td>$10.99</td></tr><tr><td>Salad</td><td>$5.99</td></tr><tr><td>Pizza</td><td>$8.99</td></tr></table><br></html>");
 
         restLabel.setBorder(BorderFactory.createRaisedBevelBorder());
         restLabel.add(label, BorderLayout.CENTER);
@@ -184,7 +197,7 @@ public class RestaurantPanel extends JPanel {
     		{
     			c.msgPause();
     		}
-    		host.msgPause();
+    		((MQHostRole)host).msgPause();
 			pauseButton.setText("Resume");
 			paused = true;
 		}
@@ -202,7 +215,7 @@ public class RestaurantPanel extends JPanel {
     		{
     			c.msgPause();
     		}
-    		host.msgPause();
+    		((MQHostRole)host).msgPause();
 			pauseButton.setText("Pause");
 			paused = false;
 		}
@@ -234,35 +247,6 @@ public class RestaurantPanel extends JPanel {
      * @param type indicates whether the person is a customer or waiter (later)
      * @param name name of person
      */
-    public void addPerson(String type, String name) {
-
-    	if (type.equals("Customers")) {
-    		CustomerAgent c = new CustomerAgent(name, timer, this);	
-    		CustomerGui g = new CustomerGui(c, gui);
-
-    		gui.animationPanel.addGui(g);// dw
-    		c.setHost(host);
-    		c.setGui(g);
-    		customers.add(c);
-    		c.startThread();
-    	}
-    }
-    
-    public void addPerson(String type, String name, boolean hungry) {
-
-    	if (type.equals("Customers")) {
-    		CustomerAgent c = new CustomerAgent(name, timer, this);	
-    		CustomerGui g = new CustomerGui(c, gui);
-
-    		gui.animationPanel.addGui(g);// dw
-    		c.setHost(host);
-    		c.setGui(g);
-    		if(hungry)
-    			c.getGui().setHungry();
-    		customers.add(c);
-    		c.startThread();
-    	}
-    }
     
     //This is the one which is used!!!!
     public void addPerson(String type, String name, JCheckBox hungry, boolean hunger) {
@@ -291,15 +275,16 @@ public class RestaurantPanel extends JPanel {
     
     public void addWaiter(String name, final JCheckBox breakBox)
     {
-    	WaiterAgent waiter = new WaiterAgent(name, waiters.size(), host, cooks, cashier, new Menu(menu), breakBox);
-    	waiters.add(waiter);
-    	host.addWaiter(waiter);
+    	PersonAgent p = new PersonAgent(name);
+    	MQWaiterRole w = new MQWaiterRole(p, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
+    	waiters.add(w);
+    	((MQHostRole)host).addWaiter(w);
     	for(Cook c : cooks)
     	{
-    		c.addWaiter(waiter);
+    		c.addWaiter(w);
     	}
     	
-    	final Waiter w = waiter;
+    	final Waiter waiter = w;
     	breakBoxes.add(breakBox);
     	breakBox.addActionListener(new ActionListener()
     		{
@@ -308,20 +293,23 @@ public class RestaurantPanel extends JPanel {
     				if(breakBox.getText().equals("Want Break"))
     				{
     					breakBox.setEnabled(true);
-    					w.msgWantBreak();
+    					waiter.msgWantBreak();
     				}
     				else if(breakBox.getText().equals("Back to Work"))
     				{
     					breakBox.setEnabled(true);
-    					w.msgBackFromBreak();
+    					waiter.msgBackFromBreak();
     				}
     			}
     		});
     	
-		WaiterGui waiterGui = new WaiterGui(waiter);
-		waiter.setGui(waiterGui);
+		WaiterGui waiterGui = new WaiterGui(w);
+		w.setGui(waiterGui);
 		gui.animationPanel.addGui(waiterGui);
-		waiter.startThread();
+		
+		//Start the thread
+		p.msgAssignRole(w);
+		p.startThread(); //hack. PersonAgent's thread should already be running
     }
     
     //Hacks to demonstrate program

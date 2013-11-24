@@ -1,22 +1,27 @@
 package mainGUI;
 
-
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import restaurantMQ.gui.RestaurantGui;
 import market.gui.MarketGui;
 import city.Building;
+import city.HomeGui;
 import city.PersonAgent;
 import city.gui.PersonGui;
 import config.ConfigParser;
+import bankgui.*;
+import city.PersonAgent.state;
 
 /**
  * Main GUI class.
@@ -34,9 +39,12 @@ public class MainGui extends JFrame implements MouseListener {
 	
 	private ConfigParser parser;
     private PersonCreationPanel personPanel;
-    private MainAnimationPanel mainAnimationPanel;
+    public MainAnimationPanel mainAnimationPanel;
    
-    //public MarketGui marketGui1;
+    public MarketGui marketGui;
+    public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
+    public BankGui bankGui;
+    
     /**
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
@@ -60,7 +68,6 @@ public class MainGui extends JFrame implements MouseListener {
         personPanel = new PersonCreationPanel(this);
         personPanel.setVisible(true);
     	
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     	setBounds(0, 0, WIDTH, HEIGHT);
     	setLocation(50, 50);
         
@@ -74,53 +81,55 @@ public class MainGui extends JFrame implements MouseListener {
         
         addMouseListener(this);
         
+        // add gui for all buildings, set the guis to invisible initially
+        marketGui = new MarketGui();
+        marketGui.setTitle("Market");
+        marketGui.setVisible(false);
+        marketGui.setResizable(false);
+        marketGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
-        /*marketGui1 = new MarketGui();
-        marketGui1.setTitle("Market 1");
-        marketGui1.setVisible(false);
-        marketGui1.setResizable(false);*/
-        //marketGui1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        for (int i = 0; i < 6; i++) {
+        	restaurantGuis[i] = new RestaurantGui();
+        	restaurantGuis[i].setTitle("RestaurantMQ");
+        	restaurantGuis[i].setVisible(false);
+        	restaurantGuis[i].setResizable(false);
+        	restaurantGuis[i].setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
+        
+        bankGui = new BankGui();
+        bankGui.setTitle("Bank");
+        bankGui.setVisible(false);
+        bankGui.setResizable(false);
+        bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
     
   
-    public static void main(String[] args) {
-    	
-    	/*RestaurantGui restGui = new RestaurantGui();
-        restGui.setTitle("csci201 Restaurant");
-        restGui.setVisible(true);
-        restGui.setResizable(false);
-        restGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        restGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);*/
-    	
-    	
-         
+    public static void main(String[] args) { 
         MainGui gui = new MainGui();
         gui.setTitle("Sim City - Team 15");
         gui.setVisible(true);
-        gui.setResizable(true);        
-
-        
-       
+        gui.setResizable(true);
     }
     
     public void addPerson(String name, String role) {
-		PersonAgent p = new PersonAgent(name);
-		mainAnimationPanel.addGui(new PersonGui(p));
+		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
+		PersonGui personGui = new PersonGui(p, this);
+		mainAnimationPanel.addGui(personGui);
+		p.setGui(personGui);
+		p.personState = state.goHome;
 		p.startThread();
 	}
     
     @Override
     public void mouseClicked(MouseEvent e) {
     	//Check to see which building was clicked
-    	for (int i = 0; i < mainAnimationPanel.buildings.size(); i++) {
-    		Building b = mainAnimationPanel.buildings.get(i);
+    	for (int i = 0; i < mainAnimationPanel.cd.buildings.size(); i++) {
+    		Building b = mainAnimationPanel.cd.buildings.get(i);
     		
     		if (b.contains(e.getX()-620, e.getY()-25)) {
     			System.out.print("Building " + i + " clicked\n");
-    			b.display(b);
+    			b.display(b, i);
     		}
-    		System.out.println("**"+b.x+"**"+b.y+"\n");
-    		System.out.print(e.getX()-620);
     	}
     }
     

@@ -1,7 +1,5 @@
 package restaurantMQ.gui;
 
-import restaurantMQ.CustomerAgent;
-import restaurantMQ.HostAgent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -166,33 +164,6 @@ public class ListPanel extends JPanel implements ActionListener {
             list.add(button);
             view.add(custPanel);
             restPanel.addPerson(type, name, hungry, hungerBox.isSelected());//puts customer on list
-            restPanel.showInfo(type, name);//puts hungry button on panel
-            validate();
-        }
-    }
-    
-    public void addPerson(String name, boolean hungry) {
-        if (name != null) {
-            JButton button = new JButton(name);
-            button.setBackground(Color.white);
-
-            Dimension paneSize = pane.getSize();
-            Dimension buttonSize = new Dimension(paneSize.width - 20,
-                    (int) (paneSize.height / SCALING1));
-            //button.setPreferredSize(buttonSize);
-            //button.setMinimumSize(buttonSize);
-            //button.setMaximumSize(buttonSize);
-            //button.addActionListener(this);
-            JPanel custPanel = new JPanel();
-            custPanel.setLayout(new GridLayout(1, 2));
-            custPanel.setPreferredSize(buttonSize);
-            custPanel.setMinimumSize(buttonSize);
-            custPanel.setMaximumSize(buttonSize);
-            custPanel.add(button);
-            custPanel.add(new JCheckBox("Hungry?"));
-            list.add(button);
-            view.add(custPanel);
-            restPanel.addPerson(type, name, hungry);//puts customer on list
             restPanel.showInfo(type, name);//puts hungry button on panel
             validate();
         }

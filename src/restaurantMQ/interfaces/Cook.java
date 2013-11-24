@@ -1,7 +1,6 @@
 package restaurantMQ.interfaces;
 
 import restaurantMQ.CookOrder;
-import restaurantMQ.WaiterAgent;
 
 public interface Cook {
 
@@ -20,5 +19,7 @@ public interface Cook {
 	public abstract void OutOfSaladHack();
 
 	public abstract void msgPause();
+
+	public abstract void msgOrdersUpdated();
 
 }

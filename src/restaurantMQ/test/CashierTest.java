@@ -1,11 +1,11 @@
 package restaurantMQ.test;
 
-import restaurantMQ.CashierAgent;
+import city.PersonAgent;
+import restaurantMQ.MQCashierRole;
 import restaurantMQ.test.mock.LoggedEvent;
 import restaurantMQ.test.mock.MockCustomer;
 import restaurantMQ.test.mock.MockMarket;
 import restaurantMQ.test.mock.MockWaiter;
-
 import junit.framework.*;
 
 /**
@@ -19,11 +19,12 @@ import junit.framework.*;
 public class CashierTest extends TestCase
 {
 	//these are instantiated for each test separately via the setUp() method.
-	CashierAgent cashier;
+	MQCashierRole cashier;
 	MockWaiter waiter;
 	MockCustomer customer;
 	MockMarket market1;
 	MockMarket market2;
+	PersonAgent p = new PersonAgent("cashier");
 	
 	
 	/**
@@ -32,7 +33,7 @@ public class CashierTest extends TestCase
 	 */
 	public void setUp() throws Exception{
 		super.setUp();		
-		cashier = new CashierAgent("cashier");		
+		cashier = new MQCashierRole(p);		
 		customer = new MockCustomer("mockcustomer");
 		customer.cashier = cashier;
 		waiter = new MockWaiter("mockwaiter");

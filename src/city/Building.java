@@ -15,6 +15,8 @@ public class Building extends Rectangle2D.Double {
 	public enum BuildingType {home, apartment, restaurant, bank, market, room};
 	private boolean isOpen = false;
 	protected PersonAgent manager;
+	CityData cityData;
+	public int buildingNumber;
 
 	BuildingPanel buildingPanel;
 	MainGui mainGui;
@@ -38,6 +40,9 @@ public class Building extends Rectangle2D.Double {
 		buildingPanel = new BuildingPanel(mainGui);
 	}
 
+	public void ExitBuilding(PersonAgent p) {
+		
+	}
 
 	public  void EnterBuilding(PersonAgent p, String roleRequest) {
 
@@ -46,13 +51,13 @@ public class Building extends Rectangle2D.Double {
 		 * Here is a general outline of how that code should look using the Market as an example:
 		 * 
 		 * if (market.isOpen()) {
-		 * 		if existingRoles.get(p) {
+		 * 		if (existingRoles.get(p)) {
 		 * 			p.msgAssignRole(existingRoles.get(p));
 		 *		 }
 		 * 	   else if (roleRequest.equals("customer")) {
 		 *     		p.msgAssignRole(new MarketCustomerRole(p, manager));
 		 *     }
-		 *     else if (roleRequest.equals("employee)) {
+		 *     else if (roleRequest.equals("employee")) {
 		 *     		p.msgAssignRole(new MarketEmployeeRole(p, manager));
 		 *     }
 		 * }
@@ -100,7 +105,7 @@ public class Building extends Rectangle2D.Double {
 
 	public void setClosed(PersonAgent p) {
 		if (p.equals(manager)) {
-			isOpen = true;
+			isOpen = false;
 		}
 	}
 
@@ -119,8 +124,12 @@ public class Building extends Rectangle2D.Double {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public void setBuildingNumber(int number) {
+		buildingNumber = number;
+	}
 
-	public void display(Building building) {
-		buildingPanel.displayBuildingPanel(building);
+	public void display(Building building, int buildingNumber) {
+		buildingPanel.displayBuildingPanel(building, buildingNumber);
 	}
 }

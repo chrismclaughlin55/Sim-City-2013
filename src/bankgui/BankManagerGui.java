@@ -1,10 +1,10 @@
-package market.gui;
+package bankgui;
 
 import java.awt.Graphics2D;
 
-import Gui.Gui;
+import Gui.*;
 
-public class EmployeeGui implements Gui {
+public class BankManagerGui implements Gui {
 
 	@Override
 	public void updatePosition() {

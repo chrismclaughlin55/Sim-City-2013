@@ -1,6 +1,7 @@
 package bankgui;
 
 import java.awt.Graphics2D;
+import Gui.*;
 
 public class BankCustomerGui implements Gui {
 
@@ -20,6 +21,12 @@ public class BankCustomerGui implements Gui {
 	public boolean isPresent() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void setPresent(boolean b) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
