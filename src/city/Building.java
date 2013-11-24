@@ -1,25 +1,29 @@
 package city;
 
-import java.util.*;
 import java.awt.geom.Rectangle2D;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import mainGUI.BuildingPanel;
 import mainGUI.MainGui;
 
 public class Building extends Rectangle2D.Double {
+
 	public String name;
 	public BuildingType type;
 	public enum BuildingType {home, apartment, restaurant, bank, market, room};
-	boolean isOpen;
-	Manager manager;
-	List<PersonAgent> waitingPeople;
+	private boolean isOpen = false;
+	protected PersonAgent manager;
+	CityData cityData;
+
 	BuildingPanel buildingPanel;
 	MainGui mainGui;
-	// need a list of all roles that have been in the building (for non-norm)
-	List<Role> existedRoles = new ArrayList<Role>();
 
-	// need a list of all roles
-	List<Role> roles = new ArrayList<Role>();
+	//private List<Role> roles = Collections.synchronizedList(new ArrayList<Role>());
+	private Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
+
+
 
 	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
@@ -35,12 +39,43 @@ public class Building extends Rectangle2D.Double {
 		buildingPanel = new BuildingPanel(mainGui);
 	}
 
-	protected boolean msgIsItOpen() {
-		return isOpen;
+
+	public  void EnterBuilding(PersonAgent p, String roleRequest) {
+
+		/* Each specific building that extends Building.java will have to override this function according to its needs/capabilities.
+		 * 
+		 * Here is a general outline of how that code should look using the Market as an example:
+		 * 
+		 * if (market.isOpen()) {
+		 * 		if (existingRoles.get(p)) {
+		 * 			p.msgAssignRole(existingRoles.get(p));
+		 *		 }
+		 * 	   else if (roleRequest.equals("customer")) {
+		 *     		p.msgAssignRole(new MarketCustomerRole(p, manager));
+		 *     }
+		 *     else if (roleRequest.equals("employee")) {
+		 *     		p.msgAssignRole(new MarketEmployeeRole(p, manager));
+		 *     }
+		 * }
+		 * else {
+		 * 		if (p.equals(manager)) {
+		 * 			if existingRoles.get(p) {
+		 * 				p.msgAssignRole(existingRoles.get(p));
+		 *			 }
+		 *			else
+		 * 				p.msgAssignRole(new MarketManagerRole(p));
+		 * 		}
+		 * 		else msgAccessDenied()
+		 * }
+		 * 
+		 * 
+		 * 
+		 * 
+		 */
 	}
 
 	// assign relations between new comer and person in charge both ways
-	protected void GoIntoBuilding(PersonAgent p) {
+	/*protected void GoIntoBuilding(PersonAgent p) {
 		p.msgAssignRole(manager.role);
 		waitingPeople.add(p);
 	}
@@ -51,8 +86,14 @@ public class Building extends Rectangle2D.Double {
 
 	protected void LeaveBuilding(PersonAgent p) {
 		waitingPeople.remove(p);
+	}*/
+
+	//only manager can set the building to Open or Closed
+
+	public boolean isOpen() {
+		return isOpen;
 	}
-	protected void setOpen(PersonAgent p) {
+	public void setOpen(PersonAgent p) {
 		if (p.equals(manager)) {
 			isOpen = true;
 		}
@@ -63,13 +104,14 @@ public class Building extends Rectangle2D.Double {
 			isOpen = false;
 		}
 	}
-	class Manager {
+
+	/*class Manager {
 		PersonAgent person;
 		Role role;
 
 		Manager() {
 		}
-	}
+	}*/
 
 	public void setType(BuildingType type) {
 		this.type = type;

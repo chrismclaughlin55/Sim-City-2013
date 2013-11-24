@@ -1,5 +1,6 @@
 package restaurantMQ.gui;
 
+import restaurantMQ.CookOrder;
 import restaurantMQ.MQCashierRole;
 import restaurantMQ.MQCookRole;
 import restaurantMQ.MQCustomerRole;
@@ -20,6 +21,7 @@ import agent.Agent;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -53,6 +55,8 @@ public class RestaurantPanel extends JPanel {
     private List<Cashier> cashiers = new ArrayList<Cashier>();
     private Cashier cashier;
     //private Vector<HungerListener> hungerListeners = new Vector<HungerListener>();
+    
+    private List<CookOrder> cookOrders = Collections.synchronizedList(new ArrayList<CookOrder>());
 
     private JPanel restLabel = new JPanel();
     private ListPanel customerPanel = new ListPanel(this, "Customers");
@@ -111,7 +115,7 @@ public class RestaurantPanel extends JPanel {
         for(int i = 0; i < NCOOKS; ++i)
 		{
         	PersonAgent p = new PersonAgent("Mike");
-        	MQCookRole c = new MQCookRole(p, markets, cashier, timer);
+        	MQCookRole c = new MQCookRole(p, cookOrders, markets, cashier, timer);
 			cooks.add(c);
 			p.msgAssignRole(c);
 			p.startThread();
@@ -272,7 +276,7 @@ public class RestaurantPanel extends JPanel {
     public void addWaiter(String name, final JCheckBox breakBox)
     {
     	PersonAgent p = new PersonAgent(name);
-    	MQWaiterRole w = new MQWaiterRole(p, waiters.size(), host, cooks, cashier, new Menu(menu), breakBox);
+    	MQWaiterRole w = new MQWaiterRole(p, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
     	waiters.add(w);
     	((MQHostRole)host).addWaiter(w);
     	for(Cook c : cooks)

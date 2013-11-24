@@ -21,12 +21,12 @@ import javax.swing.Timer;
 
 import city.Building;
 import city.Building.BuildingType;
-import Gui.*;
 import city.gui.PersonGui;
+import Gui.*;
 
 public class MainAnimationPanel extends JPanel implements ActionListener {
 
-	private int frameDisplay = 2;
+	private int frameDisplay = 20;
 
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	public List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
@@ -69,11 +69,13 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 				buildings.add(b);
 			}
 		}
-		for (int j = 0; j < 2; j++) {
-			for (int i = 0; i < 2; i++) {
-				Building b = new Building(190+i*130, 410+j*130, WIDTH, HEIGHT, mainGui);
-				buildings.add(b);
-			}
+		for (int i = 0; i < 2; i++) {
+			Building b = new Building(190+i*130, 540, WIDTH, HEIGHT, mainGui);
+			buildings.add(b);
+		}
+		for (int i = 0; i < 2; i++) {
+			Building b = new Building(190+i*130, 410, WIDTH, HEIGHT, mainGui);
+			buildings.add(b);
 		}
 		
 		//setBackground(Color.WHITE);
@@ -90,13 +92,9 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		g2.setColor(Color.WHITE);
 
 		//Clear the screen by painting a rectangle the size of the frame
-		//g2.setColor(getBackground());
-		g2.setColor(Color.WHITE);
-		g2.fillRect(0, 0, screenSize.width/2, screenSize.height );
 		ImageIcon background = new ImageIcon("res/background.png");
 		g2.drawImage(background.getImage(), 0, 0, null);
 		
@@ -109,39 +107,30 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		
 		//Draw restaurants
 		ImageIcon rest = new ImageIcon("res/restaurant.png");
-		for (int i = 12; i < 16; i++) {
+		for (int i = 12; i < 18; i++) {
 			g2.drawImage(rest.getImage(), (int) buildings.get(i).x, (int) buildings.get(i).y, null);
 			buildings.get(i).setType(BuildingType.restaurant);
-			buildings.get(i).setName("restaurant");
+			buildings.get(i).setName("restaurant"+(i-11));
 			g2.drawString(buildings.get(i).name, (int) buildings.get(i).x, (int) buildings.get(i).y+10);
 		}
-        g2.drawImage(rest.getImage(), (int) buildings.get(18).x, (int) buildings.get(18).y, null);
-        g2.drawImage(rest.getImage(), (int) buildings.get(19).x, (int) buildings.get(19).y, null);
-        buildings.get(18).setType(BuildingType.restaurant);
-        buildings.get(19).setType(BuildingType.restaurant);
-		buildings.get(18).setName("restaurant");
-		buildings.get(19).setName("restaurant");
-		g2.drawString(buildings.get(18).name, (int) buildings.get(18).x, (int) buildings.get(18).y+10);
-		g2.drawString(buildings.get(19).name, (int) buildings.get(19).x, (int) buildings.get(19).y+10);
 		
 		//Draw bank
         ImageIcon bank = new ImageIcon("res/bank.png");
-        g2.drawImage(bank.getImage(), (int) buildings.get(16).x, (int) buildings.get(16).y, null);
-        buildings.get(16).setType(BuildingType.bank);
-		buildings.get(16).setName("bank");
-		g2.drawString(buildings.get(16).name, (int) buildings.get(16).x, (int) buildings.get(16).y+10);
+        g2.drawImage(bank.getImage(), (int) buildings.get(18).x, (int) buildings.get(18).y, null);
+        buildings.get(18).setType(BuildingType.bank);
+		buildings.get(18).setName("bank");
+		g2.drawString(buildings.get(18).name, (int) buildings.get(18).x, (int) buildings.get(18).y+10);
 		
 		//Draw market
         ImageIcon market = new ImageIcon("res/market.png");
-        g2.drawImage(market.getImage(), (int) buildings.get(17).x, (int) buildings.get(17).y, null);
-        buildings.get(17).setType(BuildingType.market);
-		buildings.get(17).setName("market");
-		g2.drawString(buildings.get(17).name, (int) buildings.get(17).x, (int) buildings.get(17).y+10);
+        g2.drawImage(market.getImage(), (int) buildings.get(19).x, (int) buildings.get(19).y, null);
+        buildings.get(19).setType(BuildingType.market);
+		buildings.get(19).setName("market");
+		g2.drawString(buildings.get(19).name, (int) buildings.get(19).x, (int) buildings.get(19).y+10);
         
-		//height 900, width 720
         //Draw road
         ImageIcon road1 = new ImageIcon("res/road1.png");
-        for (int i = 0; i < screenSize.width/2; i++) {
+        for (int i = 0; i < 615; i++) {
         	g2.drawImage(road1.getImage(), i, 365, null);
         }
         for (int i = 130; i < 470; i++) {
@@ -186,6 +175,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		System.out.println ("added gui!");
 	}
 
-
+	public List getBuildings() {
+		return buildings;
+	}
 
 }

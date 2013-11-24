@@ -2,7 +2,10 @@ package city;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
+import mainGUI.MainGui;
+import city.gui.PersonGui;
 import agent.Agent;
 
 public class PersonAgent extends Agent
@@ -11,13 +14,25 @@ public class PersonAgent extends Agent
 	String name;
 	public double money;
 	boolean ranonce = false;
+	PersonGui personGui;
+	MainGui gui;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
+	public enum state {doingNothing, goToRestaurant, goToBank, goToMarket, goHome};
+	public state personState = state.doingNothing;
+	
+	private Semaphore atBuilding = new Semaphore(0, true);
 	
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
+	}
+	
+	public PersonAgent(String name, MainGui gui) {
+		this.name = name;
+		this.gui = gui;
+		personGui = new PersonGui(this, gui);
 	}
 	
 	
@@ -37,8 +52,27 @@ public class PersonAgent extends Agent
 		super.stateChanged();
 	}
 	
+	public void msgAtBuilding() {//from animation
+		//print("msgAtBuilding() called");
+		atBuilding.release();// = true;
+		stateChanged();
+	}
+	
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
+		if (personState == state.goToRestaurant) {
+			goToRestaurant();
+		}
+		if (personState == state.goHome) {
+			goHome();
+		}
+		if (personState == state.goToBank) {
+			goToBank();
+		}
+		if (personState == state.goToMarket) {
+			goToMarket();
+		}
+		
 		//Iterate through the list of roles
 		for (Role role : roles) {
 			//If a role is active, attempt to run its scheduler
@@ -52,6 +86,60 @@ public class PersonAgent extends Agent
 		return false;
 	}
 	
+	protected void goToRandomPlace() {
+		//personGui.DoGoToRandomPlace();
+	}
+	
+	protected void goToRestaurant() {
+		int restNumber = (int)(12+(int)(Math.random()*17));
+		personGui.DoGoToBuilding(restNumber);
+		atBuilding.drainPermits();
+		try {
+			atBuilding.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		personGui.DoGoIntoBuilding();
+	}
+	
+	protected void goHome() {
+		int homeNumber = (int)((int)(Math.random()*11));
+		personGui.DoGoToBuilding(homeNumber);
+		atBuilding.drainPermits();
+		try {
+			atBuilding.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		personGui.DoGoIntoBuilding();
+	}
+	
+	protected void goToBank() {
+		personGui.DoGoToBuilding(18);
+		atBuilding.drainPermits();
+		try {
+			atBuilding.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		personGui.DoGoIntoBuilding();
+	}
+	
+	protected void goToMarket() {
+		personGui.DoGoToBuilding(19);
+		atBuilding.drainPermits();
+		try {
+			atBuilding.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		personGui.DoGoIntoBuilding();
+	}
+	
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
 	protected void stateChanged() {
 		super.stateChanged();
@@ -60,5 +148,13 @@ public class PersonAgent extends Agent
 	/*GETTERS*/
 	public String getName() {
 		return name;
+	}
+	
+	public void setGui(PersonGui g) {
+		personGui = g;
+	}
+	
+	public PersonGui getGui() {
+		return personGui;
 	}
 }

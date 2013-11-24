@@ -1,9 +1,6 @@
 package mainGUI;
 
-
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -12,11 +9,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import restaurantMQ.gui.RestaurantGui;
 import market.gui.MarketGui;
 import city.Building;
 import city.PersonAgent;
 import city.gui.PersonGui;
 import config.ConfigParser;
+import bankgui.*;
 
 /**
  * Main GUI class.
@@ -36,7 +35,15 @@ public class MainGui extends JFrame implements MouseListener {
     private PersonCreationPanel personPanel;
     private MainAnimationPanel mainAnimationPanel;
    
-    //public MarketGui marketGui1;
+    public MarketGui marketGui1;
+    public RestaurantGui restaurantGui1;
+    public RestaurantGui restaurantGui2;
+    public RestaurantGui restaurantGui3;
+    public RestaurantGui restaurantGui4;
+    public RestaurantGui restaurantGui5;
+    public RestaurantGui restaurantGui6;
+    public BankGui bankGui;
+    
     /**
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
@@ -60,7 +67,6 @@ public class MainGui extends JFrame implements MouseListener {
         personPanel = new PersonCreationPanel(this);
         personPanel.setVisible(true);
     	
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     	setBounds(0, 0, WIDTH, HEIGHT);
     	setLocation(50, 50);
         
@@ -74,12 +80,54 @@ public class MainGui extends JFrame implements MouseListener {
         
         addMouseListener(this);
         
-        
-        /*marketGui1 = new MarketGui();
-        marketGui1.setTitle("Market 1");
+        // add gui for all buildings, set the guis to invisible initially
+        marketGui1 = new MarketGui();
+        marketGui1.setTitle("Market1");
         marketGui1.setVisible(false);
-        marketGui1.setResizable(false);*/
-        //marketGui1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        marketGui1.setResizable(false);
+        marketGui1.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        restaurantGui1 = new RestaurantGui();
+        restaurantGui1.setTitle("RestaurantMQ");
+        restaurantGui1.setVisible(false);
+        restaurantGui1.setResizable(false);
+        restaurantGui1.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        restaurantGui2 = new RestaurantGui();
+        restaurantGui2.setTitle("RestaurantMQ");
+        restaurantGui2.setVisible(false);
+        restaurantGui2.setResizable(false);
+        restaurantGui2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        restaurantGui3 = new RestaurantGui();
+        restaurantGui3.setTitle("RestaurantMQ");
+        restaurantGui3.setVisible(false);
+        restaurantGui3.setResizable(false);
+        restaurantGui3.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        restaurantGui4 = new RestaurantGui();
+        restaurantGui4.setTitle("RestaurantMQ");
+        restaurantGui4.setVisible(false);
+        restaurantGui4.setResizable(false);
+        restaurantGui4.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        restaurantGui5 = new RestaurantGui();
+        restaurantGui5.setTitle("RestaurantMQ");
+        restaurantGui5.setVisible(false);
+        restaurantGui5.setResizable(false);
+        restaurantGui5.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        restaurantGui6 = new RestaurantGui();
+        restaurantGui6.setTitle("RestaurantMQ");
+        restaurantGui6.setVisible(false);
+        restaurantGui6.setResizable(false);
+        restaurantGui6.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        bankGui = new BankGui();
+        bankGui.setTitle("Bank");
+        bankGui.setVisible(false);
+        bankGui.setResizable(false);
+        bankGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
     
   
@@ -97,12 +145,17 @@ public class MainGui extends JFrame implements MouseListener {
         MainGui gui = new MainGui();
         gui.setTitle("Sim City - Team 15");
         gui.setVisible(true);
-        gui.setResizable(true);
+        gui.setResizable(true);        
+
+        
+       
     }
     
     public void addPerson(String name, String role) {
-		PersonAgent p = new PersonAgent(name);
-		mainAnimationPanel.addGui(new PersonGui(p));
+		PersonAgent p = new PersonAgent(name, this);
+		PersonGui personGui = new PersonGui(p, this);
+		mainAnimationPanel.addGui(personGui);
+		p.setGui(personGui);
 		p.startThread();
 	}
     
@@ -116,8 +169,6 @@ public class MainGui extends JFrame implements MouseListener {
     			System.out.print("Building " + i + " clicked\n");
     			b.display(b);
     		}
-    		System.out.println("**"+b.x+"**"+b.y+"\n");
-    		System.out.print(e.getX()-620);
     	}
     }
     
