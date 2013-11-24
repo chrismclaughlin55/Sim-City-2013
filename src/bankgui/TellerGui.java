@@ -48,4 +48,11 @@ public class TellerGui implements Gui {
 		return isPresent;
 	}
 
+
+	@Override
+	public void setPresent(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
