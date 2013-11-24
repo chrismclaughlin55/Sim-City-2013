@@ -2,6 +2,7 @@ package mainGUI;
 
 import javax.swing.JFrame;
 
+import bankgui.BankGui;
 import market.gui.MarketGui;
 import restaurantMQ.gui.RestaurantGui;
 import city.Building;
@@ -30,7 +31,11 @@ public class BuildingPanel {
 		switch (building.type) {	
 		
 		case bank:
-			//add bank panel and gui later
+			BankGui bankGui = new BankGui();
+			bankGui.setTitle("Bank");
+			bankGui.setVisible(true);
+			bankGui.setResizable(false);
+			bankGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			break;
 			
 		case home:

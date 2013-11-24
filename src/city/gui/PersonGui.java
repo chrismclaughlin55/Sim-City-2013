@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 
 import Gui.Gui;
 import city.PersonAgent;
-import restaurantMQ.CustomerAgent;
 import restaurantMQ.gui.RestaurantGui;
 
 public class PersonGui implements Gui {

@@ -1,31 +1,25 @@
 package restaurantMQ;
 
-import restaurantMQ.gui.CustomerGui;
-import restaurantMQ.gui.RestaurantGui;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.concurrent.Semaphore;
+
+import javax.swing.JCheckBox;
+
+import city.PersonAgent;
+import city.Role;
 import restaurantMQ.gui.WaiterGui;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
-import agent.Agent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.ConcurrentModificationException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
-import java.util.concurrent.Semaphore;
-
-import javax.swing.JCheckBox;
-
-public class WaiterAgent extends Agent implements Waiter
+public class MQWaiterRole extends Role implements Waiter
 {
+	/*DATA*/
 	private Semaphore actionDone = new Semaphore(0, true);
-	
-	//Data members
 	private Host host; //assigned in constructor
 	private WaiterGui gui = null;
 	private Cashier cashier;
@@ -99,39 +93,18 @@ public class WaiterAgent extends Agent implements Waiter
 	}
 	
 	private List<Check> checks = new ArrayList<Check>();
+	/*END OF DATA*/
 	
-	//End of data members
-	
-	//CONSTRUCTORS
-	public WaiterAgent(Host host)
+	/*CONSTRUCTORS*/
+	public MQWaiterRole(PersonAgent person)
 	{
-		this.host = host;
+		super(person);
 	}
 	
-	public WaiterAgent(Host host, List<Cook> cooks)
+	public MQWaiterRole(PersonAgent person, int waiterNumber, Host host, List<Cook> cooks, Cashier cashier, Menu menu, JCheckBox breakBox)
 	{
-		this.host = host;
-		this.cooks = cooks;
-	}
-	
-	public WaiterAgent(String name, Host host, List<Cook> cooks)
-	{
-		this.name = name;
-		this.host = host;
-		this.cooks = cooks;
-	}
-	
-	public WaiterAgent(String name, Host host, List<Cook> cooks, Menu menu)
-	{
-		this.name = name;
-		this.host = host;
-		this.cooks = cooks;
-		this.menu = menu;
-	}
-	
-	public WaiterAgent(String name, int waiterNumber, Host host, List<Cook> cooks, Cashier cashier, Menu menu, JCheckBox breakBox)
-	{
-		this.name = name;
+		super(person);
+		this.name = person.getName();
 		this.waiterNumber = waiterNumber;
 		this.breakBox = breakBox;
 		this.host = host;
@@ -139,19 +112,17 @@ public class WaiterAgent extends Agent implements Waiter
 		this.cashier = cashier;
 		this.menu = menu;
 	}
-	
+	/*END OF CONSTRUCTORS*/
+
+	/*SETTERS*/
 	public void setGui(WaiterGui gui)
 	{
 		this.gui = gui;
 		gui.setNumber(waiterNumber);
 	}
+	/*END OF SETTERS*/
 	
-	
-	//MESSAGES
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgLeaving(restaurant.CustomerAgent)
-	 */
-	@Override
+	/*MESSAGES*/
 	public void msgLeaving(Customer customer)
 	{
 		for(MyCustomer c : customers)
@@ -165,10 +136,6 @@ public class WaiterAgent extends Agent implements Waiter
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgSeatCustomer(restaurant.CustomerAgent, int)
-	 */
-	@Override
 	public void msgSeatCustomer(Customer customer, int table)
 	{
 		customers.add(new MyCustomer(customer, table));
@@ -181,10 +148,6 @@ public class WaiterAgent extends Agent implements Waiter
 		stateChanged();
 	}
 	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgReadyToOrder(restaurant.CustomerAgent)
-	 */
-	@Override
 	public void msgReadyToOrder(Customer customer)
 	{
 		for(MyCustomer c : customers)
@@ -196,20 +159,11 @@ public class WaiterAgent extends Agent implements Waiter
 		}
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgHereIsMenu(restaurant.Menu)
-	 */
-	@Override
 	public void msgHereIsMenu(Menu menu)
 	{
 		this.menu = menu;
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgHereIsChoice(java.lang.String, restaurant.CustomerAgent)
-	 */
-	@Override
+
 	public void msgHereIsChoice(String choice, Customer customer)
 	{
 		for(MyCustomer c : customers)
@@ -224,10 +178,6 @@ public class WaiterAgent extends Agent implements Waiter
 		stateChanged();
 	}
 	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgOrderDone(java.lang.String, int)
-	 */
-	@Override
 	public void msgOrderDone(String choice, int table)
 	{
 		for(Order o : orders)
@@ -241,11 +191,7 @@ public class WaiterAgent extends Agent implements Waiter
 			}
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgDoneEating(restaurant.CustomerAgent)
-	 */
-	@Override
+
 	public void msgDoneEating(Customer customer)
 	{
 		for(MyCustomer c : customers)
@@ -258,11 +204,7 @@ public class WaiterAgent extends Agent implements Waiter
 		}
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgAskForSomethingElse(java.lang.String, int)
-	 */
-	@Override
+
 	public void msgAskForSomethingElse(String choice, int table)
 	{
 		menu.remove(choice);
@@ -281,50 +223,35 @@ public class WaiterAgent extends Agent implements Waiter
 	{
 		actionDone.release();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgWantBreak()
-	 */
-	@Override
+
 	public void msgWantBreak()
 	{
 		breakBox.setEnabled(false);
 		breakStatus = BreakStatus.WantBreak;
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgGoOnBreak()
-	 */
-	@Override
+
 	public void msgGoOnBreak()
 	{
 		breakStatus = BreakStatus.BreakOK;
 		stateChanged();
 	}
 	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgHereIsCheck(restaurant.CustomerAgent, double)
-	 */
-	@Override
 	public void msgHereIsCheck(Customer customer, double price)
 	{
 		checks.add(new Check(customer, price));
 		stateChanged();
 	}
-	
-	/* (non-Javadoc)
-	 * @see restaurant.Waiter#msgBackFromBreak()
-	 */
-	@Override
+
 	public void msgBackFromBreak()
 	{
 		breakStatus = breakStatus.Back;
 		stateChanged();
 	}
-	
-	//SCHEDULER
-	protected boolean pickAndExecuteAnAction()
+	/*END OF MESSAGES*/
+
+	/*SCHEDULER*/
+	public boolean pickAndExecuteAnAction()
 	{
 		//Come back from break
 		if(breakStatus == breakStatus.Back)
@@ -483,8 +410,9 @@ public class WaiterAgent extends Agent implements Waiter
 		
 		return false;
 	}
+	/*END OF SCHEDULER*/
 	
-	//ACTIONS
+	/*ACTIONS*/
 	private void SeatCustomer(MyCustomer customer)
 	{
 		gui.DoGoToSpot(customer.waitingSpot); //return to starting position to seat customer
@@ -619,4 +547,5 @@ public class WaiterAgent extends Agent implements Waiter
 		breakBox.setSelected(false);
 		host.msgBackFromBreak(this);
 	}
+	/*END OF ACTIONS*/
 }

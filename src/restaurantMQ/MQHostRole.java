@@ -1,24 +1,22 @@
 package restaurantMQ;
 
-import agent.Agent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Semaphore;
+
+import city.PersonAgent;
+import city.Role;
 import restaurantMQ.gui.HostGui;
-import restaurantMQ.gui.TableGui;
 import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
 
-import java.util.*;
-import java.util.concurrent.Semaphore;
-
-/**
- * Restaurant Host Agent
- */
-//We only have 2 types of agents in this prototype. A customer and an agent that
-//does all the rest. Rather than calling the other agent a waiter, we called him
-//the HostAgent. A Host is the manager of a restaurant who sees that all
-//is proceeded as he wishes.
-public class HostAgent extends Agent implements Host {
+public class MQHostRole extends Role implements Host
+{
+	/*DATA*/
 	private static int NTABLES = 4;//a global for the number of tables.
 	private static int NWAITINGSPOTS = 4; //a global for the number of waiting positions
 	private int workingWaiters = 0;
@@ -43,11 +41,11 @@ public class HostAgent extends Agent implements Host {
 	
 	private class MyWaiter
 	{
-		WaiterAgent waiter;
+		Waiter waiter;
 		int numCust = 0;
 		WaiterState state;
 		
-		MyWaiter(WaiterAgent waiter)
+		MyWaiter(Waiter waiter)
 		{
 			this.waiter = waiter;
 		}
@@ -58,13 +56,13 @@ public class HostAgent extends Agent implements Host {
 	private boolean readyForCust = true;
 
 	public HostGui hostGui = null;
-
+	/*END OF DATA*/
 	
-	//CONSTRUCTORS
-	public HostAgent(String name) {
-		super();
-
-		this.name = name;
+	/*CONSTRUCTORS*/
+	public MQHostRole(PersonAgent person)
+	{
+		super(person);
+		this.name = super.getName();
 		// make some tables
 		tables = Collections.synchronizedCollection(new ArrayList<Table>(NTABLES));
 		for (int ix = 1; ix <= NTABLES; ix++) {
@@ -77,60 +75,8 @@ public class HostAgent extends Agent implements Host {
 			waitingSpots.add(new WaitingSpot(i));
 		}
 	}
-	
-	public HostAgent(String name, Cook cook) {
-		super();
+	/*END OF CONSTRUCTOR*/
 
-		this.name = name;
-		// make some tables
-		
-		tables = new ArrayList<Table>(NTABLES);
-		for (int ix = 1; ix <= NTABLES; ix++) {
-			tables.add(new Table(ix));//how you add to a collections
-		}
-	}
-	
-	public void setCooks(List<Cook> cooks)
-	{
-		this.cooks = cooks;
-	}
-	
-	public void setWaiters(List<Waiter> waiters)
-	{
-		this.waiters = waiters;
-	}
-	
-	public void addWaiter(WaiterAgent waiter)
-	{
-		waiters.add(waiter);
-		myWaiters.add(new MyWaiter(waiter));
-		workingWaiters++;
-		stateChanged();
-	}
-	
-	public void addTable()
-	{
-		NTABLES++;
-		tables.add(new Table(NTABLES));
-	}
-
-	public String getMaitreDName() {
-		return name;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public List getWaitingCustomers() {
-		return waitingCustomers;
-	}
-
-	public Collection getTables() {
-		return tables;
-	}
-	
-	// Messages
 	public void msgFreeSpot(int number)
 	{
 		synchronized(waitingSpots)
@@ -179,7 +125,7 @@ public class HostAgent extends Agent implements Host {
 		{
 			for (Table table : tables) {
 				if (table.getOccupant() == cust) {
-					print(cust + " leaving " + table);
+					System.out.println(cust.getName() + " leaving " + table);
 					table.setUnoccupied();
 					stateChanged();
 				}
@@ -256,10 +202,7 @@ public class HostAgent extends Agent implements Host {
 		}
 	}
 
-	/**
-	 * Scheduler.  Determine what action is called for, and do it.
-	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		/* Think of this next rule as:
             Does there exist a table and customer,
             so that table is unoccupied and customer is waiting.
@@ -324,14 +267,12 @@ public class HostAgent extends Agent implements Host {
 		//nothing to do. So return false to main loop of abstract agent
 		//and wait.
 	}
-
-	// Actions
-
+	
 	private void SendOnBreak(MyWaiter w)
 	{
 		w.state = WaiterState.OnBreak;
 		workingWaiters--;
-		System.out.println("Host: " + w.waiter.name + " is cleared to go on break.");
+		System.out.println("Host: " + ((MQWaiterRole)w.waiter).getName() + " is cleared to go on break.");
 		w.waiter.msgGoOnBreak();
 	}
 	
@@ -380,7 +321,7 @@ public class HostAgent extends Agent implements Host {
 	private void DoSeatCustomer(Customer customer, Table table) {
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
-		print("Seating " + customer + " at " + table);
+		System.out.println("Seating " + customer.getName() + " at " + table);
 		hostGui.DoBringToTable(customer, table.tableNumber); 
 
 	}
@@ -389,9 +330,8 @@ public class HostAgent extends Agent implements Host {
 	{
 		waitingCustomers.get(0).msgTablesFull();
 	}
-
-	//utilities
-
+	
+	/*GETTERS AND SETTERS*/
 	public void setGui(HostGui gui) {
 		hostGui = gui;
 	}
@@ -400,6 +340,48 @@ public class HostAgent extends Agent implements Host {
 		return hostGui;
 	}
 	
+	public void setCooks(List<Cook> cooks)
+	{
+		this.cooks = cooks;
+	}
+	
+	public void setWaiters(List<Waiter> waiters)
+	{
+		this.waiters = waiters;
+	}
+	
+	public void addWaiter(Waiter waiter)
+	{
+		waiters.add(waiter);
+		myWaiters.add(new MyWaiter(waiter));
+		workingWaiters++;
+		stateChanged();
+	}
+	
+	public void addTable()
+	{
+		NTABLES++;
+		tables.add(new Table(NTABLES));
+	}
+
+	public String getMaitreDName() {
+		return name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public List getWaitingCustomers() {
+		return waitingCustomers;
+	}
+
+	public Collection getTables() {
+		return tables;
+	}
+	/*END OF GETTERS AND SETTERS*/
+	
+	/*UTILITIES*/
 	private boolean tablesOccupied()
 	{
 		for(Table t: tables)
@@ -428,7 +410,7 @@ public class HostAgent extends Agent implements Host {
 			}
 		}
 	}
-
+	
 	private class WaitingSpot
 	{
 		Customer occupiedBy = null;
@@ -486,4 +468,3 @@ public class HostAgent extends Agent implements Host {
 		}
 	}
 }
-
