@@ -113,11 +113,13 @@ public class MainGui extends JFrame implements MouseListener {
     
     public void addPerson(String name, String role) {
 		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
+		mainAnimationPanel.cd.addPerson(p);
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
 		p.personState = state.goHome;
 		p.startThread();
+		
 	}
     
     @Override

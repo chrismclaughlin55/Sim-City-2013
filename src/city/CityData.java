@@ -19,15 +19,24 @@ public class CityData {
 		}
 	}
 	
+	private List<PersonAgent> people = new ArrayList<PersonAgent>();
 	public static Map<BusStopAgent,Coordinate> busStopPositions; //given a busstopagent, will return pixel position in city.
 	public static ArrayList<BusStopAgent> busStops; //has busstops in order of the route the bus will take.
 	public static ArrayList<BusAgent> buses;
 	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	//ALSO needs a 2-d array of the entire place
-	
+	int timeInterval;
 	public CityData() {
-		
+		timeInterval=10;
+	}
+	
+	public void setTimeInterval(int newTime) {
+		timeInterval=newTime;
+	}
+	
+	public void addPerson(PersonAgent p) {
+		people.add(p);
 	}
 	
 	public void removeGui(Gui g) {
