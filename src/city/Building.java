@@ -26,18 +26,16 @@ public class Building extends Rectangle2D.Double {
 
 
 
-	public Building(int xPos, int yPos, int width, int height, int buildingNumber, MainGui mainGui) {
+	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
-		this.buildingNumber = buildingNumber;
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
 	}
 
-	public Building(int xPos, int yPos, int width, int height, int buildingNumber, String name, BuildingType type, MainGui mainGui) {
+	public Building(int xPos, int yPos, int width, int height, String name, BuildingType type, MainGui mainGui) {
 		super(xPos, yPos, width, height);
 		this.name = name;
 		this.type = type;
-		this.buildingNumber = buildingNumber;
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
 	}
@@ -122,6 +120,10 @@ public class Building extends Rectangle2D.Double {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void setBuildingNumber(int number) {
+		buildingNumber = number;
 	}
 
 	public void display(Building building, int buildingNumber) {

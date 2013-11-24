@@ -39,62 +39,43 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	public MainAnimationPanel(MainGui mainGui) {
 		//Add buildings
 		this.mainGui = mainGui;
-		int buildingNumber = 0;
+		
 		for (int i = 0; i < 2; i++) {
-			buildingNumber++;
-			Building b = new Building(10, 140+i*130, WIDTH, HEIGHT, buildingNumber, "home", BuildingType.home, mainGui);
+			Building b = new Building(10, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
 			buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
-			buildingNumber++;
-			Building b = new Building(10, 410+i*130, WIDTH, HEIGHT, buildingNumber, "home", BuildingType.home, mainGui);
+			Building b = new Building(10, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
 			buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
-			buildingNumber++;
-			Building b = new Building(190+i*130, 680, WIDTH, HEIGHT, buildingNumber, "home", BuildingType.home, mainGui);
+			Building b = new Building(190+i*130, 680, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
 			buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			for (int j = 0; j < 2; j++) {
-				buildingNumber++;
-				Building b = new Building(500, 410+i*130, WIDTH, HEIGHT, buildingNumber, "home", BuildingType.home, mainGui);
-				buildings.add(b);
-			}
+			Building b = new Building(500, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
+			buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			for (int j = 0; j < 2; j++) {
-				buildingNumber++;
-				Building b = new Building(500, 140+i*130, WIDTH, HEIGHT, buildingNumber, "home", BuildingType.home, mainGui);
-				buildings.add(b);
-			}
+			Building b = new Building(500, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
+			buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			for (int j = 0; i < 2; j++) {
-				buildingNumber++;
-				Building b = new Building(190+i*130, 0, WIDTH, HEIGHT, buildingNumber, "home", BuildingType.home, mainGui);
-				buildings.add(b);
-			}
-		}
-		for (int i = 0; i < 12; i++) {
-			buildingNumber++;
-			buildings.add(null);
+			Building b = new Building(190+i*130, 0, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
+			buildings.add(b);
 		}
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
-				buildingNumber++;
-				Building b = new Building(190+i*130, 140+j*130, WIDTH, HEIGHT, buildingNumber, mainGui);
+				Building b = new Building(190+i*130, 140+j*130, WIDTH, HEIGHT, mainGui);
 				buildings.add(b);
 			}
 		}
 		for (int i = 0; i < 2; i++) {
-			buildingNumber = 19 + i;
-			Building b = new Building(190+i*130, 540, WIDTH, HEIGHT, buildingNumber, mainGui);
+			Building b = new Building(190+i*130, 540, WIDTH, HEIGHT, mainGui);
 			buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
-			buildingNumber = 17 + i;
-			Building b = new Building(190+i*130, 410, WIDTH, HEIGHT, buildingNumber, mainGui);
+			Building b = new Building(190+i*130, 410, WIDTH, HEIGHT, mainGui);
 			buildings.add(b);
 		}
 		
@@ -121,6 +102,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		//Draw houses
 		ImageIcon house = new ImageIcon("res/house.png");
 		for (int i = 0; i < 12; i++) {
+			buildings.get(i).setBuildingNumber(i);
 			g2.drawImage(house.getImage(), (int) buildings.get(i).x, (int) buildings.get(i).y, null);
 			g2.drawString(buildings.get(i).name, (int) buildings.get(i).x, (int) buildings.get(i).y+10);
 		}
@@ -131,6 +113,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			g2.drawImage(rest.getImage(), (int) buildings.get(i).x, (int) buildings.get(i).y, null);
 			buildings.get(i).setType(BuildingType.restaurant);
 			buildings.get(i).setName("restaurant"+(i-11));
+			buildings.get(i).setBuildingNumber(i);
 			g2.drawString(buildings.get(i).name, (int) buildings.get(i).x, (int) buildings.get(i).y+10);
 		}
 		
@@ -139,6 +122,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
         g2.drawImage(bank.getImage(), (int) buildings.get(18).x, (int) buildings.get(18).y, null);
         buildings.get(18).setType(BuildingType.bank);
 		buildings.get(18).setName("bank");
+		buildings.get(18).setBuildingNumber(18);
 		g2.drawString(buildings.get(18).name, (int) buildings.get(18).x, (int) buildings.get(18).y+10);
 		
 		//Draw market
@@ -146,6 +130,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
         g2.drawImage(market.getImage(), (int) buildings.get(19).x, (int) buildings.get(19).y, null);
         buildings.get(19).setType(BuildingType.market);
 		buildings.get(19).setName("market");
+		buildings.get(19).setBuildingNumber(19);
 		g2.drawString(buildings.get(19).name, (int) buildings.get(19).x, (int) buildings.get(19).y+10);
         
         //Draw road
