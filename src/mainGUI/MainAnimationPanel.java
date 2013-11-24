@@ -26,12 +26,12 @@ import city.gui.PersonGui;
 import Gui.*;
 
 public class MainAnimationPanel extends JPanel implements ActionListener {
-
+    
 	private int frameDisplay = 2;
-
+    
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	//public List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
-	public CityData cd;
+	public CityData cd = new CityData();
 	
 	private int WIDTH = 100;
 	private int HEIGHT = 100;
@@ -86,17 +86,17 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		setVisible(true);
 		Timer timer = new Timer(frameDisplay, this );
 		timer.start();
-
+        
 	}
-
+    
 	public void actionPerformed(ActionEvent e) {
 		repaint();  //Will have paintComponent called
 	}
-
+    
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
 		g2.setColor(Color.WHITE);
-
+        
 		//Clear the screen by painting a rectangle the size of the frame
 		ImageIcon background = new ImageIcon("res/background.png");
 		g2.drawImage(background.getImage(), 0, 0, null);
@@ -160,7 +160,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
         g2.drawImage(road3.getImage(), 440, 95, null);
         g2.drawImage(road3.getImage(), 130, 635, null);
         g2.drawImage(road3.getImage(), 440, 635, null);
-
+        
 		synchronized(guis){
 			for(Gui gui : guis) {
 				if (gui.isPresent()) {
@@ -176,14 +176,14 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			}
 		}
 	}
-
+    
 	public void addGui(PersonGui gui) {
 		guis.add(gui);
 		System.out.println ("added gui!");
 	}
-
+    
 	public List getBuildings() {
 		return cd.buildings;
 	}
-
+    
 }
