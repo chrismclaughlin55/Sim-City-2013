@@ -21,6 +21,7 @@ import city.PersonAgent;
 import city.gui.PersonGui;
 import config.ConfigParser;
 import bankgui.*;
+import city.PersonAgent.state;
 
 /**
  * Main GUI class.
@@ -86,50 +87,37 @@ public class MainGui extends JFrame implements MouseListener {
         marketGui.setTitle("Market");
         marketGui.setVisible(false);
         marketGui.setResizable(false);
-        marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        marketGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
         for (int i = 0; i < 6; i++) {
         	restaurantGuis[i] = new RestaurantGui();
         	restaurantGuis[i].setTitle("RestaurantMQ");
         	restaurantGuis[i].setVisible(false);
         	restaurantGuis[i].setResizable(false);
-        	restaurantGuis[i].setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        	restaurantGuis[i].setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         
         bankGui = new BankGui();
         bankGui.setTitle("Bank");
         bankGui.setVisible(false);
         bankGui.setResizable(false);
-        bankGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
         for (int i = 0; i < 12; i++) {
         	homeGuis[i] = new HomeGui();
         	homeGuis[i].setTitle("Home");
         	homeGuis[i].setVisible(false);
         	homeGuis[i].setResizable(false);
-        	homeGuis[i].setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        	homeGuis[i].setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
     }
     
   
-    public static void main(String[] args) {
-    	
-    	/*RestaurantGui restGui = new RestaurantGui();
-        restGui.setTitle("csci201 Restaurant");
-        restGui.setVisible(true);
-        restGui.setResizable(false);
-        restGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        restGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);*/
-    	
-    	
-         
+    public static void main(String[] args) { 
         MainGui gui = new MainGui();
         gui.setTitle("Sim City - Team 15");
         gui.setVisible(true);
-        gui.setResizable(true);        
-
-        
-       
+        gui.setResizable(true);
     }
     
     public void addPerson(String name, String role) {
@@ -137,6 +125,7 @@ public class MainGui extends JFrame implements MouseListener {
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
+		p.personState = state.goHome;
 		p.startThread();
 	}
     
