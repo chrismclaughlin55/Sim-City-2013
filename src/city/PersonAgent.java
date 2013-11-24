@@ -111,7 +111,7 @@ public class PersonAgent extends Agent
 	
 	protected void goHome() {
 		int homeNumber = (int)((int)(Math.random()*11));
-		personGui.DoGoToBuilding(homeNumber);
+		personGui.DoGoToBuilding(0);
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
