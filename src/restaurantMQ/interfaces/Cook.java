@@ -1,7 +1,6 @@
 package restaurantMQ.interfaces;
 
 import restaurantMQ.CookOrder;
-import restaurantMQ.WaiterAgent;
 
 public interface Cook {
 

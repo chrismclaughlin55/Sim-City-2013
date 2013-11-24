@@ -1,6 +1,5 @@
 package restaurantMQ.interfaces;
 
-import restaurantMQ.CustomerAgent;
 import restaurantMQ.Menu;
 import restaurantMQ.gui.WaiterGui;
 

@@ -1,9 +1,5 @@
 package restaurantMQ.gui;
 
-import restaurantMQ.CashierAgent;
-import restaurantMQ.CookAgent;
-import restaurantMQ.CustomerAgent;
-import restaurantMQ.HostAgent;
 import restaurantMQ.MQCashierRole;
 import restaurantMQ.MQCookRole;
 import restaurantMQ.MQCustomerRole;
@@ -11,7 +7,6 @@ import restaurantMQ.MQHostRole;
 import restaurantMQ.MQWaiterRole;
 import restaurantMQ.MarketAgent;
 import restaurantMQ.Menu;
-import restaurantMQ.WaiterAgent;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
@@ -248,35 +243,6 @@ public class RestaurantPanel extends JPanel {
      * @param type indicates whether the person is a customer or waiter (later)
      * @param name name of person
      */
-    public void addPerson(String type, String name) {
-
-    	if (type.equals("Customers")) {
-    		CustomerAgent c = new CustomerAgent(name, timer, this);	
-    		CustomerGui g = new CustomerGui(c, gui);
-
-    		gui.animationPanel.addGui(g);// dw
-    		c.setHost(host);
-    		c.setGui(g);
-    		customers.add(c);
-    		c.startThread();
-    	}
-    }
-    
-    public void addPerson(String type, String name, boolean hungry) {
-
-    	if (type.equals("Customers")) {
-    		CustomerAgent c = new CustomerAgent(name, timer, this);	
-    		CustomerGui g = new CustomerGui(c, gui);
-
-    		gui.animationPanel.addGui(g);// dw
-    		c.setHost(host);
-    		c.setGui(g);
-    		if(hungry)
-    			c.getGui().setHungry();
-    		customers.add(c);
-    		c.startThread();
-    	}
-    }
     
     //This is the one which is used!!!!
     public void addPerson(String type, String name, JCheckBox hungry, boolean hunger) {

@@ -4,8 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
-import restaurantMQ.CustomerAgent.AgentEvent;
-import restaurantMQ.CustomerAgent.AgentState;
 import restaurantMQ.gui.CustomerGui;
 import restaurantMQ.gui.RestaurantPanel;
 import restaurantMQ.interfaces.Cashier;
