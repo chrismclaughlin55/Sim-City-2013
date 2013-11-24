@@ -20,7 +20,7 @@ public class CityData {
 	public static Map<BusStopAgent,Coordinate> busStopPositions; //given a busstopagent, will return pixel position in city.
 	public static ArrayList<BusStopAgent> busStops; //has busstops in order of the route the bus will take.
 	public static ArrayList<BusAgent> buses;
-	public static ArrayList<Building> buildings;
+	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
 	//ALSO needs a 2-d array of the entire place
 	
 	public CityData() {
