@@ -2,12 +2,10 @@ package mainGUI;
 
 import javax.swing.JFrame;
 
-import bankgui.BankGui;
 import market.gui.MarketGui;
 import restaurantMQ.gui.RestaurantGui;
 import city.Building;
 import city.Building.BuildingType;
-import city.HomeGui;
 
 public class BuildingPanel {
 	
@@ -18,42 +16,24 @@ public class BuildingPanel {
 	}
 	
 	public void displayBuildingPanel(Building building) {
-		if (building.type == BuildingType.restaurant) {
+		switch (building.type) {
+		case restaurant:
 			if (building.name.equals("restaurant")) {
-				RestaurantGui restGui = new RestaurantGui();
-				restGui.setTitle("restaurantMQ");
-				restGui.setVisible(true);
-				restGui.setResizable(false);
-				restGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				mainGui.restaurantGui1.setVisible(true);
 			}
-		}
-		
-		switch (building.type) {	
+			break;
 		
 		case bank:
-			BankGui bankGui = new BankGui();
-			bankGui.setTitle("Bank");
-			bankGui.setVisible(true);
-			bankGui.setResizable(false);
-			bankGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			//add bank panel and gui later
 			break;
 			
 		case home:
 		case room:
-			HomeGui homeGui = new HomeGui();
-			homeGui.setTitle("home");
-			homeGui.setVisible(true);
-			homeGui.setResizable(false);
-			homeGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			//add home panel and gui later
 			break;
 			
 		case market:
-			//mainGui.marketGui1.setVisible(true);
-			MarketGui marketGui = new MarketGui();
-			marketGui.setTitle("market1");
-			marketGui.setVisible(true);
-			marketGui.setResizable(false);
-			marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			mainGui.marketGui1.setVisible(true);
 			break;
 			
 		default: 

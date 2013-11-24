@@ -21,12 +21,12 @@ import javax.swing.Timer;
 
 import city.Building;
 import city.Building.BuildingType;
-import Gui.*;
 import city.gui.PersonGui;
+import Gui.*;
 
 public class MainAnimationPanel extends JPanel implements ActionListener {
 
-	private int frameDisplay = 2;
+	private int frameDisplay = 20;
 
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	public List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
@@ -90,13 +90,9 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		g2.setColor(Color.WHITE);
 
 		//Clear the screen by painting a rectangle the size of the frame
-		//g2.setColor(getBackground());
-		g2.setColor(Color.WHITE);
-		g2.fillRect(0, 0, screenSize.width/2, screenSize.height );
 		ImageIcon background = new ImageIcon("res/background.png");
 		g2.drawImage(background.getImage(), 0, 0, null);
 		
@@ -138,10 +134,9 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		buildings.get(17).setName("market");
 		g2.drawString(buildings.get(17).name, (int) buildings.get(17).x, (int) buildings.get(17).y+10);
         
-		//height 900, width 720
         //Draw road
         ImageIcon road1 = new ImageIcon("res/road1.png");
-        for (int i = 0; i < screenSize.width/2; i++) {
+        for (int i = 0; i < 615; i++) {
         	g2.drawImage(road1.getImage(), i, 365, null);
         }
         for (int i = 130; i < 470; i++) {
@@ -186,6 +181,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		System.out.println ("added gui!");
 	}
 
-
+	public List getBuildings() {
+		return buildings;
+	}
 
 }
