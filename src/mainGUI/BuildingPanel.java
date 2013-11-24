@@ -18,13 +18,28 @@ public class BuildingPanel {
 	public void displayBuildingPanel(Building building) {
 		switch (building.type) {
 		case restaurant:
-			if (building.name.equals("restaurant")) {
+			if (building.name.equals("restaurant1")) {
 				mainGui.restaurantGui1.setVisible(true);
+			}
+			if (building.name.equals("restaurant2")) {
+				mainGui.restaurantGui2.setVisible(true);
+			}
+			if (building.name.equals("restaurant3")) {
+				mainGui.restaurantGui3.setVisible(true);
+			}
+			if (building.name.equals("restaurant4")) {
+				mainGui.restaurantGui4.setVisible(true);
+			}
+			if (building.name.equals("restaurant5")) {
+				mainGui.restaurantGui5.setVisible(true);
+			}
+			if (building.name.equals("restaurant6")) {
+				mainGui.restaurantGui6.setVisible(true);
 			}
 			break;
 		
 		case bank:
-			//add bank panel and gui later
+			mainGui.bankGui.setVisible(true);
 			break;
 			
 		case home:
