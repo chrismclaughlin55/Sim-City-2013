@@ -11,6 +11,7 @@ public class Home extends Building {
 	//constructor for non-apartment homes
 	public Home(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height, mainGui);
+		homeGui = new HomeGui();
 	}
 
 	public void EnterBuilding(PersonAgent p){
@@ -18,7 +19,8 @@ public class Home extends Building {
 			//allow the person into the building
 			
 		//}
-		
+		homeGui.getHomePanel().addGui(p.getGui());
+		p.getGui().setPresent(true);
 	}
 	
 	

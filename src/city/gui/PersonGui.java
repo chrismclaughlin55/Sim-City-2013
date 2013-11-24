@@ -114,6 +114,10 @@ public class PersonGui implements Gui{
 		return isPresent;
 	}
 	
+	public void setPresent(boolean p) {
+		isPresent = p;
+	}
+	
 	public void DoGoToBuilding(int buildingNumber) {
 		xDestination = xBuilding[buildingNumber];
 		yDestination = yBuilding[buildingNumber];
