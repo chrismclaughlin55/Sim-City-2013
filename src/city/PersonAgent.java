@@ -86,8 +86,13 @@ public class PersonAgent extends Agent
 		return false;
 	}
 	
+	protected void goToRandomPlace() {
+		//personGui.DoGoToRandomPlace();
+	}
+	
 	protected void goToRestaurant() {
-		personGui.DoGoToBuilding(12);
+		int restNumber = (int)(12+(int)(Math.random()*17));
+		personGui.DoGoToBuilding(restNumber);
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -99,7 +104,8 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goHome() {
-		personGui.DoGoToBuilding(0);
+		int homeNumber = (int)((int)(Math.random()*11));
+		personGui.DoGoToBuilding(homeNumber);
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -111,7 +117,7 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goToBank() {
-		personGui.DoGoToBuilding(16);
+		personGui.DoGoToBuilding(18);
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -123,7 +129,7 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goToMarket() {
-		personGui.DoGoToBuilding(17);
+		personGui.DoGoToBuilding(19);
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();

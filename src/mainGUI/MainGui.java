@@ -15,6 +15,7 @@ import city.Building;
 import city.PersonAgent;
 import city.gui.PersonGui;
 import config.ConfigParser;
+import bankgui.*;
 
 /**
  * Main GUI class.
@@ -36,6 +37,12 @@ public class MainGui extends JFrame implements MouseListener {
    
     public MarketGui marketGui1;
     public RestaurantGui restaurantGui1;
+    public RestaurantGui restaurantGui2;
+    public RestaurantGui restaurantGui3;
+    public RestaurantGui restaurantGui4;
+    public RestaurantGui restaurantGui5;
+    public RestaurantGui restaurantGui6;
+    public BankGui bankGui;
     
     /**
      * Constructor for RestaurantGui class.
@@ -86,7 +93,41 @@ public class MainGui extends JFrame implements MouseListener {
         restaurantGui1.setResizable(false);
         restaurantGui1.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
+        restaurantGui2 = new RestaurantGui();
+        restaurantGui2.setTitle("RestaurantMQ");
+        restaurantGui2.setVisible(false);
+        restaurantGui2.setResizable(false);
+        restaurantGui2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
+        restaurantGui3 = new RestaurantGui();
+        restaurantGui3.setTitle("RestaurantMQ");
+        restaurantGui3.setVisible(false);
+        restaurantGui3.setResizable(false);
+        restaurantGui3.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        restaurantGui4 = new RestaurantGui();
+        restaurantGui4.setTitle("RestaurantMQ");
+        restaurantGui4.setVisible(false);
+        restaurantGui4.setResizable(false);
+        restaurantGui4.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        restaurantGui5 = new RestaurantGui();
+        restaurantGui5.setTitle("RestaurantMQ");
+        restaurantGui5.setVisible(false);
+        restaurantGui5.setResizable(false);
+        restaurantGui5.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        restaurantGui6 = new RestaurantGui();
+        restaurantGui6.setTitle("RestaurantMQ");
+        restaurantGui6.setVisible(false);
+        restaurantGui6.setResizable(false);
+        restaurantGui6.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        bankGui = new BankGui();
+        bankGui.setTitle("Bank");
+        bankGui.setVisible(false);
+        bankGui.setResizable(false);
+        bankGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
     
   
