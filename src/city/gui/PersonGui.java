@@ -51,7 +51,33 @@ public class PersonGui implements Gui {
 	}
 	
 	public void DoGoToEntrance() {
-		
+		xDestination = 0;
+		yDestination = 340;
+	}
+	
+	public void DoGoToRefridgerator() {
+		xDestination = 30;
+		yDestination = 30;
+	}
+	
+	public void DoGoToBed() {
+		xDestination = 360;
+		yDestination = 20;
+	}
+	
+	public void DoGoToStove() {
+		xDestination = 105;
+		yDestination = 25;
+	}
+	
+	public void DoGoToWall() {
+		xDestination = 190;
+		yDestination = 340;
+	}
+	
+	public void DoGoToCouch() {
+		xDestination = 170;
+		yDestination = 190;
 	}
 
 	@Override

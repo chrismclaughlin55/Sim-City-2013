@@ -20,22 +20,26 @@ public class HomePanel extends JPanel implements ActionListener {
 	private Image bufferImage;
 	private Dimension bufferSize;
 	private int frameDisplay = 2;
-	private int width;
-	private int height;
+	private int width = 400;
+	private int height = 400;
 	
 
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 
 	public HomePanel() {
 		setBackground(Color.WHITE);
-
 		setVisible(true);
-		
-
 		bufferSize = this.getSize();
 
 		Timer timer = new Timer(frameDisplay, this);
 		timer.start();
+		
+		/**
+		 * Used to test the gui
+		 * guis.add(new PersonGui(new PersonAgent("Dave")));
+		 * PersonGui g1 = (PersonGui) guis.get(0);
+		 * g1.DoGoToBed();
+		 */
 
 	}
 
@@ -45,18 +49,16 @@ public class HomePanel extends JPanel implements ActionListener {
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-		height = this.getHeight();
-		width = this.getWidth();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
 		//Clear the screen by painting a rectangle the size of the frame
 		g2.setColor(getBackground());
 		g2.fillRect(0, 0, width, height);
 		g2.setColor(Color.BLACK);
-		g2.drawLine(width/2, 0, width/2, height - 50);
-		g2.fillRect((width/4 - 10), 0, 50, 20);
-		g2.setColor(Color.GREEN);
-		g2.fillRect(0, height - 50, 30, 40);
+		g2.drawLine(width/2, 0, width/2, height - 80);
+		g2.fillRect((width/4 - 10), 0, 50, 25);
+		g2.setColor(Color.CYAN);
+		g2.fillRect(0, height - 70, 30, 40);
 		g2.setColor(Color.BLUE);
 		g2.fillRect(0, 20, 30, 40);
 		g2.setColor(Color.PINK);
