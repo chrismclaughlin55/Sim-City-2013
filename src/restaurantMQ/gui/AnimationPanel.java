@@ -41,6 +41,11 @@ public class AnimationPanel extends JPanel implements ActionListener {
     }
 
 	public void actionPerformed(ActionEvent e) {
+		for(Gui gui : guis) {
+            if (gui.isPresent()) {
+                gui.updatePosition();
+            }
+        }
 		repaint();  //Will have paintComponent called
 	}
 
@@ -56,13 +61,6 @@ public class AnimationPanel extends JPanel implements ActionListener {
         for(TableGui t : tables)
         {
         	g2.fillRect(t.tableX, t.tableY, TABLEWIDTH, TABLEWIDTH);//200 and 250 need to be table params
-        }
-
-
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.updatePosition();
-            }
         }
 
         for(Gui gui : guis) {
