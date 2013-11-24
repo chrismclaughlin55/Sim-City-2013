@@ -40,7 +40,7 @@ public class HomePanel extends JPanel implements ActionListener {
 		 * PersonGui g1 = (PersonGui) guis.get(0);
 		 * g1.DoGoToBed();
 		 */
-
+		
 	}
 
 	public void actionPerformed(ActionEvent e) {
