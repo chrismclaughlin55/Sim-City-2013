@@ -50,6 +50,10 @@ public class PersonGui implements Gui {
 		g.fillRect(xPos, yPos, WIDTH, WIDTH);
 		
 	}
+	
+	public void DoGoToEntrance() {
+		
+	}
 
 	@Override
 	public boolean isPresent() {

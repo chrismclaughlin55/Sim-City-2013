@@ -18,7 +18,7 @@ public class HomeGui extends JFrame implements ActionListener {
 
 	public HomeGui() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(0,0,(int) (screenSize.width/1.5), (int) (screenSize.height/1.5));
+		setBounds(0,0, screenSize.width/2, screenSize.height/2);
 		setLocation((screenSize.width/2-this.getSize().width/2), (screenSize.height/2-this.getSize().height/2));
 		setLayout(new BorderLayout());
 		
@@ -30,7 +30,6 @@ public class HomeGui extends JFrame implements ActionListener {
 		this.add(infoPanel, BorderLayout.WEST);
 		
 		JPanel animationPanel = new HomePanel();
-		animationPanel.add(new JLabel("animation goes here"));
 		this.add(animationPanel, BorderLayout.CENTER);
 	}
 	
