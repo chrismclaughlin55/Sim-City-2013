@@ -14,15 +14,12 @@ public class Home extends Building {
 		homeGui = new HomeGui();
 	}
 
-	public void EnterBuilding(PersonAgent p){
+	public void EnterBuilding(PersonAgent p, String s){
 		//if (p.equals(manager)) { 
 			//allow the person into the building
 			
 		//}
-		homeGui.getHomePanel().addGui(p.getGui());
-		p.getGui().setPresent(true);
-	}
-	
-	
-	
+		p.getGui().setPresent(true); System.err.println("Present = true");
+		homeGui.getHomePanel().addGui(p.getGui()); System.err.println("added to home panel");
+	}	
 }
