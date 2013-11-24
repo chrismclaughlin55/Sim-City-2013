@@ -20,7 +20,6 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
 	public AnimationPanel() {
 		setBackground(Color.WHITE);
-
 		setVisible(true);
 
 		bufferSize = this.getSize();

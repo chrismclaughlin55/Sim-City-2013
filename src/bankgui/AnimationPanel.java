@@ -13,24 +13,24 @@ import java.util.List;
 
 import javax.swing.*;
 
-import market.gui.CustomerGui;
-import market.gui.EmployeeGui;
 import Gui.*;
-import market.gui.ManagerGui;
 
 public class AnimationPanel extends JPanel implements ActionListener{
+    private static final int WINDOWX = 400;
+    private static final int WINDOWY = 500;
+    private static final int TIMEINTERVAL = 5;
+    
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	private Image bufferImage;
 	private Dimension bufferSize;
-	private int frameDisplay = 2;
 
 	public AnimationPanel() {
-		setBackground(Color.WHITE);
+		setBackground(Color.lightGray);
 		setVisible(true);
-
+		setSize(WINDOWX, WINDOWY);
 		bufferSize = this.getSize();
 
-		Timer timer = new Timer(frameDisplay, this );
+		Timer timer = new Timer(TIMEINTERVAL, this );
 		timer.start();
 
 		
@@ -42,14 +42,16 @@ public class AnimationPanel extends JPanel implements ActionListener{
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-		Color tableColor = new Color(149, 165, 166);
-
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Color DeskColor = new Color(139, 0, 0);
 
 		//Clear the screen by painting a rectangle the size of the frame
 		g2.setColor(getBackground());
-		g2.fillRect(0, 0, screenSize.width/4, screenSize.height/2 );
-
+		g2.fillRect(0, 0, WINDOWX, WINDOWY );
+		g2.setColor(DeskColor);
+		g2.fill3DRect(250 ,0, 10, WINDOWY-30, true);
+		g2.setColor(Color.BLACK);
+		g2.draw3DRect(0, 200, 200, 1, true);
+		g2.draw3DRect(0, 230, 200, 1, true);
 		synchronized(guis){
 			for(Gui gui : guis) {
 				if (gui.isPresent()) {
@@ -66,15 +68,15 @@ public class AnimationPanel extends JPanel implements ActionListener{
 		}
 	}
 
-	public void addGui(CustomerGui gui) {
+	public void addGui(BankCustomerGui gui) {
 		guis.add(gui);
 	}
 
-	public void removeGui(EmployeeGui gui) {
+	public void removeGui(TellerGui gui) {
 		guis.remove(gui);
 	}
 
-	public void addGui(ManagerGui gui) {
+	public void addGui(BankManagerGui gui) {
 		guis.add(gui);
 	}
 
