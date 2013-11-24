@@ -39,12 +39,11 @@ public class MainGui extends JFrame implements MouseListener {
 	
 	private ConfigParser parser;
     private PersonCreationPanel personPanel;
-    private MainAnimationPanel mainAnimationPanel;
+    public MainAnimationPanel mainAnimationPanel;
    
     public MarketGui marketGui;
     public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
-    public HomeGui homeGuis[] = {null, null, null, null, null, null, null, null, null, null, null, null};
     
     /**
      * Constructor for RestaurantGui class.
@@ -102,14 +101,6 @@ public class MainGui extends JFrame implements MouseListener {
         bankGui.setVisible(false);
         bankGui.setResizable(false);
         bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        
-        for (int i = 0; i < 12; i++) {
-        	homeGuis[i] = new HomeGui();
-        	homeGuis[i].setTitle("Home");
-        	homeGuis[i].setVisible(false);
-        	homeGuis[i].setResizable(false);
-        	homeGuis[i].setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        }
     }
     
   

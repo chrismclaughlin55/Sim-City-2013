@@ -22,6 +22,7 @@ import javax.swing.Timer;
 import city.Building;
 import city.Building.BuildingType;
 import city.CityData;
+import city.Home;
 import city.gui.PersonGui;
 import Gui.*;
 
@@ -31,7 +32,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
     
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	//public List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
-	public CityData cd = new CityData();
+	public CityData cd;
 	
 	private int WIDTH = 100;
 	private int HEIGHT = 100;
@@ -41,29 +42,30 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	public MainAnimationPanel(MainGui mainGui) {
 		//Add buildings
 		this.mainGui = mainGui;
+		cd = new CityData();
 		
 		for (int i = 0; i < 2; i++) {
-			Building b = new Building(10, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
+			Building b = new Home(10, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
-			Building b = new Building(10, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
+			Building b = new Home(10, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
-			Building b = new Building(190+i*130, 680, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
+			Building b = new Home(190+i*130, 680, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			Building b = new Building(500, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
+			Building b = new Home(500, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			Building b = new Building(500, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
+			Building b = new Home(500, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int i = 1; i >= 0; i--) {
-			Building b = new Building(190+i*130, 0, WIDTH, HEIGHT, "home", BuildingType.home, mainGui);
+			Building b = new Home(190+i*130, 0, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int j = 0; j < 2; j++) {
@@ -161,15 +163,15 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
         g2.drawImage(road3.getImage(), 130, 635, null);
         g2.drawImage(road3.getImage(), 440, 635, null);
         
-		synchronized(guis){
-			for(Gui gui : guis) {
+		synchronized(cd.guis){
+			for(Gui gui : cd.guis) {
 				if (gui.isPresent()) {
 					gui.updatePosition();
 				}
 			}
 		}
-		synchronized(guis){
-			for(Gui gui : guis) {
+		synchronized(cd.guis){
+			for(Gui gui : cd.guis) {
 				if (gui.isPresent()) {
 					gui.draw(g2);
 				}
@@ -178,9 +180,10 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	}
     
 	public void addGui(PersonGui gui) {
-		guis.add(gui);
+		cd.guis.add(gui);
 		System.out.println ("added gui!");
 	}
+	
     
 	public List getBuildings() {
 		return cd.buildings;
