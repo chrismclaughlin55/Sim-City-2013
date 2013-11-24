@@ -44,6 +44,13 @@ public class HomePanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		synchronized(guis){
+			for(Gui gui : guis) {
+				if (gui.isPresent()) {
+					gui.updatePosition();
+				}
+			}
+		}
 		repaint();  //Will have paintComponent called
 	}
 	
@@ -70,14 +77,6 @@ public class HomePanel extends JPanel implements ActionListener {
 		g2.setColor(Color.GRAY);
 		g2.fillRect(width/2 - 40, height/2 - 30, 40, 60);
 		
-
-		synchronized(guis){
-			for(Gui gui : guis) {
-				if (gui.isPresent()) {
-					gui.updatePosition();
-				}
-			}
-		}
 		synchronized(guis){
 			for(Gui gui : guis) {
 				if (gui.isPresent()) {
