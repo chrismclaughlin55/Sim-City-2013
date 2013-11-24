@@ -34,6 +34,7 @@ public class BankGui extends JFrame implements ActionListener {
 
 			add (bankPanel);
 			add (animationPanel);
+			
 
 }
 
