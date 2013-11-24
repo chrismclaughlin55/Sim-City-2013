@@ -64,6 +64,9 @@ public class PersonAgent extends Agent
 	
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
+		if (personState == state.atHome) {
+			//at home stuff
+		}
 		if (personState == state.goToRestaurant) {
 			goToRestaurant();
 			return true;
@@ -120,6 +123,8 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+		personState = state.atHome;
+		
 	}
 	
 	protected void goToBank() {

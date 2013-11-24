@@ -17,6 +17,8 @@ import market.gui.AnimationPanel;
 
 public class HomeGui extends JFrame implements ActionListener {
 
+	private HomePanel homePanel;
+	
 	public HomeGui() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0,0, 600, 400);
@@ -30,11 +32,13 @@ public class HomeGui extends JFrame implements ActionListener {
 		infoPanel.add(new JLabel("here is some home info this home is pretty great and stuff"));
 		this.add(infoPanel, BorderLayout.WEST);
 		
-		JPanel animationPanel = new HomePanel();
-		this.add(animationPanel, BorderLayout.CENTER);
+		homePanel = new HomePanel();
+		this.add(homePanel, BorderLayout.CENTER);
 	}
 	
-	
+	public HomePanel getHomePanel(){
+		return homePanel;
+	}
 	
 	public void actionPerformed(ActionEvent arg0) {
 		
