@@ -73,7 +73,6 @@ public class PersonAgent extends Agent
 			goToMarket();
 		}
 		
-		//Iterate through the list of roles
 		for (Role role : roles) {
 			//If a role is active, attempt to run its scheduler
 			if (role.isActive()) {
