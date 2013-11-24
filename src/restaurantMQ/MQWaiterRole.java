@@ -30,6 +30,7 @@ public class MQWaiterRole extends Role implements Waiter
 	BreakStatus breakStatus = BreakStatus.None;
 	JCheckBox breakBox;
 	private int waiterNumber;
+	private List<CookOrder> cookOrders;
 	
 	Menu menu = null;
 	
@@ -101,7 +102,7 @@ public class MQWaiterRole extends Role implements Waiter
 		super(person);
 	}
 	
-	public MQWaiterRole(PersonAgent person, int waiterNumber, Host host, List<Cook> cooks, Cashier cashier, Menu menu, JCheckBox breakBox)
+	public MQWaiterRole(PersonAgent person, int waiterNumber, Host host, List<Cook> cooks, List<CookOrder> cookOrders, Cashier cashier, Menu menu, JCheckBox breakBox)
 	{
 		super(person);
 		this.name = person.getName();
@@ -109,6 +110,7 @@ public class MQWaiterRole extends Role implements Waiter
 		this.breakBox = breakBox;
 		this.host = host;
 		this.cooks = cooks;
+		this.cookOrders = cookOrders;
 		this.cashier = cashier;
 		this.menu = menu;
 	}
@@ -460,7 +462,11 @@ public class MQWaiterRole extends Role implements Waiter
 		
 		gui.setCooking(order.choice, order.customer);
 		
-		cooks.get(0).msgHereIsOrder(order.choice, order.table, this);
+		cookOrders.add(new CookOrder(order.choice, order.table, this));
+		for(Cook c : cooks)
+		{
+			c.msgOrdersUpdated();
+		}
 	}
 	
 	private void RetakeOrder(Order order)

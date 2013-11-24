@@ -20,4 +20,6 @@ public interface Cook {
 
 	public abstract void msgPause();
 
+	public abstract void msgOrdersUpdated();
+
 }
