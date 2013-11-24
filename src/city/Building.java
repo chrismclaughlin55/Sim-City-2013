@@ -16,6 +16,7 @@ public class Building extends Rectangle2D.Double {
 	private boolean isOpen = false;
 	protected PersonAgent manager;
 	CityData cityData;
+	public int buildingNumber;
 
 	BuildingPanel buildingPanel;
 	MainGui mainGui;
@@ -25,16 +26,18 @@ public class Building extends Rectangle2D.Double {
 
 
 
-	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
+	public Building(int xPos, int yPos, int width, int height, int buildingNumber, MainGui mainGui) {
 		super(xPos, yPos, width, height);
+		this.buildingNumber = buildingNumber;
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
 	}
 
-	public Building(int xPos, int yPos, int width, int height, String name, BuildingType type, MainGui mainGui) {
+	public Building(int xPos, int yPos, int width, int height, int buildingNumber, String name, BuildingType type, MainGui mainGui) {
 		super(xPos, yPos, width, height);
 		this.name = name;
 		this.type = type;
+		this.buildingNumber = buildingNumber;
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
 	}
