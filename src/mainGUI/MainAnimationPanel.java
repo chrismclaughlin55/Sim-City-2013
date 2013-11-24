@@ -26,7 +26,7 @@ import Gui.*;
 
 public class MainAnimationPanel extends JPanel implements ActionListener {
 
-	private int frameDisplay = 20;
+	private int frameDisplay = 2;
 
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	public List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
