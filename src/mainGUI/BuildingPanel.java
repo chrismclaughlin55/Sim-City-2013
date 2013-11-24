@@ -15,26 +15,13 @@ public class BuildingPanel {
 		this.mainGui = mainGui;
 	}
 	
-	public void displayBuildingPanel(Building building) {
+	public void displayBuildingPanel(Building building, int buildingNumber) {
 		switch (building.type) {
 		case restaurant:
-			if (building.name.equals("restaurant1")) {
-				mainGui.restaurantGui1.setVisible(true);
-			}
-			if (building.name.equals("restaurant2")) {
-				mainGui.restaurantGui2.setVisible(true);
-			}
-			if (building.name.equals("restaurant3")) {
-				mainGui.restaurantGui3.setVisible(true);
-			}
-			if (building.name.equals("restaurant4")) {
-				mainGui.restaurantGui4.setVisible(true);
-			}
-			if (building.name.equals("restaurant5")) {
-				mainGui.restaurantGui5.setVisible(true);
-			}
-			if (building.name.equals("restaurant6")) {
-				mainGui.restaurantGui6.setVisible(true);
+			for (int i = 0; i < 6; i++) {
+				if (building.name.equals("restaurant"+(i+1))) {
+					mainGui.restaurantGuis[i].setVisible(true);
+				}
 			}
 			break;
 		
@@ -43,12 +30,13 @@ public class BuildingPanel {
 			break;
 			
 		case home:
+			mainGui.homeGuis[buildingNumber].setVisible(true);
 		case room:
 			//add home panel and gui later
 			break;
 			
 		case market:
-			mainGui.marketGui1.setVisible(true);
+			mainGui.marketGui.setVisible(true);
 			break;
 			
 		default: 

@@ -121,7 +121,7 @@ public class Building extends Rectangle2D.Double {
 		this.name = name;
 	}
 
-	public void display(Building building) {
-		buildingPanel.displayBuildingPanel(building);
+	public void display(Building building, int buildingNumber) {
+		buildingPanel.displayBuildingPanel(building, buildingNumber);
 	}
 }

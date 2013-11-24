@@ -3,6 +3,10 @@ package mainGUI;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -12,6 +16,7 @@ import javax.swing.JPanel;
 import restaurantMQ.gui.RestaurantGui;
 import market.gui.MarketGui;
 import city.Building;
+import city.HomeGui;
 import city.PersonAgent;
 import city.gui.PersonGui;
 import config.ConfigParser;
@@ -35,14 +40,10 @@ public class MainGui extends JFrame implements MouseListener {
     private PersonCreationPanel personPanel;
     private MainAnimationPanel mainAnimationPanel;
    
-    public MarketGui marketGui1;
-    public RestaurantGui restaurantGui1;
-    public RestaurantGui restaurantGui2;
-    public RestaurantGui restaurantGui3;
-    public RestaurantGui restaurantGui4;
-    public RestaurantGui restaurantGui5;
-    public RestaurantGui restaurantGui6;
+    public MarketGui marketGui;
+    public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
+    public HomeGui homeGuis[] = {null, null, null, null, null, null, null, null, null, null, null, null};
     
     /**
      * Constructor for RestaurantGui class.
@@ -81,53 +82,33 @@ public class MainGui extends JFrame implements MouseListener {
         addMouseListener(this);
         
         // add gui for all buildings, set the guis to invisible initially
-        marketGui1 = new MarketGui();
-        marketGui1.setTitle("Market1");
-        marketGui1.setVisible(false);
-        marketGui1.setResizable(false);
-        marketGui1.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        marketGui = new MarketGui();
+        marketGui.setTitle("Market");
+        marketGui.setVisible(false);
+        marketGui.setResizable(false);
+        marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
-        restaurantGui1 = new RestaurantGui();
-        restaurantGui1.setTitle("RestaurantMQ");
-        restaurantGui1.setVisible(false);
-        restaurantGui1.setResizable(false);
-        restaurantGui1.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
-        restaurantGui2 = new RestaurantGui();
-        restaurantGui2.setTitle("RestaurantMQ");
-        restaurantGui2.setVisible(false);
-        restaurantGui2.setResizable(false);
-        restaurantGui2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
-        restaurantGui3 = new RestaurantGui();
-        restaurantGui3.setTitle("RestaurantMQ");
-        restaurantGui3.setVisible(false);
-        restaurantGui3.setResizable(false);
-        restaurantGui3.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
-        restaurantGui4 = new RestaurantGui();
-        restaurantGui4.setTitle("RestaurantMQ");
-        restaurantGui4.setVisible(false);
-        restaurantGui4.setResizable(false);
-        restaurantGui4.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
-        restaurantGui5 = new RestaurantGui();
-        restaurantGui5.setTitle("RestaurantMQ");
-        restaurantGui5.setVisible(false);
-        restaurantGui5.setResizable(false);
-        restaurantGui5.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
-        restaurantGui6 = new RestaurantGui();
-        restaurantGui6.setTitle("RestaurantMQ");
-        restaurantGui6.setVisible(false);
-        restaurantGui6.setResizable(false);
-        restaurantGui6.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        for (int i = 0; i < 6; i++) {
+        	restaurantGuis[i] = new RestaurantGui();
+        	restaurantGuis[i].setTitle("RestaurantMQ");
+        	restaurantGuis[i].setVisible(false);
+        	restaurantGuis[i].setResizable(false);
+        	restaurantGuis[i].setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }
         
         bankGui = new BankGui();
         bankGui.setTitle("Bank");
         bankGui.setVisible(false);
         bankGui.setResizable(false);
         bankGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        for (int i = 0; i < 12; i++) {
+        	homeGuis[i] = new HomeGui();
+        	homeGuis[i].setTitle("Home");
+        	homeGuis[i].setVisible(false);
+        	homeGuis[i].setResizable(false);
+        	homeGuis[i].setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }
     }
     
   
@@ -167,7 +148,7 @@ public class MainGui extends JFrame implements MouseListener {
     		
     		if (b.contains(e.getX()-620, e.getY()-25)) {
     			System.out.print("Building " + i + " clicked\n");
-    			b.display(b);
+    			b.display(b, i);
     		}
     	}
     }
