@@ -20,6 +20,10 @@ public class HomeGui extends JFrame implements ActionListener {
 	private HomePanel homePanel;
 	
 	public HomeGui() {
+    	setTitle("Home");
+    	setVisible(false);
+    	setResizable(false);
+    	setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0,0, 600, 400);
 		setLocation((screenSize.width/2-this.getSize().width/2), (screenSize.height/2-this.getSize().height/2));

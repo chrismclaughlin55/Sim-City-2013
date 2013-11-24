@@ -1,11 +1,16 @@
 package mainGUI;
+import city.*;
+
+import java.util.List;
 
 import javax.swing.JFrame;
 
+import Gui.Gui;
 import market.gui.MarketGui;
 import restaurantMQ.gui.RestaurantGui;
 import city.Building;
 import city.Building.BuildingType;
+import city.Home;
 
 public class BuildingPanel {
 	
@@ -30,7 +35,12 @@ public class BuildingPanel {
 			break;
 			
 		case home:
-			mainGui.homeGuis[buildingNumber].setVisible(true);
+			Home h = (Home) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
+			h.homeGui.setVisible(true);
+			List<Gui> guis = h.homeGui.getHomePanel().getGuis();
+			for (Gui g : guis) {
+				g.setPresent(true);
+			}
 		case room:
 			//add home panel and gui later
 			break;
