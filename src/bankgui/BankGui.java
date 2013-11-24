@@ -22,6 +22,9 @@ public class BankGui extends JFrame implements ActionListener {
 			setBounds(0,0,screenSize.width/2, screenSize.height/2);
 			setLocation(screenSize.width/2-this.getSize().width/2, screenSize.height/2-this.getSize().height/2);
 			setLayout(new GridLayout(0,2));
+			
+			
+			
 			animationPanel = new AnimationPanel();
 			animationPanel.setVisible(true);
 			
@@ -31,6 +34,7 @@ public class BankGui extends JFrame implements ActionListener {
 
 			add (bankPanel);
 			add (animationPanel);
+			
 
 }
 
