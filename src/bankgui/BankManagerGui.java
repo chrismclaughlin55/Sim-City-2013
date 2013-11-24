@@ -24,4 +24,10 @@ public class BankManagerGui implements Gui {
 		return false;
 	}
 
+	@Override
+	public void setPresent(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
