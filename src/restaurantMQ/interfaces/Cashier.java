@@ -1,7 +1,5 @@
 package restaurantMQ.interfaces;
 
-import restaurantMQ.CustomerAgent;
-
 public interface Cashier {
 
 	//MESSAGES

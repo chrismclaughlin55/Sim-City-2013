@@ -1,6 +1,7 @@
 package restaurantMQ.test.mock;
 
 import restaurantMQ.Menu;
+import restaurantMQ.gui.WaiterGui;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Waiter;
 
@@ -80,6 +81,24 @@ public class MockWaiter extends Mock implements Waiter
 
 	@Override
 	public void msgBackFromBreak() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgSeatCustomer(Customer customer, int spot, int table) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setGui(WaiterGui waiterGui) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgAnimationDone() {
 		// TODO Auto-generated method stub
 		
 	}

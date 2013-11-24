@@ -1,6 +1,5 @@
 package restaurantMQ.gui;
 
-import restaurantMQ.CustomerAgent;
 import restaurantMQ.interfaces.Customer;
 
 import javax.swing.*;

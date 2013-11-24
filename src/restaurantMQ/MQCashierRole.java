@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import city.PersonAgent;
+import city.Role;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Market;
@@ -13,34 +15,15 @@ import restaurantMQ.interfaces.Waiter;
 import restaurantMQ.test.mock.EventLog;
 import restaurantMQ.test.mock.LoggedEvent;
 
-import agent.Agent;
-
-public class CashierAgent extends Agent implements Cashier
+public class MQCashierRole extends Role implements Cashier
 {
-	//DATA MEMBERS
+	/*DATA*/
 	String name;
 	private Map<String, Double> foodMap = new HashMap<String, Double>();
 	public Map<Customer, Double> checks = new HashMap<Customer, Double>();
 	public List<Payment> payments = Collections.synchronizedList(new ArrayList<Payment>());
 	public EventLog log = new EventLog();
 	public double money = 10000;
-		
-	public CashierAgent()
-	{
-		foodMap.put("Steak", 15.99);
-		foodMap.put("Chicken", 10.99);
-		foodMap.put("Salad", 5.99);
-		foodMap.put("Pizza", 8.99);
-	}
-	
-	public CashierAgent(String name)
-	{
-		this.name = name;
-		foodMap.put("Steak", 15.99);
-		foodMap.put("Chicken", 10.99);
-		foodMap.put("Salad", 5.99);
-		foodMap.put("Pizza", 8.99);
-	}
 	
 	public class CheckRequest
 	{
@@ -83,8 +66,21 @@ public class CashierAgent extends Agent implements Cashier
 	}
 	
 	public List<Bill> bills = Collections.synchronizedList(new ArrayList<Bill>());
+	/*END OF DATA*/
 	
-	//MESSAGES
+	/*CONSTRUCTORS*/
+	public MQCashierRole(PersonAgent person)
+	{
+		super(person);
+		this.name = super.getName();
+		foodMap.put("Steak", 15.99);
+		foodMap.put("Chicken", 10.99);
+		foodMap.put("Salad", 5.99);
+		foodMap.put("Pizza", 8.99);
+	}
+	/*END OF CONSTRUCTOR*/
+
+	/*MESSAGES*/
 	public void msgProduceCheck(Waiter waiter, Customer customer, String choice)
 	{
 		checkRequests.add(new CheckRequest(waiter, customer, choice));
@@ -101,13 +97,13 @@ public class CashierAgent extends Agent implements Cashier
 	
 	public void msgHereIsBill(Market market, double bill)
 	{
-		//MAKE THIS THREAD SAFE
 		bills.add(new Bill(market, bill));
 		log.add(new LoggedEvent("Received bill."));
 		stateChanged();
 	}
-	
-	//SCHEDULER
+	/*END OF MESSAGES*/
+
+	/*SCHEDULER*/
 	public boolean pickAndExecuteAnAction()
 	{
 		synchronized(payments)
@@ -142,8 +138,9 @@ public class CashierAgent extends Agent implements Cashier
 		
 		return false;
 	}
+	/*END OF SCHEDULER*/
 	
-	//ACTIONS
+	/*ACTIONS*/
 	private void processRequest(CheckRequest c)
 	{
 		double price = foodMap.get(c.choice);
@@ -191,8 +188,8 @@ public class CashierAgent extends Agent implements Cashier
 		System.out.println("Cashier: Paying $" + payment + " to " + bill.market.getName());
 		bill.market.msgHereIsPayment(this, payment);
 	}
+	/*END OF ACTIONS*/
 	
-	//hacks
 	private double round(double d)
 	{
 		d *= 1000;
@@ -210,5 +207,9 @@ public class CashierAgent extends Agent implements Cashier
 	public void setMoney(double money)
 	{
 		this.money = money;
+	}
+	
+	public void startThread() {
+		
 	}
 }
