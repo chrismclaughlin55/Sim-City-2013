@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import mainGUI.MainGui;
+import mainGUI.*;
 import city.gui.PersonGui;
 import agent.Agent;
 
@@ -16,6 +16,7 @@ public class PersonAgent extends Agent
 	boolean ranonce = false;
 	PersonGui personGui;
 	MainGui gui;
+	CityData cityData;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
@@ -30,9 +31,10 @@ public class PersonAgent extends Agent
 		this.name = name;
 	}
 	
-	public PersonAgent(String name, MainGui gui) {
+	public PersonAgent(String name, MainGui gui, CityData cd) {
 		this.name = name;
 		this.gui = gui;
+		this.cityData = cd;
 		personGui = new PersonGui(this, gui);
 	}
 	
@@ -66,6 +68,8 @@ public class PersonAgent extends Agent
 	protected boolean pickAndExecuteAnAction() {
 		if (personState == state.atHome) {
 			//at home stuff
+			this.getGui().DoGoToBed();
+			return true;
 		}
 		if (personState == state.goToRestaurant) {
 			goToRestaurant();
@@ -123,6 +127,7 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+		cityData.buildings.get(0).EnterBuilding(this, "");
 		personState = state.atHome;
 		
 	}

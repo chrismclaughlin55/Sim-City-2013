@@ -121,7 +121,7 @@ public class MainGui extends JFrame implements MouseListener {
     }
     
     public void addPerson(String name, String role) {
-		PersonAgent p = new PersonAgent(name, this);
+		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
@@ -132,8 +132,8 @@ public class MainGui extends JFrame implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
     	//Check to see which building was clicked
-    	for (int i = 0; i < mainAnimationPanel.buildings.size(); i++) {
-    		Building b = mainAnimationPanel.buildings.get(i);
+    	for (int i = 0; i < mainAnimationPanel.cd.buildings.size(); i++) {
+    		Building b = mainAnimationPanel.cd.buildings.get(i);
     		
     		if (b.contains(e.getX()-620, e.getY()-25)) {
     			System.out.print("Building " + i + " clicked\n");
