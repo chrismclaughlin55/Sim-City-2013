@@ -17,11 +17,14 @@ public class PersonAgent extends Agent
 	PersonGui personGui;
 	MainGui gui;
 	CityData cityData;
+	Building currentBuilding;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
 	public enum state {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome};
+	public enum HomeState {sleeping, onCouch, hungry, none};
 	public state personState = state.doingNothing;
+	public HomeState homeState;
 	
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
@@ -67,7 +70,18 @@ public class PersonAgent extends Agent
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
 		if (personState == state.atHome) {
-			//at home stuff
+			if (homeState == HomeState.sleeping) {
+				
+			}
+			if (homeState == HomeState.hungry) {
+				
+			}
+			if (homeState == HomeState.onCouch) {
+				
+			}
+			if (homeState == HomeState.none) {
+				
+			}
 			this.getGui().DoGoToBed();
 			return true;
 		}
@@ -127,7 +141,8 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
-		cityData.buildings.get(0).EnterBuilding(this, "");
+		currentBuilding = cityData.buildings.get(0);
+		currentBuilding.EnterBuilding(this, "");
 		personState = state.atHome;
 		
 	}

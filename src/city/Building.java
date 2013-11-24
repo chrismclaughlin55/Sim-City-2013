@@ -40,6 +40,9 @@ public class Building extends Rectangle2D.Double {
 		buildingPanel = new BuildingPanel(mainGui);
 	}
 
+	public void ExitBuilding(PersonAgent p) {
+		
+	}
 
 	public  void EnterBuilding(PersonAgent p, String roleRequest) {
 

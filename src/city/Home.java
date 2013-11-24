@@ -31,5 +31,5 @@ public class Home extends Building {
 		//}
 		homeGui.getHomePanel().addGui(p.getGui()); System.err.println("added to home panel");
 		cityData.removeGui(p.getGui());
-	}	
+	}
 }

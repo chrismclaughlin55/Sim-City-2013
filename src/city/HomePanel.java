@@ -77,6 +77,7 @@ public class HomePanel extends JPanel implements ActionListener {
 		g2.setColor(Color.GRAY);
 		g2.fillRect(width/2 - 40, height/2 - 30, 40, 60);
 		
+
 		synchronized(guis){
 			for(Gui gui : guis) {
 				if (gui.isPresent()) {
@@ -88,6 +89,7 @@ public class HomePanel extends JPanel implements ActionListener {
 
 	public void addGui(PersonGui gui) {
 		guis.add(gui);
+		gui.setPresent(true);
 		System.err.println(guis.size());
 	}
 

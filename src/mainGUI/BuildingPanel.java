@@ -37,10 +37,6 @@ public class BuildingPanel {
 		case home:
 			Home h = (Home) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			h.homeGui.setVisible(true);
-			List<Gui> guis = h.homeGui.getHomePanel().getGuis();
-			for (Gui g : guis) {
-				g.setPresent(true);
-			}
 		case room:
 			//add home panel and gui later
 			break;
