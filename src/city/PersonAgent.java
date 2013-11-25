@@ -230,7 +230,7 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goToRestaurant() {
-		int restNumber = (int)(12+(int)(Math.random()*17));
+		int restNumber = (int)(12+(int)(Math.random()*5));
 		personGui.DoGoToBuilding(restNumber);
 		atBuilding.drainPermits();
 		try {
