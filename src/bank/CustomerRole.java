@@ -9,7 +9,7 @@ import city.Role;
 
 public class CustomerRole extends Role implements BankCustomer{
 	//DATA
-	private PersonAgent person;
+	private PersonAgent me;
 	private double money;
 	private String name;
 	private Teller t;
@@ -23,7 +23,7 @@ public class CustomerRole extends Role implements BankCustomer{
 		super(person);
 		this.money = person.bankMoney;
 		this.name = person.getName();
-		this.person = person;
+		this.me = person;
 	}
 	//GUI MESSAGES
 	public void msgAddGui(BankCustomerGui custGui) {
