@@ -3,9 +3,11 @@ package mainGUI;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JCheckBox;
@@ -62,6 +64,7 @@ public class MainGui extends JFrame implements MouseListener {
     	parser.ParseAndCreatePeople();
     	*/
     	
+    	ArrayList<HashMap<String,String>> configPeople;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainAnimationPanel = new MainAnimationPanel(this);
         mainAnimationPanel.setVisible(true);
@@ -101,6 +104,18 @@ public class MainGui extends JFrame implements MouseListener {
         bankGui.setVisible(false);
         bankGui.setResizable(false);
         bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        
+        try {    	
+			parser = new ConfigParser(this,"config.txt");
+			configPeople = parser.ParseAndCreatePeople();
+			for(HashMap<String,String> person: configPeople) {
+	        	addConfigPerson(person);
+	        }
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
     }
     
   
@@ -119,6 +134,19 @@ public class MainGui extends JFrame implements MouseListener {
 		p.setGui(personGui);
 		p.personState = state.goHome;
 		p.startThread();
+		
+	}
+    public void addConfigPerson(HashMap<String,String> properties) {
+		/* THIS WILL ADD IN ALL PROPERTIES IN THIS HASHMAP TO PERSON ATTRIBUTES
+		 * PersonAgent p = new PersonAgent(, this, mainAnimationPanel.cd);
+		mainAnimationPanel.cd.addPerson(p);
+		PersonGui personGui = new PersonGui(p, this);
+		mainAnimationPanel.addGui(personGui);
+		p.setGui(personGui);
+		p.personState = state.goHome;
+		p.startThread();
+		
+		*/
 		
 	}
     
