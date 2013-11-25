@@ -15,6 +15,11 @@ public class TellerGui implements Gui {
 	private int yDestination;
 	private boolean isPresent;
 
+	public TellerGui(TellerRole tellerRole) {
+		this.teller = tellerRole;
+	}
+
+
 	@Override
 	public void updatePosition() {
 ;

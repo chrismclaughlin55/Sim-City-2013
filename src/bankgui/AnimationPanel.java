@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.swing.*;
 
+import market.gui.CustomerGui;
 import Gui.*;
 
 public class AnimationPanel extends JPanel implements ActionListener{
@@ -72,12 +73,21 @@ public class AnimationPanel extends JPanel implements ActionListener{
 		guis.add(gui);
 	}
 
-	public void removeGui(TellerGui gui) {
-		guis.remove(gui);
-	}
-
+	
 	public void addGui(BankManagerGui gui) {
 		guis.add(gui);
 	}
-
+	public void addGui(TellerGui gui) {
+		guis.add(gui);
+		
+	}
+	public void removeGui(TellerGui gui) {
+		guis.remove(gui);
+	}
+	public void removeGui(CustomerGui gui) {
+		guis.remove(gui);
+	}
+	public void removeGui(BankManagerGui gui) {
+		guis.remove(gui);
+	}
 }

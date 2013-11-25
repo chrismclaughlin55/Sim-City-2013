@@ -3,6 +3,7 @@ package bank;
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
+import bankgui.TellerGui;
 import city.PersonAgent;
 import city.Role;
 /*
@@ -16,6 +17,7 @@ public class TellerRole extends Role implements Teller{
 	enum Event {none, recievedHello, recievedInfo, recievedDeposit,updatedBank,loanReq, iTakeIt}
 	State state;
 	Event event;
+	private TellerGui gui;
 	
 	//Constructor
 	public TellerRole(PersonAgent person) {
@@ -25,7 +27,11 @@ public class TellerRole extends Role implements Teller{
 		event = Event.none;
 		// TODO Auto-generated constructor stub
 	}
-	
+	//GUI messages
+	public void msgAddGui(TellerGui tellerGui) {
+		this.gui = tellerGui;
+		
+	}
 	//MESSAGES
 	@Override
 	public void msgHello(String name, BankCustomer c) {
@@ -128,6 +134,8 @@ public class TellerRole extends Role implements Teller{
 		state = State.doneWithCustomer;
 		event = Event.updatedBank;
 	}
+
+
 
 	
 

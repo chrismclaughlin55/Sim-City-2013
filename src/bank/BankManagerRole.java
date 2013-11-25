@@ -1,5 +1,9 @@
 package bank;
 
+import java.util.ArrayList;
+import java.util.Queue;
+
+import restaurantMQ.interfaces.Customer;
 import bank.interfaces.BankCustomer;
 import bank.interfaces.BankManager;
 import bank.utilities.CustInfo;
@@ -7,8 +11,17 @@ import city.PersonAgent;
 import city.Role;
 
 public class BankManagerRole extends Role implements BankManager {
-
+	Queue<Customer> line;
+	ArrayList<myTeller> tellers;
+	enum tellerState {available, needsInfo, notAvailable, updateInfo }
+	class myTeller{
+		tellerState state;
+		CustInfo c;
+		
+		
+	}
 	public BankManagerRole(PersonAgent person) {
+		
 		super(person);
 		// TODO Auto-generated constructor stub
 	}

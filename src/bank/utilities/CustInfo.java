@@ -1,6 +1,5 @@
 package bank.utilities;
 
-import bank.CustomerRole;
 import bank.interfaces.BankCustomer;
 import city.PersonAgent;
 
