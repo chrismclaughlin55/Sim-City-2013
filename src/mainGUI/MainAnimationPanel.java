@@ -15,7 +15,6 @@ import javax.swing.Timer;
 
 import market.Market;
 import Gui.Gui;
-import city.Apartment;
 import city.Building;
 import city.Building.BuildingType;
 import city.CityData;
@@ -41,11 +40,11 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd = new CityData();
 
 		for (int i = 0; i < 2; i++) {
-			Building b = new Apartment(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
+			Building b = new Home(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
-			Building b = new Apartment(10, 410+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
+			Building b = new Home(10, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
@@ -103,22 +102,40 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		ImageIcon background = new ImageIcon("res/background.png");
 		g2.drawImage(background.getImage(), 0, 0, null);
 
+		
+		ImageIcon busStop = new ImageIcon("res/busstop.png");
 		//Draw apartments
 		ImageIcon apartment = new ImageIcon("res/apartment.png");
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 2; i++) {
 			cd.buildings.get(i).setBuildingNumber(i);
 			g2.drawImage(apartment.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
+			//Draw bus stop for each apartment
+			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+95, (int)cd.buildings.get(i).y+35, null);
 		}
 
 		//Draw houses
 		ImageIcon house = new ImageIcon("res/house.png");
-		for (int i = 4; i < 12; i++) {
+		for (int i = 2; i < 12; i++) {
 			cd.buildings.get(i).setBuildingNumber(i);
 			g2.drawImage(house.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
 		}
 
+		//Draw bus stop for each house
+		for (int i = 2; i < 4; i++) {
+			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+95, (int)cd.buildings.get(i).y+35, null);
+		}
+		for (int i = 4; i < 6; i++) {
+			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+95, (int)cd.buildings.get(i).y, null);
+		}
+		for (int i = 6; i < 10; i++) {
+			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x-10, (int)cd.buildings.get(i).y+35, null);
+		}
+		for (int i = 10; i < 12; i++) {
+			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+95, (int)cd.buildings.get(i).y+35, null);
+		}
+		
 		//Draw restaurants
 		ImageIcon rest = new ImageIcon("res/restaurant.png");
 		for (int i = 12; i < 18; i++) {
@@ -129,6 +146,14 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
 		}
 
+		//Draw bus stop for each restaurant
+		for (int i = 12; i < 18; i+=2) {
+			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x-15, (int)cd.buildings.get(i).y+35, null);
+		}
+		for (int i = 13; i < 18; i+=2) {
+			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+100, (int)cd.buildings.get(i).y+35, null);
+		}
+		
 		//Draw bank
 		ImageIcon bank = new ImageIcon("res/bank.png");
 		g2.drawImage(bank.getImage(), (int) cd.buildings.get(18).x, (int) cd.buildings.get(18).y, null);
@@ -137,6 +162,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(18).setBuildingNumber(18);
 		g2.drawString(cd.buildings.get(18).name, (int) cd.buildings.get(18).x, (int) cd.buildings.get(18).y+10);
 
+		g2.drawImage(busStop.getImage(), (int) cd.buildings.get(18).x-15, (int)cd.buildings.get(18).y+35, null);
+		
 		//Draw market
 		ImageIcon market = new ImageIcon("res/market.png");
 		g2.drawImage(market.getImage(), (int) cd.buildings.get(19).x, (int) cd.buildings.get(19).y, null);
@@ -171,6 +198,10 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		g2.drawImage(road3.getImage(), 130, 635, null);
 		g2.drawImage(road3.getImage(), 440, 635, null);
 
+		g2.drawImage(busStop.getImage(), (int) cd.buildings.get(19).x+100, (int)cd.buildings.get(19).y+35, null);
+        
+        
+        
 		synchronized(cd.guis){
 			for(Gui gui : cd.guis) {
 				if (gui.isPresent()) {
