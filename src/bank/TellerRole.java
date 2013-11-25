@@ -6,7 +6,7 @@ import bank.utilities.CustInfo;
 import city.PersonAgent;
 import city.Role;
 /*
- *  Added events, states, customer info. TODO actions, scheduler
+ *  
  */
 public class TellerRole extends Role implements Teller{
 	String name;
@@ -16,6 +16,8 @@ public class TellerRole extends Role implements Teller{
 	enum Event {none, recievedHello, recievedInfo, recievedDeposit,updatedBank,loanReq, iTakeIt}
 	State state;
 	Event event;
+	
+	//Constructor
 	public TellerRole(PersonAgent person) {
 		super(person);
 		this.name = person.getName();
@@ -27,25 +29,38 @@ public class TellerRole extends Role implements Teller{
 	//MESSAGES
 	@Override
 	public void msgHello(String name, BankCustomer c) {
-		currentCustInfo = new CustInfo(name, c.returnPerson() );
-		
+		currentCustInfo = new CustInfo(name, c.returnPerson(), c );
+		event = Event.recievedHello;
+		stateChanged();
 	}
 
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
-		// TODO Auto-generated method stub
-		
+		event = Event.recievedInfo;
+		this.currentCustInfo = info;
+		stateChanged();
 	}
 
 	@Override
 	public void msgDeposit(double money) {
-		// TODO Auto-generated method stub
-		
+		currentCustInfo.depositAmount = money;
+		currentCustInfo.moneyInAccount += money;
+		event = Event.recievedDeposit;
+		stateChanged();
 	}
 
 	@Override
 	public void loan(double amount) {
-		// TODO Auto-generated method stub
+		currentCustInfo.loanRequestAmount = amount;
+		event = Event.loanReq;
+		stateChanged();
+	}
+	@Override
+	public void msgITakeIt(double loanAmount) {
+		currentCustInfo.loanAmount = loanAmount;
+		currentCustInfo.loanApproveAmount-= loanAmount;
+		event = Event.iTakeIt;
+		stateChanged();
 		
 	}
 	
@@ -53,14 +68,67 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
+		if(state == State.available && event == Event.recievedHello){
+			getInfo();
+			return true;
+		}
+		if(state == State.waitingForInfo && event == Event.recievedInfo){
+			ask();
+			return true;
+		}
+		if(state == State.waitingForResponse && event == Event.recievedDeposit){
+			processOrder();
+			return true;
+		}
+		if(state == State.doneWithCustomer && event == Event.updatedBank){
+			makeAvailable();
+			return true;
+		}
+		if(state == State.waitingForResponse && event == Event.loanReq){
+			processLoan();
+			return true;
+		}
+		if(state == State.customerDecidingLoan && event == Event.iTakeIt){
+			processOrder();
+			return true;
+		}
+			
 		return false;
 	}
+	//ACTIONS
+	private void ask() {
+		state = State.waitingForResponse;
+		currentCustInfo.customer.msgWhatWouldYouLike();
+	}
 
-	@Override
-	public void iTakeIt(double loanAmount) {
-		// TODO Auto-generated method stub
+	private void getInfo() {
+		state = State.waitingForInfo;
+		bm.msgGiveMeInfo(currentCustInfo.accountHolder);
 		
 	}
+
+	private void makeAvailable() {	
+		//TODO may need to change logic
+		currentCustInfo = null;
+		state = State.available;
+		
+	}
+
+	private void processLoan() {
+		if(currentCustInfo.loanRequestAmount>currentCustInfo.loanApproveAmount)
+			currentCustInfo.customer.msgCanDoThisAmount(currentCustInfo.loanApproveAmount);
+		else 
+			currentCustInfo.customer.msgCanDoThisAmount(currentCustInfo.loanRequestAmount);
+		state = State.customerDecidingLoan;
+	}
+
+	private void processOrder() {
+		//TODO this could cause problems. could lose semaphore by updating event in action
+		bm.msgUpdateInfo(currentCustInfo);
+		state = State.doneWithCustomer;
+		event = Event.updatedBank;
+	}
+
+	
 
 }
