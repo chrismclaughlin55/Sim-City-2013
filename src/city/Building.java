@@ -1,9 +1,13 @@
 package city;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.Timer;
 
 import mainGUI.BuildingPanel;
 import mainGUI.MainGui;
@@ -16,7 +20,9 @@ public class Building extends Rectangle2D.Double {
 	private boolean isOpen = false;
 	public PersonAgent manager;
 	public CityData cityData;
-
+	
+	Timer buildingTimer;
+	
 	public int buildingNumber;
 
 	BuildingPanel buildingPanel;
