@@ -47,6 +47,14 @@ public class PersonGui implements Gui{
 	public void setYPos(int y) {
 		yPos = y;
 	}
+	
+	public void setXDes(int x) {
+		xDestination = x;
+	}
+	
+	public void setYDes(int y) {
+		yDestination = y;
+	}
 
 	public void updatePosition() {
 		if (xPos < xDestination)
@@ -68,6 +76,14 @@ public class PersonGui implements Gui{
 		if (xPos == xDestination && yPos == yDestination && moving == true) {
             moving = false;
             agent.msgDoneMoving();
+		}
+		if (xPos == xDestination && yPos == yDestination
+        			& (xDestination == 360) & (yDestination == 20)) {
+			agent.msgAtBed();
+		}
+		if (xPos == xDestination && yPos == yDestination
+        			& (xDestination == 0) & (yDestination == 340)) {
+			agent.msgAtEntrance();
 		}
 	}
 	
@@ -133,5 +149,9 @@ public class PersonGui implements Gui{
 
 	public void DoGoIntoBuilding() {
 		isPresent = false;
+	}
+	
+	public void DoLeaveBuilding() {
+		isPresent = true;
 	}
 }

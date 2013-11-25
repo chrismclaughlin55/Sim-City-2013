@@ -94,7 +94,14 @@ public class HomePanel extends JPanel implements ActionListener {
 		gui.setPresent(true);
 	}
 
-
+	public void removeGui(PersonGui gui, int currentIn) {
+		guis.remove(gui);
+		gui.setXPos(gui.xBuilding[currentIn]);
+		gui.setYPos(gui.yBuilding[currentIn]);
+		gui.setXDes(gui.xBuilding[currentIn]);
+		gui.setYDes(gui.yBuilding[currentIn]);
+		gui.setPresent(false);
+	}
 }
 
 

@@ -79,6 +79,10 @@ public class Building extends Rectangle2D.Double {
 		 * 
 		 */
 	}
+	
+	public void LeaveBuilding(PersonAgent p) {
+		
+	}
 
 	// assign relations between new comer and person in charge both ways
 	/*protected void GoIntoBuilding(PersonAgent p) {
