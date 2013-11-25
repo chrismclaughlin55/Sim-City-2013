@@ -31,6 +31,7 @@ public class BuildingPanel {
 				}
 			}
 			break;
+			
 		case bank:
 			mainGui.bankGui.setVisible(true);
 			break;
@@ -38,9 +39,13 @@ public class BuildingPanel {
 		case home:
 			Home h = (Home) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			h.homeGui.setVisible(true);
+			break;
+			
 		case apartment:
 			Apartment a = (Apartment) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			a.apartmentGui.setVisible(true);
+			break;
+			
 		case room:
 			//add home panel and gui later
 			break;
