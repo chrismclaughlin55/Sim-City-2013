@@ -32,4 +32,9 @@ public class Home extends Building {
 		homeGui.getHomePanel().addGui(p.getGui());
 		cityData.removeGui(p.getGui());
 	}
+	
+	public void LeaveBuilding(PersonAgent p) {
+		homeGui.getHomePanel().removeGui(p.getGui(), p.currentBuilding.buildingNumber);
+		cityData.addGui(p.getGui(), p.currentBuilding.buildingNumber);
+	}
 }

@@ -1,9 +1,11 @@
 package market.test.mock;
 
-import restaurantMQ.test.mock.EventLog;
-import market.MarketCustomerRole;
+import java.util.List;
+
+import market.MyOrder;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
+import restaurantMQ.test.mock.EventLog;
 
 public class MockMarketEmployee extends Mock implements MarketEmployee {
 
@@ -14,8 +16,23 @@ public class MockMarketEmployee extends Mock implements MarketEmployee {
 		log = new EventLog();
 	}
 
+
 	@Override
-	public void msgHereIsAnOrder(String type, int quantity, MarketCustomer cust) {
+	public void msgHereIsPayment(double payment) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgHereAreMyOrders(List<MyOrder> orders, MarketCustomer cust) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	
+	/*public void msgHereIsAnOrder(String type, int quantity, MarketCustomer cust) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -25,5 +42,11 @@ public class MockMarketEmployee extends Mock implements MarketEmployee {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void msgHereAreMyOrders(List<MarketOrder> orders, MarketCustomer cust) {
+		// TODO Auto-generated method stub
+		
+	}*/
 
 }

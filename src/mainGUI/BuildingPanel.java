@@ -6,6 +6,8 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import Gui.Gui;
+import bankgui.BankGui;
+import market.Market;
 import market.gui.MarketGui;
 import restaurantMQ.gui.RestaurantGui;
 import city.Building;
@@ -29,7 +31,6 @@ public class BuildingPanel {
 				}
 			}
 			break;
-		
 		case bank:
 			mainGui.bankGui.setVisible(true);
 			break;
@@ -38,8 +39,8 @@ public class BuildingPanel {
 			Home h = (Home) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			h.homeGui.setVisible(true);
 		case apartment:
-			Home a = (Home) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
-			a.homeGui.setVisible(true);
+			Apartment a = (Apartment) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
+			a.apartmentGui.setVisible(true);
 		case room:
 			//add home panel and gui later
 			break;
