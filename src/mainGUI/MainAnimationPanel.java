@@ -18,6 +18,7 @@ import Gui.Gui;
 import city.Apartment;
 import city.Building;
 import city.Building.BuildingType;
+import city.BusStopAgent;
 import city.CityData;
 import city.Home;
 import city.gui.PersonGui;
@@ -43,26 +44,38 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 0; i < 2; i++) {
 			Building b = new Apartment(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
+			BusStopAgent bs = new BusStopAgent(10+95, 140+i*130+35);
+			cd.busStops.add(bs);
 		}
 		for (int i = 0; i < 2; i++) {
 			Building b = new Apartment(10, 410+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
+			BusStopAgent bs = new BusStopAgent(10+95, 410+i*130+35);
+			cd.busStops.add(bs);
 		}
 		for (int i = 0; i < 2; i++) {
 			Building b = new Home(190+i*130, 680, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
+			BusStopAgent bs = new BusStopAgent(190+i*130+95, 680);
+			cd.busStops.add(bs);
 		}
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(500, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
+			BusStopAgent bs = new BusStopAgent(500-10, 410+i*130+35);
+			cd.busStops.add(bs);
 		}
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(500, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
+			BusStopAgent bs = new BusStopAgent(500-10, 140+i*130+35);
+			cd.busStops.add(bs);
 		}
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(190+i*130, 0, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
+			BusStopAgent bs = new BusStopAgent(190+i*130+95, 0+35);
+			cd.busStops.add(bs);
 		}
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
@@ -124,9 +137,6 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		}
 
 		//Draw bus stop for each house
-		for (int i = 2; i < 4; i++) {
-			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+95, (int)cd.buildings.get(i).y+35, null);
-		}
 		for (int i = 4; i < 6; i++) {
 			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+95, (int)cd.buildings.get(i).y, null);
 		}
