@@ -8,7 +8,7 @@ import mainGUI.MainGui;
 public class Apartment extends Building {
 
 	List<PersonAgent> tenants;
-	List<Room> rooms;
+	List<Home> rooms;
 	public ApartmentGui apartmentGui;
 	
 	public Apartment(int xPos, int yPos, int width, int height, MainGui mainGui) {
@@ -19,6 +19,9 @@ public class Apartment extends Building {
 	public Apartment(int i, int j, int wIDTH, int hEIGHT, String string,
 			BuildingType apartment, MainGui mainGui, CityData cd) {
 		super(i, j, wIDTH, hEIGHT, string, apartment, mainGui);
+		for (int i = 0; i < 8; i++) {
+			rooms.add(new Home());
+		}
 		apartmentGui = new ApartmentGui();
 		cityData = cd;
 		

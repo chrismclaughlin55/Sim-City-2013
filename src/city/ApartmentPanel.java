@@ -8,6 +8,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +20,7 @@ import javax.swing.Timer;
 import Gui.Gui;
 import city.gui.PersonGui;
 
-public class ApartmentPanel extends JPanel implements ActionListener {
+public class ApartmentPanel extends JPanel implements ActionListener, MouseListener {
 
 	private Image bufferImage;
 	private Dimension bufferSize;
@@ -32,10 +34,11 @@ public class ApartmentPanel extends JPanel implements ActionListener {
 	public ApartmentPanel() {
 		setBackground(Color.WHITE);
 		setVisible(true);
-		//bufferSize = this.getSize();
+		bufferSize = this.getSize();
 
 		Timer timer = new Timer(frameDisplay, this);
 		timer.start();
+		addMouseListener(this);
 		
 	}
 
@@ -92,8 +95,66 @@ public class ApartmentPanel extends JPanel implements ActionListener {
 	public void addGui(PersonGui gui) {
 		guis.add(gui);
 		gui.setXPos(0);
-		gui.setYPos(340);
+		gui.setYPos(180);
 		gui.setPresent(true);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int posX = e.getX();
+		int posY = e.getY();
+		if (posY >= 0 && posY <= 140) {
+			if (posX >= 0 && posX< 100) {
+				System.err.println("room 1 clicked");
+			}
+			else if (posX >= 100 && posX < 200) {
+				System.err.println("room 2 clicked");
+			}
+			else if (posX >= 200 && posX < 300) {
+				System.err.println("room 3 clicked");
+			}
+			else if (posX >= 300 && posX <= 400) {
+				System.err.println("room 4 clicked");
+			}
+		}
+		else if (posY >= 238 && posY <= 400) {
+			if (posX >= 0 && posX< 100) {
+				System.err.println("room 5 clicked");
+			}
+			else if (posX >= 100 && posX < 200) {
+				System.err.println("room 6 clicked");
+			}
+			else if (posX >= 200 && posX < 300) {
+				System.err.println("room 7 clicked");
+			}
+			else if (posX >= 300 && posX <= 400) {
+				System.err.println("room 8 clicked");
+			}
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
