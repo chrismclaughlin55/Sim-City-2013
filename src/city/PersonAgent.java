@@ -156,8 +156,7 @@ public class PersonAgent extends Agent
 		}
 		//Reaching here means there is an active role, but it is "waiting" for a state to be updated
 		//Thus, the PersonAgent's scheduler should return FALSE
-		if(anyActive)
-		{
+		if(anyActive) {
 			return false;
 		}
 		
@@ -202,20 +201,17 @@ public class PersonAgent extends Agent
 			}
 			case doingNothing: {
 				//Decide what the next BigState will be based on current parameters
-				if(hungerLevel >= STARVING)
-				{
+				if(hungerLevel >= STARVING) {
 					bigState = BigState.goToRestaurant;
 					desiredRole = "Customer";
 					return true;
 				}
-				if(cash <= LOWMONEY)
-				{
+				if(cash <= LOWMONEY) {
 					bigState = BigState.goToBank;
 					desiredRole = "Customer";
 					return true;
 				}
-				if(hungerLevel >= HUNGRY)
-				{
+				if(hungerLevel >= HUNGRY) {
 					bigState = BigState.goToRestaurant;
 					desiredRole = "Customer";
 					return true;
@@ -245,7 +241,7 @@ public class PersonAgent extends Agent
 	
 	protected void goHome() {
 		//int homeNumber = (int)((int)(Math.random()*11));
-		personGui.DoGoToBuilding(11); // 11 need to be replaced by the person's data of home number
+		personGui.DoGoToBuilding(0); // 11 need to be replaced by the person's data of home number
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -254,7 +250,7 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
-		currentBuilding = cityData.buildings.get(11);
+		currentBuilding = cityData.buildings.get(0);
 		currentBuilding.EnterBuilding(this, "");
 		bigState = BigState.atHome;
 		
