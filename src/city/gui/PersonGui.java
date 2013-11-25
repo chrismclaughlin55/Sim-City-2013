@@ -39,6 +39,14 @@ public class PersonGui implements Gui{
 		xDestination = INITX;
 		yDestination = INITY;
 	}
+	
+	public void setXPos(int x) {
+		xPos = x;
+	}
+	
+	public void setYPos(int y) {
+		yPos = y;
+	}
 
 	public void updatePosition() {
 		if (xPos < xDestination)
