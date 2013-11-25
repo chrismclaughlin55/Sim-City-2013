@@ -46,10 +46,6 @@ public class BuildingPanel {
 			a.apartmentGui.setVisible(true);
 			break;
 			
-		case room:
-			//add home panel and gui later
-			break;
-			
 		case market:
 			Market m = (Market) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			//m.addMarketGui(mainGui.marketGui);

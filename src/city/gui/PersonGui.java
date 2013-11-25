@@ -132,6 +132,18 @@ public class PersonGui implements Gui{
 		xDestination = 170;
 		yDestination = 190;
 	}
+	
+	public void DoGoToRoom(int roomNumber) {
+		moving = true;
+		if (roomNumber < 4) {
+			xDestination = 45 + 100*roomNumber;
+			yDestination = 140;
+		}
+		else {
+			xDestination = 40 + 100*(roomNumber - 4);
+			yDestination = 217;
+		}
+	}
 
 	@Override
 	public boolean isPresent() {

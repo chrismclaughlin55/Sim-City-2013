@@ -33,6 +33,13 @@ public class BusStopAgent {
 		
 	}
 	
+	public BusStopAgent(int xPos, int yPos) {
+		xPosition = xPos;
+		yPosition = yPos;
+		waitingPeople = new ArrayList<PersonAgent>();
+		peopleWaiting = new HashMap<PersonAgent, BusStopAgent>();
+	}
+	
 	public void setGui(BusStopGui gui,int x, int y) {
 		busStopGui = gui;
 		busStopGui.setX(x);

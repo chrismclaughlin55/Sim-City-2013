@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 
 public class ApartmentGui extends JFrame implements ActionListener {
 
-	private List<HomeGui> homeGuis;
 	ApartmentPanel aptPanel;
 	
 	public ApartmentGui() {

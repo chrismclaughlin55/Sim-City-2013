@@ -152,6 +152,7 @@ public class PersonAgent extends Agent
 				if(role.pickAndExecuteAnAction())
 					return true;
 			}
+
 		}
 		//Reaching here means there is an active role, but it is "waiting" for a state to be updated
 		//Thus, the PersonAgent's scheduler should return FALSE
@@ -230,7 +231,7 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goToRestaurant() {
-		int restNumber = (int)(12+(int)(Math.random()*17));
+		int restNumber = (int)(12+(int)(Math.random()*5));
 		personGui.DoGoToBuilding(restNumber);
 		atBuilding.drainPermits();
 		try {
