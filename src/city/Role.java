@@ -59,7 +59,10 @@ public abstract class Role
 	{
 		person.stateChanged();
 	}
-	
+	public void print(String s){
+		
+		System.out.println(person.name+": "+ s);
+	}
 	//All roles must have a scheduler
 	public abstract boolean pickAndExecuteAnAction();
 	

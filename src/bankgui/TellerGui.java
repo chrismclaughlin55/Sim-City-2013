@@ -52,7 +52,7 @@ public class TellerGui implements Gui {
 	@Override
 	public void setPresent(boolean b) {
 		// TODO Auto-generated method stub
-		
+		isPresent = b;
 	}
 
 }
