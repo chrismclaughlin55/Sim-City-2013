@@ -1,11 +1,15 @@
 package city;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 
 import city.gui.PersonGui;
 import Gui.Gui;
 import market.Market;
+
+import javax.swing.Timer;
 //import bank.Bank;
-public class CityData {
+public class CityData implements ActionListener {
 	
 	class Coordinate {
 		int x;
@@ -29,6 +33,7 @@ public class CityData {
 	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	public Market market;
+	Timer globalTimer;
 	//ALSO needs a 2-d array of the entire place
 	int timeInterval;
 	public CityData() {
@@ -60,6 +65,13 @@ public class CityData {
 		g.setXDes(g.xBuilding[currentIn]);
 		g.setYDes(g.yBuilding[currentIn]);
 		g.setPresent(true);
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	/*
