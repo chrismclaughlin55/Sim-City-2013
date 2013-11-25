@@ -10,14 +10,25 @@ import agent.Agent;
 
 public class PersonAgent extends Agent
 {
+	/*CONSTANTS*/
+	public static final int HUNGRY = 7;
+	public static final int STARVING = 14;
+	public static final int LOWMONEY = 20;
+	/*END OF CONSTANTS*/
+	
 	/*DATA MEMBERS*/
 	String name;
-	public double money;
+	public double cash = 100;
+	public double money = 200;
+	public int criminalImpulse = 0;
+	public int hungerLevel = 0;
 	boolean ranonce = false;
 	PersonGui personGui;
 	MainGui gui;
 	CityData cityData;
 	Building currentBuilding;
+	Building destinationBuilding;
+	BusStop currentBusStop;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
@@ -59,6 +70,10 @@ public class PersonAgent extends Agent
 		roles.add(role);
 		role.setActive();
 		super.stateChanged();
+	}
+	
+	public void msgDoneWithRole() {
+		//implement later
 	}
 	
 	public void msgAtBuilding() {//from animation

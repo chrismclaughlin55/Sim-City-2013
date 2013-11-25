@@ -37,7 +37,7 @@ public abstract class Role
 	protected void doneWithRole()
 	{
 		isActive = false;
-		person.stateChanged();
+		person.msgDoneWithRole();
 	}
 	
 	//Pause the PersonAgent
