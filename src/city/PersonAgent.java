@@ -213,7 +213,7 @@ public class PersonAgent extends Agent
 					desiredRole = "Customer";
 					return true;
 				}
-				if(cash >= HUNGRY)
+				if(hungerLevel >= HUNGRY)
 				{
 					bigState = BigState.goToRestaurant;
 					desiredRole = "Customer";
