@@ -1,10 +1,13 @@
 package market.interfaces;
 
-import market.MarketCustomerRole;
+import java.util.List;
+
+import market.MyOrder;
 
 public interface MarketEmployee {
 	
-	public abstract void msgHereIsAnOrder(String type, int quantity, MarketCustomer cust); 
+	public abstract void msgHereAreMyOrders(List<MyOrder> orders, MarketCustomer cust);
+	//public abstract void msgHereIsAnOrder(String type, int quantity, MarketCustomer cust); 
 	public abstract void msgHereIsPayment(double payment);
 		
 
