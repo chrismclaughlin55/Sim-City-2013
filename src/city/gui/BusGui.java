@@ -9,9 +9,10 @@ import city.BusAgent;
 import city.CityData;
 
 public class BusGui implements Gui {
+	CityData cd;
 	private BusAgent agent = null;
-	int xPos=0;
-	int yPos=0;
+	int xPos;
+	int yPos;
 	boolean xmove = false;
 	boolean xFirst = false;
 	boolean yFirst = false;
@@ -19,9 +20,12 @@ public class BusGui implements Gui {
     boolean betweenStops = false;
     boolean moving = false;
     int stop;
-    CityData cd;
+
     public BusGui(BusAgent ba) {
+    	cd = new CityData();
     	agent = ba;
+    	xPos = cd.busStops.get(0).getX();
+    	yPos = cd.busStops.get(0).getY();
     }
 	@Override
 	public void updatePosition() {

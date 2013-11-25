@@ -43,7 +43,11 @@ public class CityData implements ActionListener {
 		//POPULATE 
 	}
 	
-	
+	public void setBusStopRoute() {
+		for(int i=0; i<12; i++) {
+			busStops.get(i).setNextStop(busStops.get((i+1)%12));
+		}
+	}
 	public void setTimeInterval(int newTime) {
 		timeInterval=newTime;
 	}

@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import agent.Agent;
 import city.gui.BusStopGui;
-public class BusStopAgent {
+public class BusStopAgent extends Agent{
 
 	/*
 	 * 
@@ -17,27 +19,39 @@ public class BusStopAgent {
         PersonAgent p;
         BusStopAgent next;
 	};
+	public enum BusStopState {waitingForBus, busHere, busLeaving };
+	BusStopState stopState;
 	CityData CityData;
     HashMap<PersonAgent, BusStopAgent> peopleWaiting;
     BusStopAgent nextStop;
     BusAgent currentBus;
     BusStopGui busStopGui;
-    int xPosition;
-    int yPosition;
+    int xPosition; //will be where bus should be to be next to this stop
+    int yPosition; // will be where bus needs to be
+    //actual painting coordinates will be handled by gui
     //CityData places a square at coordinates of this particular BusStop
 
 	public BusStopAgent() {
-		
+		CityData = new CityData();
 		waitingPeople = new ArrayList<PersonAgent>();
 		peopleWaiting = new HashMap<PersonAgent, BusStopAgent>();
 		
 	}
 	
 	public BusStopAgent(int xPos, int yPos) {
+		stopState = BusStopState.waitingForBus;
 		xPosition = xPos;
 		yPosition = yPos;
 		waitingPeople = new ArrayList<PersonAgent>();
 		peopleWaiting = new HashMap<PersonAgent, BusStopAgent>();
+	}
+	
+	public void setNextStop(BusStopAgent nextStop) {
+		this.nextStop = nextStop;
+	}
+	
+	public BusStopAgent getNextStop() {
+		return nextStop;
 	}
 	
 	public void setGui(BusStopGui gui,int x, int y) {
@@ -63,16 +77,21 @@ public class BusStopAgent {
 	
     public void msgArrivedAtStop(BusAgent bus) {
         currentBus = bus;
+        stopState = BusStopState.busHere;
+        stateChanged();
     }
     
     
-    private boolean pickAndExecuteAnAction() {
-    	if(currentBus != null)
+    protected boolean pickAndExecuteAnAction() {
+    	if(stopState == BusStopState.busHere)
         {
             BoardPassengers();
             return true;
         }
-
+    	if(stopState == BusStopState.busLeaving) {
+    		ClearPassengers();
+    		return true;
+    	}
     	return false;
     }
 	
@@ -80,6 +99,11 @@ public class BusStopAgent {
     private void BoardPassengers()
     {
         currentBus.msgPeopleAtStop(peopleWaiting);
+        stopState = BusStopState.busLeaving;
+        currentBus = null;      
     }
-
+    
+    private void ClearPassengers() {
+    	peopleWaiting.clear();
+    }
 }

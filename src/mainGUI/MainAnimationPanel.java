@@ -109,7 +109,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(17).setBusStop(cd.busStops.get(7));
 		cd.buildings.get(18).setBusStop(cd.busStops.get(3));
 		cd.buildings.get(19).setBusStop(cd.busStops.get(6));
-
+		cd.setBusStopRoute();
 		//setBackground(Color.WHITE);
 
 		setVisible(true);
