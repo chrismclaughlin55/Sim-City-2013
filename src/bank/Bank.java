@@ -19,7 +19,8 @@ public class Bank extends Building {
 	public Bank(int xPos, int yPos, int width, int height, String name, BuildingType bank, MainGui mainGui, CityData cd) {
 		super(xPos, yPos, width, height, name, bank, mainGui);
 		cityData = cd;
-		this.bankGui = mainGui.bankGui;
+		this.bankGui = new BankGui();
+		mainGui.bankGui = this.bankGui;
 		mainGui.bankGui.bank = this;
 	}
 

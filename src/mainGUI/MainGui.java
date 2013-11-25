@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import restaurantMQ.gui.RestaurantGui;
 import market.gui.MarketGui;
 import city.Building;
+import city.Building.BuildingType;
 import city.HomeGui;
 import city.PersonAgent;
 import city.PersonAgent.BigState;
@@ -103,7 +104,6 @@ public class MainGui extends JFrame implements MouseListener {
         	restaurantGuis[i].setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         
-        bankGui = new BankGui();
         bankGui.setTitle("Bank");
         bankGui.setVisible(false);
         bankGui.setResizable(false);
