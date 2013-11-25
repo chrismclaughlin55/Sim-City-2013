@@ -28,21 +28,7 @@ public class ConfigParser{
 	public ArrayList<HashMap<String,String>> ParseAndCreatePeople() throws FileNotFoundException {
 		ArrayList<HashMap<String,String>> peopleToCreate = new ArrayList<HashMap<String,String>>();
 		
-		if(fileExist) {
-			
-			//scan for name property
-			//while next line isnt name, get in properties
-			HashMap<String,String> props = new HashMap<String,String>();
-			peopleToCreate.add(props);
-			if(scan.hasNextLine()) {
-				String name = scan.next();
-				String title = scan.next();
-				main.addPerson(name,title);
-				//MAKE A New Person OBJECT
-				//WORK WITH MAINGUI TO CREATE OBJECT WITH THESE PROPERTIES THAT ARE PARSED IN	
-				
-			}
-		}
+		
 		return peopleToCreate;
 	}
 	

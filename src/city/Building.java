@@ -14,8 +14,9 @@ public class Building extends Rectangle2D.Double {
 	public BuildingType type;
 	public enum BuildingType {home, apartment, restaurant, bank, market, room};
 	private boolean isOpen = false;
-	protected PersonAgent manager;
-	protected CityData cityData;
+	public PersonAgent manager;
+	public CityData cityData;
+
 	public int buildingNumber;
 
 	BuildingPanel buildingPanel;
