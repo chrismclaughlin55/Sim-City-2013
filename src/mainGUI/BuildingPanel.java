@@ -47,13 +47,6 @@ public class BuildingPanel {
 			
 		case market:
 			mainGui.marketGui.setVisible(true);
-			//mainGui.marketGui1.setVisible(true);
-			Market market = new Market(0, 0, 0, 0, mainGui, 0);
-			MarketGui marketGui = new MarketGui();
-			marketGui.setTitle("market1");
-			marketGui.setVisible(true);
-			marketGui.setResizable(false);
-			marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			break;
 			
 		default: 
