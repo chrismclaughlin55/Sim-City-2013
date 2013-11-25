@@ -10,7 +10,6 @@ import java.util.TimerTask;
 
 import restaurantMQ.test.mock.EventLog;
 import restaurantMQ.test.mock.LoggedEvent;
-import market.MarketCustomerRole.MyOrder;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
 import market.interfaces.MarketManager;
@@ -189,7 +188,6 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		currentMarketOrders.clear();
 
 	}
-	
 	
 }
 

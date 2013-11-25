@@ -2,12 +2,10 @@ package market.test.mock;
 
 import java.util.List;
 
-import restaurantMQ.test.mock.EventLog;
-import market.MarketCustomerRole;
-import market.MarketCustomerRole.MyOrder;
-import market.MarketEmployeeRole.MarketOrder;
+import market.MyOrder;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
+import restaurantMQ.test.mock.EventLog;
 
 public class MockMarketEmployee extends Mock implements MarketEmployee {
 

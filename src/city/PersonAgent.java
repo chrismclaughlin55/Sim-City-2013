@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import market.MarketCustomerRole.MyOrder;
+import market.MyOrder;
 import agent.Agent;
 
 public class PersonAgent extends Agent
@@ -20,6 +20,14 @@ public class PersonAgent extends Agent
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
+		MyOrder o1 = new MyOrder("steak", 2, 1);
+		MyOrder o2 = new MyOrder("salad", 2, 1);
+		MyOrder o3 = new MyOrder("pizza", 2, 1);
+		MyOrder o4 = new MyOrder("chicken", 2, 1);
+		thingsToOrder.add(o1);
+		thingsToOrder.add(o2);
+		thingsToOrder.add(o3);
+		thingsToOrder.add(o4);
 	}
 	
 	

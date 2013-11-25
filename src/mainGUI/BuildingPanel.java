@@ -3,6 +3,7 @@ package mainGUI;
 import javax.swing.JFrame;
 
 import bankgui.BankGui;
+import market.Market;
 import market.gui.MarketGui;
 import restaurantMQ.gui.RestaurantGui;
 import city.Building;
@@ -49,7 +50,8 @@ public class BuildingPanel {
 			
 		case market:
 			//mainGui.marketGui1.setVisible(true);
-			MarketGui marketGui = new MarketGui();
+			Market market = new Market(0, 0, 0, 0, mainGui, 0);
+			MarketGui marketGui = new MarketGui(market);
 			marketGui.setTitle("market1");
 			marketGui.setVisible(true);
 			marketGui.setResizable(false);

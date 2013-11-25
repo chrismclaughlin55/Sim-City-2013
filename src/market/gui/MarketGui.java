@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import city.PersonAgent;
 import city.Role;
 import market.Inventory;
+import market.Market;
 import market.MarketCustomerRole;
 import market.MarketData;
 import market.MarketEmployeeRole;
@@ -28,8 +29,9 @@ public class MarketGui extends JFrame implements ActionListener {
 
 	public AnimationPanel animationPanel;
 	private MarketPanel marketPanel;
+	private Market market; 
 
-	public MarketGui() {
+	public MarketGui(Market market) {
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0,0,screenSize.width/2, screenSize.height/2);
@@ -52,8 +54,8 @@ public class MarketGui extends JFrame implements ActionListener {
 		add (marketPanel);
 		add (animationPanel);
 		
-		/*PersonAgent p1 = new PersonAgent("Manager");
-		MarketManagerRole manager = new MarketManagerRole(p1, inventory);
+		PersonAgent p1 = new PersonAgent("Manager");
+		MarketManagerRole manager = new MarketManagerRole(p1, inventory, market);
 		p1.msgAssignRole(manager);
 		p1.startThread();
 		ManagerGui managerGui = new ManagerGui();
@@ -67,10 +69,10 @@ public class MarketGui extends JFrame implements ActionListener {
 		animationPanel.addGui(employeeGui);
 		
 		PersonAgent p3 = new PersonAgent("Customer1");
-		MarketCustomerRole customer = new MarketCustomerRole(p3, employee, 1);
+		MarketCustomerRole customer = new MarketCustomerRole(p3, manager, 1, p3.thingsToOrder);
 		p3.msgAssignRole(customer);
 		CustomerGui custGui = new CustomerGui();
-		animationPanel.addGui(custGui);*/
+		animationPanel.addGui(custGui);
 		
 		
 

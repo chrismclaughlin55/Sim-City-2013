@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import market.Market;
+import market.MyOrder.OrderState;
 import market.interfaces.MarketCustomer;
 import city.PersonAgent;
 import city.Role;
@@ -11,7 +13,6 @@ import city.Role;
 public class MarketCustomerRole extends Role implements MarketCustomer {
 
 	private enum customerState {waiting, readyToOrder, readyToPay};
-	private enum OrderState {pending, fulfilled, unfulfilled};
 	private customerState state;
 	private List<Invoice> invoices = Collections.synchronizedList(new ArrayList<Invoice>());
 	private List<MyOrder> orders = Collections.synchronizedList(new ArrayList<MyOrder>());
@@ -20,20 +21,6 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	private MarketEmployeeRole employee = null;
 	private int marketNum;
 	private double amountDue = 0;
-
-	public class MyOrder {
-		String type; 
-		int amount;
-		int marketNum;
-		OrderState orderState;
-
-		public MyOrder(String type, int amount, int marketNum) {
-			this.type = type;
-			this.amount = amount;
-			this.marketNum = marketNum;
-			orderState = OrderState.pending;
-		}
-	}
 
 
 	public MarketCustomerRole(PersonAgent person, MarketManagerRole manager, int marketNum, List<MyOrder> orders) {

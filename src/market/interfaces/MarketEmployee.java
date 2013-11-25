@@ -2,8 +2,7 @@ package market.interfaces;
 
 import java.util.List;
 
-import market.MarketCustomerRole.MyOrder;
-import market.MarketEmployeeRole.MarketOrder;
+import market.MyOrder;
 
 public interface MarketEmployee {
 	
