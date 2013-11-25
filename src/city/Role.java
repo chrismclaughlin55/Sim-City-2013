@@ -16,6 +16,11 @@ public abstract class Role
 	/*GETTERS/SETTERS*/
 	
 	//PersonAgent will only run a particular Role's scheduler if the Role is active
+	public PersonAgent getPerson()
+	{
+		return person;
+	}
+	
 	public boolean isActive()
 	{
 		return isActive;
