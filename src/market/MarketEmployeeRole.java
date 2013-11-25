@@ -59,7 +59,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	    }*/
 	}
 
-	public MarketEmployeeRole(PersonAgent person, int marketNum, MarketManager manager, Inventory inventory) {
+	public MarketEmployeeRole(PersonAgent person, MarketManager manager, Inventory inventory) {
 		super(person);
 		this.marketNum = marketNum;
 		this.person = person;

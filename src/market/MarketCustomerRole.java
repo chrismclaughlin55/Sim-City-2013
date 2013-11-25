@@ -19,21 +19,15 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	private PersonAgent person = null;
 	private MarketManagerRole manager = null;
 	private MarketEmployeeRole employee = null;
-	private int marketNum;
 	private double amountDue = 0;
 
 
-	public MarketCustomerRole(PersonAgent person, MarketManagerRole manager, int marketNum, List<MyOrder> orders) {
+	public MarketCustomerRole(PersonAgent person, MarketManagerRole manager, List<MyOrder> orders) {
 		super(person);
 		this.person = person;
 		this.manager = manager;
-		this.marketNum = marketNum;
 		state = customerState.waiting;
-		for (MyOrder o : orders) {
-			if (o.marketNum == marketNum) {
-				this.orders.add(o);
-			}
-		}
+		this.orders = orders;
 	}
 
 	public void msgWhatIsYourOrder(MarketEmployeeRole employee){
@@ -62,11 +56,6 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 				}
 				else if (invoice.get(i).amount == 0) {
 					orders.get(i).orderState = OrderState.unfulfilled;
-					for (MyOrder o : person.thingsToOrder) {
-						if ((orders.get(i).type.equals(o.type)) && (orders.get(i).marketNum == marketNum)) {
-							o.marketNum += 1;
-						}
-					}
 				}
 			}
 		}
@@ -110,7 +99,7 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 
 
 	public void PayBill() {
-		person.money -= amountDue;
+		person.bankMoney -= amountDue;
 		employee.msgHereIsPayment(amountDue);
 		orders.clear();
 		invoices.clear();

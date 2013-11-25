@@ -11,11 +11,7 @@ import javax.swing.JLabel;
 
 import market.Inventory;
 import market.Market;
-import market.MarketCustomerRole;
 import market.MarketData;
-import market.MarketEmployeeRole;
-import market.MarketManagerRole;
-import city.PersonAgent;
 
 
 /**
@@ -26,8 +22,7 @@ public class MarketGui extends JFrame implements ActionListener {
 
 	public AnimationPanel animationPanel;
 	private MarketPanel marketPanel;
-	private Market market; 
-
+	private Market market;
 	public MarketGui() {
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -91,17 +86,6 @@ public class MarketGui extends JFrame implements ActionListener {
 
 		marketPanel.validate();
 	}
-
-
-	/*public static void main(String[] args) {
-		MarketGui gui = new MarketGui();
-		gui.setTitle("Market");
-		gui.setVisible(true);
-		gui.setResizable(true);        
-
-		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}*/
-
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

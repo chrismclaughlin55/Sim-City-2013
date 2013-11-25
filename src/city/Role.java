@@ -16,6 +16,11 @@ public abstract class Role
 	/*GETTERS/SETTERS*/
 	
 	//PersonAgent will only run a particular Role's scheduler if the Role is active
+	public PersonAgent getPerson()
+	{
+		return person;
+	}
+	
 	public boolean isActive()
 	{
 		return isActive;
@@ -54,7 +59,10 @@ public abstract class Role
 	{
 		person.stateChanged();
 	}
-	
+	public void print(String s){
+		
+		System.out.println(person.name+": "+ s);
+	}
 	//All roles must have a scheduler
 	public abstract boolean pickAndExecuteAnAction();
 	

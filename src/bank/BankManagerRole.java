@@ -15,13 +15,13 @@ public class BankManagerRole extends Role implements BankManager {
 	
 	//MESSAGES
 	@Override
-	public void msgINeedServer(BankCustomer c) {
+	public void msgINeedService(BankCustomer c) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void msgGiveMeInfo(BankCustomer c) {
+	public void msgGiveMeInfo(PersonAgent c) {
 		// TODO Auto-generated method stub
 		
 	}

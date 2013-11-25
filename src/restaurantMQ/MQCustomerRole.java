@@ -4,6 +4,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import javax.swing.JCheckBox;
+
 import restaurantMQ.gui.CustomerGui;
 import restaurantMQ.gui.RestaurantPanel;
 import restaurantMQ.interfaces.Cashier;
@@ -25,6 +27,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 	private int waitingNumber = 0;
 	private String choice;
 	private RestaurantPanel rp;
+	private JCheckBox hungerBox;
 	
 	double money = 100;
 	double balance = 0;
@@ -46,11 +49,12 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 	AgentEvent event = AgentEvent.none;
 
 	/*CONSTRUCTOR*/
-	public MQCustomerRole(PersonAgent person, Timer timer, RestaurantPanel rp) 
+	public MQCustomerRole(PersonAgent person, Timer timer, JCheckBox hunger, RestaurantPanel rp) 
 	{
 		super(person);
 		this.name = super.getName();
 		this.timer = timer;
+		hungerBox = hunger;
 		this.rp = rp; //hack to set up scenarios
 		
 		if(name.equals("OutOfFood"))
@@ -95,6 +99,11 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 	public void msgPause()
 	{
 		super.msgPause();
+	}
+	
+	public void msgGotHungry()
+	{
+		hungerBox.doClick();
 	}
 	
 	public void gotHungry() {//from animation
