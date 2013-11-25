@@ -9,7 +9,9 @@ import java.util.concurrent.Semaphore;
 
 import mainGUI.MainGui;
 import market.MyOrder;
+import market.Inventory;
 import agent.Agent;
+import city.Building.BuildingType;
 import city.gui.PersonGui;
 
 public class PersonAgent extends Agent
@@ -18,12 +20,16 @@ public class PersonAgent extends Agent
 	public static final int HUNGRY = 7;
 	public static final int STARVING = 14;
 	public static final int LOWMONEY = 20;
+	public static final int TIRED = 16;
+	public static final double RENT = 20;
 	/*END OF CONSTANTS*/
 	
 	/*DATA MEMBERS*/
 	String name;
+	public int tiredLevel = 0;
 	public double cash = 100;
 	public double bankMoney = 200;
+	public double rentDue = 0;
 	public int criminalImpulse = 0;
 	public int hungerLevel = 0;
 	boolean ranonce = false;
@@ -39,12 +45,16 @@ public class PersonAgent extends Agent
 	String desiredRole;
 	String job;
 	
+	boolean goToWork = true;
+	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
 	public enum BigState {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome, leaveHome};
 	public enum HomeState {sleeping, onCouch, hungry, none};
 	public BigState bigState = BigState.doingNothing;
 	public HomeState homeState;
+	
+	Inventory inventory = new Inventory();
 	
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
@@ -165,16 +175,43 @@ public class PersonAgent extends Agent
 		{
 			case atHome: {
 				if (homeState == HomeState.sleeping) {
-					
+					if(false){//if sleeping and it is time to wake up
+					//delete the && false when the actual rule is implemented
+						WakeUp();
+						return true;
+					}
+					else
+						return false; //put the agent thread back to sleep
 				}
-				if (homeState == HomeState.hungry) {
-					
+				
+				if(hungerLevel >= HUNGRY) //inventory also has to be sufficient
+				{
+					makeFood(); //just choose a random item from the inventory
+					return true;
 				}
+				
+				if(goToWork)
+				{
+					leaveHome(); //leave the house and set bigState to doingNothing
+				}
+				
+				if(home.type == BuildingType.apartment && rentDue > 0)
+				{
+					payRent();
+					return true;
+				}
+				
+				if(tiredLevel >= TIRED)
+				{
+					goToSleep();
+					return false; //intentional because the thread is being out to sleep
+				}
+				
 				if (homeState == HomeState.onCouch) {
 					
 				}
 				if (homeState == HomeState.none) {
-					
+					leaveHome();
 				}
 				//personGui.DoGoToBed();
 				return true;
@@ -226,6 +263,26 @@ public class PersonAgent extends Agent
 		return false;
 	}
 	
+	private void payRent() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void WakeUp() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void makeFood() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void goToSleep() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	protected void goToRandomPlace() {
 		//personGui.DoGoToRandomPlace();
 	}
