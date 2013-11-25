@@ -3,6 +3,7 @@ package city;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import city.gui.BusGui;
 
@@ -26,15 +27,21 @@ public class BusAgent {
 	//LinkedList<BusStopAgent> stops;
 	BusStopAgent curr;
 	BusStopAgent next;
-
+	private Semaphore atDestination = new Semaphore(0,true);
+	
 	public BusAgent() {
+		busgui = new BusGui(this);
 		BusState bs = BusState.moving;
 		passengers = new ArrayList<myPassenger>();
 		//SHOULD ALSO HAVE A DEFAULT STARTING POSITION
 	}
 	
 	//MESSAGES
-	
+	public void msgAtDestination() {
+		atDestination.release();
+		// TODO Auto-generated method stub
+		
+	}
 	public void msgPeopleAtStop(HashMap<PersonAgent,BusStopAgent>peopleAtStop) {
         myState=BusState.loading;
         for ( PersonAgent p : peopleAtStop.keySet()) {
@@ -100,4 +107,6 @@ public class BusAgent {
 		}
 	}
 	//ACTIONS
+
+	
 }
