@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import city.gui.BusStopGui;
 public class BusStopAgent {
 
 	/*
@@ -21,13 +21,26 @@ public class BusStopAgent {
     HashMap<PersonAgent, BusStopAgent> peopleWaiting;
     BusStopAgent nextStop;
     BusAgent currentBus;
+    BusStopGui busStopGui;
+    int xPosition;
+    int yPosition;
     //CityData places a square at coordinates of this particular BusStop
 
-	public BusStopAgent() {
+	public BusStopAgent(int x, int y) {
+		xPosition = x;
+		yPosition = y;
 		waitingPeople = new ArrayList<PersonAgent>();
 		peopleWaiting = new HashMap<PersonAgent, BusStopAgent>();
+		busStopGui = new BusStopGui(xPosition,yPosition);
 	}
 	
+	public int getX() {
+		return xPosition;
+	}
+	
+	public int getY() {
+		return yPosition;
+	}
 	
 	
 	public void msgWaitingAtStop(PersonAgent p, BusStopAgent destination) {

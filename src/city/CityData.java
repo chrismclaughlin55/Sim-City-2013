@@ -20,7 +20,7 @@ public class CityData {
 	}
 	
 	private List<PersonAgent> people = new ArrayList<PersonAgent>();
-	public static Map<BusStopAgent,Coordinate> busStopPositions; //given a busstopagent, will return pixel position in city.
+	//public static Map<BusStopAgent,Coordinate> busStopPositions; //given a busstopagent, will return pixel position in city.
 	public static ArrayList<BusStopAgent> busStops; //has busstops in order of the route the bus will take.
 	public static ArrayList<BusAgent> buses;
 	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
@@ -29,7 +29,11 @@ public class CityData {
 	int timeInterval;
 	public CityData() {
 		timeInterval=10;
+		//POPULATE busStops through MainGui as well whlie also assigning them a position
+		//also each busStop should be initialized with its next busStopAgent
+		//POPULATE 
 	}
+	
 	
 	public void setTimeInterval(int newTime) {
 		timeInterval=newTime;

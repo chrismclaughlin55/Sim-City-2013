@@ -75,7 +75,7 @@ public class BusAgent {
 	}
 	
 	private void LeaveStop() {
-		busgui.DoGoToNextStop(CityData.busStopPositions.get(next).getX(),CityData.busStopPositions.get(next).getY());
+		busgui.DoGoToNextStop(next.getX(),next.getY());
 	    myState=BusState.moving;
 	}
 
