@@ -6,6 +6,8 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import Gui.Gui;
+import bankgui.BankGui;
+import market.Market;
 import market.gui.MarketGui;
 import restaurantMQ.gui.RestaurantGui;
 import city.Building;
@@ -29,7 +31,6 @@ public class BuildingPanel {
 				}
 			}
 			break;
-		
 		case bank:
 			mainGui.bankGui.setVisible(true);
 			break;
@@ -44,6 +45,13 @@ public class BuildingPanel {
 			
 		case market:
 			mainGui.marketGui.setVisible(true);
+			//mainGui.marketGui1.setVisible(true);
+			Market market = new Market(0, 0, 0, 0, mainGui, 0);
+			MarketGui marketGui = new MarketGui();
+			marketGui.setTitle("market1");
+			marketGui.setVisible(true);
+			marketGui.setResizable(false);
+			marketGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			break;
 			
 		default: 

@@ -1,5 +1,6 @@
 package market.gui;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
@@ -11,6 +12,7 @@ public class CustomerGui implements Gui{
 	
 	int xPos = 0;
 	int yPos = 0;
+	
 
 	@Override
 	public void updatePosition() {
@@ -20,14 +22,15 @@ public class CustomerGui implements Gui{
 
 	@Override
 	public void draw(Graphics2D g) {
-		ImageIcon icon = new ImageIcon("res/marketcust_normal.png");
-        g.drawImage(icon.getImage(), xPos, yPos, null);
+		Color customerColor = new Color (46, 204, 113);
+		g.setColor(customerColor);
+		g.fillRect(xPos, yPos, 30, 30);
 	}
 
 	@Override
 	public boolean isPresent() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override

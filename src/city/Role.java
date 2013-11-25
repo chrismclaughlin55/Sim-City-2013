@@ -3,7 +3,7 @@ package city;
 public abstract class Role 
 {
 	/*DATA MEMBERS*/
-	private PersonAgent person;
+	protected PersonAgent person;
 	private boolean isActive = false;
 	
 	/*CONSTRUCTORS*/
