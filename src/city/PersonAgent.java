@@ -44,6 +44,7 @@ public class PersonAgent extends Agent
 	BusStopAgent destinationBusStop;
 	String desiredRole;
 	String job;
+
 	
 	boolean goToWork = true;
 	
@@ -51,8 +52,10 @@ public class PersonAgent extends Agent
 	
 	public enum BigState {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome, leaveHome};
 	public enum HomeState {sleeping, onCouch, hungry, none};
+	public enum EmergencyState {fire, earthquake, none};
 	public BigState bigState = BigState.doingNothing;
 	public HomeState homeState;
+	public EmergencyState emergencyState = EmergencyState.none;
 	
 	Inventory inventory = new Inventory();
 	
@@ -113,6 +116,11 @@ public class PersonAgent extends Agent
 		isMoving.release();
 	}
 	
+	public void msgFire() {
+		emergencyState = EmergencyState.fire;
+		stateChanged();
+	}
+	
 	public void msgAssignRole(Role role) {
 		for (Role r : roles) {
 			if (r == role) {
@@ -153,7 +161,10 @@ public class PersonAgent extends Agent
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
 		/*Emergency scheduler rules go here (v2)*/
-		
+		if(emergencyState == EmergencyState.fire) {
+			ReactToFire();
+			return true;
+		}
 		//This should be the only part of the scheduler which runs if the person has an active role
 		boolean anyActive = false;
 		for (Role role : roles) {
@@ -366,6 +377,11 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+	}
+	
+	protected void ReactToFire() {
+		System.out.println(name +": Stop, Drop, and Roll ");
+		emergencyState = EmergencyState.none;
 	}
 	
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
