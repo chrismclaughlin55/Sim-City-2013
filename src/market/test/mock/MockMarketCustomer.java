@@ -1,5 +1,7 @@
 package market.test.mock;
 
+import java.util.List;
+
 import market.Invoice;
 import market.interfaces.MarketCustomer;
 import restaurantMQ.test.mock.EventLog;
@@ -14,12 +16,13 @@ public class MockMarketCustomer extends Mock implements MarketCustomer {
 	}
 
 	@Override
-	public void msgOrderFulFullied(Invoice invoice) {
-
+	public void msgOrderUnfulfilled(String type, int amount) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void msgOrderUnfulfilled(String type, int amount) {
+	public void msgOrderFulfullied(List<Invoice> invoice) {
 		// TODO Auto-generated method stub
 		
 	}
