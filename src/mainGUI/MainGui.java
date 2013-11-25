@@ -20,10 +20,10 @@ import market.gui.MarketGui;
 import city.Building;
 import city.HomeGui;
 import city.PersonAgent;
+import city.PersonAgent.BigState;
 import city.gui.PersonGui;
 import config.ConfigParser;
 import bankgui.*;
-import city.PersonAgent.state;
 
 /**
  * Main GUI class.
@@ -107,7 +107,7 @@ public class MainGui extends JFrame implements MouseListener {
         bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
         try {    	
-			parser = new ConfigParser(this,"config.txt");
+			parser = new ConfigParser(this,"src/config/config.txt");
 			configPeople = parser.ParseAndCreatePeople();
 			for(HashMap<String,String> person: configPeople) {
 	        	addConfigPerson(person);
@@ -133,7 +133,7 @@ public class MainGui extends JFrame implements MouseListener {
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
-		p.personState = state.goHome;
+		p.bigState = BigState.goHome;
 		p.startThread();
 		
 	}

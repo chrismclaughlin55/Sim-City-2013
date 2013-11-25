@@ -1,16 +1,14 @@
 package city;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
-import mainGUI.MainGui;
-import market.MyOrder;
-import agent.Agent;
+import mainGUI.*;
 import city.gui.PersonGui;
+import agent.Agent;
 
 public class PersonAgent extends Agent
 {
@@ -32,21 +30,12 @@ public class PersonAgent extends Agent
 	
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
-	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());;
 	private Semaphore atBed = new Semaphore(0, true);
 	private Semaphore atEntrance = new Semaphore(0, true);
 	
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
-		MyOrder o1 = new MyOrder("steak", 2, 1);
-		MyOrder o2 = new MyOrder("salad", 2, 1);
-		MyOrder o3 = new MyOrder("pizza", 2, 1);
-		MyOrder o4 = new MyOrder("chicken", 2, 1);
-		thingsToOrder.add(o1);
-		thingsToOrder.add(o2);
-		thingsToOrder.add(o3);
-		thingsToOrder.add(o4);
 	}
 	
 	public PersonAgent(String name, MainGui gui, CityData cd) {
@@ -150,7 +139,7 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goToRestaurant() {
-		int restNumber = (int)(12+(int)(Math.random()*17));
+		int restNumber = (int)(12+(int)(Math.random()*5));
 		personGui.DoGoToBuilding(restNumber);
 		atBuilding.drainPermits();
 		try {
