@@ -1,6 +1,7 @@
 package city;
 import java.util.*;
 
+import city.gui.PersonGui;
 import Gui.Gui;
 public class CityData {
 	
@@ -49,6 +50,13 @@ public class CityData {
 	
 	public void addGui(Gui g) {
 		guis.add(g);
+	}
+	
+	public void addGui(PersonGui g, int currentIn) {
+		guis.add(g);
+		g.setXDes(g.xBuilding[currentIn]);
+		g.setYDes(g.yBuilding[currentIn]);
+		g.setPresent(true);
 	}
 	
 	/*
