@@ -30,6 +30,7 @@ public class BusAgent {
 	private Semaphore atDestination = new Semaphore(0,true);
 	
 	public BusAgent() {
+		busgui = new BusGui(this);
 		BusState bs = BusState.moving;
 		passengers = new ArrayList<myPassenger>();
 		//SHOULD ALSO HAVE A DEFAULT STARTING POSITION
