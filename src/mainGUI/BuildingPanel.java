@@ -38,8 +38,8 @@ public class BuildingPanel {
 			Home h = (Home) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			h.homeGui.setVisible(true);
 		case apartment:
-			Home a = (Home) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
-			a.homeGui.setVisible(true);
+			Apartment a = (Apartment) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
+			a.apartmentGui.setVisible(true);
 		case room:
 			//add home panel and gui later
 			break;

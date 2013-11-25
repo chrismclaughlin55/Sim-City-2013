@@ -19,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import city.Apartment;
 import city.Building;
 import city.Building.BuildingType;
 import city.CityData;
@@ -45,7 +46,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd = new CityData();
 		
 		for (int i = 0; i < 2; i++) {
-			Building b = new Home(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
+			Building b = new Apartment(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
