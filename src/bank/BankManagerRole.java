@@ -1,6 +1,10 @@
 package bank;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import restaurantMQ.interfaces.Customer;
@@ -11,8 +15,12 @@ import city.PersonAgent;
 import city.Role;
 
 public class BankManagerRole extends Role implements BankManager {
-	Queue<Customer> line;
-	ArrayList<myTeller> tellers;
+	private String name;
+	private PersonAgent me;
+	private List<Customer> line = Collections.synchronizedList(new ArrayList<Customer>());
+	private List<myTeller> tellers = Collections.synchronizedList(new ArrayList<myTeller>());
+	private Map<PersonAgent, CustInfo> CustAccounts;
+	private Map<String, CustInfo> BusinessAccounts;
 	enum tellerState {available, needsInfo, notAvailable, updateInfo }
 	class myTeller{
 		tellerState state;
@@ -21,9 +29,11 @@ public class BankManagerRole extends Role implements BankManager {
 		
 	}
 	public BankManagerRole(PersonAgent person) {
-		
 		super(person);
-		// TODO Auto-generated constructor stub
+		this.name = person.getName();
+		this.me = person;
+		CustAccounts = Collections.synchronizedMap(new HashMap<PersonAgent, CustInfo>());
+		BusinessAccounts = Collections.synchronizedMap(new HashMap<String, CustInfo>());
 	}
 	
 	//MESSAGES
