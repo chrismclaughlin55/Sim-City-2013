@@ -14,20 +14,36 @@ import city.gui.PersonGui;
 
 public class PersonAgent extends Agent
 {
+	/*CONSTANTS*/
+	public static final int HUNGRY = 7;
+	public static final int STARVING = 14;
+	public static final int LOWMONEY = 20;
+	/*END OF CONSTANTS*/
+	
 	/*DATA MEMBERS*/
 	String name;
-	public double money;
+	public double cash = 100;
+	public double bankMoney = 200;
+	public int criminalImpulse = 0;
+	public int hungerLevel = 0;
 	boolean ranonce = false;
 	PersonGui personGui;
 	MainGui gui;
 	CityData cityData;
 	Building currentBuilding;
+	Building destinationBuilding;
+	Building jobBuilding;
+	Building home;
+	BusStopAgent currentBusStop;
+	BusStopAgent destinationBusStop;
+	String desiredRole;
+	String job;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
-	public enum state {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome, leaveHome};
+	public enum BigState {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome, leaveHome};
 	public enum HomeState {sleeping, onCouch, hungry, none};
-	public state personState = state.doingNothing;
+	public BigState bigState = BigState.doingNothing;
 	public HomeState homeState;
 	
 	private Semaphore atBuilding = new Semaphore(0, true);
@@ -47,6 +63,7 @@ public class PersonAgent extends Agent
 		thingsToOrder.add(o2);
 		thingsToOrder.add(o3);
 		thingsToOrder.add(o4);
+		personGui = new PersonGui(this, gui);
 	}
 	
 	public PersonAgent(String name, MainGui gui, CityData cd) {
@@ -54,6 +71,31 @@ public class PersonAgent extends Agent
 		this.gui = gui;
 		this.cityData = cd;
 		personGui = new PersonGui(this, gui);
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setJob(String job) {
+		this.job = job;
+	}
+	
+	public void setCash(double cash) {
+		this.cash = cash;
+	}
+	
+	public void setBankMoney(double moneyInDaBank) {
+		this.bankMoney = moneyInDaBank;
+	}
+	
+	public void setHunger(int hangry) {
+		this.hungerLevel = hangry;
+	}
+	/*SETTERS*/
+	public void assignHome(Building home)
+	{
+		this.home = home;
 	}
 	
 	/*MESSAGES*/
@@ -76,6 +118,10 @@ public class PersonAgent extends Agent
 		super.stateChanged();
 	}
 	
+	public void msgDoneWithRole() {
+		//implement later
+	}
+	
 	public void msgAtBuilding() {//from animation
 		//print("msgAtBuilding() called");
 		atBuilding.release();// = true;
@@ -96,56 +142,82 @@ public class PersonAgent extends Agent
 	
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
-		if (personState == state.atHome) {
-			/* APARTMENT TEST
-			 * personGui.DoGoToRoom(0);
-			try {
-				isMoving.acquire();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			Apartment cb = (Apartment) cityData.buildings.get(0);
-			cb.getRoom(0).EnterBuilding(this, "");*/
-			if (homeState == HomeState.sleeping) {
-				
-			}
-			if (homeState == HomeState.hungry) {
-				
-			}
-			if (homeState == HomeState.onCouch) {
-				
-			}
-			if (homeState == HomeState.none) {
-				
-			}
-			return true;
-		}
-		if (personState == state.leaveHome) {
-			//personGui.DoGoToEntrance();
-			leaveHome();
-			return true;
-		}
-		if (personState == state.goToRestaurant) {
-			goToRestaurant();
-			return true;
-		}
-		if (personState == state.goHome) {
-			goHome();
-			return true;
-		}
-		if (personState == state.goToBank) {
-			goToBank();
-			return true;
-		}
-		if (personState == state.goToMarket) {
-			goToMarket();
-			return true;
-		}
+		/*Emergency scheduler rules go here (v2)*/
 		
+		//This should be the only part of the scheduler which runs if the person has an active role
+		boolean anyActive = false;
 		for (Role role : roles) {
 			if (role.isActive()) {
-				if (role.pickAndExecuteAnAction()) {
+				anyActive = true;
+				if(role.pickAndExecuteAnAction())
+					return true;
+			}
+
+		}
+		//Reaching here means there is an active role, but it is "waiting" for a state to be updated
+		//Thus, the PersonAgent's scheduler should return FALSE
+		if(anyActive)
+		{
+			return false;
+		}
+		
+		switch(bigState)
+		{
+			case atHome: {
+				if (homeState == HomeState.sleeping) {
+					
+				}
+				if (homeState == HomeState.hungry) {
+					
+				}
+				if (homeState == HomeState.onCouch) {
+					
+				}
+				if (homeState == HomeState.none) {
+					
+				}
+				//personGui.DoGoToBed();
+				return true;
+			}
+			case leaveHome: {
+				//personGui.DoGoToEntrance();
+				leaveHome();
+				return true;
+			}
+			case goToRestaurant: {
+				goToRestaurant();
+				return true;
+			}
+			case goHome: {
+				goHome();
+				return true;
+			}
+			case goToBank: {
+				goToBank();
+				return true;
+			}
+			case goToMarket: {
+				goToMarket();
+				return true;
+			}
+			case doingNothing: {
+				//Decide what the next BigState will be based on current parameters
+				if(hungerLevel >= STARVING)
+				{
+					bigState = BigState.goToRestaurant;
+					desiredRole = "Customer";
+					return true;
+				}
+				if(cash <= LOWMONEY)
+				{
+					bigState = BigState.goToBank;
+					desiredRole = "Customer";
+					return true;
+				}
+				if(hungerLevel >= HUNGRY)
+				{
+					bigState = BigState.goToRestaurant;
+					desiredRole = "Customer";
 					return true;
 				}
 			}
@@ -159,7 +231,7 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goToRestaurant() {
-		int restNumber = (int)(12+(int)(Math.random()*17));
+		int restNumber = (int)(12+(int)(Math.random()*5));
 		personGui.DoGoToBuilding(restNumber);
 		atBuilding.drainPermits();
 		try {
@@ -184,7 +256,7 @@ public class PersonAgent extends Agent
 		personGui.DoGoIntoBuilding();
 		currentBuilding = cityData.buildings.get(11);
 		currentBuilding.EnterBuilding(this, "");
-		personState = state.atHome;
+		bigState = BigState.atHome;
 		
 		homeState = HomeState.sleeping;
 		if (homeState == HomeState.sleeping) {
@@ -197,7 +269,7 @@ public class PersonAgent extends Agent
 				e.printStackTrace();
 			}
 		}
-		personState = state.leaveHome;
+		bigState = BigState.leaveHome;
 	}
 	
 	protected void leaveHome() {
@@ -212,7 +284,7 @@ public class PersonAgent extends Agent
 		personGui.DoLeaveBuilding();
 		currentBuilding = cityData.buildings.get(11);// 11 need to be replaced by the person's data of home number
 		currentBuilding.LeaveBuilding(this);
-		personState = state.doingNothing;
+		bigState = BigState.doingNothing;
 	}
 	
 	protected void goToBank() {
@@ -257,3 +329,4 @@ public class PersonAgent extends Agent
 		return personGui;
 	}
 }
+

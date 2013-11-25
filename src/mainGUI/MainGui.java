@@ -3,12 +3,14 @@ package mainGUI;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -20,10 +22,10 @@ import market.gui.MarketGui;
 import city.Building;
 import city.HomeGui;
 import city.PersonAgent;
+import city.PersonAgent.BigState;
 import city.gui.PersonGui;
 import config.ConfigParser;
 import bankgui.*;
-import city.PersonAgent.state;
 
 /**
  * Main GUI class.
@@ -39,7 +41,8 @@ public class MainGui extends JFrame implements MouseListener {
 	//public AnimationPanel animationPanel;
 	//JPanel InfoLayout;
 	
-	private ConfigParser parser;
+	private Scanner scan;
+	private boolean fileExist;
     private PersonCreationPanel personPanel;
     public MainAnimationPanel mainAnimationPanel;
    
@@ -106,15 +109,61 @@ public class MainGui extends JFrame implements MouseListener {
         bankGui.setResizable(false);
         bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
-        try {    	
-			parser = new ConfigParser(this,"config.txt");
-			configPeople = parser.ParseAndCreatePeople();
-			for(HashMap<String,String> person: configPeople) {
-	        	addConfigPerson(person);
-	        }
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            	
+        try {
+    		scan = new Scanner( new File ("src/config/config.txt"));
+    		fileExist=true;
+    	}
+    	catch(FileNotFoundException fnfe) {
+    		fnfe.printStackTrace();
+    	}
+		if(fileExist) {
+			while(scan.hasNextLine()) {
+				String newPerson = scan.next();
+				if(newPerson.equals("NewPerson")) {
+					PersonAgent p = new PersonAgent(null, this, mainAnimationPanel.cd);
+					mainAnimationPanel.cd.addPerson(p);
+					PersonGui personGui = new PersonGui(p, this);
+					mainAnimationPanel.addGui(personGui);
+					p.setGui(personGui);
+					for(int i=0; i<5; i++) {
+						String property = scan.next();
+						String temp = scan.next();
+						switch (property) {
+							case "name": 
+								p.setName(temp);
+								break;
+							case "job": 
+								p.setJob(temp);
+								if(temp.equals("BankManager")) {
+									
+								}
+								if(temp.equals("Host")) {
+									//mainAnimationPanel.cd.
+								}
+								if(temp.equals("MarketManager")) {
+									//if(mainAnimationPanel.cd.market)
+									//mainAnimationPanel.cd.market.setManager(p);
+								}
+								
+								break;
+							case "cash": 
+								p.setCash(Double.parseDouble(temp));
+								break;
+							case "bankMoney": 
+								p.setBankMoney(Double.parseDouble(temp));
+								break;
+							case "hunger": 
+								p.setHunger(Integer.parseInt(temp));
+								break;	
+							default: 
+								break;
+						}
+					}
+					p.startThread();
+				 }
+				 
+			 }
 		}
         
     }
@@ -133,7 +182,7 @@ public class MainGui extends JFrame implements MouseListener {
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
-		p.personState = state.goHome;
+		p.bigState = BigState.goHome;
 		p.startThread();
 		
 	}

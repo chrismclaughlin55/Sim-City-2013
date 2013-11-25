@@ -42,7 +42,7 @@ public class MarketEmployeeTest extends TestCase
 		Inventory inventory = new Inventory(chickenData, saladData, steakData, pizzaData);
 		customer = new MockMarketCustomer("mockcustomer");
 		manager = new MockMarketManager("mockmanager");
-		employee = new MarketEmployeeRole(person, 1, manager, inventory);
+		employee = new MarketEmployeeRole(person, manager, inventory);
 		
 		
 		

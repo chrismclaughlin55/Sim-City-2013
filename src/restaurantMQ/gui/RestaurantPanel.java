@@ -248,14 +248,14 @@ public class RestaurantPanel extends JPanel {
      * @param name name of person
      */
     
-    //This is the one which is used!!!!
+    //Adding from restaurant
     public void addPerson(String type, String name, JCheckBox hungry, boolean hunger) {
 
     	//THIS WILL BE CALLED BY THE PERSON AGENT
     	if (type.equals("Customers"))
     	{
     		PersonAgent p = new PersonAgent(name);
-    		MQCustomerRole c = new MQCustomerRole(p, timer, this);	
+    		MQCustomerRole c = new MQCustomerRole(p, timer, hungry, this);	
     		CustomerGui g = new CustomerGui(c, gui);
     		
     		hungry.addActionListener(gui);
@@ -273,6 +273,7 @@ public class RestaurantPanel extends JPanel {
     	}
     }
     
+    //Adding from restaurant
     public void addWaiter(String name, final JCheckBox breakBox)
     {
     	PersonAgent p = new PersonAgent(name);
@@ -310,6 +311,40 @@ public class RestaurantPanel extends JPanel {
 		//Start the thread
 		p.msgAssignRole(w);
 		p.startThread(); //hack. PersonAgent's thread should already be running
+    }
+    
+    //Adding from outside restaurant
+    public void addCustomer(PersonAgent person) {
+
+    	//THIS WILL BE CALLED BY THE PERSON AGENT
+    	MQCustomerRole cust;
+    	for(Customer c : customers)
+    	{
+    		cust = (MQCustomerRole)c;
+    		if(cust.getPerson() == person)
+    		{
+    			person.msgAssignRole(cust);
+    			cust.msgGotHungry();
+    			return;
+    		}
+    	}
+    	
+    	
+    	JCheckBox hungry = new JCheckBox("Hungry?");
+    	MQCustomerRole c = new MQCustomerRole(person, timer, hungry, this);	
+    	CustomerGui g = new CustomerGui(c, gui);
+    	
+    	hungry.addActionListener(gui);
+    	gui.addRestaurantCustomer(c, hungry);
+    	
+    	gui.animationPanel.addGui(g);// dw
+    	c.setHost(host);
+    	c.setCashier(cashier);
+    	c.setGui(g);
+    	
+    	customers.add(c);
+    	hungry.doClick(); //set the customer to hungry
+    	person.msgAssignRole(c);
     }
     
     //Hacks to demonstrate program

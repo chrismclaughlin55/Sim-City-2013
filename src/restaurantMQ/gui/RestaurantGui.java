@@ -164,6 +164,11 @@ public class RestaurantGui extends JFrame implements ActionListener {
     	}
     }
     
+    public RestaurantPanel getRestaurantPanel()
+    {
+    	return restPanel;
+    }
+    
     public void addRestaurantCustomer(Customer c, JCheckBox hungerCB)
     {
     	customers.add(new RestaurantCustomer(c, hungerCB));

@@ -49,10 +49,17 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	private MainGui mainGui;
 
 	JRadioButton unemployed;
+	//restaurant jobs
 	JRadioButton restMQwaiter;
 	JRadioButton restMQhost;
 	JRadioButton restMQcook;
 	JRadioButton restMQcashier;
+	//market jobs
+	JRadioButton marketManager;
+	JRadioButton marketEmployee;
+	//bank jobs
+	JRadioButton bankManager;
+	JRadioButton bankTeller;
 
 	public PersonCreationPanel(MainGui mainGui) {
 		this.mainGui = mainGui;
@@ -65,23 +72,47 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		namePane.add(nameField);
 		namePane.add(addPerson);
 
-		personPane.setLayout(new GridLayout(0,1));
+		personPane.setLayout(null);
+		
 		unemployed = new JRadioButton("Unemployed", true);
-		restMQwaiter = new JRadioButton("RestaurantMQ Waiter", false);
-		restMQhost = new JRadioButton("RestaurantMQ Host", false);
-		restMQcook = new JRadioButton("RestaurantMQ Cook", false);
-		restMQcashier = new JRadioButton("RestaurantMQ Cashier", false);
+		restMQwaiter = new JRadioButton("Restaurant Waiter", false);
+		restMQhost = new JRadioButton("Restaurant Host", false);
+		restMQcook = new JRadioButton("Restaurant Cook", false);
+		restMQcashier = new JRadioButton("Restaurant Cashier", false);
+		marketManager = new JRadioButton("Market Manager", false);
+		marketEmployee = new JRadioButton("Market Employee", false);
+		bankManager = new JRadioButton("Bank Manager", false);
+		bankTeller = new JRadioButton("Bank Teller", false);
+		
 		jobs.add(unemployed);
 		jobs.add(restMQwaiter);
 		jobs.add(restMQhost);
 		jobs.add(restMQcook);
 		jobs.add(restMQcashier);
+		jobs.add(marketManager);
+		jobs.add(marketEmployee);
+		jobs.add(bankManager);
+		jobs.add(bankTeller);
+		
+		jobsPane.setLayout(null);
+		unemployed.setBounds(0, 0, 150, 30);
+		restMQhost.setBounds(0, 30, 140, 30);
+		restMQwaiter.setBounds(145, 30, 145, 30);
+		restMQcook.setBounds(300, 30, 140, 30);
+		restMQcashier.setBounds(450, 30, 170, 30);
+		marketManager.setBounds(0, 60, 140, 30);
+		marketEmployee.setBounds(145, 60, 140, 30);
+		bankManager.setBounds(0, 90, 140, 30);
+		bankTeller.setBounds(145, 90, 140, 30);
 		jobsPane.add(unemployed);
 		jobsPane.add(restMQwaiter);
 		jobsPane.add(restMQhost);
 		jobsPane.add(restMQcook);
 		jobsPane.add(restMQcashier);
-
+		jobsPane.add(marketManager);
+		jobsPane.add(marketEmployee);
+		jobsPane.add(bankManager);
+		jobsPane.add(bankTeller);
 
 		unemployed.addActionListener(this);
 		addPerson.addActionListener(this);
@@ -92,7 +123,10 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		pane.setMinimumSize(new Dimension(PANEDIM, PANEDIM));
 		pane.setPreferredSize(new Dimension(PANEDIM, PANEDIM));  
 
-		personPane.add(jobsPane);		
+		jobsPane.setBounds(0, 0, 615, 125);
+		nameField.setBounds(0, 125, 615, 95);
+		addPerson.setBounds(0, 220, 615, 90);
+		personPane.add(jobsPane);	
 		personPane.add(nameField);
 		personPane.add(addPerson);
 

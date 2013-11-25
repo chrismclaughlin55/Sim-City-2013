@@ -1,9 +1,13 @@
 package city;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.Timer;
 
 import mainGUI.BuildingPanel;
 import mainGUI.MainGui;
@@ -12,11 +16,13 @@ public class Building extends Rectangle2D.Double {
 
 	public String name;
 	public BuildingType type;
-
 	public enum BuildingType {home, apartment, restaurant, bank, market, room};
 	private boolean isOpen = false;
-	protected PersonAgent manager;
-	CityData cityData;
+	public PersonAgent manager;
+	public CityData cityData;
+	
+	Timer buildingTimer;
+	
 	public int buildingNumber;
 
 	BuildingPanel buildingPanel;
@@ -25,13 +31,13 @@ public class Building extends Rectangle2D.Double {
 	//private List<Role> roles = Collections.synchronizedList(new ArrayList<Role>());
 	protected Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
 
-
-
+	public BusStopAgent busStop;
 
 	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
+		busStop = new BusStopAgent();
 	}
 
 	public Building(int xPos, int yPos, int width, int height, String name, BuildingType type, MainGui mainGui) {
@@ -40,10 +46,11 @@ public class Building extends Rectangle2D.Double {
 		this.type = type;
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
+		busStop = new BusStopAgent();
 	}
 
 	public void ExitBuilding(PersonAgent p) {
-
+		
 	}
 
 	public  void EnterBuilding(PersonAgent p, String roleRequest) {
@@ -103,8 +110,6 @@ public class Building extends Rectangle2D.Double {
 	public boolean isOpen() {
 		return isOpen;
 	}
-
-
 	public void setOpen(PersonAgent p) {
 		if (p.equals(manager)) {
 			isOpen = true;
@@ -117,6 +122,13 @@ public class Building extends Rectangle2D.Double {
 		}
 	}
 
+	/*class Manager {
+		PersonAgent person;
+		Role role;
+
+		Manager() {
+		}
+	}*/
 
 	public void setType(BuildingType type) {
 		this.type = type;
@@ -125,9 +137,17 @@ public class Building extends Rectangle2D.Double {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 	public void setBuildingNumber(int number) {
 		buildingNumber = number;
+	}
+	
+	public void setManager(PersonAgent p) {
+		manager = p;
+	}
+	
+	public void setBusStop(BusStopAgent bs) {
+		busStop = bs;
 	}
 
 	public void display(Building building, int buildingNumber) {
