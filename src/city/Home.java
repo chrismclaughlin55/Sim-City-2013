@@ -16,9 +16,9 @@ public class Home extends Building {
 		homeGui = new HomeGui();
 	}
 
-	public Home(int i, int j, int wIDTH, int hEIGHT, String string,
+	public Home(int i, int j, int w, int h, String string,
 			BuildingType home, MainGui mainGui, CityData cd) {
-		super(i, j, wIDTH, hEIGHT, string, home, mainGui);
+		super(i, j, w, h, string, home, mainGui);
 		homeGui = new HomeGui();
 		cityData = cd;
 		

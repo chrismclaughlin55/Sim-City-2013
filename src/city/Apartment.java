@@ -24,6 +24,13 @@ public class Apartment extends Building {
 		
 	}
 	
+	public void EnterBuilding(PersonAgent p, String s) {
+		apartmentGui.getAptPanel().addGui(p.getGui());
+		cityData.removeGui(p.getGui());
+	}
+	
+	
+	
 	public boolean isFull() {
 		return tenants.size() >= 8;
 	}
