@@ -12,7 +12,6 @@ public class Building extends Rectangle2D.Double {
 
 	public String name;
 	public BuildingType type;
-
 	public enum BuildingType {home, apartment, restaurant, bank, market, room};
 	private boolean isOpen = false;
 	protected PersonAgent manager;
@@ -23,15 +22,15 @@ public class Building extends Rectangle2D.Double {
 	MainGui mainGui;
 
 	//private List<Role> roles = Collections.synchronizedList(new ArrayList<Role>());
-	protected Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
+	private Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
 
-
-
+	public BusAgent bus;
 
 	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
+		bus = new BusAgent();
 	}
 
 	public Building(int xPos, int yPos, int width, int height, String name, BuildingType type, MainGui mainGui) {
@@ -40,10 +39,11 @@ public class Building extends Rectangle2D.Double {
 		this.type = type;
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
+		bus = new BusAgent();
 	}
 
 	public void ExitBuilding(PersonAgent p) {
-
+		
 	}
 
 	public  void EnterBuilding(PersonAgent p, String roleRequest) {
@@ -103,8 +103,6 @@ public class Building extends Rectangle2D.Double {
 	public boolean isOpen() {
 		return isOpen;
 	}
-
-
 	public void setOpen(PersonAgent p) {
 		if (p.equals(manager)) {
 			isOpen = true;
@@ -117,6 +115,13 @@ public class Building extends Rectangle2D.Double {
 		}
 	}
 
+	/*class Manager {
+		PersonAgent person;
+		Role role;
+
+		Manager() {
+		}
+	}*/
 
 	public void setType(BuildingType type) {
 		this.type = type;
@@ -125,7 +130,7 @@ public class Building extends Rectangle2D.Double {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 	public void setBuildingNumber(int number) {
 		buildingNumber = number;
 	}
