@@ -35,13 +35,25 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-		Color tableColor = new Color(149, 165, 166);
-
+		Color roomColor = new Color(236, 240, 241);
+		Color shelfColor = new Color(230, 126, 34);
+		Color deskColor = new Color(52, 73, 94);
+		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
 		//Clear the screen by painting a rectangle the size of the frame
 		g2.setColor(getBackground());
 		g2.fillRect(0, 0, screenSize.width/4, screenSize.height/2 );
+		
+		g2.setColor(roomColor);
+		g2.fillRect(270, 355, 150, 150);
+		
+		g2.setColor(shelfColor);
+		g2.fillRect(0, 355, 270, 150);
+		
+		g2.setColor(deskColor);
+		g2.fillRect(50, 150, 600, 50);
+		
 
 		synchronized(guis){
 			for(Gui gui : guis) {
@@ -63,13 +75,15 @@ public class AnimationPanel extends JPanel implements ActionListener {
 		guis.add(gui);
 	}
 
-	public void removeGui(EmployeeGui gui) {
+	public void addGui(EmployeeGui gui) {
 		guis.remove(gui);
 	}
 
 	public void addGui(ManagerGui gui) {
 		guis.add(gui);
 	}
+
+	
 
 
 }

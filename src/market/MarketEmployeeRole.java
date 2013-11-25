@@ -21,8 +21,11 @@ import city.Role;
 public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 	private enum orderState {pending, processing, completed};
-	public List<MarketOrder> orders = Collections.synchronizedList(new ArrayList<MarketOrder>());
+	public List<MarketOrder> currentMarketOrders = Collections.synchronizedList(new ArrayList<MarketOrder>());
+	public List<Invoice> invoice = Collections.synchronizedList(new ArrayList<Invoice>());
 	public List<Double> payments = Collections.synchronizedList(new ArrayList<Double>());
+	private List<MarketCustomerRole> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomerRole>());
+
 	//public Map<String,MarketData> inventory = Collections.synchronizedMap(new HashMap<String,MarketData>()); 
 	public Inventory inventory = null;
 	private Timer timer = new Timer();
@@ -31,7 +34,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	private MarketManager manager;
 	public EventLog log = new EventLog();
 
-	class MarketOrder {
+	public class MarketOrder {
 		String type;
 		int quantity;
 		MarketCustomer cust;
@@ -56,7 +59,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	    }*/
 	}
 
-	public MarketEmployeeRole(PersonAgent person, int marketNum, MockMarketManager manager, Inventory inventory) {
+	public MarketEmployeeRole(PersonAgent person, int marketNum, MarketManager manager, Inventory inventory) {
 		super(person);
 		this.marketNum = marketNum;
 		this.person = person;
@@ -64,9 +67,25 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		this.inventory = inventory;
 	}
 
-	public void msgHereIsAnOrder(String type, int quantity, MarketCustomer cust) {
+
+	public void msgServiceCustomer(MarketCustomerRole customer) {
+		waitingCustomers.add(customer);
+		stateChanged();
+	}
+
+
+	/*public void msgHereIsAnOrder(String type, int quantity, MarketCustomer cust) {
 		log.add(new LoggedEvent("Received order from customer"));
 		orders.add(new MarketOrder(type, quantity, cust, orderState.pending, "person"));
+		stateChanged();
+	}*/
+
+
+	public void msgHereAreMyOrders(List<MyOrder> orders, MarketCustomer cust) {
+		for (MyOrder o : orders) {
+			MarketOrder marketOrder = new MarketOrder(o.type, o.amount, cust, orderState.pending, "person");
+			currentMarketOrders.add(marketOrder);
+		}
 		stateChanged();
 	}
 
@@ -77,28 +96,46 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
+
 		if (!payments.isEmpty()) {
 			ProcessPayment();
 			return true;
 		}
 
-		for (MarketOrder o : orders) {
+		if (!waitingCustomers.isEmpty()) {
+			CallCustomer(waitingCustomers.get(0));
+			waitingCustomers.remove(0);
+			return true;
+		}
+
+		if (!currentMarketOrders.isEmpty()) {
+			FulfillOrder();
+			return true;
+		}
+		/*for (MarketOrder o : marketOrders) {
 			if (o.state == orderState.pending) {
 				o.state = orderState.processing;
 				FulFillOrder(o);
 				return true;
 			}
-		}
+		}*/
+
 		return false;
 	}
 
+	private void CallCustomer(MarketCustomerRole customer) {
+		//employeeGui.callCustomer(c);
+		customer.msgWhatIsYourOrder(this);
+	}
+
+
 	public void ProcessPayment() {
-		manager.msgHereIsMoney(payments.get(0));
+		manager.msgHereIsMoney(payments.get(0), this);
 		payments.remove(0);
 	}
 
 
-	public void FulFillOrder(final MarketOrder order) {
+	/*public void FulFillOrder(final MarketOrder order) {
 		if(order.quantity <= inventory.inventory.get(order.type).amount) {
 			order.state = orderState.completed;
 			inventory.inventory.get(order.type).amount -= order.quantity;
@@ -114,14 +151,43 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		else {
 			if (order.custType.equals("person")){    
 				order.cust.msgOrderUnfulfilled(order.type, order.quantity);
-				orders.remove(orders);
+				marketOrders.remove(order);
 			}
-			/*if order.custType.equals("restaurant") {    
+			if order.custType.equals("restaurant") {    
 	            order.cookCust.msgOrderUnfulfilled(order.type, order.amount);
 	            orders.remove(orders);
-	        }*/
+	        }
 		}
 
-	}
+	}*/
 
+	public void FulfillOrder() {
+		for (final MarketOrder o : currentMarketOrders) {
+			if(o.quantity <= inventory.inventory.get(o.type).amount) {
+				o.state = orderState.completed;
+				inventory.inventory.get(o.type).amount -= o.quantity;
+				final double price = o.quantity * inventory.inventory.get(o.type).price;
+				timer.schedule(new TimerTask() {
+					public void run() {  
+						if (o.custType.equals("person")) {
+							Invoice i = new Invoice(o.type, o.quantity, price*o.quantity, marketNum);
+							invoice.add(i);
+						}
+					}},
+					500*currentMarketOrders.size());//how long to wait before running task
+			}
+			else {
+				if (o.custType.equals("person")){    
+					Invoice i = new Invoice(o.type, 0, 0, marketNum);
+					invoice.add(i);
+				}
+			}
+		}
+		
+		currentMarketOrders.get(0).cust.msgOrderFulfullied(invoice);
+		currentMarketOrders.clear();
+
+	}
+	
 }
+
