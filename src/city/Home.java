@@ -29,7 +29,7 @@ public class Home extends Building {
 			//allow the person into the building
 			
 		//}
-		homeGui.getHomePanel().addGui(p.getGui()); System.err.println("added to home panel");
+		homeGui.getHomePanel().addGui(p.getGui());
 		cityData.removeGui(p.getGui());
 	}
 }

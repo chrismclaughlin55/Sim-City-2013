@@ -92,7 +92,6 @@ public class HomePanel extends JPanel implements ActionListener {
 		gui.setXPos(0);
 		gui.setYPos(340);
 		gui.setPresent(true);
-		System.err.println(guis.size());
 	}
 
 
