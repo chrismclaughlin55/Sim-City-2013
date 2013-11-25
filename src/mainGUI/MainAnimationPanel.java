@@ -19,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import market.Market;
 import city.Apartment;
 import city.Building;
 import city.Building.BuildingType;
@@ -144,6 +145,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
         cd.buildings.get(19).setType(BuildingType.market);
 		cd.buildings.get(19).setName("market");
 		cd.buildings.get(19).setBuildingNumber(19);
+		cd.market = (Market) cd.buildings.get(19);
 		g2.drawString(cd.buildings.get(19).name, (int) cd.buildings.get(19).x, (int) cd.buildings.get(19).y+10);
         
         //Draw road

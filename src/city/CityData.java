@@ -3,6 +3,8 @@ import java.util.*;
 
 import city.gui.PersonGui;
 import Gui.Gui;
+import market.Market;
+//import bank.Bank;
 public class CityData {
 	
 	class Coordinate {
@@ -26,6 +28,7 @@ public class CityData {
 	public static ArrayList<BusAgent> buses;
 	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
+	public Market market;
 	//ALSO needs a 2-d array of the entire place
 	int timeInterval;
 	public CityData() {

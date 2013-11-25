@@ -23,7 +23,7 @@ public class PersonAgent extends Agent
 	/*DATA MEMBERS*/
 	String name;
 	public double cash = 100;
-	public double money = 200;
+	public double bankMoney = 200;
 	public int criminalImpulse = 0;
 	public int hungerLevel = 0;
 	boolean ranonce = false;
@@ -37,6 +37,7 @@ public class PersonAgent extends Agent
 	BusStopAgent currentBusStop;
 	BusStopAgent destinationBusStop;
 	String desiredRole;
+	String job;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
@@ -72,6 +73,25 @@ public class PersonAgent extends Agent
 		personGui = new PersonGui(this, gui);
 	}
 	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setJob(String job) {
+		this.job = job;
+	}
+	
+	public void setCash(double cash) {
+		this.cash = cash;
+	}
+	
+	public void setBankMoney(double moneyInDaBank) {
+		this.bankMoney = moneyInDaBank;
+	}
+	
+	public void setHunger(int hangry) {
+		this.hungerLevel = hangry;
+	}
 	/*SETTERS*/
 	public void assignHome(Building home)
 	{
