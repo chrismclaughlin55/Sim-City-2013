@@ -89,6 +89,8 @@ public class HomePanel extends JPanel implements ActionListener {
 
 	public void addGui(PersonGui gui) {
 		guis.add(gui);
+		gui.setXPos(0);
+		gui.setYPos(340);
 		gui.setPresent(true);
 		System.err.println(guis.size());
 	}
