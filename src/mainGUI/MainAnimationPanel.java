@@ -15,6 +15,7 @@ import javax.swing.Timer;
 
 import market.Market;
 import Gui.Gui;
+import city.Apartment;
 import city.Building;
 import city.Building.BuildingType;
 import city.CityData;
@@ -40,11 +41,11 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd = new CityData();
 
 		for (int i = 0; i < 2; i++) {
-			Building b = new Home(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
+			Building b = new Apartment(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
-			Building b = new Home(10, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
+			Building b = new Apartment(10, 410+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
 		}
 		for (int i = 0; i < 2; i++) {
@@ -106,7 +107,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		ImageIcon busStop = new ImageIcon("res/busstop.png");
 		//Draw apartments
 		ImageIcon apartment = new ImageIcon("res/apartment.png");
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 4; i++) {
 			cd.buildings.get(i).setBuildingNumber(i);
 			g2.drawImage(apartment.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
@@ -116,7 +117,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 		//Draw houses
 		ImageIcon house = new ImageIcon("res/house.png");
-		for (int i = 2; i < 12; i++) {
+		for (int i = 4; i < 12; i++) {
 			cd.buildings.get(i).setBuildingNumber(i);
 			g2.drawImage(house.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);

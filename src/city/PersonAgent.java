@@ -244,7 +244,7 @@ public class PersonAgent extends Agent
     
     protected void goHome() {
         //int homeNumber = (int)((int)(Math.random()*11));
-        personGui.DoGoToBuilding(11); // 11 need to be replaced by the person's data of home number
+        personGui.DoGoToBuilding(0); // 11 need to be replaced by the person's data of home number
         atBuilding.drainPermits();
         try {
             atBuilding.acquire();
@@ -253,7 +253,7 @@ public class PersonAgent extends Agent
             e.printStackTrace();
         }
         personGui.DoGoIntoBuilding();
-        currentBuilding = cityData.buildings.get(11);
+        currentBuilding = cityData.buildings.get(0);
         currentBuilding.EnterBuilding(this, "");
         bigState = BigState.atHome;
         
