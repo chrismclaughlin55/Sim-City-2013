@@ -38,6 +38,7 @@ public class BuildingPanel {
 		case home:
 			Home h = (Home) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			h.homeGui.setVisible(true);
+			break;
 		case apartment:
 			Apartment a = (Apartment) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			a.apartmentGui.setVisible(true);

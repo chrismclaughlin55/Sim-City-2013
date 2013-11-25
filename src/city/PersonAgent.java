@@ -97,6 +97,16 @@ public class PersonAgent extends Agent
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
 		if (personState == state.atHome) {
+			/* APARTMENT TEST
+			 * personGui.DoGoToRoom(0);
+			try {
+				isMoving.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Apartment cb = (Apartment) cityData.buildings.get(0);
+			cb.getRoom(0).EnterBuilding(this, "");*/
 			if (homeState == HomeState.sleeping) {
 				
 			}
@@ -109,7 +119,6 @@ public class PersonAgent extends Agent
 			if (homeState == HomeState.none) {
 				
 			}
-			//personGui.DoGoToBed();
 			return true;
 		}
 		if (personState == state.leaveHome) {

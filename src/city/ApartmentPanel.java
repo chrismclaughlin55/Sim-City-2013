@@ -27,6 +27,7 @@ public class ApartmentPanel extends JPanel implements ActionListener, MouseListe
 	private int frameDisplay = 2;
 	private int width = 400;
 	private int height = 400;
+	private List<HomeGui> homeGuis = new ArrayList<HomeGui>();
 	
 
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
@@ -41,6 +42,14 @@ public class ApartmentPanel extends JPanel implements ActionListener, MouseListe
 		addMouseListener(this);
 		
 	}
+	
+	public void addRoomGui(HomeGui h) {
+		homeGuis.add(h);
+	}
+	
+	public HomeGui getRoom(int rn) {
+		return homeGuis.get(rn);
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		synchronized(guis){
@@ -52,10 +61,6 @@ public class ApartmentPanel extends JPanel implements ActionListener, MouseListe
 		}
 		repaint();  //Will have paintComponent called
 	}
-	
-	public List<Gui> getGuis() {
-		return guis;
-	}
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
@@ -64,6 +69,8 @@ public class ApartmentPanel extends JPanel implements ActionListener, MouseListe
 		//Clear the screen by painting a rectangle the size of the frame
 		g2.setColor(getBackground());
 		g2.fillRect(0, 0, width, height);
+		g2.setColor(Color.CYAN);
+		g2.fillRect(0, 173, 20, 30);
 		g2.setColor(Color.BLACK);
 		g2.drawLine(0, 140, 400, 140);
 		g2.drawLine(0, 238, 400, 238);
@@ -92,11 +99,16 @@ public class ApartmentPanel extends JPanel implements ActionListener, MouseListe
 		}
 	}
 
-	public void addGui(PersonGui gui) {
+	public void addGui(PersonGui gui, int roomNumber) {
 		guis.add(gui);
 		gui.setXPos(0);
-		gui.setYPos(180);
+		gui.setYPos(176);
 		gui.setPresent(true);
+	}
+	
+	public void removeGui(PersonGui gui, int roomNumber) {
+		guis.remove(gui);
+		gui.setPresent(false);
 	}
 
 	@Override
@@ -105,30 +117,30 @@ public class ApartmentPanel extends JPanel implements ActionListener, MouseListe
 		int posY = e.getY();
 		if (posY >= 0 && posY <= 140) {
 			if (posX >= 0 && posX< 100) {
-				System.err.println("room 1 clicked");
+				homeGuis.get(0).setVisible(true);
 			}
 			else if (posX >= 100 && posX < 200) {
-				System.err.println("room 2 clicked");
+				homeGuis.get(1).setVisible(true);
 			}
 			else if (posX >= 200 && posX < 300) {
-				System.err.println("room 3 clicked");
+				homeGuis.get(2).setVisible(true);
 			}
 			else if (posX >= 300 && posX <= 400) {
-				System.err.println("room 4 clicked");
+				homeGuis.get(3).setVisible(true);
 			}
 		}
 		else if (posY >= 238 && posY <= 400) {
 			if (posX >= 0 && posX< 100) {
-				System.err.println("room 5 clicked");
+				homeGuis.get(4).setVisible(true);
 			}
 			else if (posX >= 100 && posX < 200) {
-				System.err.println("room 6 clicked");
+				homeGuis.get(5).setVisible(true);
 			}
 			else if (posX >= 200 && posX < 300) {
-				System.err.println("room 7 clicked");
+				homeGuis.get(6).setVisible(true);
 			}
 			else if (posX >= 300 && posX <= 400) {
-				System.err.println("room 8 clicked");
+				homeGuis.get(7).setVisible(true);
 			}
 		}
 	}
