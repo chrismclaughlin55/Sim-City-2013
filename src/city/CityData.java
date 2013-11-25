@@ -28,7 +28,7 @@ public class CityData implements ActionListener {
 	
 	private List<PersonAgent> people = new ArrayList<PersonAgent>();
 	//public static Map<BusStopAgent,Coordinate> busStopPositions; //given a busstopagent, will return pixel position in city.
-	public static ArrayList<BusStopAgent> busStops; //has busstops in order of the route the bus will take.
+	public static List<BusStopAgent> busStops = Collections.synchronizedList(new ArrayList<BusStopAgent>()); //has busstops in order of the route the bus will take.
 	public static ArrayList<BusAgent> buses;
 	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
@@ -43,7 +43,11 @@ public class CityData implements ActionListener {
 		//POPULATE 
 	}
 	
-	
+	public void setBusStopRoute() {
+		for(int i=0; i<12; i++) {
+			busStops.get(i).setNextStop(busStops.get((i+1)%12));
+		}
+	}
 	public void setTimeInterval(int newTime) {
 		timeInterval=newTime;
 	}

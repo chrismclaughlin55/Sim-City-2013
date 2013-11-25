@@ -3,6 +3,7 @@ package bank;
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
+import bankgui.BankCustomerGui;
 import city.PersonAgent;
 import city.Role;
 
@@ -15,13 +16,18 @@ public class CustomerRole extends Role implements BankCustomer{
 	CustInfo myInfo;
 	enum CustState { InLine, AtTeller, AskedForLoan, SentDeposit, Left, ProcessLoan};
 	enum CustEvent { GoToTeller, AskedWhatToDo, RecievedMoney, Done, RecievedLoanInfo};
-	CustState state;
-	CustEvent event;
+	private CustState state;
+	private CustEvent event;
+	private BankCustomerGui gui;
 	public CustomerRole(PersonAgent person) {
 		super(person);
 		this.money = person.bankMoney;
 		this.name = person.getName();
 		this.person = person;
+	}
+	//GUI MESSAGES
+	public void msgAddGui(BankCustomerGui custGui) {
+		this.gui = custGui;
 	}
 	//MESSAGES
 	@Override
@@ -112,6 +118,7 @@ public class CustomerRole extends Role implements BankCustomer{
 		// TODO Auto-generated method stub
 		return this.person;
 	}
+
 }
 
 

@@ -347,6 +347,55 @@ public class RestaurantPanel extends JPanel {
     	person.msgAssignRole(c);
     }
     
+    public void addWaiter(PersonAgent person)
+    {
+    	MQWaiterRole waiter;
+    	for(Waiter w : waiters)
+    	{
+    		waiter = (MQWaiterRole)w;
+    		if(waiter.getPerson() == person)
+    		{
+    			person.msgAssignRole(waiter);
+    			return;
+    		}
+    	}
+    	
+    	final JCheckBox breakBox = new JCheckBox("");
+    	MQWaiterRole w = new MQWaiterRole(person, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
+    	waiters.add(w);
+    	((MQHostRole)host).addWaiter(w);
+    	for(Cook c : cooks)
+    	{
+    		c.addWaiter(w);
+    	}
+    	
+    	final Waiter w2 = w;
+    	breakBoxes.add(breakBox);
+    	breakBox.addActionListener(new ActionListener()
+    		{
+    			public void actionPerformed(ActionEvent e)
+    			{
+    				if(breakBox.getText().equals("Want Break"))
+    				{
+    					breakBox.setEnabled(true);
+    					w2.msgWantBreak();
+    				}
+    				else if(breakBox.getText().equals("Back to Work"))
+    				{
+    					breakBox.setEnabled(true);
+    					w2.msgBackFromBreak();
+    				}
+    			}
+    		});
+    	
+		WaiterGui waiterGui = new WaiterGui(w);
+		w.setGui(waiterGui);
+		gui.animationPanel.addGui(waiterGui);
+		
+		//Start the thread
+		person.msgAssignRole(w);
+    }
+    
     //Hacks to demonstrate program
     public void OutOfFoodHack()
     {

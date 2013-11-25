@@ -6,38 +6,68 @@ import javax.swing.ImageIcon;
 
 import Gui.Gui;
 import city.BusAgent;
+import city.CityData;
 
 public class BusGui implements Gui {
+	CityData cd;
 	private BusAgent agent = null;
-	int xPos=0;
-	int yPos=0;
+	int xPos;
+	int yPos;
 	boolean xmove = false;
-	boolean xfirst = false;
+	boolean xFirst = false;
+	boolean yFirst = false;
 	private int xDestination = -20, yDestination = -20;//default start position
     boolean betweenStops = false;
+    boolean moving = false;
+    int stop;
+
+    public BusGui(BusAgent ba) {
+    	cd = new CityData();
+    	agent = ba;
+    	xPos = cd.busStops.get(0).getX();
+    	yPos = cd.busStops.get(0).getY();
+    }
 	@Override
 	public void updatePosition() {
 		// TODO Auto-generated method stub
-		if(xfirst) {
-			if(xmove) {
-				if(xPos==xDestination) {
-					xmove = false;
-				}
-				if (xPos < xDestination)
-		            xPos++;
-		        else if (xPos > xDestination)
-		            xPos--;
+		if(xFirst) {
+			if (xPos < xDestination)
+		       xPos++;
+		    if (xPos > xDestination)
+		       xPos--;
+			if (xPos == xDestination) {
+				xFirst = false;
+			}			
+		}	
+		if(yFirst) {
+			if (yPos < yDestination)
+			   yPos++;
+			if (yPos > yDestination)
+			   yPos--;
+			if (yPos == yDestination) {
+				yFirst = false;
 			}
-			else {
-				if (yPos < yDestination)
-		            yPos++;
-		        else if (yPos > yDestination)
-		            yPos--;
+		}
+		if(!xFirst&&!yFirst) {
+			if (xPos < xDestination)
+			   xPos++;
+			if (xPos > xDestination)
+			   xPos--;
+			if (xPos == xDestination) {
+				xFirst = false;
+			}	
+			if (yPos < yDestination)
+				yPos++;
+			if (yPos > yDestination)
+				yPos--;
+			if (yPos == yDestination) {
+				yFirst = false;
 			}
 		}
         if (moving && xPos == xDestination && yPos == yDestination
         		&& (xDestination >= 0) && (yDestination >= 0)) {
-           agent.msgAnimationDone();
+        	moving = false;
+           agent.msgAtDestination();
         }
 		
 	}
@@ -59,6 +89,20 @@ public class BusGui implements Gui {
 	}
 	
 	public void DoGoToNextStop(int x, int y) {
+		
+		for(int i=0; i<11; i++) {
+			if(cd.busStops.get(i).getX()==x&&cd.busStops.get(i).getY()==y) {
+				stop = i;
+			}
+				
+		}
+		if(stop==0||stop==6) {
+			xFirst = true;
+		}
+		else if(stop==4||stop==10) {
+			yFirst=true;
+		}
+		moving = true;
 		xDestination = x;
 		yDestination = y;
 		

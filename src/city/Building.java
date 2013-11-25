@@ -37,7 +37,6 @@ public class Building extends Rectangle2D.Double {
 		super(xPos, yPos, width, height);
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
-		busStop = new BusStopAgent();
 	}
 
 	public Building(int xPos, int yPos, int width, int height, String name, BuildingType type, MainGui mainGui) {
@@ -46,7 +45,6 @@ public class Building extends Rectangle2D.Double {
 		this.type = type;
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
-		busStop = new BusStopAgent();
 	}
 
 	public void ExitBuilding(PersonAgent p) {
