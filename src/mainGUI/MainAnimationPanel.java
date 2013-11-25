@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import bank.Bank;
 import market.Market;
 import Gui.Gui;
 import city.Apartment;
@@ -94,10 +95,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.buildings.add(b);
 		}
 
-
-		Building b = new Building(190, 410, WIDTH, HEIGHT, mainGui);
+		Bank b = new Bank(190, 410, WIDTH, HEIGHT,"bank", BuildingType.bank, mainGui, cd);
 		cd.buildings.add(b);
-
 
 		Market market = new Market(320, 410, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
 		cd.buildings.add(market);
