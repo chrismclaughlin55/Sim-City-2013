@@ -45,6 +45,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	private List<JButton> list = new ArrayList<JButton>(); 
 	private String type = "Person";
 	private String name;
+	private String job;
 	private MainGui mainGui;
 
 	JRadioButton unemployed;
@@ -137,6 +138,8 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 			validate();
 		}
 	}
+	
+	
 
 
 
