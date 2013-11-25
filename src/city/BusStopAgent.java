@@ -40,6 +40,14 @@ public class BusStopAgent {
 		peopleWaiting = new HashMap<PersonAgent, BusStopAgent>();
 	}
 	
+	public void setNextStop(BusStopAgent nextStop) {
+		this.nextStop = nextStop;
+	}
+	
+	public BusStopAgent getNextStop() {
+		return nextStop;
+	}
+	
 	public void setGui(BusStopGui gui,int x, int y) {
 		busStopGui = gui;
 		busStopGui.setX(x);
