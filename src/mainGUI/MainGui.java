@@ -129,35 +129,30 @@ public class MainGui extends JFrame implements MouseListener {
 					for(int i=0; i<5; i++) {
 						String property = scan.next();
 						String temp = scan.next();
-						switch (property) {
-							case "name": 
-								p.setName(temp);
-								break;
-							case "job": 
-								p.setJob(temp);
-								if(temp.equals("BankManager")) {
+						if(property.equals("name")) {
+							p.setName(temp);
+						}
+						if(property.equals("job")) { 
+							p.setJob(temp);
+							if(temp.equals("BankManager")) {
 									
-								}
-								if(temp.equals("Host")) {
-									//mainAnimationPanel.cd.
-								}
-								if(temp.equals("MarketManager")) {
-									//if(mainAnimationPanel.cd.market)
-									//mainAnimationPanel.cd.market.setManager(p);
-								}
-								
-								break;
-							case "cash": 
+							}
+							if(temp.equals("Host")) {
+								//mainAnimationPanel.cd.
+							}
+							if(temp.equals("MarketManager")) {
+								//if(mainAnimationPanel.cd.market)
+								//mainAnimationPanel.cd.market.setManager(p);
+							}		
+						}
+						if(property.equals("cash")) {
 								p.setCash(Double.parseDouble(temp));
-								break;
-							case "bankMoney": 
-								p.setBankMoney(Double.parseDouble(temp));
-								break;
-							case "hunger": 
-								p.setHunger(Integer.parseInt(temp));
-								break;	
-							default: 
-								break;
+						}
+						if(property.equals("bankMoney")) { 
+							p.setBankMoney(Double.parseDouble(temp));
+						}
+						if(property.equals("hunger")) { 
+							p.setHunger(Integer.parseInt(temp));
 						}
 					}
 					p.startThread();
