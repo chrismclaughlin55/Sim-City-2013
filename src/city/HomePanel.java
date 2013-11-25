@@ -54,10 +54,6 @@ public class HomePanel extends JPanel implements ActionListener {
 		repaint();  //Will have paintComponent called
 	}
 	
-	public List<Gui> getGuis() {
-		return guis;
-	}
-
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

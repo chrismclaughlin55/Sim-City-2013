@@ -1,9 +1,13 @@
 package city;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.Timer;
 
 import mainGUI.BuildingPanel;
 import mainGUI.MainGui;
@@ -16,7 +20,9 @@ public class Building extends Rectangle2D.Double {
 	private boolean isOpen = false;
 	public PersonAgent manager;
 	public CityData cityData;
-
+	
+	Timer buildingTimer;
+	
 	public int buildingNumber;
 
 	BuildingPanel buildingPanel;
@@ -25,13 +31,13 @@ public class Building extends Rectangle2D.Double {
 	//private List<Role> roles = Collections.synchronizedList(new ArrayList<Role>());
 	protected Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
 
-	public BusAgent bus;
+	public BusStopAgent busStop;
 
 	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
-		bus = new BusAgent();
+		busStop = new BusStopAgent();
 	}
 
 	public Building(int xPos, int yPos, int width, int height, String name, BuildingType type, MainGui mainGui) {
@@ -40,7 +46,7 @@ public class Building extends Rectangle2D.Double {
 		this.type = type;
 		this.mainGui = mainGui;
 		buildingPanel = new BuildingPanel(mainGui);
-		bus = new BusAgent();
+		busStop = new BusStopAgent();
 	}
 
 	public void ExitBuilding(PersonAgent p) {
@@ -138,6 +144,10 @@ public class Building extends Rectangle2D.Double {
 	
 	public void setManager(PersonAgent p) {
 		manager = p;
+	}
+	
+	public void setBusStop(BusStopAgent bs) {
+		busStop = bs;
 	}
 
 	public void display(Building building, int buildingNumber) {
