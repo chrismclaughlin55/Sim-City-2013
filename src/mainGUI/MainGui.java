@@ -107,7 +107,7 @@ public class MainGui extends JFrame implements MouseListener {
         bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
         try {    	
-			parser = new ConfigParser(this,"config.txt");
+			parser = new ConfigParser(this,"src/config/config.txt");
 			configPeople = parser.ParseAndCreatePeople();
 			for(HashMap<String,String> person: configPeople) {
 	        	addConfigPerson(person);
