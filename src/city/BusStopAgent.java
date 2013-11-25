@@ -26,12 +26,19 @@ public class BusStopAgent {
     int yPosition;
     //CityData places a square at coordinates of this particular BusStop
 
-	public BusStopAgent(int x, int y) {
-		xPosition = x;
-		yPosition = y;
+	public BusStopAgent() {
+		
 		waitingPeople = new ArrayList<PersonAgent>();
 		peopleWaiting = new HashMap<PersonAgent, BusStopAgent>();
-		busStopGui = new BusStopGui(xPosition,yPosition);
+		
+	}
+	
+	public void setGui(BusStopGui gui,int x, int y) {
+		busStopGui = gui;
+		busStopGui.setX(x);
+		busStopGui.setY(y);
+		xPosition = x;
+		yPosition = y;
 	}
 	
 	public int getX() {

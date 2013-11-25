@@ -9,10 +9,9 @@ public class BusStopGui implements Gui {
 	
 	int xPos;
 	int yPos;
-	public BusStopGui(int xcord, int ycord) {
+	public BusStopGui() {
 		// TODO Auto-generated constructor stub
-		xPos = xcord;
-		yPos = ycord;
+		
  	}
 
 	@Override
@@ -28,7 +27,17 @@ public class BusStopGui implements Gui {
 		ImageIcon person = new ImageIcon("res/busstop.png");
 		g2.drawImage(person.getImage(), xPos, yPos, null);
 	}
+	
+	public void setX(int x) {
+		xPos = x;
+		
+	}
 
+	public void setY(int y)
+	{
+		yPos = y;
+	}
+	
 	@Override
 	public boolean isPresent() {
 		// TODO Auto-generated method stub
