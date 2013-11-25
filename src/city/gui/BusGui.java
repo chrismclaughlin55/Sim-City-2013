@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.ImageIcon;
 
+import mainGUI.MainGui;
 import Gui.Gui;
 import city.BusAgent;
 import city.CityData;
@@ -19,13 +20,16 @@ public class BusGui implements Gui {
 	private int xDestination = -20, yDestination = -20;//default start position
     boolean betweenStops = false;
     boolean moving = false;
+    boolean isPresent = true;
     int stop;
+    MainGui m;
 
-    public BusGui(BusAgent ba) {
+    public BusGui(BusAgent ba, MainGui main) {
     	cd = new CityData();
     	agent = ba;
     	xPos = cd.busStops.get(0).getX();
     	yPos = cd.busStops.get(0).getY();
+    	m = main;
     }
 	@Override
 	public void updatePosition() {
@@ -85,7 +89,7 @@ public class BusGui implements Gui {
 	@Override
 	public boolean isPresent() {
 		// TODO Auto-generated method stub
-		return false;
+		return isPresent;
 	}
 	
 	public void DoGoToNextStop(int x, int y) {

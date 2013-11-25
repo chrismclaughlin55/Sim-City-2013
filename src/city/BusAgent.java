@@ -35,12 +35,14 @@ public class BusAgent extends Agent {
 		cd = new CityData();
 		curr = cd.busStops.get(0);
 		next = cd.busStops.get(1);
-		busgui = new BusGui(this);
 		BusState bs = BusState.leavingStop;
 		passengers = new ArrayList<myPassenger>();
 		//SHOULD ALSO HAVE A DEFAULT STARTING POSITION
 	}
 	
+	public void setGui(BusGui bg) {
+		busgui = bg;
+	}
 	//MESSAGES
 	public void msgAtDestination() {
 		atDestination.release();
