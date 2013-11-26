@@ -45,8 +45,16 @@ public class BankManagerRole extends Role implements BankManager {
 		
 	}
 	//Direct Deposit Message
-	public void msgDirectDeposit(PersonAgent payer, PersonAgent Reciever, double payment){
-		
+	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
+		CustInfo p = CustAccounts.get(payer);
+		if(p != null){
+			p.moneyInAccount-=payment;
+		}
+		CustInfo rec = CustAccounts.get(reciever);
+		if(rec != null){
+			rec.moneyInAccount+=payment;
+		}
+		print(rec.custName+" was paid "+payment+" by "+p.custName);
 	}
 	@Override
 	public void msgINeedService(CustomerRole c) {
