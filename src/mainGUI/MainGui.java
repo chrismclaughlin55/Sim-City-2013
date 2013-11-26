@@ -61,6 +61,7 @@ public class MainGui extends JFrame implements MouseListener {
     private int cook = 0;
     private int cashier = 0;
     private int host = 0;
+    private int landlord = 0;
     public MarketGui marketGui;
     //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
@@ -143,9 +144,12 @@ public class MainGui extends JFrame implements MouseListener {
 						}
 						if(property.equals("job")) { 
 							p.setJob(temp);	
+							/*if(temp.equals("Landlord")) {
+								reassignHome(p);
+							}*/
 						}
 						if(property.equals("cash")) {
-								p.setCash(Double.parseDouble(temp));
+							p.setCash(Double.parseDouble(temp));
 						}
 						if(property.equals("bankMoney")) { 
 							p.setBankMoney(Double.parseDouble(temp));
@@ -185,16 +189,28 @@ public class MainGui extends JFrame implements MouseListener {
     		return null;
     	}
 		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
+		p.setDesiredRole(role);
 		p.assignHome(pickHome(p));
 		mainAnimationPanel.cd.addPerson(p);
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
-		p.setDesiredRole(role);
 		p.bigState = BigState.goHome;
 		
 		return p;
     }
+    
+    public void reassignHome(PersonAgent p) {
+    	for (Building b: mainAnimationPanel.cd.apartments) {
+	    	if(!b.hasManager()) {
+	    		Apartment a = (Apartment) b;
+	    		b.setManager(p);
+	    		a.rooms.get(0).setTenant(p);
+	    		p.setRoomNumber(0);
+	    	}
+    	}
+    }
+    
     public void addPerson(String name, String role, String destination) {
 		PersonAgent p = createPerson(name, role);
 		
@@ -293,13 +309,16 @@ public class MainGui extends JFrame implements MouseListener {
     		cook = cook % mainAnimationPanel.cd.restaurants.size();
     	
     	}
-    	/*if (role.equals("Landlord")) {
-    		for (Apartment a : mainAnimationPanel.cd.apartments) {
-    			if (a != null) {
-    				p.setJobBuilding(a);
-    			}
+    	
+    	if (role.equals("Landlord")) {
+    		if(landlord<8) {
+    			p.setJobBuilding(mainAnimationPanel.cd.apartments.get(landlord));
+    			mainAnimationPanel.cd.apartments.get(landlord).setManager(p);
+    			landlord++;
+    			
     		}
-    	}*/
+
+    	}
     }
     
     public void addConfigPerson(HashMap<String,String> properties) {
