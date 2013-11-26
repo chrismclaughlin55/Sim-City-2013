@@ -17,7 +17,7 @@ public class BusGui implements Gui {
 	boolean xmove = false;
 	boolean xFirst = false;
 	boolean yFirst = false;
-	private int xDestination = -20, yDestination = -20;//default start position
+	private int xDestination, yDestination;//default start position
     boolean betweenStops = false;
     boolean moving = false;
     boolean isPresent = true;
@@ -29,6 +29,8 @@ public class BusGui implements Gui {
     	agent = ba;
     	xPos = cd.busStops.get(0).getX();
     	yPos = cd.busStops.get(0).getY();
+    	xDestination = cd.busStops.get(1).getX();
+    	yDestination = cd.busStops.get(1).getY();
     	m = main;
     }
 	@Override
