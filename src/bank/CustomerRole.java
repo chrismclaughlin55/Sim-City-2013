@@ -37,7 +37,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgGoToTeller(Teller t) {
 		this.t = t;
 		event = CustEvent.GoToTeller;
-		print("going to teller "+ state );
+		print("going to teller "+ state + event);
 		stateChanged();
 	}
 

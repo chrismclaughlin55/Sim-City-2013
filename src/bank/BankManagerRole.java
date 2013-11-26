@@ -61,6 +61,7 @@ public class BankManagerRole extends Role implements BankManager {
 	public void msgINeedService(CustomerRole c) {
 		print(c.getName()+" Needs service");
 		line.add((CustomerRole) c);
+		print(line.size()+ "");
 		stateChanged();
 	}
 
@@ -113,6 +114,7 @@ public class BankManagerRole extends Role implements BankManager {
 	}
 //ACTIONS
 	private void helpCustomer(CustomerRole c, myTeller t) {
+		print("sending cust "+c.getName()+" to teller");
 		t.c = c;
 		c.msgGoToTeller(t.t);
 		t.state = tellerState.notAvailable;
