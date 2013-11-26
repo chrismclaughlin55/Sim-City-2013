@@ -278,7 +278,7 @@ public class PersonAgent extends Agent
 	
 	private void payRent() {
 		
-		
+		rentDue = 0;
 	}
 
 	private void WakeUp() {
