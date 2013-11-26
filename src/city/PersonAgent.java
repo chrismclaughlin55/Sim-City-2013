@@ -2,6 +2,7 @@ package city;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -50,6 +51,7 @@ public class PersonAgent extends Agent
 	String desiredRole;
 	private String job;
 	Timer timer = new Timer();
+	HashMap<String, Integer> inventory = new HashMap<String, Integer>();
 
 	
 	boolean goToWork = false;
@@ -65,21 +67,25 @@ public class PersonAgent extends Agent
 		
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
-	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());;
+	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());
 	private Semaphore atBed = new Semaphore(0, true);
 	private Semaphore atEntrance = new Semaphore(0, true);
 	
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
-		MyOrder o1 = new MyOrder("steak", 1);
-		MyOrder o2 = new MyOrder("salad", 1);
-		MyOrder o3 = new MyOrder("pizza", 1);
-		MyOrder o4 = new MyOrder("chicken", 1);
+		MyOrder o1 = new MyOrder("Steak", 1);
+		MyOrder o2 = new MyOrder("Salad", 1);
+		MyOrder o3 = new MyOrder("Pizza", 1);
+		MyOrder o4 = new MyOrder("Chicken", 1);
 		thingsToOrder.add(o1);
 		thingsToOrder.add(o2);
 		thingsToOrder.add(o3);
 		thingsToOrder.add(o4);
+		inventory.put("Steak", 2);
+		inventory.put("Salad", 2);
+		inventory.put("Pizza", 2);
+		inventory.put("Chicken", 2);
 		personGui = new PersonGui(this, gui);
 	}
 	
@@ -310,6 +316,11 @@ public class PersonAgent extends Agent
 	private void makeFood() {
 		hungerLevel = 0;
 		homeState = homeState.hungry;
+		for (String key : inventory.keySet()) {
+			if (inventory.get(key) > 0) {
+				inventory.put(key, inventory.get(key) - 1);
+			}
+		}
 		personGui.DoGoToRefridgerator();
 		try {
 			isMoving.acquire();
