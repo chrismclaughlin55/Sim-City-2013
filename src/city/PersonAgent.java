@@ -348,19 +348,18 @@ public class PersonAgent extends Agent
 		return false;
 	}
 	
-	public boolean lowInventory()
-	{
-		for(String food : inventory.keySet())
-		{
-			if(inventory.get(food) < THRESHOLD)
-			{
+	public boolean lowInventory() {
+		for(String food : inventory.keySet()) {
+			if(inventory.get(food) < THRESHOLD) {
 				thingsToOrder.add(new MyOrder(food, 10));
 			}
 		}
-		if(!thingsToOrder.isEmpty())
+		if(!thingsToOrder.isEmpty()) {
 			return true;
-		else
+		}
+		else {
 			return false;
+		}
 	}
 	
 	private void payRent() {
