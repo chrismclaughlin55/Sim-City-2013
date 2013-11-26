@@ -1,0 +1,12 @@
+NewPerson
+name myName
+cash 100
+bankMoney 500
+job Waiter
+hunger 0
+NewPerson
+name myName
+cash 100
+bankMoney 500
+job Waiter
+hunger 0
