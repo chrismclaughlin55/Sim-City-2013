@@ -23,8 +23,9 @@ public class Bank extends Building {
 		mainGui.bankGui = this.bankGui;
 		mainGui.bankGui.bank = this;
 	}
-
+	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
+		p.print("going into bank");
 		if(roleRequest.equals("bankManager")){
 			if(p.equals(manager)){
 				if(existingManagerRoles.get(p) != null){

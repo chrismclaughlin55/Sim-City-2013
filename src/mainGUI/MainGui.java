@@ -196,7 +196,6 @@ public class MainGui extends JFrame implements MouseListener {
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
-		
 		p.setDesiredRole(role);
 		if(destination.equals("Restaurant"))
 		{

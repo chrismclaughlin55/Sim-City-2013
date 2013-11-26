@@ -69,6 +69,8 @@ public class CityData implements ActionListener {
 	
 	public void addGui(PersonGui g, int currentIn) {
 		guis.add(g);
+		g.setXPos(g.xBuilding[currentIn]);
+		g.setYPos(g.yBuilding[currentIn]);
 		g.setXDes(g.xBuilding[currentIn]);
 		g.setYDes(g.yBuilding[currentIn]);
 		g.setPresent(true);
