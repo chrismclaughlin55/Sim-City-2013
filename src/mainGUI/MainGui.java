@@ -133,37 +133,79 @@ public class MainGui extends JFrame implements MouseListener {
     	}
 		if(fileExist) {
 			while(scan.hasNextLine()) {
-				String newPerson = scan.next();
-				if(newPerson.equals("NewPerson")) {
-					PersonAgent p = createPerson(null,null);
-					for(int i=0; i<5; i++) {
-						String property = scan.next();
-						String temp = scan.next();
-						if(property.equals("name")) {
-							p.setName(temp);
-						}
-						if(property.equals("job")) { 
-							p.setJob(temp);	
-							/*if(temp.equals("Landlord")) {
-								reassignHome(p);
-							}*/
-						}
-						if(property.equals("cash")) {
-							p.setCash(Double.parseDouble(temp));
-						}
-						if(property.equals("bankMoney")) { 
-							p.setBankMoney(Double.parseDouble(temp));
-						}
-						if(property.equals("hunger")) { 
-							p.setHunger(Integer.parseInt(temp));
+				if(landlord<4) {
+					String newPerson = scan.next();
+					PersonAgent p = new PersonAgent(null, this, mainAnimationPanel.cd);
+					if(newPerson.equals("NewPerson")) {
+						for(int i=0; i<5; i++) {
+							String property = scan.next();
+							String temp = scan.next();
+							if(property.equals("name")) {
+								p.setName(temp);
+							}
+							if(property.equals("job")) { 
+								p.setJob(temp);	
+								//will be the landlords
+							}
+							if(property.equals("cash")) {
+								p.setCash(Double.parseDouble(temp));
+							}
+							if(property.equals("bankMoney")) { 
+								p.setBankMoney(Double.parseDouble(temp));
+							}
+							if(property.equals("hunger")) { 
+								p.setHunger(Integer.parseInt(temp));
+							}
 						}
 					}
-					assignJobBuilding(p,p.getJob());
+					mainAnimationPanel.cd.apartments.get(landlord).setManager(p);
+					mainAnimationPanel.cd.apartments.get(landlord).rooms.get(0).setTenant(p);
+				    p.setRoomNumber(0);
+				    p.setDesiredRole(null);
+					p.assignHome(mainAnimationPanel.cd.apartments.get(landlord));
+					mainAnimationPanel.cd.addPerson(p);
+					PersonGui personGui = new PersonGui(p, this);
+					mainAnimationPanel.addGui(personGui);
+					p.setGui(personGui);
+					p.bigState = BigState.goHome;
+					p.setJobBuilding(mainAnimationPanel.cd.apartments.get(landlord));
+					landlord++;
 					p.startThread();
 					newPerson = null;
+				}
+				else {
+					String newPerson = scan.next();
+					if(newPerson.equals("NewPerson")) {
+						PersonAgent p = createPerson(null,null);
+						for(int i=0; i<5; i++) {
+							String property = scan.next();
+							String temp = scan.next();
+							if(property.equals("name")) {
+								p.setName(temp);
+							}
+							if(property.equals("job")) { 
+								p.setJob(temp);	
+								/*if(temp.equals("Landlord")) {
+									reassignHome(p);
+								}*/
+							}
+							if(property.equals("cash")) {
+								p.setCash(Double.parseDouble(temp));
+							}
+							if(property.equals("bankMoney")) { 
+								p.setBankMoney(Double.parseDouble(temp));
+							}
+							if(property.equals("hunger")) { 
+								p.setHunger(Integer.parseInt(temp));
+							}
+						}
+						assignJobBuilding(p,p.getJob());
+						p.startThread();
+						newPerson = null;
+					 }
+					 
 				 }
-				 
-			 }
+			}
 		}
 		
 		//add bus agent
@@ -250,7 +292,7 @@ public class MainGui extends JFrame implements MouseListener {
     	}
     	for (Building b: mainAnimationPanel.cd.apartments) {
     		Apartment a = (Apartment) b;
-    		for (int i = 0; i < 8; i++) {
+    		for (int i = 1; i < 8; i++) {
     			if (!a.rooms.get(i).isOccupied) {
     				a.rooms.get(i).setTenant(p);
     				p.setRoomNumber(i);
@@ -263,29 +305,29 @@ public class MainGui extends JFrame implements MouseListener {
     
     public void assignJobBuilding(PersonAgent p, String role) {
     	if (role.equals("BankManager")) {
-    		if (mainAnimationPanel.cd.bank != null) {
+    		if (!mainAnimationPanel.cd.bank.equals(null)) {
     			p.setJobBuilding(mainAnimationPanel.cd.bank);
     			mainAnimationPanel.cd.bank.setManager(p);
     		}
     	}
     	if (role.equals("BankTeller")) {
-    		if (mainAnimationPanel.cd.bank != null) {
+    		if (!mainAnimationPanel.cd.bank.equals(null)) {
     			p.setJobBuilding(mainAnimationPanel.cd.bank);
     		}
     	}
     	if (role.equals("MarketManager")) {
-    		if (mainAnimationPanel.cd.market != null) {
+    		if (!mainAnimationPanel.cd.market.equals(null)) {
 				p.setJobBuilding(mainAnimationPanel.cd.market);
 				mainAnimationPanel.cd.market.setManager(p);
 			}
     	}
     	if (role.equals("MarketEmployee")) {
-    		if (mainAnimationPanel.cd.market != null) {
+    		if (!mainAnimationPanel.cd.market.equals(null)) {
     			p.setJobBuilding(mainAnimationPanel.cd.market);
     		}
     	}
     	if (role.equals("Host")) {
-    		MQRestaurantBuilding r = mainAnimationPanel.cd.restaurants.get(host);
+    		Building r = mainAnimationPanel.cd.restaurants.get(host);
     		p.setJobBuilding(r);
     		r.setManager(p);
     		host++;
@@ -310,7 +352,7 @@ public class MainGui extends JFrame implements MouseListener {
     	
     	}
     	
-    	if (role.equals("Landlord")) {
+    	/*if (role.equals("Landlord")) {
     		if(landlord<8) {
     			p.setJobBuilding(mainAnimationPanel.cd.apartments.get(landlord));
     			mainAnimationPanel.cd.apartments.get(landlord).setManager(p);
@@ -318,7 +360,7 @@ public class MainGui extends JFrame implements MouseListener {
     			
     		}
 
-    	}
+    	}*/
     }
     
     public void addConfigPerson(HashMap<String,String> properties) {

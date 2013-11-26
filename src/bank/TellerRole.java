@@ -35,9 +35,13 @@ public class TellerRole extends Role implements Teller{
 		
 	}
 	//MESSAGES
+	public void msgAddManager(BankManagerRole bm){
+		this.bm = bm;
+	}
 	@Override
 	public void msgHello(CustInfo c) {
 		currentCustInfo = c;
+		print(c.custName + " said hello");
 		event = Event.recievedHello;
 		stateChanged();
 	}
@@ -45,6 +49,7 @@ public class TellerRole extends Role implements Teller{
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
 		event = Event.recievedInfo;
+		print("recieved info for "+ info.custName);
 		if(info!=null)
 		this.currentCustInfo = info;
 		stateChanged();
@@ -55,6 +60,7 @@ public class TellerRole extends Role implements Teller{
 		currentCustInfo.depositAmount = 0;
 		currentCustInfo.moneyInAccount += money;
 		event = Event.recievedDeposit;
+		print("recieved deposit");
 		stateChanged();
 	}
 

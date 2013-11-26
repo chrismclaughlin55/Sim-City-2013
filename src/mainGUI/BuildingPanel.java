@@ -30,8 +30,8 @@ public class BuildingPanel {
 			break;
 			
 		case bank:
-			
 			mainGui.bankGui.setVisible(true);
+			mainGui.bankGui.bank.test();
 			break;
 			
 		case home:

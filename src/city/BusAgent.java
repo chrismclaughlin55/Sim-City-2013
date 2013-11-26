@@ -1,6 +1,7 @@
 package city;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -36,7 +37,7 @@ public class BusAgent extends Agent {
 		curr = cd.busStops.get(0);
 		next = cd.busStops.get(1);
 		myState = BusState.leavingStop;
-		passengers = new ArrayList<myPassenger>();
+		passengers = Collections.synchronizedList(new ArrayList<myPassenger>());
 		//SHOULD ALSO HAVE A DEFAULT STARTING POSITION
 	}
 	
@@ -61,6 +62,11 @@ public class BusAgent extends Agent {
         }
         stateChanged();
 	}
+	
+	public void msgOnBus()
+	{
+		atDestination.release();
+	}
 
 
 
@@ -69,8 +75,14 @@ public class BusAgent extends Agent {
 	protected boolean pickAndExecuteAnAction() {
 		//System.out.println("what");
 		if(myState==BusState.atStop) {
-			UnloadPassengers();
-			return true;
+			curr.msgArrivedAtStop(this);
+			for(myPassenger p : passengers) {
+				if(p.dest == curr) {
+					UnloadPassenger(p);
+					passengers.remove(p);
+					return true;
+				}
+			}
 		}
 
 		if(myState==BusState.unloading) {
@@ -106,36 +118,48 @@ public class BusAgent extends Agent {
 
 	private void BoardPassengers() {
 		myState=BusState.leavingStop;
-	    for(myPassenger p: passengers) {
-	        if(p.ps==PassengerState.gotOn) {
-	        	//Message the people and have a semaphore acquire 
-	        	//and release cycle for every
-	        	//person getting off bus
-	            //p.p.BusIsHere(this);
-	        }
-	    }
+		synchronized(passengers) {
+		    for(myPassenger p: passengers) {
+		        if(p.ps==PassengerState.gotOn) {
+		        	//Message the people and have a semaphore acquire 
+		        	//and release cycle for every
+		        	//person getting off bus
+		        	p.ps = PassengerState.beenOn;
+		            p.p.msgBusIsHere(this);
+		            try {
+		            	atDestination.acquire();
+		            }
+		            catch(Exception e){}
+		        }
+		    }
+		}
+	    
 	}
 
-	private void UnloadPassengers() {
+	private void UnloadPassenger(myPassenger p) {
 		myState = BusState.unloading;   
 		//have a wait time for loading and unloading
-		for(myPassenger p : passengers) {
-			if (p.dest.equals(curr)) {
-				//have a small wait time as that person gets off
-				//acquire semaphore per person
-				//p.p.msgArrivedAtBusStop(curr);
-				//personGui animation runs in bus' thread until animation
-				//finished
-		        passengers.remove(p);        
-			}
-		}
-		curr.msgArrivedAtStop(this);
+		p.p.msgDoneMoving();
+		try {
+        	atDestination.acquire();
+        }
+        catch(Exception e){}
 	}
 
 	protected void stateChanged() {
 		super.stateChanged();
 	}
 	//ACTIONS
+
+	public int getX() {
+		return busgui.xPos;
+		
+	}
+	
+	public int getY() {
+		return busgui.yPos;
+		
+	}
 
 	
 }

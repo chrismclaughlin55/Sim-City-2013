@@ -12,8 +12,8 @@ import city.CityData;
 public class BusGui implements Gui {
 	CityData cd;
 	private BusAgent agent = null;
-	int xPos;
-	int yPos;
+	public int xPos;
+	public int yPos;
 	boolean xmove = false;
 	boolean xFirst = false;
 	boolean yFirst = false;
