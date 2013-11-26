@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import restaurantMQ.interfaces.Customer;
 import bank.interfaces.BankCustomer;
 import bank.interfaces.BankManager;
 import bank.utilities.CustInfo;
@@ -17,15 +16,16 @@ import city.Role;
 public class BankManagerRole extends Role implements BankManager {
 	private String name;
 	private PersonAgent me;
-	private List<Customer> line = Collections.synchronizedList(new ArrayList<Customer>());
+	private List<CustomerRole> line = Collections.synchronizedList(new ArrayList<CustomerRole>());
 	private List<myTeller> tellers = Collections.synchronizedList(new ArrayList<myTeller>());
 	private Map<PersonAgent, CustInfo> CustAccounts;
 	private Map<String, CustInfo> BusinessAccounts;
 	enum tellerState {available, needsInfo, notAvailable, updateInfo }
 	class myTeller{
+		TellerRole t;
 		tellerState state;
-		CustInfo c;
-		
+		CustomerRole c;
+		CustInfo custInfo;
 		
 	}
 	public BankManagerRole(PersonAgent person) {
@@ -38,28 +38,78 @@ public class BankManagerRole extends Role implements BankManager {
 	
 	//MESSAGES
 	@Override
-	public void msgINeedService(BankCustomer c) {
-		// TODO Auto-generated method stub
+	public void msgINeedService(CustomerRole c) {
+		line.add((CustomerRole) c);
+		stateChanged();
+	}
+
+	@Override
+	public void msgGiveMeInfo(CustomerRole c, TellerRole t) {
+		for( myTeller mt: tellers){
+			if(mt.t.equals(t))
+		mt.state = tellerState.needsInfo;
+			mt.c = c;
+		}
 		
 	}
 
 	@Override
-	public void msgGiveMeInfo(PersonAgent c) {
-		// TODO Auto-generated method stub
+	public void msgUpdateInfo(CustInfo info, TellerRole t) {
+		for(myTeller mt: tellers){
+			if(mt.t.equals(t))
+				mt.state = tellerState.updateInfo;
+			
+		}
 		
 	}
-
-	@Override
-	public void msgUpdateInfo(CustInfo info) {
-		// TODO Auto-generated method stub
-		
-	}
-
+//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
+		for( myTeller t: tellers){
+			if(t.state == tellerState.available){
+				helpCustomer(line.remove(0), t);
+			return true;
+		}
+		}
+		for(myTeller t: tellers){
+			if(t.state == tellerState.needsInfo){
+				sendInfo(t);
+				return true;
+			}
+		}
+		for(myTeller t: tellers){
+			if(t.state == tellerState.updateInfo){
+			updatedb(t);
+			return true;
+			}
+		}
+		
+		
 		return false;
 	}
+//ACTIONS
+	private void helpCustomer(CustomerRole c, myTeller t) {
+		t.c = c;
+		c.msgGoToTeller(t.t);
+		t.state = tellerState.notAvailable;
+	}
+	
+	private void sendInfo(myTeller t) {
+		if(CustAccounts.get(t.c.getPerson()) != null)
+			t.custInfo = CustAccounts.get(t.c.getPerson());
+		else t.custInfo = null;
+		
+		t.t.msgHereIsInfo(t.custInfo);
+	}
+	
+	private void updatedb(myTeller t) {
+		// TODO Auto-generated method stub
+		
+	}
 
+	
+
+	
+	
 	
 }

@@ -25,7 +25,7 @@ public class Bank extends Building {
 	}
 
 	public void EnterBuilding(PersonAgent p, String roleRequest){
-		if(roleRequest.equals("BankManager")){
+		if(roleRequest.equals("bankManager")){
 			if(p.equals(manager)){
 				if(existingManagerRoles.get(p) != null){
 				setOpen(p);
@@ -38,7 +38,7 @@ public class Bank extends Building {
 				}
 			}
 		}
-		if(roleRequest.equals("BankCustomer")){
+		if(roleRequest.equals("bankCustomer")){
 			if(isOpen()){
 				if(existingCustRoles.get(p) != null){
 					CustomerRole role = existingCustRoles.get(p);
@@ -56,7 +56,7 @@ public class Bank extends Building {
 				}
 			}
 		}
-		if(roleRequest.equals("BankTeller")){
+		if(roleRequest.equals("bankTeller")){
 			if(isOpen()){
 				if(existingTellerRoles.get(p) != null){
 					TellerRole role = existingTellerRoles.get(p);

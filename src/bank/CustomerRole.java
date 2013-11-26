@@ -10,7 +10,7 @@ import city.Role;
 public class CustomerRole extends Role implements BankCustomer{
 	//DATA
 	private PersonAgent me;
-	private double money;
+	private double cash;
 	private String name;
 	private Teller t;
 	CustInfo myInfo;
@@ -21,9 +21,12 @@ public class CustomerRole extends Role implements BankCustomer{
 	private BankCustomerGui gui;
 	public CustomerRole(PersonAgent person) {
 		super(person);
-		this.money = person.bankMoney;
+		//this.myInfo = person.bankInfo;
+		this.cash = person.cash;
 		this.name = person.getName();
 		this.me = person;
+		person.bankInfo.customer = this;
+		this.myInfo = person.bankInfo;
 	}
 	//GUI MESSAGES
 	public void msgAddGui(BankCustomerGui custGui) {
@@ -40,20 +43,20 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	@Override
 	public void msgWhatWouldYouLike() {
-		// TODO Auto-generated method stub
+		event = CustEvent.AskedWhatToDo;
 
 	}
 
 	@Override
 	public void msgHaveANiceDay(double amount) {
-		// TODO Auto-generated method stub
+		person.cash+=amount;
+		event = CustEvent.Done;
 
 	}
 
 	@Override
 	public void msgCanDoThisAmount(double approvedAmount) {
-		// TODO Auto-generated method stub
-
+		event = CustEvent.RecievedLoanInfo;
 	}
 
 	//SCHEDULER
@@ -86,17 +89,28 @@ public class CustomerRole extends Role implements BankCustomer{
 	//ACTIONS
 	private void sayHello(){
 		//TODO GUI SHIT
-		this.t.msgHello(this.name, this);;
+		this.t.msgHello(new CustInfo(myInfo));
 		state = CustState.AtTeller;
 
 	}
 	private void tellTeller(){
-		/*TODO if cust wants loan
-			t.msgLoan(Amount);
+		if(myInfo.loanRequestAmount>0){
+			t.msgloan(myInfo.loanRequestAmount);
 			state = CustState.AskedForLoan;
-		 */
-		t.msgDeposit(myInfo.depositAmount);
-		//TODO determine deposit amount
+			return;
+		}else{
+			double depositAmount;
+			if(myInfo.depositAmount>cash){
+				depositAmount = cash;
+				cash = 0;
+			}
+			else{
+				depositAmount = myInfo.depositAmount;
+				cash-=myInfo.depositAmount;
+			}
+			t.msgDeposit(depositAmount);
+
+		}
 	}
 	private void leave(){
 		//TODO GUI SHIT
@@ -105,17 +119,17 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	}
 	private void processLoan(double approvedAmount){
-		/* double requestAmount = loanAmount;
-		 * if(loanAmount < .75 * approvedAmount)
-		 * requestAmount = 0;
-		 *  
-		 */
+		double requestAmount = approvedAmount;  
+		if(approvedAmount< .75 * myInfo.loanRequestAmount)
+		  requestAmount = 0;
+		   
 		state = CustState.ProcessLoan;
-		//TODO t.msgITakeIt(requestAmount);
+		 t.msgITakeIt(requestAmount);
+		 myInfo.loanAmount = requestAmount;
+		 myInfo.loanRequestAmount = 0;
 	}
 	@Override
 	public PersonAgent returnPerson() {
-		// TODO Auto-generated method stub
 		return this.person;
 	}
 

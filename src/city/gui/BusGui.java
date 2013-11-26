@@ -17,15 +17,15 @@ public class BusGui implements Gui {
 	boolean xmove = false;
 	boolean xFirst = false;
 	boolean yFirst = false;
-	private int xDestination = -20, yDestination = -20;//default start position
+	private int xDestination, yDestination;//default start position
     boolean betweenStops = false;
     boolean moving = false;
     boolean isPresent = true;
     int stop;
     MainGui m;
 
-    public BusGui(BusAgent ba, MainGui main) {
-    	cd = new CityData();
+    public BusGui(BusAgent ba, MainGui main, CityData cd) {
+    	this.cd = cd;
     	agent = ba;
     	xPos = cd.busStops.get(0).getX();
     	yPos = cd.busStops.get(0).getY();
@@ -36,34 +36,34 @@ public class BusGui implements Gui {
 		// TODO Auto-generated method stub
 		if(xFirst) {
 			if (xPos < xDestination)
-		       xPos++;
+		       xPos+=5;
 		    if (xPos > xDestination)
-		       xPos--;
+		       xPos-=5;
 			if (xPos == xDestination) {
 				xFirst = false;
 			}			
 		}	
 		if(yFirst) {
 			if (yPos < yDestination)
-			   yPos++;
+			   yPos+=5;
 			if (yPos > yDestination)
-			   yPos--;
+			   yPos-=5;
 			if (yPos == yDestination) {
 				yFirst = false;
 			}
 		}
-		if(!xFirst&&!yFirst) {
+		if(!(xFirst||yFirst)) {
 			if (xPos < xDestination)
-			   xPos++;
+			   xPos+=5;
 			if (xPos > xDestination)
-			   xPos--;
+			   xPos-=5;
 			if (xPos == xDestination) {
 				xFirst = false;
 			}	
 			if (yPos < yDestination)
-				yPos++;
+				yPos+=5;
 			if (yPos > yDestination)
-				yPos--;
+				yPos-=5;
 			if (yPos == yDestination) {
 				yFirst = false;
 			}
@@ -71,7 +71,7 @@ public class BusGui implements Gui {
         if (moving && xPos == xDestination && yPos == yDestination
         		&& (xDestination >= 0) && (yDestination >= 0)) {
         	moving = false;
-           agent.msgAtDestination();
+            agent.msgAtDestination();
         }
 		
 	}
@@ -93,12 +93,12 @@ public class BusGui implements Gui {
 	}
 	
 	public void DoGoToNextStop(int x, int y) {
-		
+		//System.out.println("What");
 		for(int i=0; i<11; i++) {
 			if(cd.busStops.get(i).getX()==x&&cd.busStops.get(i).getY()==y) {
 				stop = i;
 			}
-				
+			
 		}
 		if(stop==0||stop==6) {
 			xFirst = true;

@@ -15,15 +15,18 @@ import java.util.Scanner;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import restaurantMQ.gui.RestaurantGui;
 import market.gui.MarketGui;
 import city.Building;
 import city.Building.BuildingType;
+import city.BusAgent;
 import city.HomeGui;
 import city.PersonAgent;
 import city.PersonAgent.BigState;
+import city.gui.BusGui;
 import city.gui.PersonGui;
 import config.ConfigParser;
 import bankgui.*;
@@ -160,7 +163,14 @@ public class MainGui extends JFrame implements MouseListener {
 				 
 			 }
 		}
-        
+		
+		//add bus agent
+		BusAgent bus = new BusAgent(mainAnimationPanel.cd); 
+		BusGui bg = new BusGui(bus,this,mainAnimationPanel.cd);
+		bus.setGui(bg);
+		mainAnimationPanel.addGui(bg);
+		bus.startThread();
+		
     }
     
   
@@ -172,15 +182,38 @@ public class MainGui extends JFrame implements MouseListener {
     }
     
     public void addPerson(String name, String role) {
+    	if(mainAnimationPanel.cd.getPopulation() >= 40) {
+    		JFrame frame = new JFrame();
+    		JOptionPane.showMessageDialog(frame, "Population limit reached!");
+    		return;
+    	}
 		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
 		mainAnimationPanel.cd.addPerson(p);
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
 		p.bigState = BigState.goHome;
+		p.assignHome(pickHome(p));
 		p.startThread();
 		
 	}
+    
+    public Building pickHome(PersonAgent p) {
+    	for (Building b : mainAnimationPanel.cd.homes) {
+    		if(!b.hasManager()) {
+    			b.setManager(p);
+    			return b;
+    		}
+    		//if(b.type==BuildingType.apartment) {
+    			//for (b.)
+    		//}
+    	}
+    	for (Building b: mainAnimationPanel.cd.apartments) {
+    		return b;
+    	}
+    	return null;
+    }
+    
     public void addConfigPerson(HashMap<String,String> properties) {
 		/* THIS WILL ADD IN ALL PROPERTIES IN THIS HASHMAP TO PERSON ATTRIBUTES
 		 * PersonAgent p = new PersonAgent(, this, mainAnimationPanel.cd);

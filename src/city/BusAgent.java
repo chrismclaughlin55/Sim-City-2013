@@ -31,11 +31,11 @@ public class BusAgent extends Agent {
 	BusStopAgent next;
 	private Semaphore atDestination = new Semaphore(0,true);
 	
-	public BusAgent() {
-		cd = new CityData();
+	public BusAgent(CityData cd) {
+		this.cd = cd;
 		curr = cd.busStops.get(0);
 		next = cd.busStops.get(1);
-		BusState bs = BusState.leavingStop;
+		myState = BusState.leavingStop;
 		passengers = new ArrayList<myPassenger>();
 		//SHOULD ALSO HAVE A DEFAULT STARTING POSITION
 	}
@@ -44,8 +44,13 @@ public class BusAgent extends Agent {
 		busgui = bg;
 	}
 	//MESSAGES
+	
+	//CALLED BY BUSGUI
 	public void msgAtDestination() {
+		
+		myState = BusState.atStop;
 		atDestination.release();
+		stateChanged();
 		// TODO Auto-generated method stub
 		
 	}
@@ -57,17 +62,12 @@ public class BusAgent extends Agent {
         stateChanged();
 	}
 
-	//CALLED BY BUSGUI
-	public void msgAtStop() { 
-		BusStopAgent temp=curr.nextStop;
-		curr = next;
-		next = temp;
-		myState = BusState.atStop;
-		stateChanged();
-	}
+
+
 	
 	//SCHEDULER
 	protected boolean pickAndExecuteAnAction() {
+		//System.out.println("what");
 		if(myState==BusState.atStop) {
 			UnloadPassengers();
 			return true;
@@ -83,6 +83,7 @@ public class BusAgent extends Agent {
 	        return true;
 	    }
 	    if(myState==BusState.leavingStop) {
+	    	
 	        LeaveStop();
 	        return true;
 	    }
@@ -90,6 +91,10 @@ public class BusAgent extends Agent {
 	}
 	
 	private void LeaveStop() {
+		BusStopAgent temp=curr.nextStop;
+		curr = next;
+		next = temp;
+        stateChanged();
 		busgui.DoGoToNextStop(next.getX(),next.getY());
 	    myState=BusState.moving;
 	    try {
@@ -119,12 +124,16 @@ public class BusAgent extends Agent {
 				//have a small wait time as that person gets off
 				//acquire semaphore per person
 				//p.p.msgArrivedAtBusStop(curr);
-				//personGui animation runs in bus’s thread until animation
+				//personGui animation runs in bus' thread until animation
 				//finished
 		        passengers.remove(p);        
 			}
 		}
 		curr.msgArrivedAtStop(this);
+	}
+
+	protected void stateChanged() {
+		super.stateChanged();
 	}
 	//ACTIONS
 

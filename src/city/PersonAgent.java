@@ -106,6 +106,12 @@ public class PersonAgent extends Agent
 	public void setHunger(int hangry) {
 		this.hungerLevel = hangry;
 	}
+	
+	public void setJobBuilding(Building jobBuilding)
+	{
+		this.jobBuilding = jobBuilding;
+	}
+	
 	/*SETTERS*/
 	public void assignHome(Building home)
 	{
@@ -275,7 +281,7 @@ public class PersonAgent extends Agent
 	}
 	
 	private void payRent() {
-		
+		rentDue = 0;
 	}
 
 	private void WakeUp() {
@@ -361,7 +367,7 @@ public class PersonAgent extends Agent
 	
 	protected void goHome() {
 		//int homeNumber = (int)((int)(Math.random()*11));
-		personGui.DoGoToBuilding(11); // 11 need to be replaced by the person's data of home number
+		personGui.DoGoToBuilding(this.home.buildingNumber); // 11 need to be replaced by the person's data of home number
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -370,7 +376,7 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
-		currentBuilding = cityData.buildings.get(11);
+		currentBuilding = cityData.buildings.get(this.home.buildingNumber);
 		currentBuilding.EnterBuilding(this, "");
 		bigState = BigState.atHome;
 		
@@ -438,7 +444,7 @@ public class PersonAgent extends Agent
 		super.stateChanged();
 	}
 	
-	/*GETTERS*/
+	/*GETTERS AND SETTERS*/
 	public String getName() {
 		return name;
 	}

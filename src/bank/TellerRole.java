@@ -36,8 +36,8 @@ public class TellerRole extends Role implements Teller{
 	}
 	//MESSAGES
 	@Override
-	public void msgHello(String name, BankCustomer c) {
-		currentCustInfo = new CustInfo(name, c.returnPerson(), c );
+	public void msgHello(CustInfo c) {
+		currentCustInfo = c;
 		event = Event.recievedHello;
 		stateChanged();
 	}
@@ -45,20 +45,21 @@ public class TellerRole extends Role implements Teller{
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
 		event = Event.recievedInfo;
+		if(info!=null)
 		this.currentCustInfo = info;
 		stateChanged();
 	}
 
 	@Override
 	public void msgDeposit(double money) {
-		currentCustInfo.depositAmount = money;
+		currentCustInfo.depositAmount = 0;
 		currentCustInfo.moneyInAccount += money;
 		event = Event.recievedDeposit;
 		stateChanged();
 	}
 
 	@Override
-	public void loan(double amount) {
+	public void msgloan(double amount) {
 		currentCustInfo.loanRequestAmount = amount;
 		event = Event.loanReq;
 		stateChanged();
@@ -105,14 +106,15 @@ public class TellerRole extends Role implements Teller{
 	}
 	//ACTIONS
 	private void ask() {
-		state = State.waitingForResponse;
+	
 		currentCustInfo.customer.msgWhatWouldYouLike();
+		state = State.waitingForResponse;
 	}
 
 	private void getInfo() {
-		state = State.waitingForInfo;
-		bm.msgGiveMeInfo(currentCustInfo.accountHolder);
-		
+	
+		bm.msgGiveMeInfo(currentCustInfo.customer, this);
+			state = State.waitingForInfo;
 	}
 
 	private void makeAvailable() {	
@@ -132,7 +134,7 @@ public class TellerRole extends Role implements Teller{
 
 	private void processOrder() {
 		//TODO this could cause problems. could lose semaphore by updating event in action
-		bm.msgUpdateInfo(currentCustInfo);
+		bm.msgUpdateInfo(currentCustInfo, this);
 		state = State.doneWithCustomer;
 		event = Event.updatedBank;
 	}
