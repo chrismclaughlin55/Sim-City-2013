@@ -1,12 +1,83 @@
 NewPerson
-name myName
+name myName0
 cash 100
 bankMoney 500
 job Waiter
 hunger 0
+
+NewPerson
+name myName1
+cash 100
+bankMoney 500
+job Cashier
+hunger 0
+
+NewPerson
+name myName2
+cash 100
+bankMoney 500
+job Cook
+hunger 0
+
+NewPerson
+name myName3
+cash 100
+bankMoney 500
+job Host
+hunger 0
+
+NewPerson
+name myName4
+cash 1000
+bankMoney 500
+job Unemployed
+hunger 5
+
+NewPerson
+name myName5
+cash 100
+bankMoney 500
+job Waiter
+hunger 0
+
+NewPerson
+name myName6
+cash 100
+bankMoney 500
+job BankManager
+hunger 0
+
+NewPerson
+name myName7
+cash 100
+bankMoney 500
+job BankTeller
+hunger 0
+
+NewPerson
+name myName8
+cash 20
+bankMoney 5000
+job Unemployed
+hunger 0
+
+NewPerson
+name myName9
+cash 100
+bankMoney 500
+job MarketManager
+hunger 0
+
 NewPerson
 name myName
 cash 100
 bankMoney 500
-job Waiter
+job MarketEmployee
 hunger 0
+
+NewPerson
+name myName
+cash 1000
+bankMoney 500
+job Unemployed
+hunger 10

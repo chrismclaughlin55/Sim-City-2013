@@ -1,6 +1,7 @@
 package bankgui;
 import Gui.*;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import javax.swing.ImageIcon;
@@ -14,7 +15,7 @@ public class TellerGui implements GuiPositions, Gui {
 	private int xDestination;
 	private int yPos;
 	private int yDestination;
-	private boolean isPresent;
+	private boolean isPresent = true;
 
 	public TellerGui(TellerRole tellerRole) {
 		this.teller = tellerRole;
@@ -38,17 +39,14 @@ public class TellerGui implements GuiPositions, Gui {
 		else if (yPos > yDestination)
 			yPos--;
 		
-		for (int i = 0; i < 20; i++) {
 
-		}
 	}
 	
 
 	@Override
 	public void draw(Graphics2D g) {
-			Graphics2D g2 = (Graphics2D)g;
-			ImageIcon person = new ImageIcon("res/person.png");
-			g2.drawImage(person.getImage(), xPos, yPos, null);
+		g.setColor(Color.red);
+		g.fillRect(xPos, yPos, 10, 10);
 		}
 
 

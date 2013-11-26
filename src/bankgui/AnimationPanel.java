@@ -1,6 +1,10 @@
 package bankgui;
 
 import java.awt.Color;
+
+import bank.CustomerRole;
+import bank.utilities.*;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,10 +17,11 @@ import java.util.List;
 
 import javax.swing.*;
 
+import city.PersonAgent;
 import market.gui.CustomerGui;
 import Gui.*;
 
-public class AnimationPanel extends JPanel implements ActionListener{
+public class AnimationPanel extends JPanel implements GuiPositions, ActionListener{
     private static final int WINDOWX = 400;
     private static final int WINDOWY = 500;
     private static final int TIMEINTERVAL = 5;
@@ -30,7 +35,6 @@ public class AnimationPanel extends JPanel implements ActionListener{
 		setVisible(true);
 		setSize(WINDOWX, WINDOWY);
 		bufferSize = this.getSize();
-
 		Timer timer = new Timer(TIMEINTERVAL, this );
 		timer.start();
 
@@ -53,6 +57,8 @@ public class AnimationPanel extends JPanel implements ActionListener{
 		g2.setColor(Color.BLACK);
 		g2.draw3DRect(0, 200, 200, 1, true);
 		g2.draw3DRect(0, 230, 200, 1, true);
+		g2.setColor(Color.BLUE);
+		g2.fill3DRect(doorx, doory, 20, 50, true);
 		synchronized(guis){
 			for(Gui gui : guis) {
 				if (gui.isPresent()) {
@@ -71,17 +77,21 @@ public class AnimationPanel extends JPanel implements ActionListener{
 
 	public void addGui(BankCustomerGui gui) {
 		guis.add(gui);
+		System.out.print("added gui type "+ gui.getClass().toString());
 	}
 
 	
 	public void addGui(BankManagerGui gui) {
-		guis.add(gui);
+		System.out.print("added gui type "+ gui.getClass().toString());
+		guis.add(gui); 
 	}
 	public void addGui(TellerGui gui) {
+		System.out.print("added gui type "+ gui.getClass().toString());
 		guis.add(gui);
 		
 	}
 	public void removeGui(TellerGui gui) {
+		
 		guis.remove(gui);
 	}
 	public void removeGui(CustomerGui gui) {
