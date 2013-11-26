@@ -99,7 +99,7 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 
 
 	public void PayBill() {
-		person.bankMoney -= amountDue;
+		person.cash -= amountDue;
 		employee.msgHereIsPayment(amountDue);
 		orders.clear();
 		invoices.clear();
