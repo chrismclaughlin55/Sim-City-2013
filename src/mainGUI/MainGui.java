@@ -196,12 +196,10 @@ public class MainGui extends JFrame implements MouseListener {
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
-		
 		p.setDesiredRole(role);
 		if(destination.equals("Restaurant"))
 		{
 			p.bigState = BigState.goToRestaurant;
-<<<<<<< HEAD
 			p.setDesiredRole(role);
 			p.startThread();
 			return;
@@ -217,8 +215,6 @@ public class MainGui extends JFrame implements MouseListener {
 			p.setDesiredRole(role);
 			p.startThread();
 			return;
-=======
->>>>>>> cad3f45ea38d7181664e39f06213f001d80360bd
 		}
 			p.bigState = BigState.goHome;
 			p.assignHome(pickHome(p));

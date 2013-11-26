@@ -453,7 +453,7 @@ public class PersonAgent extends Agent
 		}
 		personGui.DoGoIntoBuilding();
 		currentBuilding.EnterBuilding(this, "customer");
-		print("going into bank");
+	
 	}
 	
 	protected void goToMarket() {
