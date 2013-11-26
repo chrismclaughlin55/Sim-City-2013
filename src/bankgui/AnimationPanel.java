@@ -57,7 +57,8 @@ public class AnimationPanel extends JPanel implements GuiPositions, ActionListen
 		g2.setColor(Color.BLACK);
 		g2.draw3DRect(0, 200, 200, 1, true);
 		g2.draw3DRect(0, 230, 200, 1, true);
-		g2.draw3DRect(doorx, doory, 20, 20, false);
+		g2.setColor(Color.BLUE);
+		g2.fill3DRect(doorx, doory, 20, 50, true);
 		synchronized(guis){
 			for(Gui gui : guis) {
 				if (gui.isPresent()) {

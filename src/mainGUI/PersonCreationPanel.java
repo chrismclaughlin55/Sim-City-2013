@@ -207,6 +207,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 				destination = "Bank";
 				if(getSelectedButtonText(jobs).contains("Manager")){
 					role = "Manager";
+				//	mainGui.mainAnimationPanel.cd.buildings.get(18).manager
 				}
 				else if(getSelectedButtonText(jobs).contains("Teller")){
 					role = "Teller";

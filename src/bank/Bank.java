@@ -35,11 +35,14 @@ public class Bank extends Building {
 				if(existingManagerRoles.get(p) != null){
 				setOpen(p);
 				p.msgAssignRole(existingManagerRoles.get(p));
+				currentManager = existingManagerRoles.get(p);
 				}
 				else {
 				existingManagerRoles.put(p, new BankManagerRole(p));
 				setOpen(p);
 				p.msgAssignRole(existingManagerRoles.get(p));
+				currentManager = existingManagerRoles.get(p);
+				cityData.buildings.get(18).manager = currentManager.getPerson();
 				}
 			}
 		}
@@ -59,6 +62,7 @@ public class Bank extends Building {
 					BankCustomerGui custGui = new BankCustomerGui(newRole);
 					p.msgAssignRole(newRole);
 					bankGui.animationPanel.addGui(custGui);
+					currentManager.msgINeedService(newRole);
 				}
 			}
 		}
@@ -74,11 +78,12 @@ public class Bank extends Building {
 				}
 				else{
 					p.print("assigned teller gui");
-					CustomerRole newRole = new CustomerRole(p);
-					existingCustRoles.put(p, newRole);
-					BankCustomerGui custGui = new BankCustomerGui(newRole);
+					TellerRole newRole = new TellerRole(p);
+					existingTellerRoles.put(p, newRole);
+					TellerGui tellerGui = new TellerGui(newRole);
 					p.msgAssignRole(newRole);
-					bankGui.animationPanel.addGui(custGui);
+					bankGui.animationPanel.addGui(tellerGui);
+					currentManager.msgAddTeller(newRole);
 				}
 			}
 		}

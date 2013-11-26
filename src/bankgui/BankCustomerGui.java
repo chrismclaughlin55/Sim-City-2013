@@ -3,6 +3,8 @@ package bankgui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import javax.swing.ImageIcon;
+
 import bank.CustomerRole;
 import bank.utilities.GuiPositions;
 import Gui.*;
@@ -28,14 +30,16 @@ public class BankCustomerGui implements GuiPositions, Gui {
 			yPos--;
 
 		if (xPos == xDestination && yPos == yDestination) {
-			
+		//	c.msgGuiIsAtDest();
 		}
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		g.setColor(Color.green);
-		g.fillRect(xPos, yPos, 30, 30);
+		Graphics2D g2 = (Graphics2D)g;
+		ImageIcon person = new ImageIcon("res/person.png");
+		g2.drawImage(person.getImage(), xPos, yPos, null);
+		
 	}
 
 	@Override
