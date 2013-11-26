@@ -9,7 +9,7 @@ Objects (Function and visual representation)
 #### CITY
 + PersonAgent (PersonAgentSprite): Exist in the city and home/apartment.
 + BuildingMediator: Base building class that every building needs to extend, have manager to set the building open / close and interact with the coming customers.
-+ BusAgent: There is only one bus with one route; if there is people waiting at the bus stop / reaching his destination, the bus will stop and board / unload the passenger; otherwise the bus will pass the stop.  
++ BusAgent: There is only one bus with one route; if there is people waiting at the bus stop / reaching his destination, the bus will stop and board / unload the passenger; otherwise the bus will pass the stop. Keep running all the time even if there is no passenger.  
 + BusStopAgent: Send / receive messages to / from the bus so that the bus will know where to stop.
 
 #### MARKET
