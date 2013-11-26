@@ -37,7 +37,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 	private int WIDTH = 100;
 	private int HEIGHT = 100;
-
+	public static final int GLOBALINTERVAL = 50;
+	
 	private MainGui mainGui;
 	
 
@@ -131,11 +132,39 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(19).setBusStop(cd.busStops.get(6));
 		
 		cd.setBusStopRoute();
-		//setBackground(Color.WHITE);
 		
+		//Set apartment parameters
+		for (int i = 0; i < 4; i++) {
+			cd.buildings.get(i).setBuildingNumber(i);
+		}
+
+		//Set house parameters
+		for (int i = 4; i < 12; i++) {
+			cd.buildings.get(i).setBuildingNumber(i);
+		}
+		
+		//Set restaurant parameters
+		for (int i = 12; i < 18; i++) {
+			cd.buildings.get(i).setType(BuildingType.restaurant);
+			cd.buildings.get(i).setName("restaurant"+(i-11));
+			cd.buildings.get(i).setBuildingNumber(i);
+		}
+		
+		//Set bank parameters
+		cd.buildings.get(18).setType(BuildingType.bank);
+		cd.buildings.get(18).setName("bank");
+		cd.buildings.get(18).setBuildingNumber(18);
+		
+		//Set market parameters
+		cd.buildings.get(19).setType(BuildingType.market);
+		cd.buildings.get(19).setName("market");
+		cd.buildings.get(19).setBuildingNumber(19);
+		cd.market = (Market) cd.buildings.get(19);
+		//setBackground(Color.WHITE);
+		cd.globalTimer = new Timer(GLOBALINTERVAL,(ActionListener) this);
+        
 		setVisible(true);
-		Timer timer = new Timer(frameDisplay, this );
-		timer.start();
+		cd.globalTimer.start();
 
 	}
 
@@ -156,7 +185,6 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		//Draw apartments
 		ImageIcon apartment = new ImageIcon("res/apartment.png");
 		for (int i = 0; i < 4; i++) {
-			cd.buildings.get(i).setBuildingNumber(i);
 			g2.drawImage(apartment.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
 			//Draw bus stop for each apartment
@@ -166,7 +194,6 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		//Draw houses
 		ImageIcon house = new ImageIcon("res/house.png");
 		for (int i = 4; i < 12; i++) {
-			cd.buildings.get(i).setBuildingNumber(i);
 			g2.drawImage(house.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
 		}
@@ -186,27 +213,17 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		ImageIcon rest = new ImageIcon("res/restaurant.png");
 		for (int i = 12; i < 18; i++) {
 			g2.drawImage(rest.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
-			cd.buildings.get(i).setType(BuildingType.restaurant);
-			cd.buildings.get(i).setName("restaurant"+(i-11));
-			cd.buildings.get(i).setBuildingNumber(i);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
 		}
 		
 		//Draw bank
 		ImageIcon bank = new ImageIcon("res/bank.png");
 		g2.drawImage(bank.getImage(), (int) cd.buildings.get(18).x, (int) cd.buildings.get(18).y, null);
-		cd.buildings.get(18).setType(BuildingType.bank);
-		cd.buildings.get(18).setName("bank");
-		cd.buildings.get(18).setBuildingNumber(18);
 		g2.drawString(cd.buildings.get(18).name, (int) cd.buildings.get(18).x, (int) cd.buildings.get(18).y+10);
 		
 		//Draw market
 		ImageIcon market = new ImageIcon("res/market.png");
 		g2.drawImage(market.getImage(), (int) cd.buildings.get(19).x, (int) cd.buildings.get(19).y, null);
-		cd.buildings.get(19).setType(BuildingType.market);
-		cd.buildings.get(19).setName("market");
-		cd.buildings.get(19).setBuildingNumber(19);
-		cd.market = (Market) cd.buildings.get(19);
 		g2.drawString(cd.buildings.get(19).name, (int) cd.buildings.get(19).x, (int) cd.buildings.get(19).y+10);
 
 		//Draw road

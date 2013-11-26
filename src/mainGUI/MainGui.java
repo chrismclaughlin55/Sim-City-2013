@@ -1,6 +1,7 @@
 package mainGUI;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -35,6 +36,9 @@ import config.ConfigParser;
 import Gui.Gui;
 import bankgui.*;
 
+import javax.swing.Timer;
+
+
 /**
  * Main GUI class.
  * Contains the main frame and subsequent panels
@@ -45,7 +49,6 @@ public class MainGui extends JFrame implements MouseListener {
      */
 	private int WIDTH = 1230;
 	private int HEIGHT = 800;
-	
 	//public AnimationPanel animationPanel;
 	//JPanel InfoLayout;
 	
@@ -115,8 +118,7 @@ public class MainGui extends JFrame implements MouseListener {
         bankGui.setVisible(false);
         bankGui.setResizable(false);
         bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        
-            	
+           	
         try {
     		scan = new Scanner( new File ("src/config/config.txt"));
     		fileExist=true;
@@ -128,11 +130,7 @@ public class MainGui extends JFrame implements MouseListener {
 			while(scan.hasNextLine()) {
 				String newPerson = scan.next();
 				if(newPerson.equals("NewPerson")) {
-					PersonAgent p = new PersonAgent(null, this, mainAnimationPanel.cd);
-					mainAnimationPanel.cd.addPerson(p);
-					PersonGui personGui = new PersonGui(p, this);
-					mainAnimationPanel.addGui(personGui);
-					p.setGui(personGui);
+					PersonAgent p = createPerson(null,null);
 					for(int i=0; i<5; i++) {
 						String property = scan.next();
 						String temp = scan.next();
@@ -163,6 +161,7 @@ public class MainGui extends JFrame implements MouseListener {
 						}
 					}
 					p.startThread();
+					newPerson = null;
 				 }
 				 
 			 }
@@ -184,19 +183,31 @@ public class MainGui extends JFrame implements MouseListener {
         gui.setVisible(true);
         gui.setResizable(true);
     }
-    
+    public PersonAgent createPerson(String name, String role) {
+    	if(mainAnimationPanel.cd.getPopulation() >= 40) {
+    		JFrame frame = new JFrame();
+    		JOptionPane.showMessageDialog(frame, "Population limit reached!");
+    		return null;
+    	}
+		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
+		p.assignHome(pickHome(p));
+		mainAnimationPanel.cd.addPerson(p);
+		PersonGui personGui = new PersonGui(p, this);
+		mainAnimationPanel.addGui(personGui);
+		p.setGui(personGui);
+		p.setDesiredRole(role);
+		p.bigState = BigState.goHome;
+		
+		return p;
+    }
     public void addPerson(String name, String role, String destination) {
     	if(mainAnimationPanel.cd.getPopulation() >= 40) {
     		JFrame frame = new JFrame();
     		JOptionPane.showMessageDialog(frame, "Population limit reached!");
     		return;
     	}
-		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
-		mainAnimationPanel.cd.addPerson(p);
-		PersonGui personGui = new PersonGui(p, this);
-		mainAnimationPanel.addGui(personGui);
-		p.setGui(personGui);
-		p.setDesiredRole(role);
+		PersonAgent p = createPerson(name, role);
+		
 		if(destination.equals("Restaurant"))
 		{
 			p.bigState = BigState.goToRestaurant;
@@ -216,9 +227,8 @@ public class MainGui extends JFrame implements MouseListener {
 			p.startThread();
 			return;
 		}
-			p.bigState = BigState.goHome;
-			p.assignHome(pickHome(p));
-			p.startThread();
+			
+		p.startThread();
 		
 	}
     
