@@ -85,6 +85,8 @@ public class Bank extends Building {
 					p.msgAssignRole(role);
 					role.msgAddGui(tellerGui);
 					bankGui.animationPanel.addGui(tellerGui);
+					currentManager.msgAddTeller(role);
+					role.msgAddManager(currentManager);
 				}
 				else{
 					p.print("assigned teller gui");
@@ -95,6 +97,7 @@ public class Bank extends Building {
 					bankGui.animationPanel.addGui(tellerGui);
 					p.print("current manager is " + currentManager.getName());
 					currentManager.msgAddTeller(newRole);
+					newRole.msgAddManager(currentManager);
 				}
 			}
 		}

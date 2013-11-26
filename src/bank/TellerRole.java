@@ -35,6 +35,9 @@ public class TellerRole extends Role implements Teller{
 		
 	}
 	//MESSAGES
+	public void msgAddManager(BankManagerRole bm){
+		this.bm = bm;
+	}
 	@Override
 	public void msgHello(CustInfo c) {
 		currentCustInfo = c;
