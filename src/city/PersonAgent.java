@@ -34,7 +34,7 @@ public class PersonAgent extends Agent
 	public int tiredLevel = 0;
 	public double cash = 100;
 	public CustInfo bankInfo = new CustInfo(this.name, this, null);
-	public double rentDue = 0;
+	public boolean rentDue = true;
 	public int criminalImpulse = 0;
 	public int hungerLevel = 0;
 	boolean ranonce = false;
@@ -55,6 +55,7 @@ public class PersonAgent extends Agent
 	Timer timer = new Timer();
 	Bank bank;
 	HashMap<String, Integer> inventory = new HashMap<String, Integer>();
+	int rent = 200;
 
 	
 	boolean goToWork = false;
@@ -87,10 +88,10 @@ public class PersonAgent extends Agent
 		thingsToOrder.add(o2);
 		thingsToOrder.add(o3);
 		thingsToOrder.add(o4);
-		inventory.put("Steak", 2);
-		inventory.put("Salad", 2);
-		inventory.put("Pizza", 2);
-		inventory.put("Chicken", 2);
+		inventory.put("Steak", 3);
+		inventory.put("Salad", 3);
+		inventory.put("Pizza", 3);
+		inventory.put("Chicken", 3);
 		personGui = new PersonGui(this, gui);
 	}
 	
@@ -106,10 +107,10 @@ public class PersonAgent extends Agent
 		thingsToOrder.add(o2);
 		thingsToOrder.add(o3);
 		thingsToOrder.add(o4);
-		inventory.put("Steak", 2);
-		inventory.put("Salad", 2);
-		inventory.put("Pizza", 2);
-		inventory.put("Chicken", 2);
+		inventory.put("Steak", 3);
+		inventory.put("Salad", 3);
+		inventory.put("Pizza", 3);
+		inventory.put("Chicken", 3);
 		personGui = new PersonGui(this, gui);
 		bank = (Bank) cd.buildings.get(18);
 	}
@@ -134,13 +135,11 @@ public class PersonAgent extends Agent
 		this.hungerLevel = hangry;
 	}
 	
-	public void setJobBuilding(Building jobBuilding)
-	{
+	public void setJobBuilding(Building jobBuilding) {
 		this.jobBuilding = jobBuilding;
 	}
 	
-	public void setDesiredRole(String role)
-	{
+	public void setDesiredRole(String role) {
 		if(this.name == "myName6")
 			print("! "+role);
 		desiredRole = role;
@@ -159,15 +158,13 @@ public class PersonAgent extends Agent
 	}
 	
 	/*MESSAGES*/
-	public void refresh()
-	{
+	public void refresh() {
 		super.refresh();
 		if(cityData.hour == 8)
 			goToWork = true;
 	}
 	
-	public void msgFull()
-	{
+	public void msgFull() {
 		hungerLevel = 0;
 	}
 	
@@ -217,8 +214,7 @@ public class PersonAgent extends Agent
 		stateChanged();
 	}
 	
-	public void msgBusIsHere(BusAgent bus)
-	{
+	public void msgBusIsHere(BusAgent bus) {
 		currentBus = bus;
 		isMoving.release();
 	}
@@ -260,26 +256,22 @@ public class PersonAgent extends Agent
 						return false; //put the agent thread back to sleep
 				}
 				
-				if (hungerLevel >= HUNGRY) //inventory also has to be sufficient
-				{
-					makeFood(); //just choose a random item from the inventory
+				if (hungerLevel >= HUNGRY) { //inventory also has to be sufficient
+					makeFood();
 					return true;
 				}
 				
-				if (goToWork)
-				{
+				if (goToWork) {
 					leaveHome(); //leave the house and set bigState to doingNothing
 					return true;
 				}
 				
-				/*if (home.type == BuildingType.apartment && rentDue > 0)
-				{
+				if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
 					payRent();
 					return true;
-				}*/
+				}
 				
-				if (tiredLevel >= TIRED)
-				{
+				if (tiredLevel >= TIRED) {
 					goToSleep();
 					return false; //intentional because the thread is being out to sleep
 				}
@@ -324,18 +316,15 @@ public class PersonAgent extends Agent
 					if(!destinationBuilding.equals(null));
 						System.out.println(destinationBuilding.type);
 					desiredRole = job;
-					if(destinationBuilding.type == BuildingType.market)
-					{
+					if(destinationBuilding.type == BuildingType.market) {
 						bigState = BigState.goToMarket;
 						return true;
 					}
-					else if(destinationBuilding.type == BuildingType.bank)
-					{
+					else if(destinationBuilding.type == BuildingType.bank) {
 						bigState = BigState.goToBank;
 						return true;
 					}
-					else if(destinationBuilding.type == BuildingType.restaurant)
-					{
+					else if(destinationBuilding.type == BuildingType.restaurant) {
 						bigState = BigState.goToRestaurant;
 						return true;
 					}
@@ -383,8 +372,12 @@ public class PersonAgent extends Agent
 	}
 	
 	private void payRent() {
-		bank.getManager().msgDirectDeposit(this, this, 50);
-		rentDue = 0;
+		Apartment a = (Apartment) home;
+		System.err.println("Paying rent");
+		System.err.println(a.manager.bankInfo.moneyInAccount);
+		System.err.println(this.bankInfo.moneyInAccount);
+		bank.getManager().msgDirectDeposit(this, a.manager, rent);
+		rentDue = false;
 	}
 
 	private void WakeUp() {
@@ -533,7 +526,7 @@ public class PersonAgent extends Agent
 			a.rooms.get(roomNumber).EnterBuilding(this, "");
 		}
 		bigState = BigState.atHome;
-		hungerLevel = 10000000;
+		//hungerLevel = 10000000;
 	}
 	
 	protected void leaveHome() {
