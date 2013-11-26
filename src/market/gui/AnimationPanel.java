@@ -1,13 +1,20 @@
 package market.gui;
-import Gui.*;
-import javax.swing.*;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
+
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+import Gui.Gui;
 
 
 public class AnimationPanel extends JPanel implements ActionListener {

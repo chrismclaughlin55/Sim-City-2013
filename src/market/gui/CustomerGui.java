@@ -2,21 +2,36 @@ package market.gui;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 
-import javax.swing.ImageIcon;
-
+import market.MarketCustomerRole;
 import Gui.Gui;
 
 public class CustomerGui implements Gui{
 	
-	int xPos = 0;
-	int yPos = 0;
+	int xPos = 0, yPos = 0, xDestination = 0, yDestination = 0;
+	private enum Command {noCommand, goToDesk};
+    private Command command=Command.noCommand;
 	
+	private MarketCustomerRole role;
 
+	public CustomerGui(MarketCustomerRole role) {
+		this.role = role;
+	}
 	@Override
 	public void updatePosition() {
-		// TODO Auto-generated method stub
+		if (xPos < xDestination)
+			xPos++;
+		else if (xPos > xDestination)
+			xPos--;
+
+		if (yPos < yDestination)
+			yPos++;
+		else if (yPos > yDestination)
+			yPos--;
+
+		if (xPos == xDestination && yPos == yDestination) {
+			command = Command.noCommand;
+		}
 		
 	}
 
@@ -37,6 +52,12 @@ public class CustomerGui implements Gui{
 	public void setPresent(boolean b) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void DoGoToEmployee(int x, int y) {
+		System.out.println ("here");
+		xDestination = x;
+		yDestination = y;
 	}
 
 }
