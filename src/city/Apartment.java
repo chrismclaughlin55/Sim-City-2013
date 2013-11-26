@@ -43,6 +43,15 @@ public class Apartment extends Building {
 		return rooms.get(rn);
 	}
 	
+	public int getRoomNumber(PersonAgent p) {
+		for (int i = 0; i < 8; i++) {
+			if (p == rooms.get(i).tenant) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 	
 	
 }
