@@ -65,6 +65,8 @@ public class PersonAgent extends Agent
 	public BigState bigState = BigState.doingNothing;
 	public HomeState homeState;
 	public EmergencyState emergencyState = EmergencyState.none;
+	
+	public BusAgent currentBus;
 		
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
@@ -198,6 +200,12 @@ public class PersonAgent extends Agent
 		stateChanged();
 	}
 	
+	public void msgBusIsHere(BusAgent bus)
+	{
+		currentBus = bus;
+		isMoving.release();
+	}
+	
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
 		/*Emergency scheduler rules go here (v2)*/
@@ -292,6 +300,27 @@ public class PersonAgent extends Agent
 			}
 			case doingNothing: {
 				//Decide what the next BigState will be based on current parameters
+				if(goToWork)
+				{
+					destinationBuilding = jobBuilding;
+					desiredRole = job;
+					if(destinationBuilding.type == BuildingType.market)
+					{
+						bigState = BigState.goToMarket;
+						return true;
+					}
+					else if(destinationBuilding.type == BuildingType.bank)
+					{
+						bigState = BigState.goToBank;
+						return true;
+					}
+					else if(destinationBuilding.type == BuildingType.restaurant)
+					{
+						bigState = BigState.goToRestaurant;
+						return true;
+					}
+				}
+				
 				if(hungerLevel >= STARVING) {
 					bigState = BigState.goToRestaurant;
 					desiredRole = "Customer";
@@ -348,6 +377,7 @@ public class PersonAgent extends Agent
 		for (String key : inventory.keySet()) {
 			if (inventory.get(key) > 0) {
 				inventory.put(key, inventory.get(key) - 1);
+				break;
 			}
 		}
 		personGui.DoGoToRefridgerator();
@@ -520,6 +550,49 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goToBank() {
+		
+		destinationBuilding = cityData.bank;
+		destinationBusStop = currentBuilding.busStop;
+		personGui.DoGoToBusStop(destinationBusStop);
+		isMoving.drainPermits();
+		try
+		{
+			isMoving.acquire();
+		}
+		catch(Exception e){}
+		currentBusStop = destinationBusStop;
+		destinationBusStop = destinationBuilding.busStop;
+		
+		currentBusStop.msgWaitingAtStop(this, destinationBusStop);
+		try
+		{
+			isMoving.acquire();
+		}
+		catch(Exception e) {}
+		
+		personGui.DoGoToBus(currentBus);
+		try
+		{
+			isMoving.acquire();
+		}
+		catch(Exception e) {}
+		
+		cityData.guis.remove(personGui);
+		currentBus.msgOnBus();
+		try
+		{
+			isMoving.acquire();
+		}
+		catch(Exception e) {}
+		
+		personGui.DoGoToBusStop(destinationBusStop);
+		try
+		{
+			isMoving.acquire();
+		}
+		catch(Exception e) {}
+		
+		//asdfasdf
 		personGui.DoGoToBuilding(18);
 		currentBuilding = cityData.buildings.get(18);
 		atBuilding.drainPermits();
