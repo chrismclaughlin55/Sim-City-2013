@@ -319,6 +319,7 @@ public class PersonAgent extends Agent
 		for (String key : inventory.keySet()) {
 			if (inventory.get(key) > 0) {
 				inventory.put(key, inventory.get(key) - 1);
+				break;
 			}
 		}
 		personGui.DoGoToRefridgerator();
