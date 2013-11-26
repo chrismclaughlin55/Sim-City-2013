@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import restaurantMQ.gui.MQRestaurantBuilding;
 import bank.Bank;
 import market.Market;
 import Gui.Gui;
@@ -92,17 +93,19 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			bs.startThread();
 		}
 		
-
+		
+		//create restaurants
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
-				Building b = new Building(190+i*130, 140+j*130, WIDTH, HEIGHT, mainGui);
+				Building b = new MQRestaurantBuilding(190+i*130, 140+j*130, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui);
 				cd.buildings.add(b);
 			}
 		}
 		for (int i = 0; i < 2; i++) {
-			Building b = new Building(190+i*130, 540, WIDTH, HEIGHT, mainGui);
+			Building b = new MQRestaurantBuilding(190+i*130, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui);
 			cd.buildings.add(b);
 		}
+		//done creating restaurants
 		
 		
 		Bank b = new Bank(190, 410, WIDTH, HEIGHT,"bank", BuildingType.bank, mainGui, cd);

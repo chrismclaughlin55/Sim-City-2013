@@ -114,6 +114,11 @@ public class PersonAgent extends Agent
 		this.jobBuilding = jobBuilding;
 	}
 	
+	public void setDesiredRole(String role)
+	{
+		desiredRole = role;
+	}
+	
 	/*SETTERS*/
 	public void assignHome(Building home)
 	{
@@ -358,7 +363,8 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goToRestaurant() {
-		int restNumber = (int)(12+(int)(Math.random()*5));
+		int restNumber = 12;
+		//int restNumber = (int)(12+(int)(Math.random()*5));
 		personGui.DoGoToBuilding(restNumber);
 		atBuilding.drainPermits();
 		try {

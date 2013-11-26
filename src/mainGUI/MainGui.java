@@ -50,7 +50,7 @@ public class MainGui extends JFrame implements MouseListener {
     public MainAnimationPanel mainAnimationPanel;
    
     public MarketGui marketGui;
-    public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
+    //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
     //public BusStopGui busStopGui will have a list of these and add them all
     
@@ -98,13 +98,13 @@ public class MainGui extends JFrame implements MouseListener {
         marketGui.setResizable(false);
         marketGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
-        for (int i = 0; i < 6; i++) {
+        /*for (int i = 0; i < 6; i++) {
         	restaurantGuis[i] = new RestaurantGui();
         	restaurantGuis[i].setTitle("RestaurantMQ");
         	restaurantGuis[i].setVisible(false);
         	restaurantGuis[i].setResizable(false);
         	restaurantGuis[i].setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        }
+        }*/
         
         bankGui.setTitle("Bank");
         bankGui.setVisible(false);
@@ -186,7 +186,8 @@ public class MainGui extends JFrame implements MouseListener {
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
-		p.bigState = BigState.goToBank;
+		p.bigState = BigState.goToRestaurant;
+		p.setDesiredRole(role);
 		p.startThread();
 		
 	}
