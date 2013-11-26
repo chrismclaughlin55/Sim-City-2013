@@ -442,6 +442,9 @@ public class PersonAgent extends Agent
 	protected void goToRestaurant() {
 		int restNumber = 12;
 		//int restNumber = (int)(12+(int)(Math.random()*5));
+		destinationBuilding = cityData.buildings.get(restNumber);
+		takeBusToDestination();
+		
 		personGui.DoGoToBuilding(restNumber);
 		atBuilding.drainPermits();
 		try {
@@ -552,6 +555,38 @@ public class PersonAgent extends Agent
 	protected void goToBank() {
 		
 		destinationBuilding = cityData.bank;
+		takeBusToDestination();
+		
+		//asdfasdf
+		personGui.DoGoToBuilding(18);
+		currentBuilding = cityData.buildings.get(18);
+		atBuilding.drainPermits();
+		try {
+			atBuilding.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		personGui.DoGoIntoBuilding();
+		print("entering the building and desired role is "+desiredRole);
+		currentBuilding.EnterBuilding(this,desiredRole );
+	
+	}
+	
+	protected void goToMarket() {
+		personGui.DoGoToBuilding(19);
+		atBuilding.drainPermits();
+		try {
+			atBuilding.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		personGui.DoGoIntoBuilding();
+	}
+	
+	public void takeBusToDestination()
+	{
 		destinationBusStop = currentBuilding.busStop;
 		personGui.DoGoToBusStop(destinationBusStop);
 		isMoving.drainPermits();
@@ -585,39 +620,16 @@ public class PersonAgent extends Agent
 		}
 		catch(Exception e) {}
 		
+		cityData.guis.add(personGui);
+		personGui.setXPos(currentBus.getX());
+		personGui.setYPos(currentBus.getY());
+		currentBus.msgOnBus();
 		personGui.DoGoToBusStop(destinationBusStop);
 		try
 		{
 			isMoving.acquire();
 		}
 		catch(Exception e) {}
-		
-		//asdfasdf
-		personGui.DoGoToBuilding(18);
-		currentBuilding = cityData.buildings.get(18);
-		atBuilding.drainPermits();
-		try {
-			atBuilding.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		personGui.DoGoIntoBuilding();
-		print("entering the building and desired role is "+desiredRole);
-		currentBuilding.EnterBuilding(this,desiredRole );
-	
-	}
-	
-	protected void goToMarket() {
-		personGui.DoGoToBuilding(19);
-		atBuilding.drainPermits();
-		try {
-			atBuilding.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		personGui.DoGoIntoBuilding();
 	}
 	
 	public void setRoomNumber(int number) {
