@@ -16,19 +16,19 @@ public class Inventory {
 		MarketData steakData = new MarketData("steak", 10, 10);
 		MarketData pizzaData = new MarketData("pizza", 10, 10);
 
-		inventory.put("chicken", chickenData );
-		inventory.put("salad", saladData);
-		inventory.put("steak", steakData);
-		inventory.put("pizza", pizzaData);
+		inventory.put("Chicken", chickenData );
+		inventory.put("Salad", saladData);
+		inventory.put("Steak", steakData);
+		inventory.put("Pizza", pizzaData);
 		this.marketGui = marketGui;
 
 	}
 
 	public Inventory(MarketData chickenData, MarketData steakData, MarketData saladData, MarketData pizzaData, MarketGui marketGui) {
-		inventory.put("chicken", chickenData);
-		inventory.put("salad", saladData);
-		inventory.put("steak", steakData);
-		inventory.put("pizza", pizzaData);
+		inventory.put("Chicken", chickenData);
+		inventory.put("Salad", saladData);
+		inventory.put("Steak", steakData);
+		inventory.put("Pizza", pizzaData);
 		this.marketGui = marketGui;
 	}
 	
