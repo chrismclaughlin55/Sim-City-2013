@@ -44,5 +44,17 @@ Objects (Function and visual representation)
 
 #### Starting state overall:
 + People are created and roles are assigned from the configuration file.
-+ Also create people from control panel with a job.
++ Also create people from person creation panel with a job.
 + When a person created, home / apartment room is assigned.
+
+
+### v2 plan
++ Add car to person agent, person needs to make loan to buy a car.
++ Change layout of the city to be grid blocks of certain types to restrict movement of cars, buses, and delivery trucks to roads.
++ In the person creation panel, allow to place a person you want to create, click on the screen to start the person
++ Overall revampled animations for everything.
++ Home maintenance.
++ Bank robbery and identity theft.
++ (A*) Car accident.
++ Emergency state for person agent, such as fire, earthquake, etc. All people will stop their current schedule and react to the emergency.
++ People can die because of car accident, emergency, etc.
