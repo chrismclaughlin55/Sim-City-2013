@@ -80,18 +80,18 @@ public class PersonAgent extends Agent
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
-		MyOrder o1 = new MyOrder("Steak", 1);
+		/*MyOrder o1 = new MyOrder("Steak", 1);
 		MyOrder o2 = new MyOrder("Salad", 1);
 		MyOrder o3 = new MyOrder("Pizza", 1);
 		MyOrder o4 = new MyOrder("Chicken", 1);
 		thingsToOrder.add(o1);
 		thingsToOrder.add(o2);
 		thingsToOrder.add(o3);
-		thingsToOrder.add(o4);
-		inventory.put("Steak", 3);
-		inventory.put("Salad", 3);
-		inventory.put("Pizza", 3);
-		inventory.put("Chicken", 3);
+		thingsToOrder.add(o4);*/
+		inventory.put("Steak", 4);
+		inventory.put("Salad", 4);
+		inventory.put("Pizza", 4);
+		inventory.put("Chicken", 4);
 		personGui = new PersonGui(this, gui);
 	}
 	
@@ -99,14 +99,14 @@ public class PersonAgent extends Agent
 		this.name = name;
 		this.gui = gui;
 		this.cityData = cd;
-		MyOrder o1 = new MyOrder("Steak", 1);
+		/*MyOrder o1 = new MyOrder("Steak", 1);
 		MyOrder o2 = new MyOrder("Salad", 1);
 		MyOrder o3 = new MyOrder("Pizza", 1);
 		MyOrder o4 = new MyOrder("Chicken", 1);
 		thingsToOrder.add(o1);
 		thingsToOrder.add(o2);
 		thingsToOrder.add(o3);
-		thingsToOrder.add(o4);
+		thingsToOrder.add(o4);*/
 		inventory.put("Steak", 3);
 		inventory.put("Salad", 3);
 		inventory.put("Pizza", 3);
