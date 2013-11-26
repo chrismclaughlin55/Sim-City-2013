@@ -39,7 +39,7 @@ public class Market extends Building {
 				}
 				if (roleRequest.equals("MarketEmployee")) {
 					currentManager.msgReportingForWork((MarketEmployeeRole) existingRoles.get(person));
-					EmployeeGui employeeGui = new EmployeeGui((MarketEmployeeRole) existingRoles.get(person), 70, 205);
+					EmployeeGui employeeGui = new EmployeeGui((MarketEmployeeRole) existingRoles.get(person));
 					((MarketEmployeeRole) existingRoles.get(person)).setGui(employeeGui);
 					mainGui.marketGui.animationPanel.addGui(employeeGui);
 				}
@@ -65,7 +65,7 @@ public class Market extends Building {
 				person.msgAssignRole(employeeRole);
 				existingRoles.put(person, employeeRole);
 				currentManager.msgReportingForWork(employeeRole);
-				EmployeeGui employeeGui = new EmployeeGui(employeeRole, 70, 205);
+				EmployeeGui employeeGui = new EmployeeGui(employeeRole);
 				employeeRole.setGui(employeeGui);
 				mainGui.marketGui.animationPanel.addGui(employeeGui);
 			}

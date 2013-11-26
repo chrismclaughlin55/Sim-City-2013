@@ -3,7 +3,6 @@ package market.gui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import market.MarketCustomerRole;
 import market.MarketEmployeeRole;
 import Gui.Gui;
 
@@ -17,10 +16,8 @@ public class EmployeeGui implements Gui {
 
     private MarketEmployeeRole role = null;
     
-    public EmployeeGui(MarketEmployeeRole role, int x, int y) {
+    public EmployeeGui(MarketEmployeeRole role) {
     	this.role = role;
-    	xDestination = x;
-    	yDestination = y;
     }
 
 
@@ -73,6 +70,11 @@ public class EmployeeGui implements Gui {
 	public void LeaveMarket() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void MoveToDesk(int deskNum) {
+		xDestination = 70+40*deskNum;
+		yDestination = 205;
 	}
 
 }

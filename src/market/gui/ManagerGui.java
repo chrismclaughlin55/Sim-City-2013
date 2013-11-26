@@ -17,8 +17,6 @@ public class ManagerGui implements Gui{
 	private int xPos = 0, yPos = 0;//default waiter position
 	private int xDestination = 0, yDestination = 0;
 
-	//private int xDestination = 325, yDestination = 410;
-
 
 	public ManagerGui(MarketManagerRole role) {
 		this.role = role;

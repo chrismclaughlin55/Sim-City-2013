@@ -35,6 +35,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	private MarketManager manager;
 	public EventLog log = new EventLog();
 	private boolean workAvailable = true;
+	private int deskNum = 0;
 	public class MarketOrder {
 		String type;
 		int quantity;
@@ -62,15 +63,17 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 	public MarketEmployeeRole(PersonAgent person, MarketManager manager, Inventory inventory) {
 		super(person);
-		this.marketNum = marketNum;
 		this.person = person;
 		this.manager = manager;
 		this.inventory = inventory;
+		state = EmployeeState.nothing;
 	}
 	
 	public void msgGoToDesk(int deskNum) {
-		
-		
+		print ("Received msgGoToDesk");
+		this.deskNum = deskNum;
+		state = EmployeeState.entering;
+		stateChanged();
 	}
 	
 	public void msgLeave() {
@@ -108,7 +111,11 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-
+		
+		if (state == EmployeeState.entering) {
+			gui.MoveToDesk(deskNum);
+		}
+ 
 		if (!payments.isEmpty()) {
 			ProcessPayment();
 			return true;
@@ -202,6 +209,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	
 	public void setGui (EmployeeGui gui) {
 		this.gui = gui;
+		state = EmployeeState.entering;
 	}
 	
 }

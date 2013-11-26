@@ -108,6 +108,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 		if (!waitingEmployees.isEmpty()) {
 			if (workingEmployees.size() < 10) {
 				workingEmployees.add(waitingEmployees.get(0));
+				waitingEmployees.get(0).employee.msgGoToDesk(workingEmployees.indexOf(waitingEmployees.get(0)));
 				waitingEmployees.remove(0);
 			}
 			else {
