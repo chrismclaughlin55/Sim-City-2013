@@ -453,7 +453,7 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
-		currentBuilding.EnterBuilding(this, "customer");
+		currentBuilding.EnterBuilding(this,desiredRole );
 	
 	}
 	

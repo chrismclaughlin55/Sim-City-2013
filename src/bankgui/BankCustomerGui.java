@@ -8,7 +8,7 @@ import bank.utilities.GuiPositions;
 import Gui.*;
 
 public class BankCustomerGui implements GuiPositions, Gui {
-
+	Boolean isPresent = true;
 	CustomerRole c;
 	private int xPos = doorx, yPos = doory;
 	private int xDestination = 50, yDestination = 50;
@@ -34,20 +34,18 @@ public class BankCustomerGui implements GuiPositions, Gui {
 
 	@Override
 	public void draw(Graphics2D g) {
-		Color employeeColor = new Color (46, 204, 113);
-		g.setColor(employeeColor);
+		g.setColor(Color.green);
 		g.fillRect(xPos, yPos, 30, 30);
 	}
 
 	@Override
 	public boolean isPresent() {
-		// TODO Auto-generated method stub
-		return false;
+		return isPresent;
 	}
 
 	@Override
 	public void setPresent(boolean b) {
-		
+		isPresent = b;
 		
 	}
 

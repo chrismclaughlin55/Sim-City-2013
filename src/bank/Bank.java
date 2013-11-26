@@ -1,5 +1,6 @@
 package bank;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import bankgui.BankCustomerGui;
@@ -22,11 +23,14 @@ public class Bank extends Building {
 		this.bankGui = new BankGui();
 		mainGui.bankGui = this.bankGui;
 		mainGui.bankGui.bank = this;
+		existingCustRoles = new HashMap<PersonAgent, CustomerRole>();
+		existingManagerRoles = new HashMap<PersonAgent, BankManagerRole>();
+		existingTellerRoles = new HashMap<PersonAgent, TellerRole>();
 	}
 	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
-		p.print("going into bank");
-		if(roleRequest.equals("bankManager")){
+		p.print(roleRequest);
+		if(roleRequest.equals("Manager")){
 			if(p.equals(manager)){
 				if(existingManagerRoles.get(p) != null){
 				setOpen(p);
@@ -39,7 +43,7 @@ public class Bank extends Building {
 				}
 			}
 		}
-		if(roleRequest.equals("bankCustomer")){
+		if(roleRequest.equals("Customer")){
 			if(isOpen()){
 				if(existingCustRoles.get(p) != null){
 					CustomerRole role = existingCustRoles.get(p);
@@ -49,6 +53,7 @@ public class Bank extends Building {
 					bankGui.animationPanel.addGui(custGui);
 				}
 				else{
+					p.print("assigned cust gui");
 					CustomerRole newRole = new CustomerRole(p);
 					existingCustRoles.put(p, newRole);
 					BankCustomerGui custGui = new BankCustomerGui(newRole);
@@ -57,7 +62,7 @@ public class Bank extends Building {
 				}
 			}
 		}
-		if(roleRequest.equals("bankTeller")){
+		if(roleRequest.equals("Teller")){
 			if(isOpen()){
 				if(existingTellerRoles.get(p) != null){
 					TellerRole role = existingTellerRoles.get(p);
@@ -68,6 +73,7 @@ public class Bank extends Building {
 					bankGui.animationPanel.addGui(tellerGui);
 				}
 				else{
+					p.print("assigned teller gui");
 					CustomerRole newRole = new CustomerRole(p);
 					existingCustRoles.put(p, newRole);
 					BankCustomerGui custGui = new BankCustomerGui(newRole);
