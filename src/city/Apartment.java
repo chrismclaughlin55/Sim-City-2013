@@ -7,8 +7,7 @@ import mainGUI.MainGui;
 
 public class Apartment extends Building {
 
-	List<PersonAgent> tenants;
-	List<Room> rooms = new ArrayList<Room>();
+	public List<Room> rooms = new ArrayList<Room>();
 	public ApartmentGui apartmentGui;
 	
 	public Apartment(int xPos, int yPos, int width, int height, MainGui mainGui) {
@@ -37,21 +36,6 @@ public class Apartment extends Building {
 	
 	public Room getRoom(int rn) {
 		return rooms.get(rn);
-	}
-	
-	public boolean isFull() {
-		return tenants.size() >= 8;
-	}
-
-	//returns true or false based on success or failure
-	public boolean addTenant(PersonAgent p) {
-		if (isFull()) {
-			return false;
-		}
-		else {
-			tenants.add(p);
-			return true;
-		}
 	}
 	
 	
