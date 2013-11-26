@@ -1,5 +1,6 @@
 package bank;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import bankgui.BankCustomerGui;
@@ -22,24 +23,30 @@ public class Bank extends Building {
 		this.bankGui = new BankGui();
 		mainGui.bankGui = this.bankGui;
 		mainGui.bankGui.bank = this;
+		existingCustRoles = new HashMap<PersonAgent, CustomerRole>();
+		existingManagerRoles = new HashMap<PersonAgent, BankManagerRole>();
+		existingTellerRoles = new HashMap<PersonAgent, TellerRole>();
 	}
 	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
-		p.print("going into bank");
-		if(roleRequest.equals("bankManager")){
+		p.print(roleRequest);
+		if(roleRequest.equals("Manager")){
 			if(p.equals(manager)){
 				if(existingManagerRoles.get(p) != null){
 				setOpen(p);
 				p.msgAssignRole(existingManagerRoles.get(p));
+				currentManager = existingManagerRoles.get(p);
 				}
 				else {
 				existingManagerRoles.put(p, new BankManagerRole(p));
 				setOpen(p);
 				p.msgAssignRole(existingManagerRoles.get(p));
+				currentManager = existingManagerRoles.get(p);
+				cityData.buildings.get(18).manager = currentManager.getPerson();
 				}
 			}
 		}
-		if(roleRequest.equals("bankCustomer")){
+		if(roleRequest.equals("Customer")){
 			if(isOpen()){
 				if(existingCustRoles.get(p) != null){
 					CustomerRole role = existingCustRoles.get(p);
@@ -49,15 +56,17 @@ public class Bank extends Building {
 					bankGui.animationPanel.addGui(custGui);
 				}
 				else{
+					p.print("assigned cust gui");
 					CustomerRole newRole = new CustomerRole(p);
 					existingCustRoles.put(p, newRole);
 					BankCustomerGui custGui = new BankCustomerGui(newRole);
 					p.msgAssignRole(newRole);
 					bankGui.animationPanel.addGui(custGui);
+					currentManager.msgINeedService(newRole);
 				}
 			}
 		}
-		if(roleRequest.equals("bankTeller")){
+		if(roleRequest.equals("Teller")){
 			if(isOpen()){
 				if(existingTellerRoles.get(p) != null){
 					TellerRole role = existingTellerRoles.get(p);
@@ -68,11 +77,13 @@ public class Bank extends Building {
 					bankGui.animationPanel.addGui(tellerGui);
 				}
 				else{
-					CustomerRole newRole = new CustomerRole(p);
-					existingCustRoles.put(p, newRole);
-					BankCustomerGui custGui = new BankCustomerGui(newRole);
+					p.print("assigned teller gui");
+					TellerRole newRole = new TellerRole(p);
+					existingTellerRoles.put(p, newRole);
+					TellerGui tellerGui = new TellerGui(newRole);
 					p.msgAssignRole(newRole);
-					bankGui.animationPanel.addGui(custGui);
+					bankGui.animationPanel.addGui(tellerGui);
+					currentManager.msgAddTeller(newRole);
 				}
 			}
 		}

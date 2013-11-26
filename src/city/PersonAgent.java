@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import restaurantMQ.gui.MQRestaurantBuilding;
 import bank.utilities.CustInfo;
 import mainGUI.MainGui;
 import market.MyOrder;
@@ -46,7 +47,7 @@ public class PersonAgent extends Agent
 	BusStopAgent currentBusStop;
 	BusStopAgent destinationBusStop;
 	String desiredRole;
-	String job;
+	private String job;
 	Timer timer = new Timer();
 
 	
@@ -122,6 +123,10 @@ public class PersonAgent extends Agent
 	public void assignHome(Building home)
 	{
 		this.home = home;
+	}
+	
+	public void assignJobBuilding(Building jobBuilding) {
+		this.jobBuilding = jobBuilding;
 	}
 	
 	/*MESSAGES*/
@@ -367,13 +372,40 @@ public class PersonAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		personGui.DoGoIntoBuilding();
 		currentBuilding = cityData.buildings.get(restNumber);
-		currentBuilding.EnterBuilding(this, desiredRole);
+		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)currentBuilding;
+		
+		if(goToWork)
+		{
+			if(desiredRole.equals("Host") && !restaurant.hasHost()) {
+				personGui.DoGoIntoBuilding();
+				currentBuilding.EnterBuilding(this, desiredRole);
+				return;
+			}
+			else if(restaurant.openToEmployee())
+			{
+				if(desiredRole.equals("Waiter") || desiredRole.equals("Cook")) {
+					personGui.DoGoIntoBuilding();
+					currentBuilding.EnterBuilding(this, desiredRole);
+					return;
+				}
+				else if(desiredRole.equals("Cashier") && !restaurant.hasCashier()) {
+					personGui.DoGoIntoBuilding();
+					currentBuilding.EnterBuilding(this, desiredRole);
+					return;
+				}
+			}
+		}
+		else if(desiredRole.equals("Customer") && restaurant.isOpen()) {
+			personGui.DoGoIntoBuilding();
+			currentBuilding.EnterBuilding(this, desiredRole);
+			return;
+		}
 	}
 	
 	protected void goHome() {
 		//int homeNumber = (int)((int)(Math.random()*11));
+		currentBuilding = cityData.buildings.get(this.home.buildingNumber);
 		personGui.DoGoToBuilding(this.home.buildingNumber); // 11 need to be replaced by the person's data of home number
 		atBuilding.drainPermits();
 		try {
@@ -383,7 +415,6 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
-		currentBuilding = cityData.buildings.get(this.home.buildingNumber);
 		if (home instanceof Home) {
 			currentBuilding.EnterBuilding(this, "");
 		}
@@ -451,7 +482,7 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
-		currentBuilding.EnterBuilding(this, "customer");
+		currentBuilding.EnterBuilding(this,desiredRole );
 	
 	}
 	
@@ -501,6 +532,10 @@ public class PersonAgent extends Agent
 	
 	public PersonGui getGui() {
 		return personGui;
+	}
+
+	public String getJob() {
+		return job;
 	}
 }
 

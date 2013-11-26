@@ -26,6 +26,10 @@ public class BankManagerRole extends Role implements BankManager {
 		tellerState state;
 		CustomerRole c;
 		CustInfo custInfo;
+		myTeller(TellerRole t){
+			this.t = t;
+			state = tellerState.available;
+		}
 		
 	}
 	public BankManagerRole(PersonAgent person) {
@@ -35,10 +39,14 @@ public class BankManagerRole extends Role implements BankManager {
 		CustAccounts = Collections.synchronizedMap(new HashMap<PersonAgent, CustInfo>());
 		BusinessAccounts = Collections.synchronizedMap(new HashMap<String, CustInfo>());
 	}
-	
 	//MESSAGES
+	public void msgAddTeller(TellerRole newRole) {
+		tellers.add(new myTeller(newRole));
+		
+	}
 	@Override
 	public void msgINeedService(CustomerRole c) {
+		print(c.getName()+" Needs service");
 		line.add((CustomerRole) c);
 		stateChanged();
 	}
@@ -46,9 +54,11 @@ public class BankManagerRole extends Role implements BankManager {
 	@Override
 	public void msgGiveMeInfo(CustomerRole c, TellerRole t) {
 		for( myTeller mt: tellers){
-			if(mt.t.equals(t))
+			if(mt.t.equals(t)){
 		mt.state = tellerState.needsInfo;
+			print("sent info for "+c.getName());
 			mt.c = c;
+			}
 		}
 		
 	}
@@ -56,9 +66,10 @@ public class BankManagerRole extends Role implements BankManager {
 	@Override
 	public void msgUpdateInfo(CustInfo info, TellerRole t) {
 		for(myTeller mt: tellers){
-			if(mt.t.equals(t))
+			if(mt.t.equals(t)){
 				mt.state = tellerState.updateInfo;
-			
+				print("updating info for "+t.currentCustInfo.custName);
+			}
 		}
 		
 	}
@@ -103,9 +114,12 @@ public class BankManagerRole extends Role implements BankManager {
 	}
 	
 	private void updatedb(myTeller t) {
-		// TODO Auto-generated method stub
+		print("made it to update database");
+		t.state = tellerState.available;
 		
 	}
+
+	
 
 	
 
