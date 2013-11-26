@@ -417,6 +417,7 @@ public class PersonAgent extends Agent
 	
 	protected void goToBank() {
 		personGui.DoGoToBuilding(18);
+		currentBuilding = cityData.buildings.get(18);
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -425,6 +426,8 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+		currentBuilding.EnterBuilding(this, "customer");
+		print("going into bank");
 	}
 	
 	protected void goToMarket() {
