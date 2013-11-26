@@ -72,10 +72,10 @@ public class PersonAgent extends Agent
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
-		MyOrder o1 = new MyOrder("steak", 1);
-		MyOrder o2 = new MyOrder("salad", 1);
-		MyOrder o3 = new MyOrder("pizza", 1);
-		MyOrder o4 = new MyOrder("chicken", 1);
+		MyOrder o1 = new MyOrder("Steak", 1);
+		MyOrder o2 = new MyOrder("Salad", 1);
+		MyOrder o3 = new MyOrder("Pizza", 1);
+		MyOrder o4 = new MyOrder("Chicken", 1);
 		thingsToOrder.add(o1);
 		thingsToOrder.add(o2);
 		thingsToOrder.add(o3);
