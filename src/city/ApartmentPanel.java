@@ -99,10 +99,27 @@ public class ApartmentPanel extends JPanel implements ActionListener, MouseListe
 		}
 	}
 
-	public void addGui(PersonGui gui, int roomNumber) {
+	public void addGui(PersonGui gui) {
 		guis.add(gui);
 		gui.setXPos(0);
 		gui.setYPos(176);
+		gui.setPresent(true);
+	}
+	
+	public void addGui(PersonGui gui, int roomNumber) {
+		int xPos;
+		int yPos;
+		if (roomNumber < 4) {
+			xPos = 45 + 100*roomNumber;
+			yPos = 140;
+		}
+		else {
+			xPos = 40 + 100*(roomNumber - 4);
+			yPos = 217;
+		}
+		gui.setXPos(xPos);
+		gui.setYPos(yPos);
+		guis.add(gui);
 		gui.setPresent(true);
 	}
 	

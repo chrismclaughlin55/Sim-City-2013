@@ -21,6 +21,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import city.CityData;
 import city.gui.PersonGui;
 
 /**
@@ -54,6 +55,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	JRadioButton restMQhost;
 	JRadioButton restMQcook;
 	JRadioButton restMQcashier;
+	JRadioButton restMQcustomer;
 	//market jobs
 	JRadioButton marketManager;
 	JRadioButton marketEmployee;
@@ -79,6 +81,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		restMQhost = new JRadioButton("Restaurant Host", false);
 		restMQcook = new JRadioButton("Restaurant Cook", false);
 		restMQcashier = new JRadioButton("Restaurant Cashier", false);
+		restMQcustomer = new JRadioButton("Restaurant Customer", false);
 		marketManager = new JRadioButton("Market Manager", false);
 		marketEmployee = new JRadioButton("Market Employee", false);
 		bankManager = new JRadioButton("Bank Manager", false);
@@ -89,6 +92,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		jobs.add(restMQhost);
 		jobs.add(restMQcook);
 		jobs.add(restMQcashier);
+		jobs.add(restMQcustomer);
 		jobs.add(marketManager);
 		jobs.add(marketEmployee);
 		jobs.add(bankManager);
@@ -96,6 +100,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		
 		jobsPane.setLayout(null);
 		unemployed.setBounds(0, 0, 150, 30);
+		restMQcustomer.setBounds(150, 0, 150, 30);
 		restMQhost.setBounds(0, 30, 140, 30);
 		restMQwaiter.setBounds(145, 30, 145, 30);
 		restMQcook.setBounds(300, 30, 140, 30);
@@ -105,6 +110,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		bankManager.setBounds(0, 90, 140, 30);
 		bankTeller.setBounds(145, 90, 140, 30);
 		jobsPane.add(unemployed);
+		jobsPane.add(restMQcustomer);
 		jobsPane.add(restMQwaiter);
 		jobsPane.add(restMQhost);
 		jobsPane.add(restMQcook);
@@ -165,8 +171,40 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 			button.addActionListener(this);
 			list.add(button);
 			view.add(button);
-
-			mainGui.addPerson(name, getSelectedButtonText(jobs));
+			
+			String role = "";
+			String destination;
+			
+			if(getSelectedButtonText(jobs).contains("Restaurant"))
+			{
+				destination = "Restaurant";
+				if(getSelectedButtonText(jobs).contains("Customer"))
+				{
+					role = "Customer";
+				}
+				else if(getSelectedButtonText(jobs).contains("Waiter"))
+				{
+					role = "Waiter";
+				}
+				else if(getSelectedButtonText(jobs).contains("Cook"))
+				{
+					role = "Cook";
+				}
+				else if(getSelectedButtonText(jobs).contains("Host"))
+				{
+					role = "Host";
+				}
+				else if(getSelectedButtonText(jobs).contains("Cashier"))
+				{
+					role = "Cashier";
+				}
+			}
+			else
+			{
+				destination = "Home";
+			}
+			
+			mainGui.addPerson(name, role, destination);
 			System.out.println(getSelectedButtonText(jobs));
 			unemployed.setSelected(true);
 			validate();

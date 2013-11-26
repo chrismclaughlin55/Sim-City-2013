@@ -26,9 +26,22 @@ public class MQRestaurantBuilding extends Building
 		{
 			restPanel.addWaiter(person);
 		}
+		else if(roleRequest.equals("Cook"))
+		{
+			restPanel.addCook(person);
+		}
+		else if(roleRequest.equals("Cashier"))
+		{
+			restPanel.addCashier(person);
+		}
 		else if(roleRequest.equals("Host"))
 		{
-			
+			restPanel.addHost(person);
 		}
+	}
+	
+	public RestaurantGui getRestaurantGui()
+	{
+		return restGui;
 	}
 }

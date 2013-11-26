@@ -98,6 +98,11 @@ public class HomePanel extends JPanel implements ActionListener {
 		gui.setYDes(gui.yBuilding[currentIn]);
 		gui.setPresent(false);
 	}
+	
+	public void removeGui(PersonGui gui) {
+		guis.remove(gui);
+		gui.setPresent(false);
+	}
 }
 
 

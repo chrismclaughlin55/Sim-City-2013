@@ -15,19 +15,23 @@ import java.util.Scanner;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import restaurantMQ.gui.RestaurantGui;
 import market.gui.MarketGui;
+import city.Apartment;
 import city.Building;
 import city.Building.BuildingType;
 import city.BusAgent;
 import city.HomeGui;
 import city.PersonAgent;
 import city.PersonAgent.BigState;
+import city.Room;
 import city.gui.BusGui;
 import city.gui.PersonGui;
 import config.ConfigParser;
+import Gui.Gui;
 import bankgui.*;
 
 /**
@@ -50,7 +54,7 @@ public class MainGui extends JFrame implements MouseListener {
     public MainAnimationPanel mainAnimationPanel;
    
     public MarketGui marketGui;
-    public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
+    //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
     //public BusStopGui busStopGui will have a list of these and add them all
     
@@ -98,13 +102,13 @@ public class MainGui extends JFrame implements MouseListener {
         marketGui.setResizable(false);
         marketGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
-        for (int i = 0; i < 6; i++) {
+        /*for (int i = 0; i < 6; i++) {
         	restaurantGuis[i] = new RestaurantGui();
         	restaurantGuis[i].setTitle("RestaurantMQ");
         	restaurantGuis[i].setVisible(false);
         	restaurantGuis[i].setResizable(false);
         	restaurantGuis[i].setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        }
+        }*/
         
         bankGui.setTitle("Bank");
         bankGui.setVisible(false);
@@ -180,16 +184,54 @@ public class MainGui extends JFrame implements MouseListener {
         gui.setResizable(true);
     }
     
-    public void addPerson(String name, String role) {
+    public void addPerson(String name, String role, String destination) {
+    	if(mainAnimationPanel.cd.getPopulation() >= 40) {
+    		JFrame frame = new JFrame();
+    		JOptionPane.showMessageDialog(frame, "Population limit reached!");
+    		return;
+    	}
 		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
 		mainAnimationPanel.cd.addPerson(p);
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
-		p.bigState = BigState.goToBank;
+		
+		p.setDesiredRole(role);
+		if(destination.equals("Restaurant"))
+		{
+			p.bigState = BigState.goToRestaurant;
+		}
+		else
+		{
+			p.bigState = BigState.goHome;
+			p.assignHome(pickHome(p));
+		}
 		p.startThread();
 		
 	}
+    
+    public Building pickHome(PersonAgent p) {
+    	for (Building b : mainAnimationPanel.cd.homes) {
+    		if(!b.hasManager()) {
+    			b.setManager(p);
+    			return b;
+    		}
+    		//if(b.type==BuildingType.apartment) {
+    			//for (b.)
+    		//}
+    	}
+    	for (Building b: mainAnimationPanel.cd.apartments) {
+    		Apartment a = (Apartment) b;
+    		for (int i = 0; i < 8; i++) {
+    			if (!a.rooms.get(i).isOccupied) {
+    				a.rooms.get(i).setTenant(p);
+    				p.setRoomNumber(i);
+    				return b;
+    			}
+    		}
+    	}
+    	return null;
+    }
     
     public void addConfigPerson(HashMap<String,String> properties) {
 		/* THIS WILL ADD IN ALL PROPERTIES IN THIS HASHMAP TO PERSON ATTRIBUTES
@@ -204,6 +246,11 @@ public class MainGui extends JFrame implements MouseListener {
 		*/
 		
 	}
+    
+    public void removeGui(Gui gui)
+    {
+    	mainAnimationPanel.cd.removeGui(gui);
+    }
     
     @Override
     public void mouseClicked(MouseEvent e) {

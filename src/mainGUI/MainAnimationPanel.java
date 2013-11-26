@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import restaurantMQ.gui.MQRestaurantBuilding;
 import bank.Bank;
 import market.Market;
 import Gui.Gui;
@@ -38,6 +39,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	private int HEIGHT = 100;
 
 	private MainGui mainGui;
+	
 
 	public MainAnimationPanel(MainGui mainGui) {
 		//Add buildings
@@ -46,6 +48,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 0; i < 2; i++) {
 			Building b = new Apartment(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
+			cd.apartments.add((Apartment) b);
 			BusStopAgent bs = new BusStopAgent(10+95+25, 140+i*130+35+5,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
@@ -54,6 +57,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 0; i < 2; i++) {
 			Building b = new Apartment(10, 410+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
+			cd.apartments.add((Apartment)b);
 			BusStopAgent bs = new BusStopAgent(10+95+25, 410+i*130+35+5,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
@@ -62,6 +66,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 0; i < 2; i++) {
 			Building b = new Home(190+i*130, 680, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
+			cd.homes.add((Home)b);
 			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 680-45,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
@@ -70,6 +75,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(500, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
+			cd.homes.add((Home)b);
 			BusStopAgent bs = new BusStopAgent(500-10-50, 410+i*130+35+5,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
@@ -78,6 +84,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(500, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
+			cd.homes.add((Home)b);
 			BusStopAgent bs = new BusStopAgent(500-10-50, 140+i*130+35+5,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
@@ -86,23 +93,26 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(190+i*130, 0, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
+			cd.homes.add((Home)b);
 			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 0+35+5+55,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
 			bs.startThread();
 		}
 		
-
+		
+		//create restaurants
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
-				Building b = new Building(190+i*130, 140+j*130, WIDTH, HEIGHT, mainGui);
+				Building b = new MQRestaurantBuilding(190+i*130, 140+j*130, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui);
 				cd.buildings.add(b);
 			}
 		}
 		for (int i = 0; i < 2; i++) {
-			Building b = new Building(190+i*130, 540, WIDTH, HEIGHT, mainGui);
+			Building b = new MQRestaurantBuilding(190+i*130, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui);
 			cd.buildings.add(b);
 		}
+		//done creating restaurants
 		
 		
 		Bank b = new Bank(190, 410, WIDTH, HEIGHT,"bank", BuildingType.bank, mainGui, cd);

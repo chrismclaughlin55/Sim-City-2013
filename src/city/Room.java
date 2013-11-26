@@ -10,6 +10,8 @@ public class Room {
 	public HomeGui homeGui;
 	public Apartment apartment;
 	public int roomNumber;
+	public PersonAgent tenant;
+	public boolean isOccupied = false;
 
 	public Room(Apartment a, int rn) {
 		apartment = a;
@@ -26,8 +28,13 @@ public class Room {
 		return homeGui;
 	}
 	
+	public void setTenant(PersonAgent p) {
+		isOccupied = true;
+		tenant = p;
+	}
+	
 	public void LeaveBuilding(PersonAgent p) {
-		homeGui.getHomePanel().removeGui(p.getGui(), p.currentBuilding.buildingNumber);
+		homeGui.getHomePanel().removeGui(p.getGui());
 		apartment.apartmentGui.getAptPanel().addGui(p.getGui(), roomNumber);
 	}
 }

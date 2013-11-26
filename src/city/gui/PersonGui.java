@@ -103,6 +103,12 @@ public class PersonGui implements Gui{
 		yDestination = 340;
 	}
 	
+	public void DoGoToHallway() {
+		moving = true;
+		xDestination = 0;
+		yDestination = 176;
+	}
+	
 	public void DoGoToRefridgerator() {
 		moving = true;
 		xDestination = 30;
@@ -160,7 +166,7 @@ public class PersonGui implements Gui{
 	}
 
 	public void DoGoIntoBuilding() {
-		isPresent = false;
+		gui.removeGui(this);
 	}
 	
 	public void DoLeaveBuilding() {

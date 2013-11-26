@@ -48,11 +48,11 @@ public class RestaurantPanel extends JPanel {
 	private List<Host> hosts = new ArrayList<Host>();
     private Host host;
 
-    private List<Customer> customers = new ArrayList<Customer>();
-    private List<Waiter> waiters = new ArrayList<Waiter>();
-    private List<Cook> cooks = new ArrayList<Cook>();
-    private List<MarketAgent> markets = new ArrayList<MarketAgent>();
-    private List<Cashier> cashiers = new ArrayList<Cashier>();
+    private List<Customer> customers = Collections.synchronizedList(new ArrayList<Customer>());
+    private List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
+    private List<Cook> cooks = Collections.synchronizedList(new ArrayList<Cook>());
+    private List<MarketAgent> markets = Collections.synchronizedList(new ArrayList<MarketAgent>());
+    private List<Cashier> cashiers = Collections.synchronizedList(new ArrayList<Cashier>());
     private Cashier cashier;
     //private Vector<HungerListener> hungerListeners = new Vector<HungerListener>();
     
@@ -156,8 +156,7 @@ public class RestaurantPanel extends JPanel {
         JLabel label = new JLabel();
         //restLabel.setLayout(new BoxLayout((Container)restLabel, BoxLayout.Y_AXIS));
         restLabel.setLayout(new BorderLayout());
-        label.setText(
-                "<html><h3><u> Menu</u></h3><table><tr><td>Steak</td><td>$15.99</td></tr><tr><td>Chicken</td><td>$10.99</td></tr><tr><td>Salad</td><td>$5.99</td></tr><tr><td>Pizza</td><td>$8.99</td></tr></table><br></html>");
+        label.setText("RestaurantMQ");
 
         restLabel.setBorder(BorderFactory.createRaisedBevelBorder());
         restLabel.add(label, BorderLayout.CENTER);
@@ -336,6 +335,7 @@ public class RestaurantPanel extends JPanel {
     	
     	JCheckBox hungry = new JCheckBox("Hungry?");
     	MQCustomerRole c = new MQCustomerRole(person, timer, hungry, this);	
+    	
     	CustomerGui g = new CustomerGui(c, gui);
     	
     	hungry.addActionListener(gui);
@@ -354,20 +354,24 @@ public class RestaurantPanel extends JPanel {
     public void addWaiter(PersonAgent person)
     {
     	MQWaiterRole waiter;
-    	for(Waiter w : waiters)
+    	synchronized(waiters)
     	{
-    		waiter = (MQWaiterRole)w;
-    		if(waiter.getPerson() == person)
-    		{
-    			person.msgAssignRole(waiter);
-    			return;
-    		}
+	    	for(Waiter w : waiters)
+	    	{
+	    		waiter = (MQWaiterRole)w;
+	    		if(waiter.getPerson() == person)
+	    		{
+	    			person.msgAssignRole(waiter);
+	    			return;
+	    		}
+	    	}
     	}
     	
     	final JCheckBox breakBox = new JCheckBox("");
     	MQWaiterRole w = new MQWaiterRole(person, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
     	waiters.add(w);
-    	((MQHostRole)host).addWaiter(w);
+    	if(host != null)
+    		((MQHostRole)host).addWaiter(w);
     	for(Cook c : cooks)
     	{
     		c.addWaiter(w);
@@ -408,9 +412,13 @@ public class RestaurantPanel extends JPanel {
         ((MQHostRole)host).setWaiters(waiters);
         
         //update other agents
-        for(Waiter w : waiters)
+        synchronized(waiters)
         {
-        	((MQWaiterRole)w).setHost(host);
+	        for(Waiter w : waiters)
+	        {
+	        	((MQHostRole)host).addWaiter(w);
+	        	((MQWaiterRole)w).setHost(host);
+	        }
         }
         for(Cook c : cooks)
         {
@@ -431,6 +439,13 @@ public class RestaurantPanel extends JPanel {
     {
     	cashier = new MQCashierRole(person);
     	person.msgAssignRole((MQCashierRole)cashier);
+    	synchronized(waiters)
+    	{
+	    	for(Waiter w : waiters)
+	    	{
+	    		((MQWaiterRole)w).setCashier(cashier);
+	    	}
+    	}
     }
     
     //Hacks to demonstrate program
