@@ -30,11 +30,11 @@ public class Bank extends Building {
 	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
 		if(roleRequest.equals("BankManager")){
-			if(manager != null){
+			if(manager.equals(null)){
 				manager = p;
 			}
 			if(p.equals(manager)){
-				if(existingManagerRoles.get(p) != null){
+				if(!existingManagerRoles.get(p).equals(null)){
 				setOpen(p);
 				p.msgAssignRole(existingManagerRoles.get(p));
 				currentManager = existingManagerRoles.get(p);
