@@ -214,7 +214,6 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 			}
 			
 			mainGui.addPerson(name, role, destination);
-			System.out.println(getSelectedButtonText(jobs));
 			unemployed.setSelected(true);
 			validate();
 		}
