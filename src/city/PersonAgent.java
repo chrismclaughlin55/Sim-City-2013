@@ -41,6 +41,7 @@ public class PersonAgent extends Agent
 	Building destinationBuilding;
 	Building jobBuilding;
 	Building home;
+	int roomNumber = -1;
 	int timeUnit = 5;
 	BusStopAgent currentBusStop;
 	BusStopAgent destinationBusStop;
@@ -442,6 +443,14 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+	}
+	
+	public void setRoomNumber(int number) {
+		roomNumber = number;
+	}
+	
+	public int getRoomNumber() {
+		return roomNumber;
 	}
 	
 	protected void ReactToFire() {
