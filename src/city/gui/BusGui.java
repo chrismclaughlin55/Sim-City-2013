@@ -98,7 +98,7 @@ public class BusGui implements Gui {
 			if(cd.busStops.get(i).getX()==x&&cd.busStops.get(i).getY()==y) {
 				stop = i;
 			}
-			System.out.println(stop);	
+			
 		}
 		if(stop==0||stop==6) {
 			xFirst = true;
