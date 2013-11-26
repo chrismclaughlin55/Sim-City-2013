@@ -72,7 +72,7 @@ public class ApartmentPanel extends JPanel implements ActionListener, MouseListe
 		g2.setColor(Color.CYAN);
 		g2.fillRect(0, 173, 20, 30);
 		g2.setColor(Color.GRAY);
-		g2.fillRect(0, 0, 139, 99);
+		g2.fillRect(0, 0, 100, 140);
 		g2.setColor(Color.BLACK);
 		g2.drawLine(0, 140, 400, 140);
 		g2.drawLine(0, 238, 400, 238);
