@@ -21,7 +21,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	private BankCustomerGui gui;
 	public CustomerRole(PersonAgent person) {
 		super(person);
-		//this.myInfo = person.bankInfo;
+
 		this.cash = person.cash;
 		this.name = person.getName();
 		this.me = person;

@@ -30,7 +30,11 @@ public class Bank extends Building {
 	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
 		p.print(roleRequest);
-		if(roleRequest.equals("Manager")){
+		if(roleRequest.equals("BankManager")){
+			p.print(roleRequest);
+			if(manager != null){
+				manager = p;
+			}
 			if(p.equals(manager)){
 				if(existingManagerRoles.get(p) != null){
 				setOpen(p);
@@ -40,9 +44,11 @@ public class Bank extends Building {
 				else {
 				existingManagerRoles.put(p, new BankManagerRole(p));
 				setOpen(p);
+				p.print("bank is open? "+ isOpen);
 				p.msgAssignRole(existingManagerRoles.get(p));
 				currentManager = existingManagerRoles.get(p);
 				cityData.buildings.get(18).manager = currentManager.getPerson();
+				p.print("current manager is " + currentManager.getName());
 				}
 			}
 		}
@@ -54,6 +60,8 @@ public class Bank extends Building {
 					role.msgAddGui(custGui);
 					p.msgAssignRole(role);
 					bankGui.animationPanel.addGui(custGui);
+					p.print("current manager is " + currentManager.getName());
+					currentManager.msgINeedService(role);
 				}
 				else{
 					p.print("assigned cust gui");
@@ -62,13 +70,15 @@ public class Bank extends Building {
 					BankCustomerGui custGui = new BankCustomerGui(newRole);
 					p.msgAssignRole(newRole);
 					bankGui.animationPanel.addGui(custGui);
+					p.print("current manager is " + currentManager.getName());
 					currentManager.msgINeedService(newRole);
 				}
 			}
 		}
-		if(roleRequest.equals("Teller")){
+		if(roleRequest.equals("BankTeller")){
 			if(isOpen()){
 				if(existingTellerRoles.get(p) != null){
+					p.print("teller role existed for me");
 					TellerRole role = existingTellerRoles.get(p);
 					TellerGui tellerGui = new TellerGui(existingTellerRoles.get(p));
 					role.msgAddGui(tellerGui);
@@ -83,6 +93,7 @@ public class Bank extends Building {
 					TellerGui tellerGui = new TellerGui(newRole);
 					p.msgAssignRole(newRole);
 					bankGui.animationPanel.addGui(tellerGui);
+					p.print("current manager is " + currentManager.getName());
 					currentManager.msgAddTeller(newRole);
 				}
 			}

@@ -126,6 +126,8 @@ public class PersonAgent extends Agent
 	
 	public void setDesiredRole(String role)
 	{
+		if(this.name == "myName6")
+			print("! "+role);
 		desiredRole = role;
 	}
 	
@@ -601,6 +603,7 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+		print("entering the building and desired role is "+desiredRole);
 		currentBuilding.EnterBuilding(this,desiredRole );
 	
 	}

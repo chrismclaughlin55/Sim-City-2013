@@ -202,12 +202,12 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 				}
 			} else if(getSelectedButtonText(jobs).contains("Bank")){
 				destination = "Bank";
-				if(getSelectedButtonText(jobs).contains("Manager")){
-					role = "Manager";
+				if(getSelectedButtonText(jobs).contains("BankManager")){
+					role = "BankManager";
 				//	mainGui.mainAnimationPanel.cd.buildings.get(18).manager
 				}
-				else if(getSelectedButtonText(jobs).contains("Teller")){
-					role = "Teller";
+				else if(getSelectedButtonText(jobs).contains("BankTeller")){
+					role = "BankTeller";
 				}
 				else if(getSelectedButtonText(jobs).contains("Customer")){
 					role = "Customer";
@@ -219,7 +219,6 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 			}
 			
 			mainGui.addPerson(name, role, destination);
-			System.out.println(getSelectedButtonText(jobs));
 			unemployed.setSelected(true);
 			validate();
 		}
