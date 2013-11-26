@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import bank.utilities.CustInfo;
 import mainGUI.MainGui;
 import market.MyOrder;
 import market.Inventory;
@@ -28,7 +29,7 @@ public class PersonAgent extends Agent
 	String name;
 	public int tiredLevel = 0;
 	public double cash = 100;
-	public double bankMoney = 200;
+	public CustInfo bankInfo = new CustInfo(this.name, this, null);
 	public double rentDue = 0;
 	public int criminalImpulse = 0;
 	public int hungerLevel = 0;
@@ -78,6 +79,7 @@ public class PersonAgent extends Agent
 		thingsToOrder.add(o3);
 		thingsToOrder.add(o4);
 		personGui = new PersonGui(this, gui);
+		
 	}
 	
 	public PersonAgent(String name, MainGui gui, CityData cd) {
@@ -100,7 +102,7 @@ public class PersonAgent extends Agent
 	}
 	
 	public void setBankMoney(double moneyInDaBank) {
-		this.bankMoney = moneyInDaBank;
+		this.bankInfo.moneyInAccount = moneyInDaBank;
 	}
 	
 	public void setHunger(int hangry) {

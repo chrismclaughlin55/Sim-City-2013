@@ -78,8 +78,10 @@ public class BankManagerRole extends Role implements BankManager {
 			}
 		}
 		for(myTeller t: tellers){
+			if(t.state == tellerState.updateInfo){
 			updatedb(t);
 			return true;
+			}
 		}
 		
 		
@@ -95,9 +97,9 @@ public class BankManagerRole extends Role implements BankManager {
 	private void sendInfo(myTeller t) {
 		if(CustAccounts.get(t.c.getPerson()) != null)
 			t.custInfo = CustAccounts.get(t.c.getPerson());
-		else 
-			t.custInfo = new CustInfo(t.c.getName(), t.c.getPerson(), t.c);
-		t.state = tellerState.notAvailable;
+		else t.custInfo = null;
+		
+		t.t.msgHereIsInfo(t.custInfo);
 	}
 	
 	private void updatedb(myTeller t) {
