@@ -41,11 +41,13 @@ public class PersonAgent extends Agent
 	Building destinationBuilding;
 	Building jobBuilding;
 	Building home;
+	int roomNumber = -1;
 	int timeUnit = 5;
 	BusStopAgent currentBusStop;
 	BusStopAgent destinationBusStop;
 	String desiredRole;
 	String job;
+	Timer timer = new Timer();
 
 	
 	boolean goToWork = false;
@@ -312,7 +314,6 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		
-		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			public void run() {
 				homeState = HomeState.onCouch;
@@ -346,7 +347,6 @@ public class PersonAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			public void run() {
 				homeState = HomeState.none;
@@ -370,6 +370,8 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+		currentBuilding = cityData.buildings.get(restNumber);
+		currentBuilding.EnterBuilding(this, desiredRole);
 	}
 	
 	protected void goHome() {
@@ -384,35 +386,57 @@ public class PersonAgent extends Agent
 		}
 		personGui.DoGoIntoBuilding();
 		currentBuilding = cityData.buildings.get(this.home.buildingNumber);
-		currentBuilding.EnterBuilding(this, "");
-		bigState = BigState.atHome;
-		
-		/*homeState = HomeState.sleeping;
-		if (homeState == HomeState.sleeping) {
-			personGui.DoGoToBed();
-			atBed.drainPermits();
+		if (home instanceof Home) {
+			currentBuilding.EnterBuilding(this, "");
+		}
+		if (home instanceof Apartment) {
+			Apartment a = (Apartment) home;
+			a.EnterBuilding(this, "");
+			personGui.DoGoToRoom(roomNumber);
 			try {
-				atBed.acquire();
+				isMoving.acquire();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			a.rooms.get(roomNumber).EnterBuilding(this, "");
 		}
-		bigState = BigState.leaveHome;*/
+		bigState = BigState.atHome;
 		hungerLevel = 10000000;
 	}
 	
 	protected void leaveHome() {
-		personGui.DoGoToEntrance();
-		atEntrance.drainPermits();
-		try {
-			atEntrance.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (home instanceof Home) {
+			personGui.DoGoToEntrance();
+			atEntrance.drainPermits();
+			try {
+				atEntrance.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			personGui.DoLeaveBuilding();
 		}
-		personGui.DoLeaveBuilding();
-		currentBuilding = cityData.buildings.get(11);// 11 need to be replaced by the person's data of home number
+		if (home instanceof Apartment) {
+			Apartment a = (Apartment) home;
+			personGui.DoGoToEntrance();
+			try {
+				isMoving.acquire();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			a.rooms.get(roomNumber).LeaveBuilding(this);
+			personGui.DoGoToHallway();
+			try {
+				isMoving.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			personGui.DoLeaveBuilding();
+		}
+		currentBuilding = cityData.buildings.get(home.buildingNumber);// 11 need to be replaced by the person's data of home number
 		currentBuilding.LeaveBuilding(this);
 		bigState = BigState.doingNothing;
 	}
@@ -444,11 +468,24 @@ public class PersonAgent extends Agent
 		personGui.DoGoIntoBuilding();
 	}
 	
+	public void setRoomNumber(int number) {
+		roomNumber = number;
+	}
+	
+	public int getRoomNumber() {
+		return roomNumber;
+	}
+	
 	protected void ReactToFire() {
 		System.out.println(name +": Stop, Drop, and Roll ");
 		emergencyState = EmergencyState.none;
 	}
 	
+	public void exitBuilding()
+	{
+		bigState = BigState.doingNothing;
+		cityData.addGui(personGui);
+	}
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
 	protected void stateChanged() {
 		super.stateChanged();

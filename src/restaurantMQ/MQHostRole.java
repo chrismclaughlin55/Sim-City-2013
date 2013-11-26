@@ -352,7 +352,6 @@ public class MQHostRole extends Role implements Host
 	
 	public void addWaiter(Waiter waiter)
 	{
-		waiters.add(waiter);
 		myWaiters.add(new MyWaiter(waiter));
 		workingWaiters++;
 		stateChanged();
