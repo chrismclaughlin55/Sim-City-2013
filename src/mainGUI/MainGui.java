@@ -177,7 +177,7 @@ public class MainGui extends JFrame implements MouseListener {
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
-		p.bigState = BigState.goHome;
+		p.bigState = BigState.goToBank;
 		p.startThread();
 		
 	}

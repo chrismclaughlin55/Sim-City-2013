@@ -11,6 +11,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	//DATA
 	private PersonAgent me;
 	private double money;
+	private double cash;
 	private String name;
 	private Teller t;
 	CustInfo myInfo;
@@ -22,6 +23,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	public CustomerRole(PersonAgent person) {
 		super(person);
 		this.money = person.bankMoney;
+		this.cash = person.cash;
 		this.name = person.getName();
 		this.me = person;
 	}
