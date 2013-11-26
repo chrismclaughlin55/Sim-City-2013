@@ -370,6 +370,8 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+		currentBuilding = cityData.buildings.get(restNumber);
+		currentBuilding.EnterBuilding(this, desiredRole);
 	}
 	
 	protected void goHome() {

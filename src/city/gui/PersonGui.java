@@ -160,7 +160,7 @@ public class PersonGui implements Gui{
 	}
 
 	public void DoGoIntoBuilding() {
-		isPresent = false;
+		gui.removeGui(this);
 	}
 	
 	public void DoLeaveBuilding() {
