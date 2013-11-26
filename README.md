@@ -32,6 +32,7 @@ Objects (Function and visual representation)
 #### APARTMENT
 + Tenrant: Have a room to live in, pay the rent to landlord.
 + Landlord: Manager of the apartment building and lives inside the apartment.
++ Room: Room has the same layout and functionality as home; each apartment has eight rooms.
 
 #### Overall information:
 + Global timer
