@@ -24,6 +24,7 @@ public class PersonAgent extends Agent
 	public static final int LOWMONEY = 20;
 	public static final int TIRED = 16;
 	public static final double RENT = 20;
+	public static final int THRESHOLD = 3;
 	/*END OF CONSTANTS*/
 	
 	/*DATA MEMBERS*/
@@ -136,6 +137,11 @@ public class PersonAgent extends Agent
 	public void refresh()
 	{
 		super.refresh();
+	}
+	
+	public void msgFull()
+	{
+		hungerLevel = 0;
 	}
 	
 	public void msgDoneMoving() {
@@ -288,6 +294,12 @@ public class PersonAgent extends Agent
 					desiredRole = "Customer";
 					return true;
 				}
+				// Inventory of food stuff
+				if(lowInventory()) {
+					bigState = BigState.goToMarket;
+					return true;
+				}
+				
 				if(hungerLevel >= HUNGRY) {
 					bigState = BigState.goToRestaurant;
 					desiredRole = "Customer";
@@ -297,6 +309,21 @@ public class PersonAgent extends Agent
 		}
 		
 		return false;
+	}
+	
+	public boolean lowInventory()
+	{
+		for(String food : inventory.keySet())
+		{
+			if(inventory.get(food) < THRESHOLD)
+			{
+				thingsToOrder.add(new MyOrder(food, 10));
+			}
+		}
+		if(!thingsToOrder.isEmpty())
+			return true;
+		else
+			return false;
 	}
 	
 	private void payRent() {
