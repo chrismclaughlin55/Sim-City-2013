@@ -40,7 +40,7 @@ public class PersonAgent extends Agent
 	boolean ranonce = false;
 	PersonGui personGui;
 	MainGui gui;
-	CityData cityData;
+	public CityData cityData;
 	Building currentBuilding;
 	Building destinationBuilding;
 	Building jobBuilding;
@@ -160,7 +160,7 @@ public class PersonAgent extends Agent
 	/*MESSAGES*/
 	public void refresh() {
 		super.refresh();
-		if(cityData.hour == 8)
+		if(cityData.hour == 3)
 			goToWork = true;
 	}
 	
@@ -247,13 +247,22 @@ public class PersonAgent extends Agent
 		{
 			case atHome: {
 				if (homeState == HomeState.sleeping) {
-					if(cityData.hour >= 8){//if sleeping and it is time to wake up
+					if(cityData.hour >= 5 && job.equals("BankManager")){//if sleeping and it is time to wake up
 					//delete the && false when the actual rule is implemented
 						WakeUp();
 						return true;
 					}
-					else
-						return false; //put the agent thread back to sleep
+					else {
+						if(cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
+							WakeUp();
+							return true;
+						}
+						else if (cityData.hour>=8) {
+							WakeUp();
+							return true;
+						}
+					}
+					return false; //put the agent thread back to sleep
 				}
 				
 				if (hungerLevel >= HUNGRY) { //inventory also has to be sufficient

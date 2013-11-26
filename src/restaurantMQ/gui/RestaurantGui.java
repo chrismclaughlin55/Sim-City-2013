@@ -3,6 +3,7 @@ package restaurantMQ.gui;
 import restaurantMQ.interfaces.Customer;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -17,6 +18,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
 	//JFrame animationFrame = new JFrame("Restaurant Animation");
 	JPanel mainPanel = new JPanel();
 	AnimationPanel animationPanel = new AnimationPanel();
+	MQRestaurantBuilding building;
 	
     /* restPanel holds 2 panels
      * 1) the staff listing, menu, and lists of current customers all constructed
@@ -50,8 +52,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
      */
-    public RestaurantGui() {
+    public RestaurantGui(MQRestaurantBuilding b) {
 
+    	building = b;
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setBounds(WIDTH, WIDTH , WINDOWX, WINDOWY);
         setVisible(false);
@@ -183,4 +186,11 @@ public class RestaurantGui extends JFrame implements ActionListener {
         gui.setResizable(false);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }*/
+	public void setOpen(Boolean b) {
+		building.setOpen(b);
+		
+	}
+	public boolean isOpen() {
+		return building.isOpen();
+	}
 }

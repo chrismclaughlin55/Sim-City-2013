@@ -8,13 +8,14 @@ public class MQRestaurantBuilding extends Building
 {
 	public static final int MAXCUSTOMERS = 8;
 	
-	RestaurantGui restGui = new RestaurantGui();
+	RestaurantGui restGui;
 	RestaurantPanel restPanel;
 	
 	public MQRestaurantBuilding(int xPos, int yPos, int width, int height,
 			String name, BuildingType type, MainGui mainGui) 
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
+		restGui = new RestaurantGui(this);
 		restPanel = restGui.getRestaurantPanel();
 	}
 	
@@ -66,5 +67,10 @@ public class MQRestaurantBuilding extends Building
 	public RestaurantGui getRestaurantGui()
 	{
 		return restGui;
+	}
+
+	public void setOpen(Boolean b) {
+		isOpen = b;
+		
 	}
 }

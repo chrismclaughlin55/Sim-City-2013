@@ -9,6 +9,7 @@ import java.util.concurrent.Semaphore;
 import city.PersonAgent;
 import city.Role;
 import restaurantMQ.gui.HostGui;
+import restaurantMQ.gui.RestaurantPanel;
 import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Host;
@@ -20,7 +21,7 @@ public class MQHostRole extends Role implements Host
 	private static int NTABLES = 4;//a global for the number of tables.
 	private static int NWAITINGSPOTS = 4; //a global for the number of waiting positions
 	private int workingWaiters = 0;
-	
+	private RestaurantPanel restPanel;
 	
 	
 	//Notice that we implement waitingCustomers using ArrayList, but type it
@@ -30,6 +31,7 @@ public class MQHostRole extends Role implements Host
 	public Collection<WaitingSpot> waitingSpots;
 	public List<Waiter> waiters;
 	private List<Cook> cooks = new ArrayList<Cook>();
+	
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 	
@@ -59,9 +61,10 @@ public class MQHostRole extends Role implements Host
 	/*END OF DATA*/
 	
 	/*CONSTRUCTORS*/
-	public MQHostRole(PersonAgent person)
+	public MQHostRole(PersonAgent person, RestaurantPanel rp)
 	{
 		super(person);
+		restPanel = rp;
 		this.name = super.getName();
 		// make some tables
 		tables = Collections.synchronizedCollection(new ArrayList<Table>(NTABLES));
@@ -208,6 +211,18 @@ public class MQHostRole extends Role implements Host
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && restPanel.isOpen())
+		{
+			restPanel.setOpen(false);
+			return true;
+		}
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && !restPanel.isOpen() 
+				&& restPanel.justHost())
+		{
+			LeaveRestaurant();
+			return true;
+		}
+		
 		
 		synchronized(customersToSeat)
 		{
@@ -268,6 +283,11 @@ public class MQHostRole extends Role implements Host
 		//and wait.
 	}
 	
+	//LAST METHOD CALLED
+	private void LeaveRestaurant() {
+		person.exitBuilding();
+		doneWithRole();
+	}
 	private void SendOnBreak(MyWaiter w)
 	{
 		w.state = WaiterState.OnBreak;

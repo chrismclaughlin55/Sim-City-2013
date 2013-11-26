@@ -43,6 +43,7 @@ public class RestaurantPanel extends JPanel {
 	private static final int NWAITERS = 1;
 	private static final int NCOOKS = 1;
 	private static final int NMARKETS = 3;
+	public static final int CLOSINGTIME = 20;
 	
     //all roles ever
 	private List<Host> hosts = new ArrayList<Host>();
@@ -279,7 +280,7 @@ public class RestaurantPanel extends JPanel {
     public void addWaiter(String name, final JCheckBox breakBox)
     {
     	PersonAgent p = new PersonAgent(name);
-    	MQWaiterRole w = new MQWaiterRole(p, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
+    	MQWaiterRole w = new MQWaiterRole(p, this, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
     	waiters.add(w);
     	((MQHostRole)host).addWaiter(w);
     	for(Cook c : cooks)
@@ -367,7 +368,7 @@ public class RestaurantPanel extends JPanel {
     	}
     	
     	final JCheckBox breakBox = new JCheckBox("");
-    	MQWaiterRole w = new MQWaiterRole(person, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
+    	MQWaiterRole w = new MQWaiterRole(person, this, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
     	waiters.add(w);
     	if(host != null)
     		((MQHostRole)host).addWaiter(w);
@@ -405,7 +406,7 @@ public class RestaurantPanel extends JPanel {
     
     public void addHost(PersonAgent person)
     {
-        host = new MQHostRole(person);
+        host = new MQHostRole(person, this);
         hosts.add(host);
         ((MQHostRole)host).setCooks(cooks);
         ((MQHostRole)host).setWaiters(waiters);
@@ -494,10 +495,22 @@ public class RestaurantPanel extends JPanel {
     	return count;
     }
     
+    public void setOpen(Boolean b)
+    {
+    	gui.setOpen(b);
+    }
+    
     public boolean fullyStaffed()
     {
     	return (activeCooks() > 0) && (activeWaiters() > 0) && (host != null) && (cashier != null);
     }
+    
+    public boolean justHost()
+    {
+    	return (activeCooks() == 0) && (activeWaiters() == 0) && 
+    			(activeCustomers() == 0) && (cashier == null);
+    }
+    
     
     public boolean hasHost()
     {
@@ -527,5 +540,9 @@ public class RestaurantPanel extends JPanel {
     		m.OutOfFoodHack();
     	}
     }
+
+	public boolean isOpen() {
+		return gui.isOpen();
+	}
     
 }
