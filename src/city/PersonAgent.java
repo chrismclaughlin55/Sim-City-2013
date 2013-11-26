@@ -668,6 +668,7 @@ public class PersonAgent extends Agent
 	
 	public void exitBuilding()
 	{
+		print("Exiting the building");
 		bigState = BigState.doingNothing;
 		cityData.addGui(personGui);
 	}

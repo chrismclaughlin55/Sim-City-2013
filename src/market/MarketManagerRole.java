@@ -5,6 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import restaurantMQ.MQCashierRole;
+import restaurantMQ.MQCookRole;
+import restaurantMQ.MarketOrder;
+import restaurantMQ.interfaces.Cashier;
 import market.gui.EmployeeGui;
 import market.gui.ManagerGui;
 import market.gui.MarketGui;
@@ -29,6 +33,8 @@ public class MarketManagerRole extends Role implements MarketManager{
 	private List<MarketCustomerRole> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomerRole>());
 	private List<MyEmployee> waitingEmployees = Collections.synchronizedList(new ArrayList<MyEmployee>());
 	private List<MyEmployee> workingEmployees = Collections.synchronizedList(new ArrayList<MyEmployee>());
+	
+	private List<MyCookCustomer> waitingCookCustomers = Collections.synchronizedList(new ArrayList<MyCookCustomer>());
 
 	private Semaphore atHome = new Semaphore(0, true);
 
@@ -40,6 +46,18 @@ public class MarketManagerRole extends Role implements MarketManager{
 		public MyEmployee(MarketEmployeeRole employee) {
 			this.employee = employee;
 			isBusy = false;
+		}
+	}
+	
+	public class MyCookCustomer {
+		public MQCookRole cook;
+		public Cashier cashier;
+		public List<MarketOrder> order;
+
+		public MyCookCustomer(MQCookRole cook, List<MarketOrder> order, Cashier cashier) {
+			this.cook = cook;
+			this.order = order;
+			this.cashier = cashier;
 		}
 	}
 
@@ -58,9 +76,14 @@ public class MarketManagerRole extends Role implements MarketManager{
 	}
 
 	public void msgNeedToOrder(MarketCustomerRole cust) {
-		print("Received msgNeedToOrder"); 
+		print("Received msgNeedToOrder from customer"); 
 		waitingCustomers.add(cust);
 		stateChanged();
+	}
+	
+	public void msgNeedToOrder(MQCookRole cook, List<MarketOrder> marketOrders, Cashier cashier) {
+		print("Received msgNeedToOrder from cook");
+		waitingCookCustomers.add(new MyCookCustomer(cook, marketOrders, cashier));
 	}
 
 	public void msgLeavingWork(MarketEmployee employee) {
@@ -83,6 +106,12 @@ public class MarketManagerRole extends Role implements MarketManager{
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		
+		if (!market.isOpenForEmployees) {
+			market.isOpenForEmployees = true;
+			print ("The market is now open for employees only");
+			return true;
+		}
 
 		if ((!workingEmployees.isEmpty()) && (!market.isOpen())) {
 			market.setOpen(person);
@@ -123,6 +152,16 @@ public class MarketManagerRole extends Role implements MarketManager{
 				if (!e.isBusy) {
 					e.isBusy = true;
 					e.employee.msgServiceCustomer(waitingCustomers.get(0));
+					waitingCustomers.remove(0);
+					return true;
+				}
+			}
+		}
+		if (!waitingCookCustomers.isEmpty()) {
+			for (MyEmployee e : workingEmployees) {
+				if (!e.isBusy) {
+					e.isBusy = true;
+					e.employee.msgServiceCookCustomer(waitingCookCustomers.get(0));
 					waitingCustomers.remove(0);
 					return true;
 				}

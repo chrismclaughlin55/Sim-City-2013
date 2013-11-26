@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import market.Market;
 import restaurantMQ.CookOrder.OrderState;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Cook;
@@ -24,7 +25,7 @@ public class MQCookRole extends Role implements Cook
 	
 	//Only the cook's own thread ever tampers with marketOrders, so this does not need to be synchronized
 	private List<Waiter> waiters = new ArrayList<Waiter>();
-	private List<MarketAgent> markets = new ArrayList<MarketAgent>();
+	private Market market;
 	private List<CookOrder> cookOrders;
 	Cashier cashier;
 
@@ -60,13 +61,10 @@ public class MQCookRole extends Role implements Cook
 		super(person);
 	}
 	
-	public MQCookRole(PersonAgent person, List<CookOrder> cookOrders, List<MarketAgent> markets, Cashier c, Timer timer)
+	public MQCookRole(PersonAgent person, List<CookOrder> cookOrders, Market market, Cashier c, Timer timer)
 	{
 		super(person);
-		for(MarketAgent m : markets)
-		{
-			this.markets.add(m);
-		}
+		this.market = market;
 		cashier = c;
 		this.timer = timer;
 		this.cookOrders = cookOrders;
@@ -178,19 +176,9 @@ public class MQCookRole extends Role implements Cook
 		{
 			if(!orderReceived)
 			{
-				OrderFoodFromMarket(markets.get(0));
+				OrderFoodFromMarket(market);
 			}
-			else
-			{
-				if(!backupUsed)
-				{
-					OrderFoodFromMarket(markets.get(1));
-				}
-				else
-				{
-					OrderFoodFromMarket(markets.get(2));
-				}
-			}
+			
 			return true;
 		}
 				
@@ -237,7 +225,7 @@ public class MQCookRole extends Role implements Cook
 		order.waiter.msgOrderDone(order.choice, order.table);
 	}
 		
-	private void OrderFoodFromMarket(MarketAgent market)
+	private void OrderFoodFromMarket(Market market)
 	{	
 		System.out.print("Cook: Ordering more: ");
 		for(MarketOrder o : marketOrders)
@@ -245,7 +233,9 @@ public class MQCookRole extends Role implements Cook
 			System.out.print(o.getName() + ", ");
 		}
 		System.out.println();
-		market.msgNewOrders(this, cashier, marketOrders);
+		if (market.isOpen()) {
+			market.currentManager.msgNeedToOrder(this, marketOrders, cashier);
+		}
 		marketOrders.clear();
 	}
 		

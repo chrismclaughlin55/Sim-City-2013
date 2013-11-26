@@ -50,7 +50,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
 		//Clear the screen by painting a rectangle the size of the frame
 		g2.setColor(getBackground());
-		g2.fillRect(0, 0, screenSize.width/4, screenSize.height/2 );
+		g2.fillRect(0, 0, 600, 400);
 		
 		g2.setColor(roomColor);
 		g2.fillRect(270, 355, 150, 150);
