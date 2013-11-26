@@ -29,6 +29,7 @@ public class Room {
 	}
 	
 	public void setTenant(PersonAgent p) {
+		isOccupied = true;
 		tenant = p;
 	}
 	
