@@ -53,7 +53,7 @@ public class MainGui extends JFrame implements MouseListener {
     public MainAnimationPanel mainAnimationPanel;
    
     public MarketGui marketGui;
-    public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
+    //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
     //public BusStopGui busStopGui will have a list of these and add them all
     
@@ -101,13 +101,13 @@ public class MainGui extends JFrame implements MouseListener {
         marketGui.setResizable(false);
         marketGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         
-        for (int i = 0; i < 6; i++) {
+        /*for (int i = 0; i < 6; i++) {
         	restaurantGuis[i] = new RestaurantGui();
         	restaurantGuis[i].setTitle("RestaurantMQ");
         	restaurantGuis[i].setVisible(false);
         	restaurantGuis[i].setResizable(false);
         	restaurantGuis[i].setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        }
+        }*/
         
         bankGui.setTitle("Bank");
         bankGui.setVisible(false);
@@ -183,7 +183,7 @@ public class MainGui extends JFrame implements MouseListener {
         gui.setResizable(true);
     }
     
-    public void addPerson(String name, String role) {
+    public void addPerson(String name, String role, String destination) {
     	if(mainAnimationPanel.cd.getPopulation() >= 40) {
     		JFrame frame = new JFrame();
     		JOptionPane.showMessageDialog(frame, "Population limit reached!");
@@ -194,8 +194,17 @@ public class MainGui extends JFrame implements MouseListener {
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
-		p.bigState = BigState.goHome;
-		p.assignHome(pickHome(p));
+		
+		if(destination.equals("Restaurant"))
+		{
+			p.bigState = BigState.goToRestaurant;
+			p.setDesiredRole(role);
+		}
+		else
+		{
+			p.bigState = BigState.goHome;
+			p.assignHome(pickHome(p));
+		}
 		p.startThread();
 		
 	}

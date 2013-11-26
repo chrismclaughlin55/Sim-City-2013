@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import bank.utilities.CustInfo;
 import mainGUI.MainGui;
 import market.MyOrder;
 import market.Inventory;
@@ -28,7 +29,7 @@ public class PersonAgent extends Agent
 	String name;
 	public int tiredLevel = 0;
 	public double cash = 100;
-	public double bankMoney = 200;
+	public CustInfo bankInfo = new CustInfo(this.name, this, null);
 	public double rentDue = 0;
 	public int criminalImpulse = 0;
 	public int hungerLevel = 0;
@@ -40,6 +41,7 @@ public class PersonAgent extends Agent
 	Building destinationBuilding;
 	Building jobBuilding;
 	Building home;
+	int roomNumber = -1;
 	int timeUnit = 5;
 	BusStopAgent currentBusStop;
 	BusStopAgent destinationBusStop;
@@ -101,7 +103,7 @@ public class PersonAgent extends Agent
 	}
 	
 	public void setBankMoney(double moneyInDaBank) {
-		this.bankMoney = moneyInDaBank;
+		this.bankInfo.moneyInAccount = moneyInDaBank;
 	}
 	
 	public void setHunger(int hangry) {
@@ -111,6 +113,11 @@ public class PersonAgent extends Agent
 	public void setJobBuilding(Building jobBuilding)
 	{
 		this.jobBuilding = jobBuilding;
+	}
+	
+	public void setDesiredRole(String role)
+	{
+		desiredRole = role;
 	}
 	
 	/*SETTERS*/
@@ -352,7 +359,8 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goToRestaurant() {
-		int restNumber = (int)(12+(int)(Math.random()*5));
+		int restNumber = 12;
+		//int restNumber = (int)(12+(int)(Math.random()*5));
 		personGui.DoGoToBuilding(restNumber);
 		atBuilding.drainPermits();
 		try {
@@ -402,6 +410,7 @@ public class PersonAgent extends Agent
 	
 	protected void goToBank() {
 		personGui.DoGoToBuilding(18);
+		currentBuilding = cityData.buildings.get(18);
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -410,6 +419,8 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+		currentBuilding.EnterBuilding(this, "customer");
+		print("going into bank");
 	}
 	
 	protected void goToMarket() {
@@ -422,6 +433,14 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+	}
+	
+	public void setRoomNumber(int number) {
+		roomNumber = number;
+	}
+	
+	public int getRoomNumber() {
+		return roomNumber;
 	}
 	
 	protected void ReactToFire() {

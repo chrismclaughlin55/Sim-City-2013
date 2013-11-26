@@ -13,6 +13,7 @@ import restaurantMQ.gui.RestaurantGui;
 import city.Building;
 import city.Building.BuildingType;
 import city.Home;
+import restaurantMQ.gui.*;
 
 public class BuildingPanel {
 	
@@ -25,11 +26,7 @@ public class BuildingPanel {
 	public void displayBuildingPanel(Building building, int buildingNumber) {
 		switch (building.type) {
 		case restaurant:
-			for (int i = 0; i < 6; i++) {
-				if (building.name.equals("restaurant"+(i+1))) {
-					mainGui.restaurantGuis[i].setVisible(true);
-				}
-			}
+			((MQRestaurantBuilding)building).getRestaurantGui().setVisible(true);
 			break;
 			
 		case bank:

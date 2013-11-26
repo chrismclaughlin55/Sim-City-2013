@@ -14,6 +14,7 @@ public class MQRestaurantBuilding extends Building
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
 		restPanel = restGui.getRestaurantPanel();
+		System.out.println("hello");
 	}
 	
 	public void EnterBuilding(PersonAgent person, String roleRequest)
@@ -26,9 +27,22 @@ public class MQRestaurantBuilding extends Building
 		{
 			restPanel.addWaiter(person);
 		}
+		else if(roleRequest.equals("Cook"))
+		{
+			restPanel.addCook(person);
+		}
+		else if(roleRequest.equals("Cashier"))
+		{
+			restPanel.addCashier(person);
+		}
 		else if(roleRequest.equals("Host"))
 		{
-			
+			restPanel.addHost(person);
 		}
+	}
+	
+	public RestaurantGui getRestaurantGui()
+	{
+		return restGui;
 	}
 }

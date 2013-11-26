@@ -52,7 +52,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
      */
     public RestaurantGui() {
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setBounds(WIDTH, WIDTH , WINDOWX, WINDOWY);
         setVisible(false);
     	mainPanel.setLayout(new GridLayout(1, 2));
