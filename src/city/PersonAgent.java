@@ -46,7 +46,7 @@ public class PersonAgent extends Agent
 	BusStopAgent currentBusStop;
 	BusStopAgent destinationBusStop;
 	String desiredRole;
-	String job;
+	private String job;
 	Timer timer = new Timer();
 
 	
@@ -124,6 +124,10 @@ public class PersonAgent extends Agent
 	public void assignHome(Building home)
 	{
 		this.home = home;
+	}
+	
+	public void assignJobBuilding(Building jobBuilding) {
+		this.jobBuilding = jobBuilding;
 	}
 	
 	/*MESSAGES*/
@@ -377,9 +381,7 @@ public class PersonAgent extends Agent
 	protected void goHome() {
 		//int homeNumber = (int)((int)(Math.random()*11));
 		currentBuilding = cityData.buildings.get(this.home.buildingNumber);
-		System.out.println(this.home.buildingNumber);
 		personGui.DoGoToBuilding(this.home.buildingNumber); // 11 need to be replaced by the person's data of home number
-		System.out.println(this.home.buildingNumber);
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -388,8 +390,6 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
-		System.out.println(this.home.buildingNumber);
-		System.out.println(cityData.buildings.get(this.home.buildingNumber).buildingNumber);
 		if (home instanceof Home) {
 			currentBuilding.EnterBuilding(this, "");
 		}
@@ -507,6 +507,10 @@ public class PersonAgent extends Agent
 	
 	public PersonGui getGui() {
 		return personGui;
+	}
+
+	public String getJob() {
+		return job;
 	}
 }
 

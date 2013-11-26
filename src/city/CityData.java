@@ -3,11 +3,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 
+import bank.Bank;
 import city.gui.PersonGui;
 import Gui.Gui;
 import market.Market;
 
 import javax.swing.Timer;
+
+import restaurantMQ.gui.MQRestaurantBuilding;
 //import bank.Bank;
 public class CityData implements ActionListener {
 	
@@ -33,6 +36,8 @@ public class CityData implements ActionListener {
 	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	public Market market;
+	public Bank bank;
+	public List<MQRestaurantBuilding> restaurants = Collections.synchronizedList(new ArrayList<MQRestaurantBuilding>());
 	public Timer globalTimer;
 	
 	public List<Home> homes = Collections.synchronizedList(new ArrayList<Home>());
