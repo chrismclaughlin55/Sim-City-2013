@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import market.Inventory;
 import market.MarketData;
 import market.MarketEmployeeRole;
+import market.gui.MarketGui;
 import market.test.mock.MockMarketCustomer;
 import market.test.mock.MockMarketManager;
 import restaurantMQ.test.mock.MockMarket;
@@ -39,10 +40,11 @@ public class MarketEmployeeTest extends TestCase
 		MarketData steakData = new MarketData("steak", 10, 11.99);
 		MarketData pizzaData = new MarketData("pizza", 10, 7.99);
 		
-		Inventory inventory = new Inventory(chickenData, saladData, steakData, pizzaData);
+		//MarketGui marketGui = new MarketGui();
+		//Inventory inventory = new Inventory(chickenData, saladData, steakData, pizzaData,  marketGui);
 		customer = new MockMarketCustomer("mockcustomer");
 		manager = new MockMarketManager("mockmanager");
-		employee = new MarketEmployeeRole(person, manager, inventory);
+		//employee = new MarketEmployeeRole(person, manager, inventory);
 		
 		
 		

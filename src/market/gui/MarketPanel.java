@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import market.Inventory;
+import market.Market;
 import market.MarketData;
 
 public class MarketPanel extends JPanel{
@@ -21,11 +22,15 @@ public class MarketPanel extends JPanel{
 	public List<JLabel> labels = Collections.synchronizedList(new ArrayList<JLabel>());
 
 
-	public MarketPanel(Inventory inventory) {
-		steakLabel = new JLabel("Quantity of steak: " + inventory.inventory.get("steak").amount);
-		saladLabel = new JLabel("Quantity of salad: " + inventory.inventory.get("salad").amount);
-		chickenLabel = new JLabel("Quantity of chicken: " + inventory.inventory.get("chicken").amount);
-		pizzaLabel = new JLabel("Quantity of pizza: " + inventory.inventory.get("pizza").amount);
+	public MarketPanel(Market market) {
+		/*steakLabel = new JLabel("Quantity of steak: " + market.inventory.inventory.get("steak").amount);
+		saladLabel = new JLabel("Quantity of salad: " + market.inventory.inventory.get("salad").amount);
+		chickenLabel = new JLabel("Quantity of chicken: " + market.inventory.inventory.get("chicken").amount);
+		pizzaLabel = new JLabel("Quantity of pizza: " + market.inventory.inventory.get("pizza").amount);*/
+		steakLabel = new JLabel("Quantity of steak: " );
+		saladLabel = new JLabel("Quantity of salad: " );
+		chickenLabel = new JLabel("Quantity of chicken: " );
+		pizzaLabel = new JLabel("Quantity of pizza: " );
 		labels.add(steakLabel);
 		labels.add(saladLabel);
 		labels.add(chickenLabel);
@@ -38,5 +43,6 @@ public class MarketPanel extends JPanel{
 		add(chickenLabel);
 		add(pizzaLabel);
 	}
-
+	
+	
 }

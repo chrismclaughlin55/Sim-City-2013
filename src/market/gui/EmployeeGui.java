@@ -34,6 +34,9 @@ public class EmployeeGui implements Gui {
 			yPos--;
 
 		if (xPos == xDestination && yPos == yDestination) {
+			if (command == Command.goToDesk) {
+				role.msgAtDesk();
+			}
 			command = Command.noCommand;
 		}
 
@@ -73,6 +76,7 @@ public class EmployeeGui implements Gui {
 	}
 
 	public void MoveToDesk(int deskNum) {
+		command = Command.goToDesk;
 		xDestination = 70+40*deskNum;
 		yDestination = 205;
 	}

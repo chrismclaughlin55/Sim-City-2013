@@ -68,7 +68,6 @@ public class ManagerGui implements Gui{
 	}
 
 	public void GoToRoom() {
-		System.out.println("go to room function called");
 		xDestination = 325;
 		yDestination = 410;
 		command = Command.enter;

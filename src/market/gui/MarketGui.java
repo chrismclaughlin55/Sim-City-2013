@@ -23,48 +23,25 @@ public class MarketGui extends JFrame implements ActionListener {
 	public AnimationPanel animationPanel;
 	private MarketPanel marketPanel;
 	private Market market;
-	public MarketGui() {
+	
+	
+	public MarketGui(Market market) {
 
+		this.market = market;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0,0,screenSize.width/2, screenSize.height/2);
 		setLocation(screenSize.width/2-this.getSize().width/2, screenSize.height/2-this.getSize().height/2);
 		setLayout(new GridLayout(0,2));
 
-		MarketData chickenData = new MarketData("chicken", 10, 5.99);
-		MarketData saladData = new MarketData("salad", 10, 3.99);
-		MarketData steakData = new MarketData("steak", 10, 11.99);
-		MarketData pizzaData = new MarketData("pizza", 10, 7.99);
-		Inventory inventory = new Inventory(chickenData, saladData, steakData, pizzaData);
-
 		animationPanel = new AnimationPanel();
 		animationPanel.setVisible(true);
 		
-		marketPanel = new MarketPanel(inventory);
+		marketPanel = new MarketPanel(market);
 		marketPanel.setVisible(true);
 
 
 		add (marketPanel);
 		add (animationPanel);
-		
-		/*PersonAgent p1 = new PersonAgent("Manager");
-		MarketManagerRole manager = new MarketManagerRole(p1, inventory, market);
-		p1.msgAssignRole(manager);
-		p1.startThread();
-		ManagerGui managerGui = new ManagerGui();
-		animationPanel.addGui(managerGui);
-		
-		
-		PersonAgent p2 = new PersonAgent("Employee1");
-		MarketEmployeeRole employee = new MarketEmployeeRole(p2, 1, manager, inventory);
-		p2.msgAssignRole(employee);
-		EmployeeGui employeeGui = new EmployeeGui();
-		animationPanel.addGui(employeeGui);
-		
-		PersonAgent p3 = new PersonAgent("Customer1");
-		MarketCustomerRole customer = new MarketCustomerRole(p3, manager, 1, p3.thingsToOrder);
-		p3.msgAssignRole(customer);
-		CustomerGui custGui = new CustomerGui();
-		animationPanel.addGui(custGui);*/
 		
 		
 
@@ -75,13 +52,13 @@ public class MarketGui extends JFrame implements ActionListener {
 	 *
 	 * @param person customer (or waiter) object
 	 */
-	public void updateMarketPanel(Inventory inventory) {
+	public void updateMarketPanel() {
 
 		for (JLabel label : marketPanel.labels) {
-			label.setText("Quantity of steak: " + inventory.inventory.get("steak").amount);
-			label.setText("Quantity of salad: " + inventory.inventory.get("salad").amount);
-			label.setText("Quantity of chicken: " + inventory.inventory.get("chicken").amount);
-			label.setText("Quantity of pizza: " + inventory.inventory.get("pizza").amount);
+			label.setText("Quantity of steak: " + market.inventory.inventory.get("steak").amount);
+			label.setText("Quantity of salad: " + market.inventory.inventory.get("salad").amount);
+			label.setText("Quantity of chicken: " + market.inventory.inventory.get("chicken").amount);
+			label.setText("Quantity of pizza: " + market.inventory.inventory.get("pizza").amount);
 		}
 
 		marketPanel.validate();

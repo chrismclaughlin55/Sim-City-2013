@@ -61,9 +61,7 @@ public class PersonAgent extends Agent
 	public BigState bigState = BigState.doingNothing;
 	public HomeState homeState;
 	public EmergencyState emergencyState = EmergencyState.none;
-	
-	Inventory inventory = new Inventory();
-	
+		
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
 	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());;
@@ -73,10 +71,10 @@ public class PersonAgent extends Agent
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
-		MyOrder o1 = new MyOrder("steak", 2, 1);
-		MyOrder o2 = new MyOrder("salad", 2, 1);
-		MyOrder o3 = new MyOrder("pizza", 2, 1);
-		MyOrder o4 = new MyOrder("chicken", 2, 1);
+		MyOrder o1 = new MyOrder("steak", 1);
+		MyOrder o2 = new MyOrder("salad", 1);
+		MyOrder o3 = new MyOrder("pizza", 1);
+		MyOrder o4 = new MyOrder("chicken", 1);
 		thingsToOrder.add(o1);
 		thingsToOrder.add(o2);
 		thingsToOrder.add(o3);

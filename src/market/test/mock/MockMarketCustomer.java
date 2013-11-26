@@ -22,7 +22,7 @@ public class MockMarketCustomer extends Mock implements MarketCustomer {
 	}
 
 	@Override
-	public void msgOrderFulfullied(List<Invoice> invoice) {
+	public void msgOrderFulfullied(List<Invoice> invoice, double amountDue) {
 		// TODO Auto-generated method stub
 		
 	}
