@@ -106,6 +106,12 @@ public class PersonAgent extends Agent
 	public void setHunger(int hangry) {
 		this.hungerLevel = hangry;
 	}
+	
+	public void setJobBuilding(Building jobBuilding)
+	{
+		this.jobBuilding = jobBuilding;
+	}
+	
 	/*SETTERS*/
 	public void assignHome(Building home)
 	{
@@ -441,7 +447,7 @@ public class PersonAgent extends Agent
 		super.stateChanged();
 	}
 	
-	/*GETTERS*/
+	/*GETTERS AND SETTERS*/
 	public String getName() {
 		return name;
 	}

@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import restaurantMQ.CookOrder.OrderState;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Cook;
+import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
 import city.PersonAgent;
 import city.Role;
@@ -325,5 +326,10 @@ public class MQCookRole extends Role implements Cook
 
 	public void OutOfSaladHack() {
 		
+	}
+
+	public void setHost(Host host) {
+		// TODO Auto-generated method stub
+		//this.host = host;
 	}
 }

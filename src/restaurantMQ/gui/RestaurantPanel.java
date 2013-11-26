@@ -97,12 +97,14 @@ public class RestaurantPanel extends JPanel {
     public RestaurantPanel(RestaurantGui gui) {
         this.gui = gui;
         
+        /*
         //Cashier instantiation (hack)
         PersonAgent p1 = new PersonAgent("Cashier");
         cashier = new MQCashierRole(p1);
         cashiers.add(cashier);
         p1.msgAssignRole((MQCashierRole)cashier);
         p1.startThread();
+        */
         
         //Market instantiation (hack)
         for(int i = 0; i < NMARKETS; ++i)
@@ -111,6 +113,7 @@ public class RestaurantPanel extends JPanel {
         	markets.get(i).startThread();
         }
         
+        /*
         //Cook instantiation (hack)
         for(int i = 0; i < NCOOKS; ++i)
 		{
@@ -130,6 +133,7 @@ public class RestaurantPanel extends JPanel {
         ((MQHostRole)host).setWaiters(waiters);
         p2.msgAssignRole((MQHostRole)host);
         p2.startThread();
+        */
 
         setLayout(new GridLayout(MAINGRIDROWS, MAINGRIDCOLS));
         group.setLayout(new GridLayout(SECGRIDROWS, SECGRIDCOLS));
@@ -153,7 +157,7 @@ public class RestaurantPanel extends JPanel {
         //restLabel.setLayout(new BoxLayout((Container)restLabel, BoxLayout.Y_AXIS));
         restLabel.setLayout(new BorderLayout());
         label.setText(
-                "<html><h3><u>Tonight's Staff</u></h3><table><tr><td>host:</td><td>" + ((MQHostRole)host).getName() + "</td></tr></table><h3><u> Menu</u></h3><table><tr><td>Steak</td><td>$15.99</td></tr><tr><td>Chicken</td><td>$10.99</td></tr><tr><td>Salad</td><td>$5.99</td></tr><tr><td>Pizza</td><td>$8.99</td></tr></table><br></html>");
+                "<html><h3><u> Menu</u></h3><table><tr><td>Steak</td><td>$15.99</td></tr><tr><td>Chicken</td><td>$10.99</td></tr><tr><td>Salad</td><td>$5.99</td></tr><tr><td>Pizza</td><td>$8.99</td></tr></table><br></html>");
 
         restLabel.setBorder(BorderFactory.createRaisedBevelBorder());
         restLabel.add(label, BorderLayout.CENTER);
@@ -394,6 +398,39 @@ public class RestaurantPanel extends JPanel {
 		
 		//Start the thread
 		person.msgAssignRole(w);
+    }
+    
+    public void addHost(PersonAgent person)
+    {
+        host = new MQHostRole(person);
+        hosts.add(host);
+        ((MQHostRole)host).setCooks(cooks);
+        ((MQHostRole)host).setWaiters(waiters);
+        
+        //update other agents
+        for(Waiter w : waiters)
+        {
+        	((MQWaiterRole)w).setHost(host);
+        }
+        for(Cook c : cooks)
+        {
+        	((MQCookRole)c).setHost(host);
+        }
+        
+        person.msgAssignRole((MQHostRole)host);
+    }
+    
+    public void addCook(PersonAgent person)
+    {
+    	MQCookRole c = new MQCookRole(person, cookOrders, markets, cashier, timer);
+		cooks.add(c);
+		person.msgAssignRole(c);
+    }
+    
+    public void addCashier(PersonAgent person)
+    {
+    	cashier = new MQCashierRole(person);
+    	person.msgAssignRole((MQCashierRole)cashier);
     }
     
     //Hacks to demonstrate program

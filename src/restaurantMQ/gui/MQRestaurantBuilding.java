@@ -18,6 +18,17 @@ public class MQRestaurantBuilding extends Building
 	
 	public void EnterBuilding(PersonAgent person, String roleRequest)
 	{
-		
+		if(roleRequest.equals("Customer"))
+		{
+			restPanel.addCustomer(person);
+		}
+		else if(roleRequest.equals("Waiter"))
+		{
+			restPanel.addWaiter(person);
+		}
+		else if(roleRequest.equals("Host"))
+		{
+			
+		}
 	}
 }
