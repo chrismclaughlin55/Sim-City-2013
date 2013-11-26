@@ -1,4 +1,32 @@
 NewPerson
+name Landy
+cash 500
+bankMoney 500
+job Landlord
+hunger 0
+
+NewPerson
+name Landy
+cash 500
+bankMoney 500
+job Landlord
+hunger 0
+
+NewPerson
+name Landy
+cash 500
+bankMoney 500
+job Landlord
+hunger 0
+
+NewPerson
+name Landy
+cash 500
+bankMoney 500
+job Landlord
+hunger 0
+
+NewPerson
 name myName0
 cash 100
 bankMoney 500
@@ -74,6 +102,13 @@ cash 100
 bankMoney 500
 job MarketEmployee
 hunger 0
+
+NewPerson
+name myName
+cash 1000
+bankMoney 500
+job Unemployed
+hunger 10
 
 NewPerson
 name myName

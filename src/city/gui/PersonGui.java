@@ -34,10 +34,10 @@ public class PersonGui implements Gui{
 	public PersonGui(PersonAgent p, MainGui g){ //HostAgent m) {
 		agent = p;
 		gui = g;
-		xPos = INITX;
-		yPos = INITY;
-		xDestination = INITX;
-		yDestination = INITY;
+		xPos = xBuilding[agent.getHomeNumber()]-50;
+		yPos = yBuilding[agent.getHomeNumber()]+10;
+		xDestination = xBuilding[agent.getHomeNumber()]-50;
+		yDestination = yBuilding[agent.getHomeNumber()]+10;
 	}
 	
 	public void setXPos(int x) {
