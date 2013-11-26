@@ -3,6 +3,7 @@ package market.gui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import market.MarketCustomerRole;
 import market.MarketEmployeeRole;
 import Gui.Gui;
 
@@ -43,7 +44,7 @@ public class EmployeeGui implements Gui {
 
 	@Override
 	public void draw(Graphics2D g) {
-		Color employeeColor = new Color (46, 204, 113);
+		Color employeeColor = new Color (52, 152, 219);
 		g.setColor(employeeColor);
 		g.fillRect(xPos, yPos, 30, 30);
 
@@ -67,6 +68,11 @@ public class EmployeeGui implements Gui {
 
 	public int getYPos() {
 		return yPos;
+	}
+
+	public void LeaveMarket() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

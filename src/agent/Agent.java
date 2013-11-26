@@ -50,7 +50,7 @@ public abstract class Agent {
 	/**
 	 * Print message
 	 */
-	protected void print(String msg) {
+	public void print(String msg) {
 		print(msg, null);
 	}
 

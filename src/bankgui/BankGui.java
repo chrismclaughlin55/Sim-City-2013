@@ -9,10 +9,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 
 import bank.Bank;
+import bank.utilities.GuiPositions;
 
 
 
-public class BankGui extends JFrame implements ActionListener {
+public class BankGui extends JFrame implements GuiPositions, ActionListener {
 
 		public AnimationPanel animationPanel;
 		private BankPanel bankPanel;

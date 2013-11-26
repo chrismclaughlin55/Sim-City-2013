@@ -6,13 +6,15 @@ import java.util.List;
 
 import market.Market;
 import market.MyOrder.OrderState;
+import market.gui.CustomerGui;
+import market.gui.EmployeeGui;
 import market.interfaces.MarketCustomer;
 import city.PersonAgent;
 import city.Role;
 
 public class MarketCustomerRole extends Role implements MarketCustomer {
 
-	private enum customerState {waiting, readyToOrder, readyToPay};
+	private enum customerState {waiting, waitingForManager, readyToOrder, readyToPay};
 	private customerState state;
 	private List<Invoice> invoices = Collections.synchronizedList(new ArrayList<Invoice>());
 	private List<MyOrder> orders = Collections.synchronizedList(new ArrayList<MyOrder>());
@@ -20,6 +22,8 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	private MarketManagerRole manager = null;
 	private MarketEmployeeRole employee = null;
 	private double amountDue = 0;
+	private CustomerGui gui = null;
+	private boolean guiset = false;
 
 
 	public MarketCustomerRole(PersonAgent person, MarketManagerRole manager, List<MyOrder> orders) {
@@ -31,8 +35,10 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	}
 
 	public void msgWhatIsYourOrder(MarketEmployeeRole employee){
+		print("Received msgWhatIsYourOrder");
 		this.employee = employee;
 		state = customerState.readyToOrder;
+		stateChanged();
 	}
 
 	/*public void msgOrderFulFullied(Invoice invoice) {
@@ -86,6 +92,7 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 		}
 		if (state == customerState.waiting) {
 			manager.msgNeedToOrder(this);
+			state = customerState.waitingForManager;
 			return true;
 		}
 
@@ -93,8 +100,13 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	}
 
 	private void Order(){
-		//DoGoToEmployee Gui stuff
-		employee.msgHereAreMyOrders(orders, this);
+		if (guiset){
+			print ("the gui has been set");
+		}
+		else 
+			print ("the guy has NOT been set");
+		this.gui.DoGoToEmployee(200, 200);
+		//employee.msgHereAreMyOrders(orders, this);
 	}
 
 
@@ -104,5 +116,18 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 		orders.clear();
 		invoices.clear();
 	}
+	
+	public void setGui (CustomerGui gui) {
+		print ("CUST GUI SET");
+		this.gui = gui;
+		guiset = true;
+	}
+	
+	
+	public CustomerGui getGui() {
+		return gui;
+		
+	}
+	
 
 }

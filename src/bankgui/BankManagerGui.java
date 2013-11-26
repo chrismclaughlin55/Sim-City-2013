@@ -2,9 +2,10 @@ package bankgui;
 
 import java.awt.Graphics2D;
 
+import bank.utilities.GuiPositions;
 import Gui.*;
 
-public class BankManagerGui implements Gui {
+public class BankManagerGui implements GuiPositions, Gui {
 
 	@Override
 	public void updatePosition() {

@@ -30,6 +30,7 @@ public class BuildingPanel {
 			break;
 			
 		case bank:
+			
 			mainGui.bankGui.setVisible(true);
 			break;
 			
