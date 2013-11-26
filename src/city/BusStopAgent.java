@@ -76,7 +76,6 @@ public class BusStopAgent extends Agent{
     }
 	
     public void msgArrivedAtStop(BusAgent bus) {
-    	System.out.println("arrived at stop");
         currentBus = bus;
         stopState = BusStopState.busHere;
         stateChanged();
