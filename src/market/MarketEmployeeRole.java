@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
 
 import market.gui.EmployeeGui;
 import market.interfaces.MarketCustomer;
@@ -17,15 +18,15 @@ import city.Role;
 
 public class MarketEmployeeRole extends Role implements MarketEmployee {
 
-	private enum EmployeeState{nothing, entering, working}
+	private enum EmployeeState{nothing, entering, working, processing, doneProcessing, waitingForPayment}
 	private EmployeeState state;
-	
+
 	private enum orderState {pending, processing, completed};
 	public List<MarketOrder> currentMarketOrders = Collections.synchronizedList(new ArrayList<MarketOrder>());
 	public List<Invoice> invoice = Collections.synchronizedList(new ArrayList<Invoice>());
 	public List<Double> payments = Collections.synchronizedList(new ArrayList<Double>());
 	private List<MarketCustomerRole> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomerRole>());
-	private EmployeeGui gui = null;
+	public EmployeeGui gui = null;
 
 	//public Map<String,MarketData> inventory = Collections.synchronizedMap(new HashMap<String,MarketData>()); 
 	public Inventory inventory = null;
@@ -36,6 +37,15 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	public EventLog log = new EventLog();
 	private boolean workAvailable = true;
 	private int deskNum = 0;
+	private double amountDue;
+	private boolean isProcessed = false;
+	private MarketCustomerRole currentCustomer;
+
+	private Semaphore atDesk = new Semaphore(0, true);
+
+
+
+
 	public class MarketOrder {
 		String type;
 		int quantity;
@@ -68,14 +78,14 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		this.inventory = inventory;
 		state = EmployeeState.nothing;
 	}
-	
+
 	public void msgGoToDesk(int deskNum) {
 		print ("Received msgGoToDesk");
 		this.deskNum = deskNum;
 		state = EmployeeState.entering;
 		stateChanged();
 	}
-	
+
 	public void msgLeave() {
 		workAvailable = false;
 		stateChanged();
@@ -84,6 +94,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 	public void msgServiceCustomer(MarketCustomerRole customer) {
 		print ("Received msgServiceCustomer");
+		currentCustomer = customer;
 		waitingCustomers.add(customer);
 		stateChanged();
 	}
@@ -97,6 +108,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 
 	public void msgHereAreMyOrders(List<MyOrder> orders, MarketCustomer cust) {
+		print ("Received msgHereAreMyOrders");
 		for (MyOrder o : orders) {
 			MarketOrder marketOrder = new MarketOrder(o.type, o.amount, cust, orderState.pending, "person");
 			currentMarketOrders.add(marketOrder);
@@ -104,18 +116,30 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		stateChanged();
 	}
 
+	public void msgDoneProcessing() {
+		state = EmployeeState.doneProcessing;
+		stateChanged();
+	}
+
 	public void msgHereIsPayment(double payment) {
+		print ("Received msgHereIsPayment");
 		payments.add(payment);
 		stateChanged();
 	}
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		
+
 		if (state == EmployeeState.entering) {
 			gui.MoveToDesk(deskNum);
+			try {
+				atDesk.acquire();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return true;
 		}
- 
+
 		if (!payments.isEmpty()) {
 			ProcessPayment();
 			return true;
@@ -127,10 +151,19 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			return true;
 		}
 
-		/*if (!currentMarketOrders.isEmpty()) {
+		if (state == EmployeeState.doneProcessing) {
+			currentMarketOrders.get(0).cust.msgOrderFulfullied(invoice, amountDue);
+			state = EmployeeState.waitingForPayment;
+			//currentMarketOrders.clear();
+			return true;
+		}
+
+		if ((!currentMarketOrders.isEmpty() && (state == EmployeeState.working))) {
+			state = EmployeeState.processing;
 			FulfillOrder();
 			return true;
-		}*/
+		}
+
 		/*for (MarketOrder o : marketOrders) {
 			if (o.state == orderState.pending) {
 				o.state = orderState.processing;
@@ -147,10 +180,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}
 
 
-	public void ProcessPayment() {
-		manager.msgHereIsMoney(payments.get(0), this);
-		payments.remove(0);
-	}
+
 
 
 	/*public void FulFillOrder(final MarketOrder order) {
@@ -161,7 +191,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			timer.schedule(new TimerTask() {
 				public void run() {  
 					if (order.custType.equals("person")) {
-						order.cust.msgOrderFulFullied(new Invoice(order.type, order.quantity, price*order.quantity, marketNum));
+						order.cust.msgOrderFulfullied(new Invoice(order.type, order.quantity, price*order.quantity, marketNum));
 					}
 				}},
 				10000);//how long to wait before running task
@@ -169,9 +199,9 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		else {
 			if (order.custType.equals("person")){    
 				order.cust.msgOrderUnfulfilled(order.type, order.quantity);
-				marketOrders.remove(order);
+				currentMarketOrders.remove(order);
 			}
-			if order.custType.equals("restaurant") {    
+			/*if order.custType.equals("restaurant") {    
 	            order.cookCust.msgOrderUnfulfilled(order.type, order.amount);
 	            orders.remove(orders);
 	        }
@@ -181,36 +211,58 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 	public void FulfillOrder() {
 		for (final MarketOrder o : currentMarketOrders) {
+			//System.out.println (o.quantity + " " + inventory.inventory.get(o.type).amount);
 			if(o.quantity <= inventory.inventory.get(o.type).amount) {
 				o.state = orderState.completed;
 				inventory.inventory.get(o.type).amount -= o.quantity;
+				inventory.update();
 				final double price = o.quantity * inventory.inventory.get(o.type).price;
 				timer.schedule(new TimerTask() {
 					public void run() {  
 						if (o.custType.equals("person")) {
-							Invoice i = new Invoice(o.type, o.quantity, price*o.quantity, marketNum);
+							Invoice i = new Invoice(o.type, o.quantity, price*o.quantity);
 							invoice.add(i);
+							amountDue += price;
+							if (invoice.size() == currentMarketOrders.size())
+								msgDoneProcessing();
 						}
 					}},
-					500*currentMarketOrders.size());//how long to wait before running task
+					500);//how long to wait before running task
 			}
 			else {
 				if (o.custType.equals("person")){    
-					Invoice i = new Invoice(o.type, 0, 0, marketNum);
+					Invoice i = new Invoice(o.type, 0, 0);
 					invoice.add(i);
 				}
 			}
 		}
-		
-		currentMarketOrders.get(0).cust.msgOrderFulfullied(invoice);
-		currentMarketOrders.clear();
-
 	}
-	
+
+
+	public void ProcessPayment() {
+
+		print ("Received: " + payments.get(0).doubleValue() + " Amount Due: " + amountDue);
+		if (payments.get(0).doubleValue() == amountDue) {
+			manager.msgHereIsMoney(payments.get(0), this);
+			currentCustomer.msgYouCanLeave();
+		}
+		else {
+			print ("You will face the wrath of Rami");
+		}
+		payments.remove(0);
+	}
+
+
 	public void setGui (EmployeeGui gui) {
 		this.gui = gui;
 		state = EmployeeState.entering;
 	}
-	
+
+	public void msgAtDesk() {
+		atDesk.release();
+		state = EmployeeState.working;
+		stateChanged();
+	}
+
 }
 

@@ -97,11 +97,11 @@ public class MainGui extends JFrame implements MouseListener {
         addMouseListener(this);
         
         // add gui for all buildings, set the guis to invisible initially
-        marketGui = new MarketGui();
+        /*marketGui = new MarketGui();
         marketGui.setTitle("Market");
         marketGui.setVisible(false);
         marketGui.setResizable(false);
-        marketGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        marketGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);*/
         
         /*for (int i = 0; i < 6; i++) {
         	restaurantGuis[i] = new RestaurantGui();
