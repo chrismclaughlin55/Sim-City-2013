@@ -32,7 +32,8 @@ public class Building extends Rectangle2D.Double {
 	protected Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
 
 	public BusStopAgent busStop;
-
+	public boolean hasManager=false;
+	
 	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
 		this.mainGui = mainGui;
@@ -85,6 +86,9 @@ public class Building extends Rectangle2D.Double {
 		 */
 	}
 	
+	public boolean hasManager() {
+		return hasManager;
+	}
 	public void LeaveBuilding(PersonAgent p) {
 		
 	}
@@ -142,6 +146,7 @@ public class Building extends Rectangle2D.Double {
 	
 	public void setManager(PersonAgent p) {
 		manager = p;
+		hasManager = true;
 	}
 	
 	public void setBusStop(BusStopAgent bs) {

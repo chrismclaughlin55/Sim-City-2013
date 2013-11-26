@@ -119,17 +119,17 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	}
 	private void processLoan(double approvedAmount){
-		/* double requestAmount = loanAmount;
-		 * if(loanAmount < .75 * approvedAmount)
-		 * requestAmount = 0;
-		 *  
-		 */
+		double requestAmount = approvedAmount;  
+		if(approvedAmount< .75 * myInfo.loanRequestAmount)
+		  requestAmount = 0;
+		   
 		state = CustState.ProcessLoan;
-		//TODO t.msgITakeIt(requestAmount);
+		 t.msgITakeIt(requestAmount);
+		 myInfo.loanAmount = requestAmount;
+		 myInfo.loanRequestAmount = 0;
 	}
 	@Override
 	public PersonAgent returnPerson() {
-		// TODO Auto-generated method stub
 		return this.person;
 	}
 

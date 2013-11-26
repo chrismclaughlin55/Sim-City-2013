@@ -34,6 +34,9 @@ public class CityData implements ActionListener {
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	public Market market;
 	Timer globalTimer;
+	
+	public List<Home> homes = Collections.synchronizedList(new ArrayList<Home>());
+	public List<Apartment> apartments = Collections.synchronizedList(new ArrayList<Apartment>());
 	//ALSO needs a 2-d array of the entire place
 	int timeInterval;
 	public CityData() {
@@ -76,6 +79,10 @@ public class CityData implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public int getPopulation() {
+		return people.size();
 	}
 	
 	/*
