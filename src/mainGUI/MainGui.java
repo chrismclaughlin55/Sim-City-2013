@@ -31,6 +31,7 @@ import city.Room;
 import city.gui.BusGui;
 import city.gui.PersonGui;
 import config.ConfigParser;
+import Gui.Gui;
 import bankgui.*;
 
 /**
@@ -195,10 +196,10 @@ public class MainGui extends JFrame implements MouseListener {
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
 		
+		p.setDesiredRole(role);
 		if(destination.equals("Restaurant"))
 		{
 			p.bigState = BigState.goToRestaurant;
-			p.setDesiredRole(role);
 		}
 		else
 		{
@@ -245,6 +246,11 @@ public class MainGui extends JFrame implements MouseListener {
 		*/
 		
 	}
+    
+    public void removeGui(Gui gui)
+    {
+    	mainAnimationPanel.cd.removeGui(gui);
+    }
     
     @Override
     public void mouseClicked(MouseEvent e) {

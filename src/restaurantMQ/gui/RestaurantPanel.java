@@ -335,6 +335,7 @@ public class RestaurantPanel extends JPanel {
     	
     	JCheckBox hungry = new JCheckBox("Hungry?");
     	MQCustomerRole c = new MQCustomerRole(person, timer, hungry, this);	
+    	
     	CustomerGui g = new CustomerGui(c, gui);
     	
     	hungry.addActionListener(gui);
