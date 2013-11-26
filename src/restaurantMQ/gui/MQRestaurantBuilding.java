@@ -14,7 +14,6 @@ public class MQRestaurantBuilding extends Building
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
 		restPanel = restGui.getRestaurantPanel();
-		System.out.println("hello");
 	}
 	
 	public void EnterBuilding(PersonAgent person, String roleRequest)

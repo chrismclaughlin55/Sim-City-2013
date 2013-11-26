@@ -21,15 +21,18 @@ import javax.swing.JPanel;
 
 import restaurantMQ.gui.RestaurantGui;
 import market.gui.MarketGui;
+import city.Apartment;
 import city.Building;
 import city.Building.BuildingType;
 import city.BusAgent;
 import city.HomeGui;
 import city.PersonAgent;
 import city.PersonAgent.BigState;
+import city.Room;
 import city.gui.BusGui;
 import city.gui.PersonGui;
 import config.ConfigParser;
+import Gui.Gui;
 import bankgui.*;
 
 /**
@@ -194,9 +197,11 @@ public class MainGui extends JFrame implements MouseListener {
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
 		
+		p.setDesiredRole(role);
 		if(destination.equals("Restaurant"))
 		{
 			p.bigState = BigState.goToRestaurant;
+<<<<<<< HEAD
 			p.setDesiredRole(role);
 			p.startThread();
 			return;
@@ -212,6 +217,8 @@ public class MainGui extends JFrame implements MouseListener {
 			p.setDesiredRole(role);
 			p.startThread();
 			return;
+=======
+>>>>>>> cad3f45ea38d7181664e39f06213f001d80360bd
 		}
 			p.bigState = BigState.goHome;
 			p.assignHome(pickHome(p));
@@ -230,7 +237,14 @@ public class MainGui extends JFrame implements MouseListener {
     		//}
     	}
     	for (Building b: mainAnimationPanel.cd.apartments) {
-    		return b;
+    		Apartment a = (Apartment) b;
+    		for (int i = 0; i < 8; i++) {
+    			if (!a.rooms.get(i).isOccupied) {
+    				a.rooms.get(i).setTenant(p);
+    				p.setRoomNumber(i);
+    				return b;
+    			}
+    		}
     	}
     	return null;
     }
@@ -248,6 +262,11 @@ public class MainGui extends JFrame implements MouseListener {
 		*/
 		
 	}
+    
+    public void removeGui(Gui gui)
+    {
+    	mainAnimationPanel.cd.removeGui(gui);
+    }
     
     @Override
     public void mouseClicked(MouseEvent e) {
