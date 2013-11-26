@@ -141,5 +141,10 @@ public abstract class Agent {
 			this.interrupt();
 		}
 	}
+
+	public void refresh() {
+		stateChange.drainPermits();
+		stateChange.release();
+	}
 }
 

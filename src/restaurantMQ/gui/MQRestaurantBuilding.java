@@ -39,6 +39,7 @@ public class MQRestaurantBuilding extends Building
 		else if(roleRequest.equals("Host"))
 		{
 			restPanel.addHost(person);
+			isOpen = true;
 		}
 	}
 	

@@ -122,6 +122,7 @@ public class PersonAgent extends Agent
 	}
 	
 	/*SETTERS*/
+	
 	public void assignHome(Building home)
 	{
 		this.home = home;
@@ -132,6 +133,11 @@ public class PersonAgent extends Agent
 	}
 	
 	/*MESSAGES*/
+	public void refresh()
+	{
+		super.refresh();
+	}
+	
 	public void msgDoneMoving() {
 		isMoving.release();
 	}
