@@ -66,7 +66,7 @@ public class Bank extends Building {
 				}
 			}
 		}
-		if(roleRequest.equals("Teller")){
+		if(roleRequest.equals("BankTeller")){
 			if(isOpen()){
 				if(existingTellerRoles.get(p) != null){
 					TellerRole role = existingTellerRoles.get(p);
