@@ -77,7 +77,7 @@ public class BankManagerRole extends Role implements BankManager {
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		for( myTeller t: tellers){
-			if(t.state == tellerState.available){
+			if(t.state == tellerState.available && line.size()>0){
 				helpCustomer(line.remove(0), t);
 			return true;
 		}

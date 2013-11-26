@@ -9,6 +9,8 @@ import javax.swing.ImageIcon;
 
 import Gui.Gui;
 import mainGUI.MainGui;
+import city.BusAgent;
+import city.BusStopAgent;
 import city.PersonAgent;
 import city.Building;
 
@@ -171,5 +173,19 @@ public class PersonGui implements Gui{
 	
 	public void DoLeaveBuilding() {
 		isPresent = true;
+	}
+
+	public void DoGoToBusStop(BusStopAgent destinationBusStop) {
+		moving = true;
+		xDestination = destinationBusStop.getX();
+		yDestination = destinationBusStop.getY();
+		
+	}
+
+	public void DoGoToBus(BusAgent bus) {
+		moving = true;
+		xDestination = bus.getX() + 10;
+		yDestination = bus.getY() + 10;
+		
 	}
 }

@@ -53,15 +53,16 @@ public class MarketGui extends JFrame implements ActionListener {
 	 * @param person customer (or waiter) object
 	 */
 	public void updateMarketPanel() {
-
+/*
 		for (JLabel label : marketPanel.labels) {
-			label.setText("Quantity of steak: " + market.inventory.inventory.get("steak").amount);
-			label.setText("Quantity of salad: " + market.inventory.inventory.get("salad").amount);
-			label.setText("Quantity of chicken: " + market.inventory.inventory.get("chicken").amount);
-			label.setText("Quantity of pizza: " + market.inventory.inventory.get("pizza").amount);
+			label.setText("Quantity of steak: " + market.inventory.inventory.get("Steak").amount);
+			label.setText("Quantity of salad: " + market.inventory.inventory.get("Salad").amount);
+			label.setText("Quantity of chicken: " + market.inventory.inventory.get("Chicken").amount);
+			label.setText("Quantity of pizza: " + market.inventory.inventory.get("Pizza").amount);
 		}
 
 		marketPanel.validate();
+		*/
 	}
 
 	@Override
