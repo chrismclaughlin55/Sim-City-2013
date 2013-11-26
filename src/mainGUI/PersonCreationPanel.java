@@ -50,6 +50,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	private MainGui mainGui;
 
 	JRadioButton unemployed;
+	JRadioButton landlord;
 	//restaurant jobs
 	JRadioButton restMQwaiter;
 	JRadioButton restMQhost;
@@ -78,6 +79,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		personPane.setLayout(null);
 		
 		unemployed = new JRadioButton("Unemployed", true);
+		landlord = new JRadioButton("Landlord", false);
 		restMQwaiter = new JRadioButton("Waiter", false);
 		restMQhost = new JRadioButton("Host", false);
 		restMQcook = new JRadioButton("Cook", false);
@@ -88,6 +90,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		bankTeller = new JRadioButton("BankTeller", false);
 		
 		jobs.add(unemployed);
+		jobs.add(landlord);
 		jobs.add(restMQwaiter);
 		jobs.add(restMQhost);
 		jobs.add(restMQcook);
@@ -99,6 +102,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		
 		jobsPane.setLayout(null);
 		unemployed.setBounds(0, 0, 150, 30);
+		landlord.setBounds(145, 0, 140, 30);
 		restMQhost.setBounds(0, 30, 140, 30);
 		restMQwaiter.setBounds(145, 30, 145, 30);
 		restMQcook.setBounds(300, 30, 140, 30);
@@ -108,6 +112,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		bankManager.setBounds(0, 90, 140, 30);
 		bankTeller.setBounds(145, 90, 140, 30);
 		jobsPane.add(unemployed);
+		jobsPane.add(landlord);
 		jobsPane.add(restMQwaiter);
 		jobsPane.add(restMQhost);
 		jobsPane.add(restMQcook);
