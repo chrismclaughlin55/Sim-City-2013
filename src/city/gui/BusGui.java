@@ -109,7 +109,6 @@ public class BusGui implements Gui {
 		moving = true;
 		xDestination = x;
 		yDestination = y;
-		System.out.println("yo?");
 		
 	}
 
