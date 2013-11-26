@@ -42,16 +42,17 @@ public class BankManagerRole extends Role implements BankManager {
 	//MESSAGES
 	public void msgAddTeller(TellerRole newRole) {
 		tellers.add(new myTeller(newRole));
+		print("added teller" + newRole.name);
 		
 	}
 	//Direct Deposit Message
 	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
 		CustInfo p = CustAccounts.get(payer);
-		if(p != null){
+		if(!p.equals(null)){
 			p.moneyInAccount-=payment;
 		}
 		CustInfo rec = CustAccounts.get(reciever);
-		if(rec != null){
+		if(!rec.equals(null)){
 			rec.moneyInAccount+=payment;
 		}
 		print(rec.custName+" was paid "+payment+" by "+p.custName);
@@ -118,7 +119,7 @@ public class BankManagerRole extends Role implements BankManager {
 	}
 	
 	private void sendInfo(myTeller t) {
-		if(CustAccounts.get(t.c.getPerson()) != null)
+		if(!CustAccounts.get(t.c.getPerson()).equals(null))
 			t.custInfo = CustAccounts.get(t.c.getPerson());
 		else t.custInfo = null;
 		
