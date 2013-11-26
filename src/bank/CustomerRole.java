@@ -65,6 +65,7 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	//SCHEDULER
 	public boolean pickAndExecuteAnAction() {
+		print("made it to scheduler");
 		if(state == CustState.InLine && event == CustEvent.GoToTeller){
 			sayHello();
 			return true;
@@ -116,11 +117,13 @@ public class CustomerRole extends Role implements BankCustomer{
 			t.msgDeposit(depositAmount);
 
 		}
+		print("made it to tell teller");
 	}
 	private void leave(){
 		//TODO GUI SHIT
 		state = CustState.Left;	
 		// make instance of CustInfo
+		print("made it to leave");
 
 	}
 	private void processLoan(double approvedAmount){

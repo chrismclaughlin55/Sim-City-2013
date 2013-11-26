@@ -37,6 +37,7 @@ public class TellerRole extends Role implements Teller{
 	//MESSAGES
 	public void msgAddManager(BankManagerRole bm){
 		this.bm = bm;
+		stateChanged();
 	}
 	@Override
 	public void msgHello(CustInfo c) {
@@ -83,6 +84,7 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		print("made it to scheduler");
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;
@@ -112,13 +114,13 @@ public class TellerRole extends Role implements Teller{
 	}
 	//ACTIONS
 	private void ask() {
-	
+	print("asked what to do");
 		currentCustInfo.customer.msgWhatWouldYouLike();
 		state = State.waitingForResponse;
 	}
 
 	private void getInfo() {
-	
+	print("asking for info from manager");
 		bm.msgGiveMeInfo(currentCustInfo.customer, this);
 			state = State.waitingForInfo;
 	}
