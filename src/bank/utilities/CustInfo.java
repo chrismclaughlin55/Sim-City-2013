@@ -22,6 +22,7 @@ public class CustInfo {
 		this.customer = b;
 		this.accountNumber = accountNumberCounter;
 		accountNumberCounter++;
+		this.moneyInAccount = 200;
 		
 	}
 	public CustInfo(CustInfo c){
