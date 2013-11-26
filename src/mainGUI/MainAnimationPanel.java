@@ -47,42 +47,42 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 0; i < 2; i++) {
 			Building b = new Apartment(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(10+95, 140+i*130+35);
+			BusStopAgent bs = new BusStopAgent(10+95+25, 140+i*130+35+5);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
 		}
 		for (int i = 0; i < 2; i++) {
 			Building b = new Apartment(10, 410+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(10+95, 410+i*130+35);
+			BusStopAgent bs = new BusStopAgent(10+95+25, 410+i*130+35+5);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
 		}
 		for (int i = 0; i < 2; i++) {
 			Building b = new Home(190+i*130, 680, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(190+i*130+95, 680);
+			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 680-45);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
 		}
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(500, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(500-10, 410+i*130+35);
+			BusStopAgent bs = new BusStopAgent(500-10-50, 410+i*130+35+5);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
 		}
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(500, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(500-10, 140+i*130+35);
+			BusStopAgent bs = new BusStopAgent(500-10-50, 140+i*130+35+5);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
 		}
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(190+i*130, 0, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(190+i*130+95, 0+35);
+			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 0+35+5+55);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
 		}
