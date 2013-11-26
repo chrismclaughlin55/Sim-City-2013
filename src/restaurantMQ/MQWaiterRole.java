@@ -23,7 +23,7 @@ public class MQWaiterRole extends Role implements Waiter
 	private Host host; //assigned in constructor
 	private WaiterGui gui = null;
 	private Cashier cashier;
-	private List<Cook> cooks = new ArrayList<Cook>();
+	private List<Cook> cooks;
 	public String name;
 	int waitingSpot;
 	enum BreakStatus {None, WantBreak, AskedForBreak, BreakOK, OnBreak, Back};
@@ -63,6 +63,7 @@ public class MQWaiterRole extends Role implements Waiter
 	
 	//Construct for waiter's information about orders
 	enum OrderState {OrderTaken, Cooking, Reject, Done};
+	/*END OF DATA*/
 	
 	private class Order
 	{
@@ -554,4 +555,15 @@ public class MQWaiterRole extends Role implements Waiter
 		host.msgBackFromBreak(this);
 	}
 	/*END OF ACTIONS*/
+	
+	/*SETTERS*/
+	public void setCashier(Cashier c)
+	{
+		cashier = c;
+	}
+
+	public void setHost(Host host2) {
+		host = host2;
+		
+	}
 }

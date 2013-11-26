@@ -31,8 +31,8 @@ public class BusAgent extends Agent {
 	BusStopAgent next;
 	private Semaphore atDestination = new Semaphore(0,true);
 	
-	public BusAgent() {
-		cd = new CityData();
+	public BusAgent(CityData cd) {
+		this.cd = cd;
 		curr = cd.busStops.get(0);
 		next = cd.busStops.get(1);
 		myState = BusState.leavingStop;
@@ -44,8 +44,13 @@ public class BusAgent extends Agent {
 		busgui = bg;
 	}
 	//MESSAGES
+	
+	//CALLED BY BUSGUI
 	public void msgAtDestination() {
+		
+		myState = BusState.atStop;
 		atDestination.release();
+		stateChanged();
 		// TODO Auto-generated method stub
 		
 	}
@@ -57,14 +62,8 @@ public class BusAgent extends Agent {
         stateChanged();
 	}
 
-	//CALLED BY BUSGUI
-	public void msgAtStop() { 
-		BusStopAgent temp=curr.nextStop;
-		curr = next;
-		next = temp;
-		myState = BusState.atStop;
-		stateChanged();
-	}
+
+
 	
 	//SCHEDULER
 	protected boolean pickAndExecuteAnAction() {
@@ -92,6 +91,10 @@ public class BusAgent extends Agent {
 	}
 	
 	private void LeaveStop() {
+		BusStopAgent temp=curr.nextStop;
+		curr = next;
+		next = temp;
+        stateChanged();
 		busgui.DoGoToNextStop(next.getX(),next.getY());
 	    myState=BusState.moving;
 	    try {
@@ -128,7 +131,7 @@ public class BusAgent extends Agent {
 		}
 		curr.msgArrivedAtStop(this);
 	}
-	
+
 	protected void stateChanged() {
 		super.stateChanged();
 	}

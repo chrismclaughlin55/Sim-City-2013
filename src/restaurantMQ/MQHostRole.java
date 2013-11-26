@@ -28,7 +28,7 @@ public class MQHostRole extends Role implements Host
 	public List<Customer> waitingCustomers = Collections.synchronizedList(new ArrayList<Customer>());
 	public Collection<Table> tables;
 	public Collection<WaitingSpot> waitingSpots;
-	public List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
+	public List<Waiter> waiters;
 	private List<Cook> cooks = new ArrayList<Cook>();
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
@@ -356,6 +356,21 @@ public class MQHostRole extends Role implements Host
 		myWaiters.add(new MyWaiter(waiter));
 		workingWaiters++;
 		stateChanged();
+	}
+	
+	public void removeWaiter(Waiter waiter)
+	{
+		synchronized(myWaiters)
+		{
+			for(MyWaiter w : myWaiters)
+			{
+				if(w.waiter == waiter)
+				{
+					myWaiters.remove(w);
+					return;
+				}
+			}
+		}
 	}
 	
 	public void addTable()

@@ -164,8 +164,8 @@ public class MainGui extends JFrame implements MouseListener {
 		}
 		
 		//add bus agent
-		BusAgent bus = new BusAgent(); 
-		BusGui bg = new BusGui(bus,this);
+		BusAgent bus = new BusAgent(mainAnimationPanel.cd); 
+		BusGui bg = new BusGui(bus,this,mainAnimationPanel.cd);
 		bus.setGui(bg);
 		mainAnimationPanel.addGui(bg);
 		bus.startThread();
@@ -186,7 +186,7 @@ public class MainGui extends JFrame implements MouseListener {
 		PersonGui personGui = new PersonGui(p, this);
 		mainAnimationPanel.addGui(personGui);
 		p.setGui(personGui);
-		p.bigState = BigState.goHome;
+		p.bigState = BigState.goToBank;
 		p.startThread();
 		
 	}

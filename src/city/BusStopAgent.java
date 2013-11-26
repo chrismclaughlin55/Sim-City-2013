@@ -21,7 +21,7 @@ public class BusStopAgent extends Agent{
 	};
 	public enum BusStopState {waitingForBus, busHere, busLeaving };
 	BusStopState stopState;
-	CityData CityData;
+	CityData cd;
     HashMap<PersonAgent, BusStopAgent> peopleWaiting;
     BusStopAgent nextStop;
     BusAgent currentBus;
@@ -31,14 +31,14 @@ public class BusStopAgent extends Agent{
     //actual painting coordinates will be handled by gui
     //CityData places a square at coordinates of this particular BusStop
 
-	public BusStopAgent() {
-		CityData = new CityData();
+	public BusStopAgent(CityData cd) {
 		waitingPeople = new ArrayList<PersonAgent>();
 		peopleWaiting = new HashMap<PersonAgent, BusStopAgent>();
 		
 	}
 	
-	public BusStopAgent(int xPos, int yPos) {
+	public BusStopAgent(int xPos, int yPos, CityData cd) {
+		this.cd = cd;
 		stopState = BusStopState.waitingForBus;
 		xPosition = xPos;
 		yPosition = yPos;
@@ -76,6 +76,7 @@ public class BusStopAgent extends Agent{
     }
 	
     public void msgArrivedAtStop(BusAgent bus) {
+    	System.out.println("arrived at stop");
         currentBus = bus;
         stopState = BusStopState.busHere;
         stateChanged();
@@ -100,10 +101,15 @@ public class BusStopAgent extends Agent{
     {
         currentBus.msgPeopleAtStop(peopleWaiting);
         stopState = BusStopState.busLeaving;
-        currentBus = null;      
+          
     }
     
     private void ClearPassengers() {
     	peopleWaiting.clear();
+    	stopState = BusStopState.waitingForBus;
+    }
+    
+    protected void stateChanged() {
+    	super.stateChanged();
     }
 }

@@ -43,56 +43,55 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		//Add buildings
 		this.mainGui = mainGui;
 		cd = new CityData();
-
 		for (int i = 0; i < 2; i++) {
 			Building b = new Apartment(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(10+95+25, 140+i*130+35+5);
+			BusStopAgent bs = new BusStopAgent(10+95+25, 140+i*130+35+5,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
+			bs.startThread();
 		}
 		for (int i = 0; i < 2; i++) {
 			Building b = new Apartment(10, 410+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(10+95+25, 410+i*130+35+5);
+			BusStopAgent bs = new BusStopAgent(10+95+25, 410+i*130+35+5,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
+			bs.startThread();
 		}
 		for (int i = 0; i < 2; i++) {
 			Building b = new Home(190+i*130, 680, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 680-45);
+			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 680-45,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
+			bs.startThread();
 		}
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(500, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(500-10-50, 410+i*130+35+5);
+			BusStopAgent bs = new BusStopAgent(500-10-50, 410+i*130+35+5,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
+			bs.startThread();
 		}
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(500, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(500-10-50, 140+i*130+35+5);
+			BusStopAgent bs = new BusStopAgent(500-10-50, 140+i*130+35+5,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
+			bs.startThread();
 		}
 		for (int i = 1; i >= 0; i--) {
 			Building b = new Home(190+i*130, 0, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
-			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 0+35+5+55);
+			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 0+35+5+55,cd);
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
+			bs.startThread();
 		}
 		
-
-		BusAgent bus = new BusAgent(); 
-		BusGui bg = new BusGui(bus,mainGui);
-		bus.setGui(bg);
-		addGui(bg);
-		bus.startThread();
 
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
@@ -120,6 +119,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(17).setBusStop(cd.busStops.get(7));
 		cd.buildings.get(18).setBusStop(cd.busStops.get(3));
 		cd.buildings.get(19).setBusStop(cd.busStops.get(6));
+		
 		cd.setBusStopRoute();
 		//setBackground(Color.WHITE);
 		
