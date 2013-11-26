@@ -376,7 +376,10 @@ public class PersonAgent extends Agent
 	
 	protected void goHome() {
 		//int homeNumber = (int)((int)(Math.random()*11));
+		currentBuilding = cityData.buildings.get(this.home.buildingNumber);
+		System.out.println(this.home.buildingNumber);
 		personGui.DoGoToBuilding(this.home.buildingNumber); // 11 need to be replaced by the person's data of home number
+		System.out.println(this.home.buildingNumber);
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -385,7 +388,8 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
-		currentBuilding = cityData.buildings.get(this.home.buildingNumber);
+		System.out.println(this.home.buildingNumber);
+		System.out.println(cityData.buildings.get(this.home.buildingNumber).buildingNumber);
 		if (home instanceof Home) {
 			currentBuilding.EnterBuilding(this, "");
 		}
@@ -406,6 +410,7 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void leaveHome() {
+		currentBuilding = cityData.buildings.get(home.buildingNumber);
 		if (home instanceof Home) {
 			personGui.DoGoToEntrance();
 			atEntrance.drainPermits();
@@ -416,6 +421,7 @@ public class PersonAgent extends Agent
 				e.printStackTrace();
 			}
 			personGui.DoLeaveBuilding();
+			currentBuilding.LeaveBuilding(this);
 		}
 		if (home instanceof Apartment) {
 			Apartment a = (Apartment) home;
@@ -435,9 +441,8 @@ public class PersonAgent extends Agent
 				e.printStackTrace();
 			}
 			personGui.DoLeaveBuilding();
+			a.LeaveBuilding(this);
 		}
-		currentBuilding = cityData.buildings.get(home.buildingNumber);// 11 need to be replaced by the person's data of home number
-		currentBuilding.LeaveBuilding(this);
 		bigState = BigState.doingNothing;
 	}
 	
@@ -453,7 +458,7 @@ public class PersonAgent extends Agent
 		}
 		personGui.DoGoIntoBuilding();
 		currentBuilding.EnterBuilding(this, "customer");
-		print("going into bank");
+	
 	}
 	
 	protected void goToMarket() {

@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Formatter.BigDecimalLayoutForm;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -129,11 +130,7 @@ public class MainGui extends JFrame implements MouseListener {
 			while(scan.hasNextLine()) {
 				String newPerson = scan.next();
 				if(newPerson.equals("NewPerson")) {
-					PersonAgent p = new PersonAgent(null, this, mainAnimationPanel.cd);
-					mainAnimationPanel.cd.addPerson(p);
-					PersonGui personGui = new PersonGui(p, this);
-					mainAnimationPanel.addGui(personGui);
-					p.setGui(personGui);
+					PersonAgent p = createPerson(null,null);
 					for(int i=0; i<5; i++) {
 						String property = scan.next();
 						String temp = scan.next();
@@ -164,6 +161,7 @@ public class MainGui extends JFrame implements MouseListener {
 						}
 					}
 					p.startThread();
+					newPerson = null;
 				 }
 				 
 			 }
@@ -185,29 +183,51 @@ public class MainGui extends JFrame implements MouseListener {
         gui.setVisible(true);
         gui.setResizable(true);
     }
-    
+    public PersonAgent createPerson(String name, String role) {
+    	if(mainAnimationPanel.cd.getPopulation() >= 40) {
+    		JFrame frame = new JFrame();
+    		JOptionPane.showMessageDialog(frame, "Population limit reached!");
+    		return null;
+    	}
+		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
+		p.assignHome(pickHome(p));
+		mainAnimationPanel.cd.addPerson(p);
+		PersonGui personGui = new PersonGui(p, this);
+		mainAnimationPanel.addGui(personGui);
+		p.setGui(personGui);
+		p.setDesiredRole(role);
+		p.bigState = BigState.goHome;
+		
+		return p;
+    }
     public void addPerson(String name, String role, String destination) {
     	if(mainAnimationPanel.cd.getPopulation() >= 40) {
     		JFrame frame = new JFrame();
     		JOptionPane.showMessageDialog(frame, "Population limit reached!");
     		return;
     	}
-		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
-		mainAnimationPanel.cd.addPerson(p);
-		PersonGui personGui = new PersonGui(p, this);
-		mainAnimationPanel.addGui(personGui);
-		p.setGui(personGui);
+		PersonAgent p = createPerson(name, role);
 		
-		p.setDesiredRole(role);
 		if(destination.equals("Restaurant"))
 		{
 			p.bigState = BigState.goToRestaurant;
+			p.setDesiredRole(role);
+			p.startThread();
+			return;
 		}
-		else
-		{
-			p.bigState = BigState.goHome;
-			p.assignHome(pickHome(p));
+		if(destination.equals("Bank")){
+			p.bigState = BigState.goToBank;
+			p.setDesiredRole(role);
+			p.startThread();
+			return;
 		}
+		if(destination.equals("Market")){
+			p.bigState = BigState.goToMarket;
+			p.setDesiredRole(role);
+			p.startThread();
+			return;
+		}
+			
 		p.startThread();
 		
 	}

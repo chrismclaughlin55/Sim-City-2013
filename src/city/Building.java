@@ -124,13 +124,6 @@ public class Building extends Rectangle2D.Double {
 		}
 	}
 
-	/*class Manager {
-		PersonAgent person;
-		Role role;
-
-		Manager() {
-		}
-	}*/
 
 	public void setType(BuildingType type) {
 		this.type = type;

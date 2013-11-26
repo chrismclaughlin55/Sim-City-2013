@@ -16,10 +16,8 @@ public class EmployeeGui implements Gui {
 
     private MarketEmployeeRole role = null;
     
-    public EmployeeGui(MarketEmployeeRole role, int x, int y) {
+    public EmployeeGui(MarketEmployeeRole role) {
     	this.role = role;
-    	xDestination = x;
-    	yDestination = y;
     }
 
 
@@ -43,7 +41,7 @@ public class EmployeeGui implements Gui {
 
 	@Override
 	public void draw(Graphics2D g) {
-		Color employeeColor = new Color (46, 204, 113);
+		Color employeeColor = new Color (52, 152, 219);
 		g.setColor(employeeColor);
 		g.fillRect(xPos, yPos, 30, 30);
 
@@ -67,6 +65,16 @@ public class EmployeeGui implements Gui {
 
 	public int getYPos() {
 		return yPos;
+	}
+
+	public void LeaveMarket() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void MoveToDesk(int deskNum) {
+		xDestination = 70+40*deskNum;
+		yDestination = 205;
 	}
 
 }
