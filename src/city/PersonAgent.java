@@ -40,13 +40,14 @@ public class PersonAgent extends Agent
 	Building destinationBuilding;
 	Building jobBuilding;
 	Building home;
+	int timeUnit = 5;
 	BusStopAgent currentBusStop;
 	BusStopAgent destinationBusStop;
 	String desiredRole;
 	String job;
 
 	
-	boolean goToWork = true;
+	boolean goToWork = false;
 	
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
@@ -194,37 +195,42 @@ public class PersonAgent extends Agent
 						return false; //put the agent thread back to sleep
 				}
 				
-				if(hungerLevel >= HUNGRY) //inventory also has to be sufficient
+				if (hungerLevel >= HUNGRY) //inventory also has to be sufficient
 				{
 					makeFood(); //just choose a random item from the inventory
 					return true;
 				}
 				
-				if(goToWork)
+				if (goToWork)
 				{
 					leaveHome(); //leave the house and set bigState to doingNothing
-				}
-				
-				if(home.type == BuildingType.apartment && rentDue > 0)
-				{
-					payRent();
 					return true;
 				}
 				
-				if(tiredLevel >= TIRED)
+				/*if (home.type == BuildingType.apartment && rentDue > 0)
+				{
+					payRent();
+					return true;
+				}*/
+				
+				if (tiredLevel >= TIRED)
 				{
 					goToSleep();
 					return false; //intentional because the thread is being out to sleep
 				}
 				
 				if (homeState == HomeState.onCouch) {
-					
+					System.err.println("calling go to couch");
+					goToCouch();
+					return true;
 				}
 				if (homeState == HomeState.none) {
+					System.err.println("Calling leave home");
 					leaveHome();
+					return true;
 				}
 				//personGui.DoGoToBed();
-				return true;
+				//return true;
 			}
 			case leaveHome: {
 				//personGui.DoGoToEntrance();
@@ -271,23 +277,69 @@ public class PersonAgent extends Agent
 	}
 	
 	private void payRent() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	private void WakeUp() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	private void makeFood() {
-		// TODO Auto-generated method stub
+		hungerLevel = 0;
+		System.err.println("calling func");
+		homeState = homeState.hungry;
+		personGui.DoGoToRefridgerator();
+		try {
+			isMoving.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		personGui.DoGoToStove();
+		try {
+			isMoving.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			public void run() {
+				homeState = HomeState.onCouch;
+				isMoving.release();
+			}
+		}, 5000);
+		try {
+			isMoving.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
 	private void goToSleep() {
-		// TODO Auto-generated method stub
 		
+		
+	}
+	
+	private void goToCouch() {
+		personGui.DoGoToCouch();
+		try {
+			isMoving.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			public void run() {
+				homeState = HomeState.none;
+			}
+		}, 5000);
 	}
 
 	protected void goToRandomPlace() {
@@ -309,7 +361,7 @@ public class PersonAgent extends Agent
 	
 	protected void goHome() {
 		//int homeNumber = (int)((int)(Math.random()*11));
-		personGui.DoGoToBuilding(0); // 11 need to be replaced by the person's data of home number
+		personGui.DoGoToBuilding(11); // 11 need to be replaced by the person's data of home number
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -318,11 +370,11 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
-		currentBuilding = cityData.buildings.get(0);
+		currentBuilding = cityData.buildings.get(11);
 		currentBuilding.EnterBuilding(this, "");
 		bigState = BigState.atHome;
 		
-		homeState = HomeState.sleeping;
+		/*homeState = HomeState.sleeping;
 		if (homeState == HomeState.sleeping) {
 			personGui.DoGoToBed();
 			atBed.drainPermits();
@@ -333,10 +385,12 @@ public class PersonAgent extends Agent
 				e.printStackTrace();
 			}
 		}
-		bigState = BigState.leaveHome;
+		bigState = BigState.leaveHome;*/
+		hungerLevel = 1000000;
 	}
 	
 	protected void leaveHome() {
+		System.err.println("leaving home");
 		personGui.DoGoToEntrance();
 		atEntrance.drainPermits();
 		try {
