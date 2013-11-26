@@ -276,7 +276,6 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 	public void addGui(PersonGui gui) {
 		cd.guis.add(gui);
-		System.out.println ("added gui!");
 	}
 	
 	public void addGui(BusGui gui) {

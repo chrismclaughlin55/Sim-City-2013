@@ -61,6 +61,11 @@ public class BusAgent extends Agent {
         }
         stateChanged();
 	}
+	
+	public void msgOnBus()
+	{
+		atDestination.release();
+	}
 
 
 
@@ -111,9 +116,15 @@ public class BusAgent extends Agent {
 	        	//Message the people and have a semaphore acquire 
 	        	//and release cycle for every
 	        	//person getting off bus
-	            //p.p.BusIsHere(this);
+	        	p.ps = PassengerState.beenOn;
+	            p.p.msgBusIsHere(this);
+	            try {
+	            	atDestination.acquire();
+	            }
+	            catch(Exception e){}
 	        }
 	    }
+	    
 	}
 
 	private void UnloadPassengers() {
@@ -126,7 +137,8 @@ public class BusAgent extends Agent {
 				//p.p.msgArrivedAtBusStop(curr);
 				//personGui animation runs in bus' thread until animation
 				//finished
-		        passengers.remove(p);        
+		        passengers.remove(p);
+		        p.p.msgDoneMoving();
 			}
 		}
 		curr.msgArrivedAtStop(this);
@@ -136,6 +148,16 @@ public class BusAgent extends Agent {
 		super.stateChanged();
 	}
 	//ACTIONS
+
+	public int getX() {
+		return busgui.xPos;
+		
+	}
+	
+	public int getY() {
+		return busgui.yPos;
+		
+	}
 
 	
 }

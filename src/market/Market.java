@@ -32,10 +32,10 @@ public class Market extends Building {
 		cityData = cd;
 		this.mainGui = mainGui;
 		
-		MarketData chickenData = new MarketData("chicken", 10, 5.99);
-		MarketData saladData = new MarketData("salad", 10, 3.99);
-		MarketData steakData = new MarketData("steak", 10, 11.99);
-		MarketData pizzaData = new MarketData("pizza", 10, 7.99);
+		MarketData chickenData = new MarketData("Chicken", 10, 5.99);
+		MarketData saladData = new MarketData("Salad", 10, 3.99);
+		MarketData steakData = new MarketData("Steak", 10, 11.99);
+		MarketData pizzaData = new MarketData("Pizza", 10, 7.99);
 		
 		
 		marketGui = new MarketGui(this);

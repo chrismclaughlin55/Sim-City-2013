@@ -77,16 +77,13 @@ public class AnimationPanel extends JPanel implements GuiPositions, ActionListen
 
 	public void addGui(BankCustomerGui gui) {
 		guis.add(gui);
-		System.out.print("added gui type "+ gui.getClass().toString());
 	}
 
 	
 	public void addGui(BankManagerGui gui) {
-		System.out.print("added gui type "+ gui.getClass().toString());
 		guis.add(gui); 
 	}
 	public void addGui(TellerGui gui) {
-		System.out.print("added gui type "+ gui.getClass().toString());
 		guis.add(gui);
 		
 	}
