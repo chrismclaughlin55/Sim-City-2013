@@ -60,7 +60,7 @@ public class PersonAgent extends Agent
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 	
 	public enum BigState {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome, leaveHome};
-	public enum HomeState {sleeping, onCouch, hungry, none};
+	public enum HomeState {sleeping, onCouch, hungry, none, idle};
 	public enum EmergencyState {fire, earthquake, none};
 	public BigState bigState = BigState.doingNothing;
 	public HomeState homeState;
@@ -147,6 +147,8 @@ public class PersonAgent extends Agent
 	public void refresh()
 	{
 		super.refresh();
+		if(cityData.hour == 8)
+			goToWork = true;
 	}
 	
 	public void msgFull()
@@ -208,6 +210,7 @@ public class PersonAgent extends Agent
 	
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
+		
 		/*Emergency scheduler rules go here (v2)*/
 		if(emergencyState == EmergencyState.fire) {
 			ReactToFire();
@@ -233,7 +236,7 @@ public class PersonAgent extends Agent
 		{
 			case atHome: {
 				if (homeState == HomeState.sleeping) {
-					if(false){//if sleeping and it is time to wake up
+					if(cityData.hour >= 8){//if sleeping and it is time to wake up
 					//delete the && false when the actual rule is implemented
 						WakeUp();
 						return true;
@@ -303,6 +306,8 @@ public class PersonAgent extends Agent
 				if(goToWork)
 				{
 					destinationBuilding = jobBuilding;
+					if(destinationBuilding != null);
+						System.out.println(destinationBuilding.type);
 					desiredRole = job;
 					if(destinationBuilding.type == BuildingType.market)
 					{
@@ -368,7 +373,8 @@ public class PersonAgent extends Agent
 	}
 
 	private void WakeUp() {
-		
+		goToWork = true;
+		homeState = HomeState.idle;
 	}
 
 	private void makeFood() {
