@@ -6,11 +6,11 @@ SimCity201 Project Repository for CS 201 students
 
 Objects (Function and visual representation)
 + CITY
-  PersonAgent (PersonAgentSprite)
+### PersonAgent (PersonAgentSprite)
 + MARKET
-  MarketManager: Manager of building that decides when to open and close a bank and talks to customers as they come in and leave / assigns them to an employee.
+### MarketManager: Manager of building that decides when to open and close a bank and talks to customers as they come in and leave / assigns them to an employee.
 + RESTAURANT
-  Host: Manager of building that decides when to open and close a restaurant and talks to customers as they come in and leave / assigns them to a waiter.
+### Host: Manager of building that decides when to open and close a restaurant and talks to customers as they come in and leave / assigns them to a waiter.
 + HOME
   Person:
   Landlord:
