@@ -34,13 +34,17 @@ public class CityData implements ActionListener {
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	public Market market;
 	public Timer globalTimer;
-	
+	public static int incrementLimit = 180;
 	public List<Home> homes = Collections.synchronizedList(new ArrayList<Home>());
 	public List<Apartment> apartments = Collections.synchronizedList(new ArrayList<Apartment>());
 	//ALSO needs a 2-d array of the entire place
 	int timeInterval;
+	public int hour;
+	public int increment;
 	public CityData() {
 		timeInterval=10;
+		hour = 0;
+		increment = 0;
 		//POPULATE busStops through MainGui as well whlie also assigning them a position
 		//also each busStop should be initialized with its next busStopAgent
 		//POPULATE 
@@ -50,6 +54,15 @@ public class CityData implements ActionListener {
 		for(int i=0; i<12; i++) {
 			busStops.get(i).setNextStop(busStops.get((i+1)%12));
 		}
+	}
+	
+	public void incrementTime() {
+		increment++;
+		if(increment==incrementLimit) {
+			hour++;
+			hour = hour % 24;
+		}
+		increment = increment % incrementLimit;
 	}
 	public void setTimeInterval(int newTime) {
 		timeInterval=newTime;

@@ -169,6 +169,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		cd.incrementTime();
 		repaint();  //Will have paintComponent called
 	}
 
