@@ -2,29 +2,30 @@ package market;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import restaurantMQ.test.mock.EventLog;
-import restaurantMQ.test.mock.LoggedEvent;
+import market.gui.EmployeeGui;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
 import market.interfaces.MarketManager;
-import market.test.mock.MockMarketManager;
+import restaurantMQ.test.mock.EventLog;
 import city.PersonAgent;
 import city.Role;
 
 
 public class MarketEmployeeRole extends Role implements MarketEmployee {
 
+	private enum EmployeeState{nothing, entering, working}
+	private EmployeeState state;
+	
 	private enum orderState {pending, processing, completed};
 	public List<MarketOrder> currentMarketOrders = Collections.synchronizedList(new ArrayList<MarketOrder>());
 	public List<Invoice> invoice = Collections.synchronizedList(new ArrayList<Invoice>());
 	public List<Double> payments = Collections.synchronizedList(new ArrayList<Double>());
 	private List<MarketCustomerRole> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomerRole>());
+	private EmployeeGui gui = null;
 
 	//public Map<String,MarketData> inventory = Collections.synchronizedMap(new HashMap<String,MarketData>()); 
 	public Inventory inventory = null;
@@ -33,7 +34,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	private PersonAgent person;
 	private MarketManager manager;
 	public EventLog log = new EventLog();
-
+	private boolean workAvailable = true;
 	public class MarketOrder {
 		String type;
 		int quantity;
@@ -66,9 +67,20 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		this.manager = manager;
 		this.inventory = inventory;
 	}
+	
+	public void msgGoToDesk(int deskNum) {
+		
+		
+	}
+	
+	public void msgLeave() {
+		workAvailable = false;
+		stateChanged();
+	}
 
 
 	public void msgServiceCustomer(MarketCustomerRole customer) {
+		print ("Received msgServiceCustomer");
 		waitingCustomers.add(customer);
 		stateChanged();
 	}
@@ -108,10 +120,10 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			return true;
 		}
 
-		if (!currentMarketOrders.isEmpty()) {
+		/*if (!currentMarketOrders.isEmpty()) {
 			FulfillOrder();
 			return true;
-		}
+		}*/
 		/*for (MarketOrder o : marketOrders) {
 			if (o.state == orderState.pending) {
 				o.state = orderState.processing;
@@ -124,7 +136,6 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}
 
 	private void CallCustomer(MarketCustomerRole customer) {
-		//employeeGui.callCustomer(c);
 		customer.msgWhatIsYourOrder(this);
 	}
 
@@ -187,6 +198,10 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		currentMarketOrders.get(0).cust.msgOrderFulfullied(invoice);
 		currentMarketOrders.clear();
 
+	}
+	
+	public void setGui (EmployeeGui gui) {
+		this.gui = gui;
 	}
 	
 }

@@ -4,19 +4,16 @@ import mainGUI.MainGui;
 import market.gui.CustomerGui;
 import market.gui.EmployeeGui;
 import market.gui.ManagerGui;
-import market.gui.MarketGui;
 import city.Building;
 import city.CityData;
 import city.PersonAgent;
-import city.Building.BuildingType;
 
 public class Market extends Building {
 
 	public Inventory inventory = null;
 	MarketManagerRole currentManager = null;
 	MainGui mainGui;
-	private int numEmployees = 0;
-
+	
 	public Market(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height, mainGui);
 		this.mainGui = mainGui;
@@ -35,28 +32,30 @@ public class Market extends Building {
 			if (existingRoles.get(person) != null) {
 				person.msgAssignRole(existingRoles.get(person));
 				if (roleRequest.equals("MarketCustomer")) {
-					CustomerGui customerGui = new CustomerGui();
+					CustomerGui customerGui = new CustomerGui((MarketCustomerRole)existingRoles.get(person));
+					((MarketCustomerRole) existingRoles.get(person)).setGui(customerGui);
 					mainGui.marketGui.animationPanel.addGui(customerGui);
+					//currentManager.msgNeedToOrder((MarketCustomerRole) existingRoles.get(person));
 				}
 				if (roleRequest.equals("MarketEmployee")) {
 					currentManager.msgReportingForWork((MarketEmployeeRole) existingRoles.get(person));
-					EmployeeGui employeeGui = new EmployeeGui((MarketEmployeeRole) existingRoles.get(person), 70+(35*numEmployees), 205);
+					EmployeeGui employeeGui = new EmployeeGui((MarketEmployeeRole) existingRoles.get(person), 70, 205);
+					((MarketEmployeeRole) existingRoles.get(person)).setGui(employeeGui);
 					mainGui.marketGui.animationPanel.addGui(employeeGui);
-					numEmployees++;
-					EmployeeGui employeeGui2 = new EmployeeGui((MarketEmployeeRole) existingRoles.get(person), 70+(35*numEmployees), 205);
-					mainGui.marketGui.animationPanel.addGui(employeeGui2);
 				}
 				if (roleRequest.equals("MarketManager")) {
 					ManagerGui managerGui = new ManagerGui((MarketManagerRole) existingRoles.get(person));
+					((MarketManagerRole) existingRoles.get(person)).setGui(managerGui);
 					mainGui.marketGui.animationPanel.addGui(managerGui);
 				}
 
 			}
 			else if (roleRequest.equals("MarketCustomer")) {
 				MarketCustomerRole custRole = new MarketCustomerRole(person, currentManager, person.thingsToOrder);
+				CustomerGui customerGui = new CustomerGui(custRole);
+				custRole.setGui(customerGui);
 				person.msgAssignRole(custRole);
 				existingRoles.put(person, custRole);
-				CustomerGui customerGui = new CustomerGui();
 				mainGui.marketGui.animationPanel.addGui(customerGui);
 			}
 		}
@@ -66,22 +65,25 @@ public class Market extends Building {
 				person.msgAssignRole(employeeRole);
 				existingRoles.put(person, employeeRole);
 				currentManager.msgReportingForWork(employeeRole);
-				EmployeeGui employeeGui = new EmployeeGui(employeeRole, 70+(35*numEmployees), 205);
-				numEmployees++;
+				EmployeeGui employeeGui = new EmployeeGui(employeeRole, 70, 205);
+				employeeRole.setGui(employeeGui);
 				mainGui.marketGui.animationPanel.addGui(employeeGui);
 			}
 			else if (person.equals(manager)) {
 				if (existingRoles.get(person) != null) {
-					person.msgAssignRole(existingRoles.get(person));
 					currentManager = (MarketManagerRole) existingRoles.get(person);
 					ManagerGui managerGui = new ManagerGui(currentManager);
+					((MarketManagerRole) existingRoles.get(person)).setGui(managerGui);
 					mainGui.marketGui.animationPanel.addGui(managerGui);
+					person.msgAssignRole(existingRoles.get(person));
+
 				}
 				else {
 					currentManager = new MarketManagerRole(person, inventory, this);
 					person.msgAssignRole(currentManager);
 					existingRoles.put(person, currentManager);
 					ManagerGui managerGui = new ManagerGui(currentManager);
+					currentManager.setGui(managerGui);
 					mainGui.marketGui.animationPanel.addGui(managerGui);
 				}
 			}
@@ -102,7 +104,7 @@ public class Market extends Building {
 		EnterBuilding(p2, "MarketEmployee");
 		
 		PersonAgent p3 = new PersonAgent("Customer");
-		p2.startThread();
+		p3.startThread();
 		EnterBuilding(p3, "MarketCustomer");
 		
 		//ManagerGui managerGui = new ManagerGui();
