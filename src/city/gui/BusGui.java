@@ -29,8 +29,8 @@ public class BusGui implements Gui {
     	agent = ba;
     	xPos = cd.busStops.get(0).getX();
     	yPos = cd.busStops.get(0).getY();
-    	xDestination = cd.busStops.get(1).getX();
-    	yDestination = cd.busStops.get(1).getY();
+    	//xDestination = cd.busStops.get(1).getX();
+    	//yDestination = cd.busStops.get(1).getY();
     	m = main;
     }
 	@Override
@@ -38,34 +38,34 @@ public class BusGui implements Gui {
 		// TODO Auto-generated method stub
 		if(xFirst) {
 			if (xPos < xDestination)
-		       xPos++;
+		       xPos+=5;
 		    if (xPos > xDestination)
-		       xPos--;
+		       xPos-=5;
 			if (xPos == xDestination) {
 				xFirst = false;
 			}			
 		}	
 		if(yFirst) {
 			if (yPos < yDestination)
-			   yPos++;
+			   yPos+=5;
 			if (yPos > yDestination)
-			   yPos--;
+			   yPos-=5;
 			if (yPos == yDestination) {
 				yFirst = false;
 			}
 		}
-		if(!xFirst&&!yFirst) {
+		if(!(xFirst||yFirst)) {
 			if (xPos < xDestination)
-			   xPos++;
+			   xPos+=5;
 			if (xPos > xDestination)
-			   xPos--;
+			   xPos-=5;
 			if (xPos == xDestination) {
 				xFirst = false;
 			}	
 			if (yPos < yDestination)
-				yPos++;
+				yPos+=5;
 			if (yPos > yDestination)
-				yPos--;
+				yPos-=5;
 			if (yPos == yDestination) {
 				yFirst = false;
 			}
@@ -73,6 +73,7 @@ public class BusGui implements Gui {
         if (moving && xPos == xDestination && yPos == yDestination
         		&& (xDestination >= 0) && (yDestination >= 0)) {
         	moving = false;
+        	System.out.println("yoyo?");
            agent.msgAtDestination();
         }
 		
@@ -95,7 +96,7 @@ public class BusGui implements Gui {
 	}
 	
 	public void DoGoToNextStop(int x, int y) {
-		
+		//System.out.println("What");
 		for(int i=0; i<11; i++) {
 			if(cd.busStops.get(i).getX()==x&&cd.busStops.get(i).getY()==y) {
 				stop = i;
@@ -111,6 +112,7 @@ public class BusGui implements Gui {
 		moving = true;
 		xDestination = x;
 		yDestination = y;
+		System.out.println("yo?");
 		
 	}
 

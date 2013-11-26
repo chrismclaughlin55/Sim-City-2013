@@ -34,8 +34,8 @@ public class BusAgent extends Agent {
 	public BusAgent() {
 		cd = new CityData();
 		curr = cd.busStops.get(0);
-		next = cd.busStops.get(1);
-		BusState bs = BusState.leavingStop;
+		next = cd.busStops.get(4);
+		myState = BusState.leavingStop;
 		passengers = new ArrayList<myPassenger>();
 		//SHOULD ALSO HAVE A DEFAULT STARTING POSITION
 	}
@@ -68,6 +68,7 @@ public class BusAgent extends Agent {
 	
 	//SCHEDULER
 	protected boolean pickAndExecuteAnAction() {
+		//System.out.println("what");
 		if(myState==BusState.atStop) {
 			UnloadPassengers();
 			return true;
@@ -83,6 +84,7 @@ public class BusAgent extends Agent {
 	        return true;
 	    }
 	    if(myState==BusState.leavingStop) {
+	    	
 	        LeaveStop();
 	        return true;
 	    }
@@ -125,6 +127,10 @@ public class BusAgent extends Agent {
 			}
 		}
 		curr.msgArrivedAtStop(this);
+	}
+	
+	protected void stateChanged() {
+		super.stateChanged();
 	}
 	//ACTIONS
 

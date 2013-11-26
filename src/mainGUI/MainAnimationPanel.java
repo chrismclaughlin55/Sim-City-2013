@@ -91,6 +91,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		BusGui bg = new BusGui(bus,mainGui);
 		bus.setGui(bg);
 		addGui(bg);
+		bus.startThread();
 		
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
