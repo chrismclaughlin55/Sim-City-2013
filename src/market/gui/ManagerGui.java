@@ -16,8 +16,8 @@ public class ManagerGui implements Gui{
 	private int xPos = 325, yPos = 410;//default waiter position
     
 
-    public ManagerGui() {
-       // this.role = role;
+    public ManagerGui(MarketManagerRole role) {
+       this.role = role;
     }
 
     public void draw(Graphics2D g) {
