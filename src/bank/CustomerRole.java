@@ -21,7 +21,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	private BankCustomerGui gui;
 	public CustomerRole(PersonAgent person) {
 		super(person);
-
+		this.state = CustState.InLine;
 		this.cash = person.cash;
 		this.name = person.getName();
 		this.me = person;
@@ -37,13 +37,15 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgGoToTeller(Teller t) {
 		this.t = t;
 		event = CustEvent.GoToTeller;
-		print("going to teller");
+		print("going to teller "+ state );
 		stateChanged();
 	}
 
 	@Override
 	public void msgWhatWouldYouLike() {
 		event = CustEvent.AskedWhatToDo;
+		print("asked What to do");
+		stateChanged();
 
 	}
 
@@ -51,12 +53,14 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgHaveANiceDay(double amount) {
 		person.cash+=amount;
 		event = CustEvent.Done;
+		stateChanged();
 
 	}
 
 	@Override
 	public void msgCanDoThisAmount(double approvedAmount) {
 		event = CustEvent.RecievedLoanInfo;
+		stateChanged();
 	}
 
 	//SCHEDULER
@@ -89,6 +93,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	//ACTIONS
 	private void sayHello(){
 		//TODO GUI SHIT
+		print("say hello to teller");
 		this.t.msgHello(new CustInfo(myInfo));
 		state = CustState.AtTeller;
 
