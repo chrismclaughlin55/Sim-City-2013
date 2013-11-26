@@ -6,8 +6,9 @@ import java.awt.Graphics2D;
 import javax.swing.ImageIcon;
 
 import bank.TellerRole;
+import bank.utilities.GuiPositions;
 
-public class TellerGui implements Gui {
+public class TellerGui implements GuiPositions, Gui {
 	private TellerRole teller;
 	private int xPos;
 	private int xDestination;
@@ -17,6 +18,10 @@ public class TellerGui implements Gui {
 
 	public TellerGui(TellerRole tellerRole) {
 		this.teller = tellerRole;
+		xPos = doorx;
+		yPos = doory;
+		yDestination = teller1y;
+		xDestination = tellerx;
 	}
 
 
@@ -49,14 +54,12 @@ public class TellerGui implements Gui {
 
 	@Override
 	public boolean isPresent() {
-		// TODO Auto-generated method stub
 		return isPresent;
 	}
 
 
 	@Override
 	public void setPresent(boolean b) {
-		// TODO Auto-generated method stub
 		isPresent = b;
 	}
 

@@ -62,6 +62,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	//bank jobs
 	JRadioButton bankManager;
 	JRadioButton bankTeller;
+	JRadioButton bankCustomer;
 
 	public PersonCreationPanel(MainGui mainGui) {
 		this.mainGui = mainGui;
@@ -86,6 +87,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		marketEmployee = new JRadioButton("Market Employee", false);
 		bankManager = new JRadioButton("Bank Manager", false);
 		bankTeller = new JRadioButton("Bank Teller", false);
+		bankCustomer = new JRadioButton("Bank Customer", false);
 		
 		jobs.add(unemployed);
 		jobs.add(restMQwaiter);
@@ -97,6 +99,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		jobs.add(marketEmployee);
 		jobs.add(bankManager);
 		jobs.add(bankTeller);
+		jobs.add(bankCustomer);
 		
 		jobsPane.setLayout(null);
 		unemployed.setBounds(0, 0, 150, 30);
@@ -109,6 +112,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		marketEmployee.setBounds(145, 60, 140, 30);
 		bankManager.setBounds(0, 90, 140, 30);
 		bankTeller.setBounds(145, 90, 140, 30);
+		bankCustomer.setBounds(300, 90, 140, 30);
 		jobsPane.add(unemployed);
 		jobsPane.add(restMQcustomer);
 		jobsPane.add(restMQwaiter);
@@ -119,6 +123,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		jobsPane.add(marketEmployee);
 		jobsPane.add(bankManager);
 		jobsPane.add(bankTeller);
+		jobsPane.add(bankCustomer);
 
 		unemployed.addActionListener(this);
 		addPerson.addActionListener(this);
@@ -197,6 +202,17 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 				else if(getSelectedButtonText(jobs).contains("Cashier"))
 				{
 					role = "Cashier";
+				}
+			} else if(getSelectedButtonText(jobs).contains("Bank")){
+				destination = "Bank";
+				if(getSelectedButtonText(jobs).contains("Manager")){
+					role = "Manager";
+				}
+				else if(getSelectedButtonText(jobs).contains("Teller")){
+					role = "Teller";
+				}
+				else if(getSelectedButtonText(jobs).contains("Customer")){
+					role = "Customer";
 				}
 			}
 			else

@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Formatter.BigDecimalLayoutForm;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -197,13 +198,24 @@ public class MainGui extends JFrame implements MouseListener {
 		{
 			p.bigState = BigState.goToRestaurant;
 			p.setDesiredRole(role);
+			p.startThread();
+			return;
 		}
-		else
-		{
+		if(destination.equals("Bank")){
+			p.bigState = BigState.goToBank;
+			p.setDesiredRole(role);
+			p.startThread();
+			return;
+		}
+		if(destination.equals("Market")){
+			p.bigState = BigState.goToMarket;
+			p.setDesiredRole(role);
+			p.startThread();
+			return;
+		}
 			p.bigState = BigState.goHome;
 			p.assignHome(pickHome(p));
-		}
-		p.startThread();
+			p.startThread();
 		
 	}
     
