@@ -29,8 +29,8 @@ public class Home extends Building {
 			//allow the person into the building
 			
 		//}
-		homeGui.getHomePanel().addGui(p.getGui());
 		cityData.removeGui(p.getGui());
+		homeGui.getHomePanel().addGui(p.getGui());
 	}
 	
 	public void LeaveBuilding(PersonAgent p) {

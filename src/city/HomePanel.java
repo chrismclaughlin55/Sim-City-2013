@@ -88,7 +88,6 @@ public class HomePanel extends JPanel implements ActionListener {
 		gui.setXPos(0);
 		gui.setYPos(340);
 		gui.setPresent(true);
-		System.err.println(guis.size());
 	}
 
 	public void removeGui(PersonGui gui, int currentIn) {
@@ -103,7 +102,6 @@ public class HomePanel extends JPanel implements ActionListener {
 	public void removeGui(PersonGui gui) {
 		guis.remove(gui);
 		gui.setPresent(false);
-		System.err.println(guis.size());
 	}
 }
 
