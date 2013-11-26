@@ -24,8 +24,8 @@ public class BusGui implements Gui {
     int stop;
     MainGui m;
 
-    public BusGui(BusAgent ba, MainGui main) {
-    	cd = new CityData();
+    public BusGui(BusAgent ba, MainGui main, CityData cd) {
+    	this.cd = cd;
     	agent = ba;
     	xPos = cd.busStops.get(0).getX();
     	yPos = cd.busStops.get(0).getY();
@@ -109,7 +109,6 @@ public class BusGui implements Gui {
 		moving = true;
 		xDestination = x;
 		yDestination = y;
-		System.out.println("yo?");
 		
 	}
 
