@@ -29,9 +29,7 @@ public class Bank extends Building {
 	}
 	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
-		p.print(roleRequest);
 		if(roleRequest.equals("BankManager")){
-			p.print(roleRequest);
 			if(manager != null){
 				manager = p;
 			}
@@ -101,5 +99,8 @@ public class Bank extends Building {
 				}
 			}
 		}
+	}
+	public BankManagerRole getManager(){
+		return currentManager;
 	}
 }

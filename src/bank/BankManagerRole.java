@@ -44,6 +44,10 @@ public class BankManagerRole extends Role implements BankManager {
 		tellers.add(new myTeller(newRole));
 		
 	}
+	//Direct Deposit Message
+	public void msgDirectDeposit(PersonAgent payer, PersonAgent Reciever, double payment){
+		
+	}
 	@Override
 	public void msgINeedService(CustomerRole c) {
 		print(c.getName()+" Needs service");
