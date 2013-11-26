@@ -33,7 +33,7 @@ public class CityData implements ActionListener {
 	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	public Market market;
-	Timer globalTimer;
+	public Timer globalTimer;
 	
 	public List<Home> homes = Collections.synchronizedList(new ArrayList<Home>());
 	public List<Apartment> apartments = Collections.synchronizedList(new ArrayList<Apartment>());

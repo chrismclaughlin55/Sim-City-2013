@@ -1,6 +1,7 @@
 package mainGUI;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -34,6 +35,9 @@ import config.ConfigParser;
 import Gui.Gui;
 import bankgui.*;
 
+import javax.swing.Timer;
+
+
 /**
  * Main GUI class.
  * Contains the main frame and subsequent panels
@@ -44,7 +48,6 @@ public class MainGui extends JFrame implements MouseListener {
      */
 	private int WIDTH = 1230;
 	private int HEIGHT = 800;
-	
 	//public AnimationPanel animationPanel;
 	//JPanel InfoLayout;
 	
@@ -114,8 +117,7 @@ public class MainGui extends JFrame implements MouseListener {
         bankGui.setVisible(false);
         bankGui.setResizable(false);
         bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        
-            	
+           	
         try {
     		scan = new Scanner( new File ("src/config/config.txt"));
     		fileExist=true;

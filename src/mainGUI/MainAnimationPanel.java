@@ -37,7 +37,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 	private int WIDTH = 100;
 	private int HEIGHT = 100;
-
+	public static final int GLOBALINTERVAL = 50;
+	
 	private MainGui mainGui;
 	
 
@@ -132,10 +133,10 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		
 		cd.setBusStopRoute();
 		//setBackground(Color.WHITE);
-		
+		cd.globalTimer = new Timer(GLOBALINTERVAL,(ActionListener) this);
+        
 		setVisible(true);
-		Timer timer = new Timer(frameDisplay, this );
-		timer.start();
+		cd.globalTimer.start();
 
 	}
 
