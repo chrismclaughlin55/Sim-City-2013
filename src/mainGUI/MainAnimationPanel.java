@@ -37,7 +37,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 	private int WIDTH = 100;
 	private int HEIGHT = 100;
-	public static final int GLOBALINTERVAL = 50;
+	public static final int GLOBALINTERVAL = 20;
 	
 	private MainGui mainGui;
 	
@@ -107,20 +107,24 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			for (int i = 0; i < 2; i++) {
 				Building b = new MQRestaurantBuilding(190+i*130, 140+j*130, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui);
 				cd.buildings.add(b);
+				cd.restaurants.add((MQRestaurantBuilding) b);
 			}
 		}
 		for (int i = 0; i < 2; i++) {
 			Building b = new MQRestaurantBuilding(190+i*130, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui);
 			cd.buildings.add(b);
+			cd.restaurants.add((MQRestaurantBuilding) b);
 		}
 		//done creating restaurants
 		
 		
 		Bank b = new Bank(190, 410, WIDTH, HEIGHT,"bank", BuildingType.bank, mainGui, cd);
 		cd.buildings.add(b);
+		cd.bank = b;
 
 		Market market = new Market(320, 410, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
 		cd.buildings.add(market);
+		cd.market = market;
 		
 		cd.buildings.get(12).setBusStop(cd.busStops.get(0));
 		cd.buildings.get(13).setBusStop(cd.busStops.get(9));
@@ -169,6 +173,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		cd.incrementTime();
 		repaint();  //Will have paintComponent called
 	}
 

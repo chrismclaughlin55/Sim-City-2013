@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import restaurantMQ.gui.MQRestaurantBuilding;
 import restaurantMQ.gui.RestaurantGui;
 import market.gui.MarketGui;
 import city.Apartment;
@@ -56,7 +57,10 @@ public class MainGui extends JFrame implements MouseListener {
 	private boolean fileExist;
     private PersonCreationPanel personPanel;
     public MainAnimationPanel mainAnimationPanel;
-   
+    private int waiter = 0;
+    private int cook = 0;
+    private int cashier = 0;
+    private int host = 0;
     public MarketGui marketGui;
     //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
@@ -138,17 +142,7 @@ public class MainGui extends JFrame implements MouseListener {
 							p.setName(temp);
 						}
 						if(property.equals("job")) { 
-							p.setJob(temp);
-							if(temp.equals("BankManager")) {
-									
-							}
-							if(temp.equals("Host")) {
-								//mainAnimationPanel.cd.
-							}
-							if(temp.equals("MarketManager")) {
-								//if(mainAnimationPanel.cd.market)
-								//mainAnimationPanel.cd.market.setManager(p);
-							}		
+							p.setJob(temp);	
 						}
 						if(property.equals("cash")) {
 								p.setCash(Double.parseDouble(temp));
@@ -160,6 +154,7 @@ public class MainGui extends JFrame implements MouseListener {
 							p.setHunger(Integer.parseInt(temp));
 						}
 					}
+					assignJobBuilding(p,p.getJob());
 					p.startThread();
 					newPerson = null;
 				 }
@@ -201,11 +196,6 @@ public class MainGui extends JFrame implements MouseListener {
 		return p;
     }
     public void addPerson(String name, String role, String destination) {
-    	if(mainAnimationPanel.cd.getPopulation() >= 40) {
-    		JFrame frame = new JFrame();
-    		JOptionPane.showMessageDialog(frame, "Population limit reached!");
-    		return;
-    	}
 		PersonAgent p = createPerson(name, role);
 		
 		if(destination.equals("Restaurant"))
@@ -227,7 +217,7 @@ public class MainGui extends JFrame implements MouseListener {
 			p.startThread();
 			return;
 		}
-			
+		assignJobBuilding(p, role);
 		p.startThread();
 		
 	}
@@ -253,6 +243,63 @@ public class MainGui extends JFrame implements MouseListener {
     		}
     	}
     	return null;
+    }
+    
+    public void assignJobBuilding(PersonAgent p, String role) {
+    	if (role.equals("BankManager")) {
+    		if (mainAnimationPanel.cd.bank != null) {
+    			p.setJobBuilding(mainAnimationPanel.cd.bank);
+    			mainAnimationPanel.cd.bank.setManager(p);
+    		}
+    	}
+    	if (role.equals("BankTeller")) {
+    		if (mainAnimationPanel.cd.bank != null) {
+    			p.setJobBuilding(mainAnimationPanel.cd.bank);
+    		}
+    	}
+    	if (role.equals("MarketManager")) {
+    		if (mainAnimationPanel.cd.market != null) {
+				p.setJobBuilding(mainAnimationPanel.cd.market);
+				mainAnimationPanel.cd.market.setManager(p);
+			}
+    	}
+    	if (role.equals("MarketEmployee")) {
+    		if (mainAnimationPanel.cd.market != null) {
+    			p.setJobBuilding(mainAnimationPanel.cd.market);
+    		}
+    	}
+    	if (role.equals("Host")) {
+    		MQRestaurantBuilding r = mainAnimationPanel.cd.restaurants.get(host);
+    		p.setJobBuilding(r);
+    		r.setManager(p);
+    		host++;
+    		host = host % mainAnimationPanel.cd.restaurants.size();
+    	
+    	}
+    	if (role.equals("Waiter")) {
+    		p.setJobBuilding(mainAnimationPanel.cd.restaurants.get(waiter));
+    		waiter++;
+    		waiter = waiter % mainAnimationPanel.cd.restaurants.size();
+    	}
+    	if (role.equals("Cashier")) {
+    		p.setJobBuilding(mainAnimationPanel.cd.restaurants.get(cashier));
+    		cashier++;
+    		cashier = cashier % mainAnimationPanel.cd.restaurants.size();
+    	
+    	}
+    	if (role.equals("Cook")) {
+    		p.setJobBuilding(mainAnimationPanel.cd.restaurants.get(cook));
+    		cook++;
+    		cook = cook % mainAnimationPanel.cd.restaurants.size();
+    	
+    	}
+    	/*if (role.equals("Landlord")) {
+    		for (Apartment a : mainAnimationPanel.cd.apartments) {
+    			if (a != null) {
+    				p.setJobBuilding(a);
+    			}
+    		}
+    	}*/
     }
     
     public void addConfigPerson(HashMap<String,String> properties) {
