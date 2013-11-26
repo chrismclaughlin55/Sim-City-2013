@@ -26,8 +26,8 @@ public class PersonGui implements Gui{
 	private int xPos, yPos;
 	private int xDestination, yDestination;
 	
-	public static final int xBuilding[] = {52, 52, 52, 52, 232, 362, 542, 542, 542, 542, 362, 232, 243, 373, 243, 373, 232, 360, 243, 373};
-	public static final int yBuilding[] = {198, 328, 468, 598, 738, 738, 598, 468, 328, 198, 58, 58, 202, 202, 332, 332, 470, 470, 602, 602};
+	public static final int xBuilding[] = {52, 52, 52, 52, 232, 362, 542, 542, 542, 542, 362, 232, 243, 373, 243, 373, 243, 373, 232, 360};
+	public static final int yBuilding[] = {198, 328, 468, 598, 738, 738, 598, 468, 328, 198, 58, 58, 202, 202, 332, 332, 602, 602, 470, 470};
 	
 	MainGui gui;
 

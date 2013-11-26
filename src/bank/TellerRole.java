@@ -11,6 +11,7 @@ import city.Role;
  */
 public class TellerRole extends Role implements Teller{
 	String name;
+	PersonAgent me;
 	BankManagerRole bm;
 	CustInfo currentCustInfo;
 	enum State {available, waitingForInfo, waitingForResponse, doneWithCustomer, customerDecidingLoan}
@@ -23,6 +24,7 @@ public class TellerRole extends Role implements Teller{
 	public TellerRole(PersonAgent person) {
 		super(person);
 		this.name = person.getName();
+		this.me = person;
 		state = State.available;
 		event = Event.none;
 		// TODO Auto-generated constructor stub

@@ -47,7 +47,7 @@ public class BuildingPanel {
 			break;
 			
 		case market:
-			Market m = (Market) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
+			//Market m = (Market) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			//m.addMarketGui(mainGui.marketGui);
 			mainGui.marketGui.setVisible(true);
 			break;

@@ -19,9 +19,11 @@ import Gui.Gui;
 import city.Apartment;
 import city.Building;
 import city.Building.BuildingType;
+import city.BusAgent;
 import city.BusStopAgent;
 import city.CityData;
 import city.Home;
+import city.gui.BusGui;
 import city.gui.PersonGui;
 
 public class MainAnimationPanel extends JPanel implements ActionListener {
@@ -84,6 +86,12 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.busStops.add(bs);
 			b.setBusStop(bs);
 		}
+		
+		BusAgent bus = new BusAgent(); 
+		BusGui bg = new BusGui(bus,mainGui);
+		bus.setGui(bg);
+		addGui(bg);
+		
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
 				Building b = new Building(190+i*130, 140+j*130, WIDTH, HEIGHT, mainGui);
@@ -94,7 +102,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			Building b = new Building(190+i*130, 540, WIDTH, HEIGHT, mainGui);
 			cd.buildings.add(b);
 		}
-
+		
+		
 		Bank b = new Bank(190, 410, WIDTH, HEIGHT,"bank", BuildingType.bank, mainGui, cd);
 		cd.buildings.add(b);
 
@@ -111,7 +120,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(19).setBusStop(cd.busStops.get(6));
 		cd.setBusStopRoute();
 		//setBackground(Color.WHITE);
-
+		
 		setVisible(true);
 		Timer timer = new Timer(frameDisplay, this );
 		timer.start();
@@ -235,7 +244,11 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.guis.add(gui);
 		System.out.println ("added gui!");
 	}
-
+	
+	public void addGui(BusGui gui) {
+		cd.guis.add(gui);
+		
+	}
 
 	public List getBuildings() {
 		return cd.buildings;
