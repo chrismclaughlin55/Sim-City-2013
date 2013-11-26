@@ -3,18 +3,17 @@ package market;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
-import market.Market;
 import market.MyOrder.OrderState;
 import market.gui.CustomerGui;
-import market.gui.EmployeeGui;
 import market.interfaces.MarketCustomer;
 import city.PersonAgent;
 import city.Role;
 
 public class MarketCustomerRole extends Role implements MarketCustomer {
 
-	private enum customerState {waiting, waitingForManager, readyToOrder, readyToPay};
+	private enum customerState {waiting, waitingForManager, readyToOrder, doneOrdering, readyToPay, donePaying, leaving, left};
 	private customerState state;
 	private List<Invoice> invoices = Collections.synchronizedList(new ArrayList<Invoice>());
 	private List<MyOrder> orders = Collections.synchronizedList(new ArrayList<MyOrder>());
@@ -24,10 +23,15 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	private double amountDue = 0;
 	private CustomerGui gui = null;
 	private boolean guiset = false;
+	
+	private Semaphore atDesk = new Semaphore(0,true);
+	private Semaphore left = new Semaphore(0,true);
+
 
 
 	public MarketCustomerRole(PersonAgent person, MarketManagerRole manager, List<MyOrder> orders) {
 		super(person);
+		print ("Customer Role created");
 		this.person = person;
 		this.manager = manager;
 		state = customerState.waiting;
@@ -51,12 +55,17 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 		stateChanged();
 	} */
 
-	public void msgOrderFulfullied(List<Invoice> invoice) {
-		for (int i = 0; i < orders.size(); i++) {
+	public void msgOrderFulfullied(List<Invoice> invoice, double amountDue) {
+		
+		this.amountDue = amountDue;
+		print ("Invoice size " + invoice.size() + " orders size " + orders.size() );
+		
+		/*for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).type.equals(invoice.get(i).type)) {
 				if (orders.get(i).amount == invoice.get(i).amount) {
+					print ("hey");
 					orders.get(i).orderState = OrderState.fulfilled;
-					amountDue += invoice.get(i).price;
+					amountDue += invoice.get(i).price*invoice.get(i).amount;
 					person.thingsToOrder.remove(orders.get(i));
 					// add the stuff to person's inventory
 				}
@@ -64,7 +73,9 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 					orders.get(i).orderState = OrderState.unfulfilled;
 				}
 			}
-		}
+		}*/
+		
+		print ("I need to pay " + amountDue);
 		state = customerState.readyToPay;
 		stateChanged();
 	}
@@ -75,6 +86,11 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 				o.orderState = OrderState.unfulfilled;
 			}
 		}
+		stateChanged();
+	}
+	
+	public void msgYouCanLeave() {
+		state = customerState.leaving;
 		stateChanged();
 	}
 
@@ -90,6 +106,11 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 			Order();
 			return true;
 		}
+		
+		if (state == customerState.leaving) {
+			LeaveMarket();
+		}
+		
 		if (state == customerState.waiting) {
 			manager.msgNeedToOrder(this);
 			state = customerState.waitingForManager;
@@ -100,33 +121,53 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	}
 
 	private void Order(){
-		if (guiset){
-			print ("the gui has been set");
+		gui.DoGoToEmployee(employee);
+		try {
+			atDesk.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		else 
-			print ("the guy has NOT been set");
-		this.gui.DoGoToEmployee(200, 200);
-		//employee.msgHereAreMyOrders(orders, this);
+		employee.msgHereAreMyOrders(orders, this);
+		state = customerState.doneOrdering;
 	}
 
 
-	public void PayBill() {
+	private void PayBill() {
+		state = customerState.donePaying;
 		person.cash -= amountDue;
 		employee.msgHereIsPayment(amountDue);
 		orders.clear();
 		invoices.clear();
 	}
 	
+	private void LeaveMarket() {
+		state = customerState.left;
+		gui.DoLeaveMarket();
+		try {
+			left.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void setGui (CustomerGui gui) {
-		print ("CUST GUI SET");
 		this.gui = gui;
-		guiset = true;
 	}
 	
 	
 	public CustomerGui getGui() {
 		return gui;
 		
+	}
+
+	public void msgAtDesk() {
+		atDesk.release();
+		stateChanged();
+	}
+	
+	public void msgLeft() {
+		left.release();
+		stateChanged();
 	}
 	
 

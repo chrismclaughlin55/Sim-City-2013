@@ -66,8 +66,17 @@ public class CityData implements ActionListener {
 		if(increment==incrementLimit) {
 			hour++;
 			hour = hour % 24;
+			updatePeople();
 		}
 		increment = increment % incrementLimit;
+	}
+	
+	private void updatePeople()
+	{
+		for(PersonAgent p : people)
+		{
+			p.refresh();
+		}
 	}
 	public void setTimeInterval(int newTime) {
 		timeInterval=newTime;

@@ -8,7 +8,7 @@ public class MyOrder {
 	public enum OrderState {pending, fulfilled, unfulfilled};
 	OrderState orderState;
 
-	public MyOrder(String type, int amount, int marketNum) {
+	public MyOrder(String type, int amount) {
 		this.type = type;
 		this.amount = amount;
 		this.marketNum = marketNum;

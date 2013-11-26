@@ -15,8 +15,8 @@ import city.PersonAgent;
 import city.Role;
 
 public class MarketManagerRole extends Role implements MarketManager{
-	private enum MarketState {nothing, entering, managing, leaving};
-	private MarketState state;
+	private enum ManagerState {nothing, entering, managing, leaving};
+	private ManagerState state;
 	double undepositedMoney;
 	boolean endOfDay = false;
 	int bankAccountNum;
@@ -48,8 +48,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 		super(person);
 		this.inventory = inventory;
 		this.market = market;
-		state = MarketState.nothing;
-		// TODO Auto-generated constructor stub
+		state = ManagerState.nothing;
 	}
 
 	public void msgReportingForWork(MarketEmployeeRole employee) {
@@ -70,6 +69,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 	}
 
 	public void msgHereIsMoney(double money, MarketEmployee employee) {
+		print ("Received msgHereIsMoney");
 		undepositedMoney += money;
 		for (MyEmployee e : workingEmployees){
 			if (e.employee.equals(employee)) {
@@ -86,6 +86,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 
 		if ((!workingEmployees.isEmpty()) && (!market.isOpen())) {
 			market.setOpen(person);
+			print ("The market is now open");
 			return true;
 		}
 
@@ -94,15 +95,15 @@ public class MarketManagerRole extends Role implements MarketManager{
 			return true;
 		}
 
-		if (state == MarketState.entering) {
+		if (state == ManagerState.entering) {
 			gui.GoToRoom();
-			state = MarketState.managing;
+			state = ManagerState.managing;
 			try {
 				atHome.acquire();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
+			return true;
 		}
 
 		if (!waitingEmployees.isEmpty()) {
@@ -142,11 +143,12 @@ public class MarketManagerRole extends Role implements MarketManager{
 
 	public void setGui (ManagerGui gui) {
 		this.gui = gui;
-		state = MarketState.entering;
+		state = ManagerState.entering;
 	}
 
 	public void msgEntered() {
 		atHome.release();
+		state = ManagerState.managing;
 		stateChanged();
 	}
 

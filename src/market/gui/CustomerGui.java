@@ -4,12 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import market.MarketCustomerRole;
+import market.MarketEmployeeRole;
 import Gui.Gui;
 
 public class CustomerGui implements Gui{
 	
 	int xPos = 0, yPos = 0, xDestination = 0, yDestination = 0;
-	private enum Command {noCommand, goToDesk};
+	private enum Command {noCommand, goToDesk, leave};
     private Command command=Command.noCommand;
 	
 	private MarketCustomerRole role;
@@ -30,6 +31,14 @@ public class CustomerGui implements Gui{
 			yPos--;
 
 		if (xPos == xDestination && yPos == yDestination) {
+			
+			if (command == Command.goToDesk) {
+				role.msgAtDesk();
+			}
+			
+			if (command == Command.leave) {
+				role.msgLeft();
+			}
 			command = Command.noCommand;
 		}
 		
@@ -54,10 +63,17 @@ public class CustomerGui implements Gui{
 		
 	}
 	
-	public void DoGoToEmployee(int x, int y) {
-		System.out.println ("here");
-		xDestination = x;
-		yDestination = y;
+	
+	public void DoGoToEmployee(MarketEmployeeRole employee) {
+		command = Command.goToDesk;
+		xDestination = employee.gui.getXPos();
+		yDestination = employee.gui.getYPos()-90;
+	}
+	
+	public void DoLeaveMarket() {
+		command = Command.leave;
+		xDestination = -30;
+		yDestination = -30;
 	}
 
 }

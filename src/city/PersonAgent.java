@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import restaurantMQ.gui.MQRestaurantBuilding;
 import bank.utilities.CustInfo;
 import mainGUI.MainGui;
 import market.MyOrder;
@@ -60,9 +61,7 @@ public class PersonAgent extends Agent
 	public BigState bigState = BigState.doingNothing;
 	public HomeState homeState;
 	public EmergencyState emergencyState = EmergencyState.none;
-	
-	Inventory inventory = new Inventory();
-	
+		
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
 	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());;
@@ -72,10 +71,10 @@ public class PersonAgent extends Agent
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
-		MyOrder o1 = new MyOrder("steak", 2, 1);
-		MyOrder o2 = new MyOrder("salad", 2, 1);
-		MyOrder o3 = new MyOrder("pizza", 2, 1);
-		MyOrder o4 = new MyOrder("chicken", 2, 1);
+		MyOrder o1 = new MyOrder("steak", 1);
+		MyOrder o2 = new MyOrder("salad", 1);
+		MyOrder o3 = new MyOrder("pizza", 1);
+		MyOrder o4 = new MyOrder("chicken", 1);
 		thingsToOrder.add(o1);
 		thingsToOrder.add(o2);
 		thingsToOrder.add(o3);
@@ -121,6 +120,7 @@ public class PersonAgent extends Agent
 	}
 	
 	/*SETTERS*/
+	
 	public void assignHome(Building home)
 	{
 		this.home = home;
@@ -131,6 +131,11 @@ public class PersonAgent extends Agent
 	}
 	
 	/*MESSAGES*/
+	public void refresh()
+	{
+		super.refresh();
+	}
+	
 	public void msgDoneMoving() {
 		isMoving.release();
 	}
@@ -373,9 +378,35 @@ public class PersonAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		personGui.DoGoIntoBuilding();
 		currentBuilding = cityData.buildings.get(restNumber);
-		currentBuilding.EnterBuilding(this, desiredRole);
+		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)currentBuilding;
+		
+		if(goToWork)
+		{
+			if(desiredRole.equals("Host") && !restaurant.hasHost()) {
+				personGui.DoGoIntoBuilding();
+				currentBuilding.EnterBuilding(this, desiredRole);
+				return;
+			}
+			else if(restaurant.openToEmployee())
+			{
+				if(desiredRole.equals("Waiter") || desiredRole.equals("Cook")) {
+					personGui.DoGoIntoBuilding();
+					currentBuilding.EnterBuilding(this, desiredRole);
+					return;
+				}
+				else if(desiredRole.equals("Cashier") && !restaurant.hasCashier()) {
+					personGui.DoGoIntoBuilding();
+					currentBuilding.EnterBuilding(this, desiredRole);
+					return;
+				}
+			}
+		}
+		else if(desiredRole.equals("Customer") && restaurant.isOpen()) {
+			personGui.DoGoIntoBuilding();
+			currentBuilding.EnterBuilding(this, desiredRole);
+			return;
+		}
 	}
 	
 	protected void goHome() {
