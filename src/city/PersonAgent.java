@@ -321,7 +321,7 @@ public class PersonAgent extends Agent
 				if(goToWork)
 				{
 					destinationBuilding = jobBuilding;
-					if(destinationBuilding != null);
+					if(!destinationBuilding.equals(null));
 						System.out.println(destinationBuilding.type);
 					desiredRole = job;
 					if(destinationBuilding.type == BuildingType.market)
