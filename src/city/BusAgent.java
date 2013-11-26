@@ -34,7 +34,7 @@ public class BusAgent extends Agent {
 	public BusAgent() {
 		cd = new CityData();
 		curr = cd.busStops.get(0);
-		next = cd.busStops.get(4);
+		next = cd.busStops.get(1);
 		myState = BusState.leavingStop;
 		passengers = new ArrayList<myPassenger>();
 		//SHOULD ALSO HAVE A DEFAULT STARTING POSITION
@@ -121,7 +121,7 @@ public class BusAgent extends Agent {
 				//have a small wait time as that person gets off
 				//acquire semaphore per person
 				//p.p.msgArrivedAtBusStop(curr);
-				//personGui animation runs in bus’s thread until animation
+				//personGui animation runs in bus' thread until animation
 				//finished
 		        passengers.remove(p);        
 			}

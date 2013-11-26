@@ -29,8 +29,6 @@ public class BusGui implements Gui {
     	agent = ba;
     	xPos = cd.busStops.get(0).getX();
     	yPos = cd.busStops.get(0).getY();
-    	//xDestination = cd.busStops.get(1).getX();
-    	//yDestination = cd.busStops.get(1).getY();
     	m = main;
     }
 	@Override
@@ -73,8 +71,7 @@ public class BusGui implements Gui {
         if (moving && xPos == xDestination && yPos == yDestination
         		&& (xDestination >= 0) && (yDestination >= 0)) {
         	moving = false;
-        	System.out.println("yoyo?");
-           agent.msgAtDestination();
+            agent.msgAtDestination();
         }
 		
 	}
@@ -101,7 +98,7 @@ public class BusGui implements Gui {
 			if(cd.busStops.get(i).getX()==x&&cd.busStops.get(i).getY()==y) {
 				stop = i;
 			}
-				
+			
 		}
 		if(stop==0||stop==6) {
 			xFirst = true;
