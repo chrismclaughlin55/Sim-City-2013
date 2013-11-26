@@ -460,6 +460,11 @@ public class PersonAgent extends Agent
 		emergencyState = EmergencyState.none;
 	}
 	
+	public void exitBuilding()
+	{
+		bigState = BigState.doingNothing;
+		cityData.addGui(personGui);
+	}
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
 	protected void stateChanged() {
 		super.stateChanged();

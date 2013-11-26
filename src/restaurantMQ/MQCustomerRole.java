@@ -440,6 +440,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 		//NOW DEACTIVATE THE ROLE
 		state = AgentState.DoingNothing;
 		
+		person.exitBuilding();
 		doneWithRole();
 	}
 	
