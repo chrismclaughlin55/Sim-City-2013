@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 import restaurantMQ.gui.MQRestaurantBuilding;
+import bank.Bank;
 import bank.utilities.CustInfo;
 import mainGUI.MainGui;
 import market.MyOrder;
@@ -52,6 +53,7 @@ public class PersonAgent extends Agent
 	String desiredRole;
 	private String job;
 	Timer timer = new Timer();
+	Bank bank;
 	HashMap<String, Integer> inventory = new HashMap<String, Integer>();
 
 	
@@ -96,7 +98,20 @@ public class PersonAgent extends Agent
 		this.name = name;
 		this.gui = gui;
 		this.cityData = cd;
+		MyOrder o1 = new MyOrder("Steak", 1);
+		MyOrder o2 = new MyOrder("Salad", 1);
+		MyOrder o3 = new MyOrder("Pizza", 1);
+		MyOrder o4 = new MyOrder("Chicken", 1);
+		thingsToOrder.add(o1);
+		thingsToOrder.add(o2);
+		thingsToOrder.add(o3);
+		thingsToOrder.add(o4);
+		inventory.put("Steak", 2);
+		inventory.put("Salad", 2);
+		inventory.put("Pizza", 2);
+		inventory.put("Chicken", 2);
 		personGui = new PersonGui(this, gui);
+		bank = (Bank) cd.buildings.get(18);
 	}
 	
 	public void setName(String name) {
@@ -363,6 +378,7 @@ public class PersonAgent extends Agent
 	}
 	
 	private void payRent() {
+		bank.getManager().msgDirectDeposit(this, this, 50);
 		rentDue = 0;
 	}
 
