@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import restaurantMQ.gui.MQRestaurantBuilding;
 import bank.utilities.CustInfo;
 import mainGUI.MainGui;
 import market.MyOrder;
@@ -369,9 +370,35 @@ public class PersonAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		personGui.DoGoIntoBuilding();
 		currentBuilding = cityData.buildings.get(restNumber);
-		currentBuilding.EnterBuilding(this, desiredRole);
+		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)currentBuilding;
+		
+		if(goToWork)
+		{
+			if(desiredRole.equals("Host") && !restaurant.hasHost()) {
+				personGui.DoGoIntoBuilding();
+				currentBuilding.EnterBuilding(this, desiredRole);
+				return;
+			}
+			else if(restaurant.openToEmployee())
+			{
+				if(desiredRole.equals("Waiter") || desiredRole.equals("Cook")) {
+					personGui.DoGoIntoBuilding();
+					currentBuilding.EnterBuilding(this, desiredRole);
+					return;
+				}
+				else if(desiredRole.equals("Cashier") && !restaurant.hasCashier()) {
+					personGui.DoGoIntoBuilding();
+					currentBuilding.EnterBuilding(this, desiredRole);
+					return;
+				}
+			}
+		}
+		else if(desiredRole.equals("Customer") && restaurant.isOpen()) {
+			personGui.DoGoIntoBuilding();
+			currentBuilding.EnterBuilding(this, desiredRole);
+			return;
+		}
 	}
 	
 	protected void goHome() {

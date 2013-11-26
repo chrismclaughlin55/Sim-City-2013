@@ -6,6 +6,8 @@ import city.PersonAgent;
 
 public class MQRestaurantBuilding extends Building
 {
+	public static final int MAXCUSTOMERS = 8;
+	
 	RestaurantGui restGui = new RestaurantGui();
 	RestaurantPanel restPanel;
 	
@@ -38,6 +40,26 @@ public class MQRestaurantBuilding extends Building
 		{
 			restPanel.addHost(person);
 		}
+	}
+	
+	public boolean isOpen()
+	{
+		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
+	}
+	
+	public boolean openToEmployee()
+	{
+		return isOpen && restPanel.hasHost();
+	}
+	
+	public boolean hasHost()
+	{
+		return restPanel.hasHost();
+	}
+	
+	public boolean hasCashier()
+	{
+		return restPanel.hasCashier();
 	}
 	
 	public RestaurantGui getRestaurantGui()

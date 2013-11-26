@@ -44,16 +44,15 @@ public class RestaurantPanel extends JPanel {
 	private static final int NCOOKS = 1;
 	private static final int NMARKETS = 3;
 	
-    //Host, cook, waiters and customers
+    //all roles ever
 	private List<Host> hosts = new ArrayList<Host>();
-    private Host host;
-
+    private Host host; //this is the active host
     private List<Customer> customers = Collections.synchronizedList(new ArrayList<Customer>());
     private List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
     private List<Cook> cooks = Collections.synchronizedList(new ArrayList<Cook>());
     private List<MarketAgent> markets = Collections.synchronizedList(new ArrayList<MarketAgent>());
     private List<Cashier> cashiers = Collections.synchronizedList(new ArrayList<Cashier>());
-    private Cashier cashier;
+    private Cashier cashier; //this is the active cashier
     //private Vector<HungerListener> hungerListeners = new Vector<HungerListener>();
     
     private List<CookOrder> cookOrders = Collections.synchronizedList(new ArrayList<CookOrder>());
@@ -448,6 +447,68 @@ public class RestaurantPanel extends JPanel {
     	}
     }
     
+    //Information for Restaurant building
+    public int activeCustomers()
+    {
+    	int count = 0;
+    	synchronized(customers) {
+	    	for(Customer c : customers)
+	    	{
+	    		if(((MQCustomerRole)c).isActive())
+	    		{
+	    			++count;
+	    		}
+	    	}
+    	}
+    	return count;
+    }
+    
+    public int activeWaiters()
+    {
+    	int count = 0;
+    	synchronized(waiters) {
+	    	for(Waiter w : waiters)
+	    	{
+	    		if(((MQWaiterRole)w).isActive())
+	    		{
+	    			++count;
+	    		}
+	    	}
+    	}
+    	return count;
+    }
+    
+    public int activeCooks()
+    {
+    	int count = 0;
+    	synchronized(cooks)
+    	{
+	    	for(Cook c : cooks)
+	    	{
+	    		if(((MQCookRole)c).isActive())
+	    		{
+	    			++count;
+	    		}
+	    	}
+    	}
+    	return count;
+    }
+    
+    public boolean fullyStaffed()
+    {
+    	return (activeCooks() > 0) && (activeWaiters() > 0) && (host != null) && (cashier != null);
+    }
+    
+    public boolean hasHost()
+    {
+    	return host != null;
+    }
+    
+    public boolean hasCashier()
+    {
+    	return cashier != null;
+    }
+    
     //Hacks to demonstrate program
     public void OutOfFoodHack()
     {
@@ -466,4 +527,5 @@ public class RestaurantPanel extends JPanel {
     		m.OutOfFoodHack();
     	}
     }
+    
 }
