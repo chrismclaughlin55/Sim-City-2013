@@ -31,7 +31,7 @@ public class Apartment extends Building {
 	}
 	
 	public void EnterBuilding(PersonAgent p, String s) {
-		apartmentGui.getAptPanel().addGui(p.getGui(), -1);
+		apartmentGui.getAptPanel().addGui(p.getGui());
 		cityData.removeGui(p.getGui());
 	}
 	

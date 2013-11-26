@@ -281,18 +281,15 @@ public class PersonAgent extends Agent
 	}
 	
 	private void payRent() {
-		
 		rentDue = 0;
 	}
 
 	private void WakeUp() {
 		
-		
 	}
 
 	private void makeFood() {
 		hungerLevel = 0;
-		System.err.println("calling func");
 		homeState = homeState.hungry;
 		personGui.DoGoToRefridgerator();
 		try {
@@ -395,7 +392,7 @@ public class PersonAgent extends Agent
 			}
 		}
 		bigState = BigState.leaveHome;*/
-		tiredLevel = 10000000;
+		hungerLevel = 10000000;
 	}
 	
 	protected void leaveHome() {

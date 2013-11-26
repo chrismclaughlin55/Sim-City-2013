@@ -27,7 +27,7 @@ public class Room {
 	}
 	
 	public void LeaveBuilding(PersonAgent p) {
-		homeGui.getHomePanel().removeGui(p.getGui(), p.currentBuilding.buildingNumber);
+		homeGui.getHomePanel().removeGui(p.getGui());
 		apartment.apartmentGui.getAptPanel().addGui(p.getGui(), roomNumber);
 	}
 }
