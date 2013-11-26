@@ -21,9 +21,11 @@ import restaurantMQ.gui.RestaurantGui;
 import market.gui.MarketGui;
 import city.Building;
 import city.Building.BuildingType;
+import city.BusAgent;
 import city.HomeGui;
 import city.PersonAgent;
 import city.PersonAgent.BigState;
+import city.gui.BusGui;
 import city.gui.PersonGui;
 import config.ConfigParser;
 import bankgui.*;
@@ -160,7 +162,14 @@ public class MainGui extends JFrame implements MouseListener {
 				 
 			 }
 		}
-        
+		
+		//add bus agent
+		BusAgent bus = new BusAgent(); 
+		BusGui bg = new BusGui(bus,this);
+		bus.setGui(bg);
+		mainAnimationPanel.addGui(bg);
+		bus.startThread();
+		
     }
     
   
@@ -181,6 +190,7 @@ public class MainGui extends JFrame implements MouseListener {
 		p.startThread();
 		
 	}
+    
     public void addConfigPerson(HashMap<String,String> properties) {
 		/* THIS WILL ADD IN ALL PROPERTIES IN THIS HASHMAP TO PERSON ATTRIBUTES
 		 * PersonAgent p = new PersonAgent(, this, mainAnimationPanel.cd);
