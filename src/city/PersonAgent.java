@@ -42,6 +42,7 @@ public class PersonAgent extends Agent
 	Building destinationBuilding;
 	Building jobBuilding;
 	Building home;
+    int homeNumber;
 	int roomNumber = -1;
 	int timeUnit = 5;
 	BusStopAgent currentBusStop;
@@ -124,6 +125,7 @@ public class PersonAgent extends Agent
 	public void assignHome(Building home)
 	{
 		this.home = home;
+        homeNumber = home.buildingNumber;
 	}
 	
 	public void assignJobBuilding(Building jobBuilding) {
@@ -543,5 +545,9 @@ public class PersonAgent extends Agent
 	public String getJob() {
 		return job;
 	}
+    
+    public int getHomeNumber() {
+        return homeNumber;
+    }
 }
 
