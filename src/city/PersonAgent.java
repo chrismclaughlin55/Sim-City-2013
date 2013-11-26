@@ -220,12 +220,10 @@ public class PersonAgent extends Agent
 				}
 				
 				if (homeState == HomeState.onCouch) {
-					System.err.println("calling go to couch");
 					goToCouch();
 					return true;
 				}
 				if (homeState == HomeState.none) {
-					System.err.println("Calling leave home");
 					leaveHome();
 					return true;
 				}
@@ -322,8 +320,13 @@ public class PersonAgent extends Agent
 	}
 
 	private void goToSleep() {
-		
-		
+		personGui.DoGoToBed();
+		try {
+			isMoving.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void goToCouch() {
@@ -386,11 +389,10 @@ public class PersonAgent extends Agent
 			}
 		}
 		bigState = BigState.leaveHome;*/
-		hungerLevel = 1000000;
+		tiredLevel = 10000000;
 	}
 	
 	protected void leaveHome() {
-		System.err.println("leaving home");
 		personGui.DoGoToEntrance();
 		atEntrance.drainPermits();
 		try {
