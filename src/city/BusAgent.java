@@ -68,6 +68,7 @@ public class BusAgent extends Agent {
 	
 	//SCHEDULER
 	protected boolean pickAndExecuteAnAction() {
+		//System.out.println("what");
 		if(myState==BusState.atStop) {
 			UnloadPassengers();
 			return true;
@@ -83,6 +84,7 @@ public class BusAgent extends Agent {
 	        return true;
 	    }
 	    if(myState==BusState.leavingStop) {
+	    	
 	        LeaveStop();
 	        return true;
 	    }
@@ -125,6 +127,10 @@ public class BusAgent extends Agent {
 			}
 		}
 		curr.msgArrivedAtStop(this);
+	}
+	
+	protected void stateChanged() {
+		super.stateChanged();
 	}
 	//ACTIONS
 

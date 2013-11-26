@@ -36,34 +36,34 @@ public class BusGui implements Gui {
 		// TODO Auto-generated method stub
 		if(xFirst) {
 			if (xPos < xDestination)
-		       xPos++;
+		       xPos+=5;
 		    if (xPos > xDestination)
-		       xPos--;
+		       xPos-=5;
 			if (xPos == xDestination) {
 				xFirst = false;
 			}			
 		}	
 		if(yFirst) {
 			if (yPos < yDestination)
-			   yPos++;
+			   yPos+=5;
 			if (yPos > yDestination)
-			   yPos--;
+			   yPos-=5;
 			if (yPos == yDestination) {
 				yFirst = false;
 			}
 		}
 		if(!(xFirst||yFirst)) {
 			if (xPos < xDestination)
-			   xPos++;
+			   xPos+=5;
 			if (xPos > xDestination)
-			   xPos--;
+			   xPos-=5;
 			if (xPos == xDestination) {
 				xFirst = false;
 			}	
 			if (yPos < yDestination)
-				yPos++;
+				yPos+=5;
 			if (yPos > yDestination)
-				yPos--;
+				yPos-=5;
 			if (yPos == yDestination) {
 				yFirst = false;
 			}
@@ -93,7 +93,7 @@ public class BusGui implements Gui {
 	}
 	
 	public void DoGoToNextStop(int x, int y) {
-		
+		//System.out.println("What");
 		for(int i=0; i<11; i++) {
 			if(cd.busStops.get(i).getX()==x&&cd.busStops.get(i).getY()==y) {
 				stop = i;
@@ -109,6 +109,7 @@ public class BusGui implements Gui {
 		moving = true;
 		xDestination = x;
 		yDestination = y;
+		System.out.println("yo?");
 		
 	}
 
