@@ -31,9 +31,10 @@ public class BankCustomerGui implements GuiPositions, Gui {
 			yPos--;
 
 		if (xPos == xDestination && yPos == yDestination) {
-			if(!atDest)
+			if(!atDest){
 			c.msgGuiIsAtDest();
 			atDest = true;
+			}
 		}
 	}
 
@@ -59,7 +60,7 @@ public class BankCustomerGui implements GuiPositions, Gui {
 		if(place == 0){
 			xDestination = linex;
 			yDestination = liney;
-			atDest = false;
+	
 		}
 		if(place == 1){
 			xDestination = linex + 200;
@@ -74,7 +75,7 @@ public class BankCustomerGui implements GuiPositions, Gui {
 			yDestination = doory;
 			
 		}
-		
+		atDest = false;
 	}
 
 }

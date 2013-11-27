@@ -14,6 +14,7 @@ import city.PersonAgent;
 import city.Building.BuildingType;
 
 public class Bank extends Building {
+	public final static int CLOSINGTIME = 22;
 	public BankGui bankGui;
 	BankManagerRole currentManager = null;
 	Map<PersonAgent, CustomerRole> existingCustRoles;

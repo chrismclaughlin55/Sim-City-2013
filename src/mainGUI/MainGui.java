@@ -260,6 +260,7 @@ public class MainGui extends JFrame implements MouseListener {
 		}
 		assignJobBuilding(p, role);
 		p.homeState = HomeState.onCouch;
+		p.tiredLevel = 0;
 		p.startThread();
 		
 	}
