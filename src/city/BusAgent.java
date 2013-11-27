@@ -131,7 +131,6 @@ public class BusAgent extends Agent implements Bus {
 		BusStopAgent temp=curr.nextStop;
 		curr = next;
 		next = temp;
-        stateChanged();
 		busgui.DoGoToNextStop(next.getX(),next.getY());
 	    myState=BusState.moving;
 	    atDestination.drainPermits();
@@ -159,7 +158,6 @@ public class BusAgent extends Agent implements Bus {
 	    }
 	    myState=BusState.leavingStop;
 	    readyToBoard = false;
-	    stateChanged();
 	}
 
 	private void UnloadPassenger(myPassenger p) {

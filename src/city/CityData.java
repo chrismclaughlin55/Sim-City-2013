@@ -40,6 +40,7 @@ public class CityData implements ActionListener {
 	public List<MQRestaurantBuilding> restaurants = Collections.synchronizedList(new ArrayList<MQRestaurantBuilding>());
 	public Timer globalTimer;
 	public static int incrementLimit = 300;
+
 	public List<Home> homes = Collections.synchronizedList(new ArrayList<Home>());
 	public List<Apartment> apartments = Collections.synchronizedList(new ArrayList<Apartment>());
 	//ALSO needs a 2-d array of the entire place

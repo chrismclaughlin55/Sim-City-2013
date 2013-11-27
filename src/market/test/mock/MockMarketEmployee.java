@@ -2,6 +2,8 @@ package market.test.mock;
 
 import java.util.List;
 
+import market.MarketCustomerRole;
+import market.MarketManagerRole.MyCookCustomer;
 import market.MyOrder;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
@@ -25,6 +27,48 @@ public class MockMarketEmployee extends Mock implements MarketEmployee {
 
 	@Override
 	public void msgHereAreMyOrders(List<MyOrder> orders, MarketCustomer cust) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void msgGoToDesk(int deskNum) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void msgLeave() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void msgServiceCustomer(MarketCustomer customer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void msgServiceCookCustomer(MyCookCustomer cook) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void msgDoneProcessing() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void msgHereIsRestPayment(double payment) {
 		// TODO Auto-generated method stub
 		
 	}

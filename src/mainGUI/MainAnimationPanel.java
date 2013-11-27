@@ -123,6 +123,9 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.add(b);
 		cd.bank = b;
 
+		Building m = new Market(320, 410, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
+		cd.buildings.add(m);
+		cd.market = (Market) m;
 		Building market = new Market(320, 410, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
 		cd.buildings.add(market);
 		cd.market = (Market) market;

@@ -103,13 +103,13 @@ public class PersonAgent extends Agent
 		this.gui = gui;
 		this.cityData = cd;
 		/*MyOrder o1 = new MyOrder("Steak", 1);
-		MyOrder o2 = new MyOrder("Salad", 1);
-		MyOrder o3 = new MyOrder("Pizza", 1);
-		MyOrder o4 = new MyOrder("Chicken", 1);
-		thingsToOrder.add(o1);
-		thingsToOrder.add(o2);
-		thingsToOrder.add(o3);
-		thingsToOrder.add(o4);*/
+                MyOrder o2 = new MyOrder("Salad", 1);
+                MyOrder o3 = new MyOrder("Pizza", 1);
+                MyOrder o4 = new MyOrder("Chicken", 1);
+                thingsToOrder.add(o1);
+                thingsToOrder.add(o2);
+                thingsToOrder.add(o3);
+                thingsToOrder.add(o4);*/
 		inventory.put("Steak", 3);
 		inventory.put("Salad", 3);
 		inventory.put("Pizza", 3);
@@ -184,7 +184,7 @@ public class PersonAgent extends Agent
 		if(cityData.hour == 0 && this.home instanceof Apartment) {
 			rent+=20;
 		}
-		
+
 	}
 
 	public void msgFull() {
@@ -221,14 +221,14 @@ public class PersonAgent extends Agent
 
 	public void msgAtBuilding() {//from animation
 		//print("msgAtBuilding() called");
-		atBuilding.release();// = true;
-		stateChanged();
+	atBuilding.release();// = true;
+	stateChanged();
 	}
 
 	public void msgAtBed() {//from animation
 		//print("msgAtBed() called");
-		atBed.release();// = true;
-		stateChanged();
+	atBed.release();// = true;
+	stateChanged();
 	}
 
 	public void msgAtEntrance() {//from animation
@@ -275,16 +275,16 @@ public class PersonAgent extends Agent
 					WakeUp();
 					return true;
 				}
-				else if (cityData.hour>=6 && job.equals("MarketEmployee")) {
-					//print(getJob());
-					WakeUp();
-					return true;
-				}
-				else if (cityData.hour>=9) {
-					WakeUp();
-					return true;
-				}
-				return false; //put the agent thread back to sleep
+			else if (cityData.hour>=6 && job.equals("MarketEmployee")) {
+				//print(getJob());
+				WakeUp();
+				return true;
+			}
+			else if (cityData.hour>=9) {
+				WakeUp();
+				return true;
+			}
+			return false; //put the agent thread back to sleep
 			}
 
 			if (tiredLevel >= TIRED) {
@@ -392,6 +392,10 @@ public class PersonAgent extends Agent
 				desiredRole = "Customer";
 				return true;
 			}
+			
+			bigState = bigState.goHome;
+			homeState = homeState.onCouch;
+			return true;
 		}
 
 
@@ -499,13 +503,33 @@ public class PersonAgent extends Agent
 	}
 
 	protected void goToRestaurant() {
-		int restNumber = 12;
-		//int restNumber = (int)(12+(int)(Math.random()*5));
-		destinationBuilding = cityData.buildings.get(restNumber);
+		int restNumber;
+		if(!goToWork)
+		{
+			
+			while(true)
+			{
+				restNumber = (int)(12+(int)(Math.random()*7));
+				if(restNumber == 18)
+				{
+					bigState = BigState.goHome;
+					return;
+				}
+				else if(cityData.buildings.get(restNumber).isOpen())
+					break;
+			}
+			destinationBuilding = cityData.buildings.get(restNumber);
+		}
+		else
+		{
+			destinationBuilding = jobBuilding;
+			restNumber = jobBuilding.buildingNumber;
+		}
+		
 		if(destinationBuilding != currentBuilding)
 		{
 			takeBusToDestination();
-	
+
 			personGui.DoGoToBuilding(restNumber);
 			atBuilding.drainPermits();
 			try {
@@ -574,6 +598,7 @@ public class PersonAgent extends Agent
 			a.rooms.get(roomNumber).EnterBuilding(this, "");
 		}
 		bigState = BigState.atHome;
+		homeState = homeState.idle;
 		//hungerLevel = 10000000;
 	}
 
@@ -636,7 +661,7 @@ public class PersonAgent extends Agent
 
 	protected void goToMarket() {
 		destinationBuilding = cityData.market;
-		
+
 		takeBusToDestination();
 
 		personGui.DoGoToBuilding(19);
@@ -745,4 +770,3 @@ public class PersonAgent extends Agent
 		return homeNumber;
 	}
 }
-

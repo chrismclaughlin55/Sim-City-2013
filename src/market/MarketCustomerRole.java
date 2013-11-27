@@ -22,7 +22,6 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	private MarketEmployeeRole employee = null;
 	private double amountDue = 0;
 	private CustomerGui gui = null;
-	private boolean guiset = false;
 	
 	private Semaphore atDesk = new Semaphore(0,true);
 	private Semaphore left = new Semaphore(0,true);
@@ -93,15 +92,6 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 		stateChanged();
 	}
 
-	public void msgOrderUnfulfilled(String type, int amount) {
-		for (MyOrder o : orders) {
-			if ((o.type.equals(type)) && (o.amount == amount)) {
-				o.orderState = OrderState.unfulfilled;
-			}
-		}
-		stateChanged();
-	}
-	
 	public void msgYouCanLeave() {
 		state = customerState.leaving;
 		stateChanged();

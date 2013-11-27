@@ -9,27 +9,28 @@ import java.util.concurrent.Semaphore;
 
 import market.MarketManagerRole.MyCookCustomer;
 import market.gui.EmployeeGui;
+import market.Inventory;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
 import market.interfaces.MarketManager;
 import restaurantMQ.MQCashierRole;
-import restaurantMQ.MQCookRole;
 import restaurantMQ.test.mock.EventLog;
+import restaurantMQ.test.mock.LoggedEvent;
 import city.PersonAgent;
 import city.Role;
 
 
 public class MarketEmployeeRole extends Role implements MarketEmployee {
 
-	private enum EmployeeState{nothing, entering, working, processing, doneProcessing, doneProcessingCookOrder, waitingForPayment}
-	private EmployeeState state;
+	public enum EmployeeState{nothing, entering, working, processing, doneProcessing, doneProcessingCookOrder, waitingForPayment}
+	public EmployeeState state;
 
 	private enum orderState {pending, processing, completed};
 	public List<MarketOrder> currentMarketOrders = Collections.synchronizedList(new ArrayList<MarketOrder>());
 	public List<Invoice> invoice = Collections.synchronizedList(new ArrayList<Invoice>());
 	public List<Double> payments = Collections.synchronizedList(new ArrayList<Double>());
 	public List<Double> restPayments = Collections.synchronizedList(new ArrayList<Double>());
-	private List<MarketCustomerRole> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomerRole>());
+	public List<MarketCustomer> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomer>());
 	private List<MyCookCustomer> waitingCookCustomers = Collections.synchronizedList(new ArrayList<MyCookCustomer>());
 
 	public EmployeeGui gui = null;
@@ -45,7 +46,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	private int deskNum = 0;
 	private double amountDue;
 	private boolean isProcessed = false;
-	private MarketCustomerRole currentCustomer;
+	private MarketCustomer currentCustomer;
 	private MyCookCustomer currentCookCustomer;
 	private MQCashierRole cashier;
 
@@ -101,7 +102,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}
 
 
-	public void msgServiceCustomer(MarketCustomerRole customer) {
+	public void msgServiceCustomer(MarketCustomer customer) {
 		print ("Received msgServiceCustomer");
 		currentCustomer = customer;
 		waitingCustomers.add(customer);
@@ -218,7 +219,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		return false;
 	}
 
-	private void CallCustomer(MarketCustomerRole customer) {
+	private void CallCustomer(MarketCustomer customer) {
 		customer.msgWhatIsYourOrder(this);
 	}
 
@@ -226,8 +227,9 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 	public void FulfillOrder() {
 		amountDue = 0;
+		log.add((new LoggedEvent("Fufilling order")));
 		for (final MarketOrder o : currentMarketOrders) {
-			//System.out.println (o.quantity + " " + inventory.inventory.get(o.type).amount);
+			//System.out.println (" " + inventory.inventory.get(o.type).amount);
 			if(o.quantity <= inventory.inventory.get(o.type).amount) {
 				o.state = orderState.completed;
 				inventory.inventory.get(o.type).amount -= o.quantity;
@@ -319,6 +321,7 @@ public void msgAtDesk() {
 	state = EmployeeState.working;
 	stateChanged();
 }
+
 
 }
 
