@@ -1,5 +1,7 @@
 package bank;
 
+import java.util.concurrent.Semaphore;
+
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
@@ -19,6 +21,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	private CustState state;
 	private CustEvent event;
 	private BankCustomerGui gui;
+	private Semaphore atDest = new Semaphore(0, true);
 	public CustomerRole(PersonAgent person) {
 		super(person);
 		this.state = CustState.InLine;
@@ -37,7 +40,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgGoToTeller(Teller t) {
 		this.t = t;
 		event = CustEvent.GoToTeller;
-		print("going to teller "+ state );
+		print("going to teller "+ state + event);
 		stateChanged();
 	}
 
@@ -65,6 +68,7 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	//SCHEDULER
 	public boolean pickAndExecuteAnAction() {
+		print("made it to scheduler");
 		if(state == CustState.InLine && event == CustEvent.GoToTeller){
 			sayHello();
 			return true;
@@ -116,11 +120,13 @@ public class CustomerRole extends Role implements BankCustomer{
 			t.msgDeposit(depositAmount);
 
 		}
+		print("made it to tell teller");
 	}
 	private void leave(){
-		//TODO GUI SHIT
+		
 		state = CustState.Left;	
 		// make instance of CustInfo
+		print("made it to leave");
 
 	}
 	private void processLoan(double approvedAmount){
@@ -137,7 +143,21 @@ public class CustomerRole extends Role implements BankCustomer{
 	public PersonAgent returnPerson() {
 		return this.person;
 	}
+	public void msgGuiIsAtDest() {
+		print("released a atDest");
+		atDest.release();
+		
+	}
 
+	private void guiGoHere(int place){
+			gui.goTo(place);
+		try {
+			atDest.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
 }
 
 

@@ -42,7 +42,7 @@ public class BankManagerRole extends Role implements BankManager {
 	//MESSAGES
 	public void msgAddTeller(TellerRole newRole) {
 		tellers.add(new myTeller(newRole));
-		print("added teller" + newRole.name);
+		print("added teller " + newRole.name);
 		
 	}
 	//Direct Deposit Message
@@ -61,6 +61,7 @@ public class BankManagerRole extends Role implements BankManager {
 	public void msgINeedService(CustomerRole c) {
 		print(c.getName()+" Needs service");
 		line.add((CustomerRole) c);
+		print(line.size()+ "");
 		stateChanged();
 	}
 
@@ -89,6 +90,7 @@ public class BankManagerRole extends Role implements BankManager {
 //SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		print("made it to scheduler");
 		for( myTeller t: tellers){
 			if(t.state == tellerState.available && line.size()>0){
 				helpCustomer(line.remove(0), t);
@@ -113,6 +115,7 @@ public class BankManagerRole extends Role implements BankManager {
 	}
 //ACTIONS
 	private void helpCustomer(CustomerRole c, myTeller t) {
+		print("sending cust "+c.getName()+" to teller");
 		t.c = c;
 		c.msgGoToTeller(t.t);
 		t.state = tellerState.notAvailable;

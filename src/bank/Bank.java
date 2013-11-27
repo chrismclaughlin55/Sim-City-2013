@@ -33,49 +33,31 @@ public class Bank extends Building {
 	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
 		if(roleRequest.equals("BankManager")){
-			//			if(!manager.equals( null)){
-			//				manager = p;
-			//			}
-			//			if(p.equals(manager)){
-			//				if(existingManagerRoles.get(p).equals (null)){
-			//					existingManagerRoles.put(p, new BankManagerRole(p));
-			//					setOpen(p);
-			//					p.print("bank is open? "+ isOpen);
-			//					p.msgAssignRole(existingManagerRoles.get(p));
-			//					currentManager = existingManagerRoles.get(p);
-			//					cityData.buildings.get(18).manager = currentManager.getPerson();
-			//					p.print("current manager is " + currentManager.getName());
-			if(manager.equals(null)){
+			if(manager == null){
 				manager = p;
 			}
 			if(p.equals(manager)){
 				if(existingManagerRoles.get(p) != null){
-					setOpen(p);
-					p.msgAssignRole(existingManagerRoles.get(p));
-					currentManager = existingManagerRoles.get(p);
+				setOpen(p);
+				p.msgAssignRole(existingManagerRoles.get(p));
+				currentManager = existingManagerRoles.get(p);
+
 				}
 				else {
-					setOpen(p);
-					p.msgAssignRole(existingManagerRoles.get(p));
-					currentManager = existingManagerRoles.get(p);
 
+				existingManagerRoles.put(p, new BankManagerRole(p));
+				setOpen(p);
+				p.print("bank is open? "+ isOpen);
+				p.msgAssignRole(existingManagerRoles.get(p));
+				currentManager = existingManagerRoles.get(p);
+				cityData.buildings.get(18).manager = currentManager.getPerson();
+				p.print("current manager is " + currentManager.getName());
 				}
 			}
 		}
 		if(roleRequest.equals("Customer")){
 			if(isOpen()){
-				if(existingCustRoles.get(p).equals (null)){
-					p.print("assigned cust gui");
-					CustomerRole newRole = new CustomerRole(p);
-					existingCustRoles.put(p, newRole);
-					BankCustomerGui custGui = new BankCustomerGui(newRole);
-					p.msgAssignRole(newRole);
-					bankGui.animationPanel.addGui(custGui);
-					p.print("current manager is " + currentManager.getName());
-					currentManager.msgINeedService(newRole);
-
-				}
-				else{
+				if(existingCustRoles.get(p) != null){
 					CustomerRole role = existingCustRoles.get(p);
 					BankCustomerGui custGui = new BankCustomerGui(role);
 					role.msgAddGui(custGui);
@@ -84,11 +66,32 @@ public class Bank extends Building {
 					p.print("current manager is " + currentManager.getName());
 					currentManager.msgINeedService(role);
 				}
+				else{
+					p.print("assigned cust gui");
+					CustomerRole newRole = new CustomerRole(p);
+					existingCustRoles.put(p, newRole);
+					BankCustomerGui custGui = new BankCustomerGui(newRole);
+					p.msgAssignRole(newRole);
+					bankGui.animationPanel.addGui(custGui);
+					p.print("current manager is " + currentManager.getName());
+					currentManager.msgINeedService(newRole);
+				}
 			}
 		}
 		if(roleRequest.equals("BankTeller")){
 			if(isOpen()){
-				if(existingTellerRoles.get(p).equals(null)){
+				if(existingTellerRoles.get(p) != null){
+					p.print("teller role existed for me");
+					TellerRole role = existingTellerRoles.get(p);
+					TellerGui tellerGui = new TellerGui(existingTellerRoles.get(p));
+					role.msgAddGui(tellerGui);
+					p.msgAssignRole(role);
+					role.msgAddGui(tellerGui);
+					bankGui.animationPanel.addGui(tellerGui);
+					currentManager.msgAddTeller(role);
+					role.msgAddManager(currentManager);
+				}
+				else{
 					p.print("assigned teller gui");
 					TellerRole newRole = new TellerRole(p);
 					existingTellerRoles.put(p, newRole);
@@ -99,26 +102,14 @@ public class Bank extends Building {
 					currentManager.msgAddTeller(newRole);
 					newRole.msgAddManager(currentManager);
 				}
-				else{
-					p.print("teller role existed for me");
-					TellerRole role = existingTellerRoles.get(p);
-					TellerGui tellerGui = new TellerGui(existingTellerRoles.get(p));
-					role.msgAddGui(tellerGui);
-					p.msgAssignRole(role);
-					role.msgAddGui(tellerGui);
-					bankGui.animationPanel.addGui(tellerGui);
-					currentManager.msgAddTeller(role);
-					role.msgAddManager(currentManager);
-
-				}
 			}
 		}
 	}
 	public BankManagerRole getManager(){
 		return currentManager;
 	}
-
-	public void test(){
+	
+	/*public void test(){
 		System.out.println("testing bank");
 		PersonAgent p1 = new PersonAgent("Manager");
 		p1.startThread();
@@ -128,7 +119,7 @@ public class Bank extends Building {
 		PersonAgent p2 = new PersonAgent("Teller");
 		p2.startThread();
 		EnterBuilding(p2, "BankTeller");
-
+		
 
 		PersonAgent p3 = new PersonAgent("Customer");
 		p3.bankInfo = new CustInfo(p3.getName(), p3, null);
@@ -137,6 +128,6 @@ public class Bank extends Building {
 		p3.cash=500;
 		p3.startThread();
 		EnterBuilding(p3, "Customer");
-
-	}
+		
+	}*/
 }

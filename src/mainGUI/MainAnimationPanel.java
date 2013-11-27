@@ -24,6 +24,7 @@ import city.BusAgent;
 import city.BusStopAgent;
 import city.CityData;
 import city.Home;
+import city.PersonAgent;
 import city.gui.BusGui;
 import city.gui.PersonGui;
 
@@ -128,6 +129,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		
 		for (int i = 0; i < 12; i++) {
 			cd.buildings.get(i).setBusStop(cd.busStops.get(i));
+			cd.busStops.get(i).setStopNumber(i);
 		}
 		cd.buildings.get(12).setBusStop(cd.busStops.get(0));
 		cd.buildings.get(13).setBusStop(cd.busStops.get(9));
@@ -172,7 +174,6 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
         
 		setVisible(true);
 		cd.globalTimer.start();
-
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -187,7 +188,6 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		//Clear the screen by painting a rectangle the size of the frame
 		ImageIcon background = new ImageIcon("res/background.png");
 		g2.drawImage(background.getImage(), 0, 0, null);
-
 		
 		ImageIcon busStop = new ImageIcon("res/busstop.png");
 		//Draw apartments
@@ -259,8 +259,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		g2.drawImage(road3.getImage(), 440, 95, null);
 		g2.drawImage(road3.getImage(), 130, 635, null);
 		g2.drawImage(road3.getImage(), 440, 635, null);
-        
-        
+		
 		synchronized(cd.guis){
 			for(Gui gui : cd.guis) {
 				if (gui.isPresent()) {

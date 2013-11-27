@@ -57,7 +57,7 @@ public class PersonAgent extends Agent
 	Market market;
 	Timer timer = new Timer();
 	Bank bank;
-	HashMap<String, Integer> inventory = new HashMap<String, Integer>();
+	public HashMap<String, Integer> inventory = new HashMap<String, Integer>();
 	int rent = 200;
 
 
@@ -169,8 +169,16 @@ public class PersonAgent extends Agent
 
 	public void refresh() {
 		super.refresh();
-		if(cityData.hour == 3)
+		if(cityData.hour == 5)
 			goToWork = true;
+		if(cityData.hour % 4 == 0 && cityData.hour > 8) {
+			tiredLevel+=2;
+			hungerLevel+=2;
+		}
+		if(cityData.hour == 0 && this.home instanceof Apartment) {
+			rent+=20;
+		}
+		
 	}
 
 	public void msgFull() {
@@ -256,13 +264,13 @@ public class PersonAgent extends Agent
 		{
 		case atHome: {
 			if (homeState == HomeState.sleeping) {
-				if(cityData.hour >= 5 && (job.equals("BankManager") || job.equals("Host") || job.equals("MarketManager"))){//if sleeping and it is time to wake up
+				if(cityData.hour >= 5 && job.equals("BankManager") ){//if sleeping and it is time to wake up
 					//delete the && false when the actual rule is implemented
 					WakeUp();
 					return true;
 				}
 				else {
-					if(cityData.hour>=5 && (job.equals("Host") || job.equals("MarketManager"))) {
+					if(cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
 						print(getJob());
 						WakeUp();
 						return true;
