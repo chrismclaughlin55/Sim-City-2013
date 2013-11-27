@@ -270,20 +270,20 @@ public class PersonAgent extends Agent
 		{
 		case atHome: {
 			if (homeState == HomeState.sleeping) {
-				if(cityData.hour >= 5 && (job.equals("Host") || job.equals("MarketManager")) ||job.equals("BankManager") ){
+				if(cityData.hour >= 2 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
 					//delete the && false when the actual rule is implemented
 					WakeUp();
 					return true;
 				}
-			else if (cityData.hour>=6 && job.equals("MarketEmployee")) {
-				//print(getJob());
-				WakeUp();
-				return true;
-			}
-			else if (cityData.hour>=9) {
-				WakeUp();
-				return true;
-			}
+				else if (cityData.hour>=3 && job.equals("MarketEmployee")) {
+					//print(getJob());
+					WakeUp();
+					return true;
+				}
+				else if (cityData.hour>=6) {
+					WakeUp();
+					return true;
+				}
 			return false; //put the agent thread back to sleep
 			}
 
@@ -292,13 +292,20 @@ public class PersonAgent extends Agent
 				return false; //intentional because the thread is being out to sleep
 			}
 			
-			if (hungerLevel >= HUNGRY) { //inventory also has to be sufficient
-				makeFood();
-				return true;
+			if (hungerLevel >= HUNGRY) {
+				int num = (int) (Math.random() * 2);
+				if (num == 0) {
+					makeFood();
+					return true;
+				}
+				if (num == 1) {
+					leaveHome();
+					return true;
+				}
 			}
 
-			if (goToWork && !home.manager.equals(this)) {
-				leaveHome(); //leave the house and set bigState to doingNothing
+			if (goToWork && jobBuilding != null && (!home.manager.equals(this) && home instanceof Apartment)) {
+				leaveHome();
 				return true;
 			}
 
@@ -312,11 +319,11 @@ public class PersonAgent extends Agent
 				return true;
 			}
 			if (homeState == HomeState.none) {
-				if (home.manager.equals(this) && lowInventory()) {
+				if (home instanceof Apartment && home.manager.equals(this) && lowInventory()) {
 					leaveHome();
 					return true;
 				}
-				else if (home.manager.equals(this)) {
+				else if (home instanceof Apartment && home.manager.equals(this)) {
 					goToCouch();
 					return true;
 				}
@@ -440,7 +447,7 @@ public class PersonAgent extends Agent
 			if (inventory.get(key) > 0) {
 				inventory.put(key, inventory.get(key) - 1);
 				break;
-			}
+			} 
 		}
 		personGui.DoGoToRefridgerator();
 		try {
@@ -462,7 +469,7 @@ public class PersonAgent extends Agent
 				homeState = HomeState.onCouch;
 				isMoving.release();
 			}
-		}, 5000);
+		}, 3000);
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
@@ -495,7 +502,7 @@ public class PersonAgent extends Agent
 			public void run() {
 				homeState = HomeState.none;
 			}
-		}, 5000);
+		}, 3000);
 	}
 
 	protected void goToRandomPlace() {
@@ -504,18 +511,19 @@ public class PersonAgent extends Agent
 
 	protected void goToRestaurant() {
 		int restNumber;
-		if(!goToWork)
+		if(!goToWork || jobBuilding == null)
 		{
 			
-			while(true)
+			while (true)
 			{
-				restNumber = (int)(12+(int)(Math.random()*7));
-				if(restNumber == 18)
+				restNumber = 12;
+				//restNumber = (int)(12+(int)(Math.random()*6));
+				if(restNumber >= 17)
 				{
 					bigState = BigState.goHome;
 					return;
 				}
-				else if(cityData.buildings.get(restNumber).isOpen())
+				else if(((MQRestaurantBuilding)cityData.buildings.get(restNumber)).isOpen())
 					break;
 			}
 			destinationBuilding = cityData.buildings.get(restNumber);
@@ -598,7 +606,7 @@ public class PersonAgent extends Agent
 			a.rooms.get(roomNumber).EnterBuilding(this, "");
 		}
 		bigState = BigState.atHome;
-		homeState = homeState.idle;
+		homeState = HomeState.onCouch;
 		//hungerLevel = 10000000;
 	}
 

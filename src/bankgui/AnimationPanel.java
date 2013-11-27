@@ -42,6 +42,13 @@ public class AnimationPanel extends JPanel implements GuiPositions, ActionListen
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		synchronized(guis){
+			for(Gui gui : guis) {
+				if (gui.isPresent()) {
+					gui.updatePosition();
+				}
+			}
+		}
 		repaint();  //Will have paintComponent called
 	}
 
@@ -59,13 +66,7 @@ public class AnimationPanel extends JPanel implements GuiPositions, ActionListen
 		g2.draw3DRect(linex, liney + 30, 200, 1, true);
 		g2.setColor(Color.BLUE);
 		g2.fill3DRect(doorx, doory, 20, 50, true);
-		synchronized(guis){
-			for(Gui gui : guis) {
-				if (gui.isPresent()) {
-					gui.updatePosition();
-				}
-			}
-		}
+	
 		synchronized(guis){
 			for(Gui gui : guis) {
 				if (gui.isPresent()) {
