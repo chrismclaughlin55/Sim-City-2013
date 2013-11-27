@@ -58,3 +58,5 @@ Objects (Function and visual representation)
 + (A*) Car accident.
 + Emergency state for person agent, such as fire, earthquake, etc. All people will stop their current schedule and react to the emergency.
 + People can die because of car accident, emergency, etc.
++ Add "open sign" for restaurants / market / bank.
++ Add business account for each building - direct deposit for managers to bank; also managers pay employees from building money.

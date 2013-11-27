@@ -8,16 +8,18 @@ import java.util.concurrent.Semaphore;
 
 import agent.Agent;
 import city.gui.BusGui;
+import city.interfaces.Bus;
+import city.interfaces.BusStop;
 
-public class BusAgent extends Agent {
+public class BusAgent extends Agent implements Bus {
 
 	enum BusState { moving, leavingStop, atStop, unloading, waitingForResponse, loading }
 	enum PassengerState { gotOn, beenOn};
 	class myPassenger {
 	    PersonAgent p;
-	    BusStopAgent dest;
+	    BusStop dest;
 	    PassengerState ps;
-	    public myPassenger(PersonAgent per,BusStopAgent dest) {
+	    public myPassenger(PersonAgent per,BusStop dest) {
 	        this.p=per;
 	        this.dest=dest;
 	        ps=PassengerState.gotOn;
@@ -47,6 +49,10 @@ public class BusAgent extends Agent {
 	//MESSAGES
 	
 	//CALLED BY BUSGUI
+	/* (non-Javadoc)
+	 * @see city.Bus#msgAtDestination()
+	 */
+	@Override
 	public void msgAtDestination() {
 		
 		myState = BusState.atStop;
@@ -55,6 +61,10 @@ public class BusAgent extends Agent {
 		// TODO Auto-generated method stub
 		
 	}
+	/* (non-Javadoc)
+	 * @see city.Bus#msgPeopleAtStop(java.util.HashMap)
+	 */
+	@Override
 	public void msgPeopleAtStop(HashMap<PersonAgent,BusStopAgent>peopleAtStop) {
         myState=BusState.loading;
         for ( PersonAgent p : peopleAtStop.keySet()) {
@@ -63,9 +73,14 @@ public class BusAgent extends Agent {
         stateChanged();
 	}
 	
+	/* (non-Javadoc)
+	 * @see city.Bus#msgOnBus()
+	 */
+	@Override
 	public void msgOnBus()
 	{
 		atDestination.release();
+		stateChanged();
 	}
 
 
@@ -83,6 +98,8 @@ public class BusAgent extends Agent {
 					return true;
 				}
 			}
+			myState = BusState.unloading;   
+			return true;
 		}
 
 		if(myState==BusState.unloading) {
@@ -99,6 +116,7 @@ public class BusAgent extends Agent {
 	        LeaveStop();
 	        return true;
 	    }
+	    
 	    return false;
 	}
 	
@@ -109,6 +127,7 @@ public class BusAgent extends Agent {
         stateChanged();
 		busgui.DoGoToNextStop(next.getX(),next.getY());
 	    myState=BusState.moving;
+	    atDestination.drainPermits();
 	    try {
 	    	atDestination.acquire();
 	    }
@@ -126,6 +145,7 @@ public class BusAgent extends Agent {
 		        	//person getting off bus
 		        	p.ps = PassengerState.beenOn;
 		            p.p.msgBusIsHere(this);
+		            atDestination.drainPermits();
 		            try {
 		            	atDestination.acquire();
 		            }
@@ -137,9 +157,10 @@ public class BusAgent extends Agent {
 	}
 
 	private void UnloadPassenger(myPassenger p) {
-		myState = BusState.unloading;   
+		
 		//have a wait time for loading and unloading
 		p.p.msgDoneMoving();
+		atDestination.drainPermits();
 		try {
         	atDestination.acquire();
         }

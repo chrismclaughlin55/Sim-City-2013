@@ -53,7 +53,7 @@ public class MarketGui extends JFrame implements ActionListener {
 	 * @param person customer (or waiter) object
 	 */
 	public void updateMarketPanel() {
-/*
+
 		for (JLabel label : marketPanel.labels) {
 			label.setText("Quantity of steak: " + market.inventory.inventory.get("Steak").amount);
 			label.setText("Quantity of salad: " + market.inventory.inventory.get("Salad").amount);
@@ -62,7 +62,7 @@ public class MarketGui extends JFrame implements ActionListener {
 		}
 
 		marketPanel.validate();
-		*/
+		
 	}
 
 	@Override

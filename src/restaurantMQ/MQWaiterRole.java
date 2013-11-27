@@ -9,6 +9,7 @@ import javax.swing.JCheckBox;
 
 import city.PersonAgent;
 import city.Role;
+import restaurantMQ.gui.RestaurantPanel;
 import restaurantMQ.gui.WaiterGui;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Cook;
@@ -31,6 +32,7 @@ public class MQWaiterRole extends Role implements Waiter
 	JCheckBox breakBox;
 	private int waiterNumber;
 	private List<CookOrder> cookOrders;
+	RestaurantPanel restPanel;
 	
 	Menu menu = null;
 	
@@ -103,9 +105,10 @@ public class MQWaiterRole extends Role implements Waiter
 		super(person);
 	}
 	
-	public MQWaiterRole(PersonAgent person, int waiterNumber, Host host, List<Cook> cooks, List<CookOrder> cookOrders, Cashier cashier, Menu menu, JCheckBox breakBox)
+	public MQWaiterRole(PersonAgent person, RestaurantPanel rp, int waiterNumber, Host host, List<Cook> cooks, List<CookOrder> cookOrders, Cashier cashier, Menu menu, JCheckBox breakBox)
 	{
 		super(person);
+		restPanel = rp;
 		this.name = person.getName();
 		this.waiterNumber = waiterNumber;
 		this.breakBox = breakBox;
@@ -409,12 +412,31 @@ public class MQWaiterRole extends Role implements Waiter
 			return true;
 		}
 		
-		gui.DefaultAction();
-		
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && customers.isEmpty())
+		{
+			LeaveRestaurant();
+			return true;
+		}
+		if(isActive())
+			gui.DefaultAction();
+			
 		return false;
 	}
 	/*END OF SCHEDULER*/
 	
+	private void LeaveRestaurant() {
+		host.msgLeavingNow(this);
+		gui.DoLeaveRestaurant();
+		try
+		{
+			actionDone.acquire();
+		}
+		catch(Exception e){}
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
+	}
+
 	/*ACTIONS*/
 	private void SeatCustomer(MyCustomer customer)
 	{

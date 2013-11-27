@@ -1,32 +1,38 @@
 package restaurantMQ.gui;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Timer;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import market.Market;
 import restaurantMQ.CookOrder;
 import restaurantMQ.MQCashierRole;
 import restaurantMQ.MQCookRole;
 import restaurantMQ.MQCustomerRole;
 import restaurantMQ.MQHostRole;
 import restaurantMQ.MQWaiterRole;
-import restaurantMQ.MarketAgent;
 import restaurantMQ.Menu;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
-
-import javax.swing.*;
-
-import city.PersonAgent;
 import agent.Agent;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Vector;
-import java.util.Timer;
-import java.util.TimerTask;
+import city.PersonAgent;
 
 /**
  * Panel in frame that contains all the restaurant information,
@@ -43,6 +49,7 @@ public class RestaurantPanel extends JPanel {
 	private static final int NWAITERS = 1;
 	private static final int NCOOKS = 1;
 	private static final int NMARKETS = 3;
+	public static final int CLOSINGTIME = 20;
 	
     //all roles ever
 	private List<Host> hosts = new ArrayList<Host>();
@@ -50,10 +57,12 @@ public class RestaurantPanel extends JPanel {
     private List<Customer> customers = Collections.synchronizedList(new ArrayList<Customer>());
     private List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
     private List<Cook> cooks = Collections.synchronizedList(new ArrayList<Cook>());
-    private List<MarketAgent> markets = Collections.synchronizedList(new ArrayList<MarketAgent>());
+    //private List<MarketAgent> markets = Collections.synchronizedList(new ArrayList<MarketAgent>());
     private List<Cashier> cashiers = Collections.synchronizedList(new ArrayList<Cashier>());
     private Cashier cashier; //this is the active cashier
     //private Vector<HungerListener> hungerListeners = new Vector<HungerListener>();
+    
+    private Market market;
     
     private List<CookOrder> cookOrders = Collections.synchronizedList(new ArrayList<CookOrder>());
 
@@ -93,8 +102,9 @@ public class RestaurantPanel extends JPanel {
     	}
     }
 
-    public RestaurantPanel(RestaurantGui gui) {
+    public RestaurantPanel(RestaurantGui gui, Market market) {
         this.gui = gui;
+        this.market = market;
         
         /*
         //Cashier instantiation (hack)
@@ -106,11 +116,7 @@ public class RestaurantPanel extends JPanel {
         */
         
         //Market instantiation (hack)
-        for(int i = 0; i < NMARKETS; ++i)
-        {
-        	markets.add(new MarketAgent(("Market" + (i+1)), timer, i));
-        	markets.get(i).startThread();
-        }
+       
         
         /*
         //Cook instantiation (hack)
@@ -279,7 +285,7 @@ public class RestaurantPanel extends JPanel {
     public void addWaiter(String name, final JCheckBox breakBox)
     {
     	PersonAgent p = new PersonAgent(name);
-    	MQWaiterRole w = new MQWaiterRole(p, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
+    	MQWaiterRole w = new MQWaiterRole(p, this, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
     	waiters.add(w);
     	((MQHostRole)host).addWaiter(w);
     	for(Cook c : cooks)
@@ -367,7 +373,7 @@ public class RestaurantPanel extends JPanel {
     	}
     	
     	final JCheckBox breakBox = new JCheckBox("");
-    	MQWaiterRole w = new MQWaiterRole(person, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
+    	MQWaiterRole w = new MQWaiterRole(person, this, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
     	waiters.add(w);
     	if(host != null)
     		((MQHostRole)host).addWaiter(w);
@@ -405,7 +411,7 @@ public class RestaurantPanel extends JPanel {
     
     public void addHost(PersonAgent person)
     {
-        host = new MQHostRole(person);
+        host = new MQHostRole(person, this);
         hosts.add(host);
         ((MQHostRole)host).setCooks(cooks);
         ((MQHostRole)host).setWaiters(waiters);
@@ -429,14 +435,14 @@ public class RestaurantPanel extends JPanel {
     
     public void addCook(PersonAgent person)
     {
-    	MQCookRole c = new MQCookRole(person, cookOrders, markets, cashier, timer);
+    	MQCookRole c = new MQCookRole(person, this, cookOrders, market, cashier, timer);
 		cooks.add(c);
 		person.msgAssignRole(c);
     }
     
     public void addCashier(PersonAgent person)
     {
-    	cashier = new MQCashierRole(person);
+    	cashier = new MQCashierRole(person, this);
     	person.msgAssignRole((MQCashierRole)cashier);
     	synchronized(waiters)
     	{
@@ -494,9 +500,36 @@ public class RestaurantPanel extends JPanel {
     	return count;
     }
     
+    public void setOpen(Boolean b)
+    {
+    	gui.setOpen(b);
+    }
+    
     public boolean fullyStaffed()
     {
     	return (activeCooks() > 0) && (activeWaiters() > 0) && (host != null) && (cashier != null);
+    }
+    
+    public boolean justHost()
+    {
+    	return (activeCooks() == 0) && (activeWaiters() == 0) && 
+    			(activeCustomers() == 0) && (cashier == null);
+    }
+    
+    public boolean justCashier()
+    {
+    	return (activeCooks() == 0) && (activeWaiters() == 0) && 
+    			(activeCustomers() == 0) && (cashier != null);
+    }
+    
+    public void hostLeaving()
+    {
+    	host = null;
+    }
+    
+    public void cashierLeaving()
+    {
+    	cashier = null;
     }
     
     public boolean hasHost()
@@ -510,7 +543,7 @@ public class RestaurantPanel extends JPanel {
     }
     
     //Hacks to demonstrate program
-    public void OutOfFoodHack()
+    /*public void OutOfFoodHack()
     {
     	cooks.get(0).OutOfFoodHack();
     	for(MarketAgent m : markets)
@@ -526,6 +559,12 @@ public class RestaurantPanel extends JPanel {
     	{
     		m.OutOfFoodHack();
     	}
-    }
+<<<<<<< HEAD
+    }*/
+    
+
+	public boolean isOpen() {
+		return gui.isOpen();
+	}
     
 }

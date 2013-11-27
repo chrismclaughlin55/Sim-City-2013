@@ -31,7 +31,7 @@ public class BuildingPanel {
 			
 		case bank:
 			mainGui.bankGui.setVisible(true);
-			mainGui.bankGui.bank.test();
+			//mainGui.bankGui.bank.test();
 			break;
 			
 		case home:
@@ -48,7 +48,7 @@ public class BuildingPanel {
 			Market m = (Market) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			//m.addMarketGui(mainGui.marketGui);
 			m.marketGui.setVisible(true);
-			m.test();
+			//m.test();
 			break;
 			
 		default: 

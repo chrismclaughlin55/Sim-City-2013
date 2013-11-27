@@ -12,6 +12,7 @@ public class Apartment extends Building {
 	
 	public Apartment(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height, mainGui);
+		super.type = BuildingType.apartment;
 		
 	}
 	

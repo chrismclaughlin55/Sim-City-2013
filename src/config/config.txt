@@ -90,14 +90,14 @@ job Unemployed
 hunger 0
 
 NewPerson
-name myName9
+name MarketManager
 cash 100
 bankMoney 500
 job MarketManager
 hunger 0
 
 NewPerson
-name myName
+name MarketEmployee
 cash 100
 bankMoney 500
 job MarketEmployee

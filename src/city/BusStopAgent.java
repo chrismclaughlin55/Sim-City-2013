@@ -8,7 +8,9 @@ import java.util.Map;
 
 import agent.Agent;
 import city.gui.BusStopGui;
-public class BusStopAgent extends Agent{
+import city.interfaces.Bus;
+import city.interfaces.BusStop;
+public class BusStopAgent extends Agent implements BusStop{
 
 	/*
 	 * 
@@ -17,19 +19,20 @@ public class BusStopAgent extends Agent{
 	List<PersonAgent> waitingPeople;
 	class myPerson {
         PersonAgent p;
-        BusStopAgent next;
+        BusStop next;
 	};
 	public enum BusStopState {waitingForBus, busHere, busLeaving };
 	BusStopState stopState;
 	CityData cd;
     HashMap<PersonAgent, BusStopAgent> peopleWaiting;
     BusStopAgent nextStop;
-    BusAgent currentBus;
+    Bus currentBus;
     BusStopGui busStopGui;
     int xPosition; //will be where bus should be to be next to this stop
     int yPosition; // will be where bus needs to be
     //actual painting coordinates will be handled by gui
     //CityData places a square at coordinates of this particular BusStop
+    int stopNumber;
 
 	public BusStopAgent(CityData cd) {
 		waitingPeople = new ArrayList<PersonAgent>();
@@ -50,7 +53,7 @@ public class BusStopAgent extends Agent{
 		this.nextStop = nextStop;
 	}
 	
-	public BusStopAgent getNextStop() {
+	public BusStop getNextStop() {
 		return nextStop;
 	}
 	
@@ -71,11 +74,19 @@ public class BusStopAgent extends Agent{
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see city.BusStop#msgWaitingAtStop(city.PersonAgent, city.BusStopAgent)
+	 */
+	@Override
 	public void msgWaitingAtStop(PersonAgent p, BusStopAgent destination) {
         peopleWaiting.put(p, destination);
     }
 	
-    public void msgArrivedAtStop(BusAgent bus) {
+    /* (non-Javadoc)
+	 * @see city.BusStop#msgArrivedAtStop(city.interfaces.Bus)
+	 */
+    @Override
+	public void msgArrivedAtStop(Bus bus) {
         currentBus = bus;
         stopState = BusStopState.busHere;
         stateChanged();
@@ -110,5 +121,13 @@ public class BusStopAgent extends Agent{
     
     protected void stateChanged() {
     	super.stateChanged();
+    }
+    
+    public int getStopNumber() {
+    	return stopNumber;
+    }
+    
+    public void setStopNumber(int num) {
+    	stopNumber = num;
     }
 }

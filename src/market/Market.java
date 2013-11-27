@@ -14,20 +14,22 @@ import market.gui.MarketGui;
 import city.Building;
 import city.CityData;
 import city.PersonAgent;
-import city.Role;
 
 public class Market extends Building {
 
 	public Inventory inventory = null;
-	MarketManagerRole currentManager = null;
+	public MarketManagerRole currentManager = null;
 	MainGui mainGui;
 	public MarketGui marketGui;
 
 	private int testIteration = 0;
+	
+	public boolean isOpenForEmployees = false;
 
 	public Market(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height, mainGui);
 		this.mainGui = mainGui;
+		super.type = BuildingType.market;
 
 	}
 
@@ -36,7 +38,6 @@ public class Market extends Building {
 		//public Market(int xPos, int yPos, int width, int height, String name, BuildingType type, MainGui mainGui, CityData cd) {
 		cityData = cd;
 		this.mainGui = mainGui;
-
 		MarketData chickenData = new MarketData("Chicken", 10, 5.99);
 		MarketData saladData = new MarketData("Salad", 10, 3.99);
 		MarketData steakData = new MarketData("Steak", 10, 11.99);
@@ -62,8 +63,10 @@ public class Market extends Building {
 
 
 	public void EnterBuilding(PersonAgent person, String roleRequest) {
+		
+		System.out.print("ATTEMPTING TO ENTER BUILDING AS A " + roleRequest);
 
-		if (person.equals(manager)) {
+		if (person.equals(super.manager)) {
 
 			if (existingManagerRoles.get(person) != null) {
 				currentManager = existingManagerRoles.get(person);
@@ -83,22 +86,23 @@ public class Market extends Building {
 		}
 
 		else if (roleRequest.equals("MarketEmployee")) {
-			if (existingEmployeeRoles.get(person) != null) {
-				EmployeeGui employeeGui = new EmployeeGui(existingEmployeeRoles.get(person));
-				existingEmployeeRoles.get(person).setGui(employeeGui);
-				marketGui.animationPanel.addGui(employeeGui);
-				person.msgAssignRole(existingEmployeeRoles.get(person));
-				currentManager.msgReportingForWork(existingEmployeeRoles.get(person));
-			}
-			else {
-				MarketEmployeeRole employeeRole = new MarketEmployeeRole(person, currentManager, inventory);
-				existingEmployeeRoles.put(person,employeeRole);
-				EmployeeGui employeeGui = new EmployeeGui(employeeRole);
-				employeeRole.setGui(employeeGui);
-				marketGui.animationPanel.addGui(employeeGui);
-				person.msgAssignRole(employeeRole);
-				currentManager.msgReportingForWork(employeeRole);
-
+			if (isOpenForEmployees) {
+				if (existingEmployeeRoles.get(person) != null) {
+					EmployeeGui employeeGui = new EmployeeGui(existingEmployeeRoles.get(person));
+					existingEmployeeRoles.get(person).setGui(employeeGui);
+					marketGui.animationPanel.addGui(employeeGui);
+					person.msgAssignRole(existingEmployeeRoles.get(person));
+					currentManager.msgReportingForWork(existingEmployeeRoles.get(person));
+				}
+				else {
+					MarketEmployeeRole employeeRole = new MarketEmployeeRole(person, currentManager, inventory);
+					existingEmployeeRoles.put(person,employeeRole);
+					EmployeeGui employeeGui = new EmployeeGui(employeeRole);
+					employeeRole.setGui(employeeGui);
+					marketGui.animationPanel.addGui(employeeGui);
+					person.msgAssignRole(employeeRole);
+					currentManager.msgReportingForWork(employeeRole);
+				}
 			}
 		}
 
@@ -121,6 +125,10 @@ public class Market extends Building {
 					person.msgAssignRole(customerRole);
 				}
 			}
+			else {
+				person.exitBuilding();
+			}
+				
 		}
 	}
 
