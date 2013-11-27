@@ -271,7 +271,12 @@ public class PersonAgent extends Agent
 				}
 
 				else if (cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
-					print(getJob());
+					//print(getJob());
+					WakeUp();
+					return true;
+				}
+				else if (cityData.hour>=8 && job.equals("MarketEmployee")) {
+					//print(getJob());
 					WakeUp();
 					return true;
 				}
