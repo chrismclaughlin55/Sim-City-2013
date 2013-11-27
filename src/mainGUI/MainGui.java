@@ -19,6 +19,7 @@ import city.Building;
 import city.BusAgent;
 import city.PersonAgent;
 import city.PersonAgent.BigState;
+import city.PersonAgent.HomeState;
 import city.gui.BusGui;
 import city.gui.PersonGui;
 
@@ -258,6 +259,7 @@ public class MainGui extends JFrame implements MouseListener {
 			return;
 		}
 		assignJobBuilding(p, role);
+		p.homeState = HomeState.onCouch;
 		p.startThread();
 		
 	}
