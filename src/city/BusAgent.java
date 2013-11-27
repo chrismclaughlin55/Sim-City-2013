@@ -29,10 +29,10 @@ public class BusAgent extends Agent implements Bus {
 	CityData cd;
 	BusState myState;
 	BusGui busgui;
-	List<myPassenger> passengers;
+	public List<myPassenger> passengers;
 	//LinkedList<BusStopAgent> stops;
-	BusStopAgent curr;
-	BusStopAgent next;
+	public BusStopAgent curr;
+	public BusStopAgent next;
 	private Semaphore atDestination = new Semaphore(0,true);
 	
 	public BusAgent(CityData cd) {
