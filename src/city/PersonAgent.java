@@ -264,14 +264,19 @@ public class PersonAgent extends Agent
 		{
 		case atHome: {
 			if (homeState == HomeState.sleeping) {
-				if(cityData.hour >= 5 && job.equals("BankManager") ){//if sleeping and it is time to wake up
+				if(cityData.hour >= 4 && job.equals("BankManager") ){//if sleeping and it is time to wake up
 					//delete the && false when the actual rule is implemented
 					WakeUp();
 					return true;
 				}
 
-				else if (cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
-					print(getJob());
+				else if (cityData.hour>=6 && (job.equals("Host") || job.equals("MarketManager"))) {
+					//print(getJob());
+					WakeUp();
+					return true;
+				}
+				else if (cityData.hour>=7 && job.equals("MarketEmployee")) {
+					//print(getJob());
 					WakeUp();
 					return true;
 				}

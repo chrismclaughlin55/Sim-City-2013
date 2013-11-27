@@ -1,5 +1,6 @@
 package market.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -29,19 +30,21 @@ public class MarketGui extends JFrame implements ActionListener {
 
 		this.market = market;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(0,0,screenSize.width/2, screenSize.height/2);
+		setBounds(0,0,800, 600);
 		setLocation(screenSize.width/2-this.getSize().width/2, screenSize.height/2-this.getSize().height/2);
-		setLayout(new GridLayout(0,2));
+		setLayout(new BorderLayout());
 
 		animationPanel = new AnimationPanel();
+		animationPanel.setPreferredSize(new Dimension(600, 600));
 		animationPanel.setVisible(true);
 		
 		marketPanel = new MarketPanel(market);
+		marketPanel.setPreferredSize(new Dimension(200, 600));
 		marketPanel.setVisible(true);
 
 
-		add (marketPanel);
-		add (animationPanel);
+		add (marketPanel, BorderLayout.WEST);
+		add (animationPanel, BorderLayout.CENTER);
 		
 		
 
