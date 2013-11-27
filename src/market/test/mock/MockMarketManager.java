@@ -2,8 +2,7 @@ package market.test.mock;
 
 import java.util.List;
 
-import market.MarketCustomerRole;
-import market.MarketEmployeeRole;
+import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
 import market.interfaces.MarketManager;
 import restaurantMQ.MQCookRole;
@@ -26,13 +25,13 @@ public class MockMarketManager extends Mock implements MarketManager {
 	}
 
 	@Override
-	public void msgReportingForWork(MarketEmployeeRole employee) {
+	public void msgReportingForWork(MarketEmployee employee) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void msgNeedToOrder(MarketCustomerRole cust) {
+	public void msgNeedToOrder(MarketCustomer cust) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -8,6 +8,7 @@ import market.MyOrder;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
 import restaurantMQ.test.mock.EventLog;
+import restaurantMQ.test.mock.LoggedEvent;
 
 public class MockMarketEmployee extends Mock implements MarketEmployee {
 
@@ -48,8 +49,7 @@ public class MockMarketEmployee extends Mock implements MarketEmployee {
 
 	@Override
 	public void msgServiceCustomer(MarketCustomer customer) {
-		// TODO Auto-generated method stub
-		
+		log.add(new LoggedEvent("Customer assigned"));
 	}
 
 

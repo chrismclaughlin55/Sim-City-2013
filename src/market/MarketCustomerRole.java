@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import market.MyOrder.OrderState;
 import market.gui.CustomerGui;
 import market.interfaces.MarketCustomer;
 import city.PersonAgent;

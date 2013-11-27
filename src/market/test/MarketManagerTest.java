@@ -11,9 +11,12 @@ import market.Market;
 import market.MarketData;
 import market.MarketEmployeeRole;
 import market.MarketEmployeeRole.EmployeeState;
+import market.MarketManagerRole;
+import market.MarketManagerRole.ManagerState;
 import market.MyOrder;
 import market.gui.MarketGui;
 import market.test.mock.MockMarketCustomer;
+import market.test.mock.MockMarketEmployee;
 import market.test.mock.MockMarketManager;
 import city.PersonAgent;
 
@@ -25,14 +28,15 @@ import city.PersonAgent;
  *
  * @author Monroe Ekilah
  */
-public class MarketEmployeeTest extends TestCase
+public class MarketManagerTest extends TestCase
 {
 	//these are instantiated for each test separately via the setUp() method.
-	MarketEmployeeRole employee;
-	MockMarketManager manager;
+	MockMarketEmployee employee;
+	MockMarketEmployee employee2;
 	MockMarketCustomer customer;
 	MockMarketCustomer customer2;
-
+	MarketManagerRole manager;
+	
 	Market market;
 	PersonAgent person = new PersonAgent("person");
 	List<MyOrder> thingsToOrder1;
@@ -61,83 +65,69 @@ public class MarketEmployeeTest extends TestCase
 		inventory = new Inventory(chickenData, saladData, steakData, pizzaData, marketGui);
 		
 		PersonAgent person = new PersonAgent("Employee");
+		manager = new MarketManagerRole(person, inventory, market);
+		
 		customer = new MockMarketCustomer("mockcustomer");
-		manager = new MockMarketManager("mockmanager");
-		employee = new MarketEmployeeRole(person, manager, inventory);
-		
 		customer2 = new MockMarketCustomer("mockcustomer2");
+		
+		employee = new MockMarketEmployee("mockemployee");
+		employee2 = new MockMarketEmployee("mockemployee2");
 
 		
-		thingsToOrder1 = Collections.synchronizedList(new ArrayList<MyOrder>());
-		MyOrder o1 = new MyOrder("Chicken", 2);
-		MyOrder o2 = new MyOrder("Steak", 3);
-		thingsToOrder1.add(o1);
-		thingsToOrder1.add(o2);
-		
-		thingsToOrder2 = Collections.synchronizedList(new ArrayList<MyOrder>());
-		MyOrder o3 = new MyOrder("Salad", 2);
-		MyOrder o4 = new MyOrder("Pizza", 3);
-		MyOrder o5 = new MyOrder("Steak", 3);
-
-		thingsToOrder2.add(o3);
-		thingsToOrder2.add(o4);
-		thingsToOrder2.add(o5);
-		
-		employee.state = EmployeeState.working;
+		manager.state = ManagerState.managing;
 		market.inventory = inventory;
 		
 	}	
 	
-	public void testOneCustomer()
+	public void testOneCustomerOneEmployee()
 	{	
 		//Check preconditions
-		assertEquals("Employee should have 0 current orders. It doesn't", employee.currentMarketOrders.size(), 0);
-		assertEquals("Employee should have 0 payments. It doesn't", employee.payments.size(), 0);
-		assertEquals("Employee should have an empty event log. Instead, the Employee's event log reads: "
-				+ employee.log.toString(), 0, employee.log.size());
-		assertEquals("Employee should have 0 payments. It doesn't", employee.inventory, this.inventory);
-				
+		assertEquals("Manager should have 0 waiting customers. It doesn't", manager.waitingCustomers.size(), 0);
+		assertEquals("Manager should have 0 waiting employees. It doesn't", manager.waitingEmployees.size(), 0);
+		assertEquals("Manager should have 0 working employees. It doesn't", manager.workingEmployees.size(), 0);
+		assertEquals("Manager should have an empty event log. Instead, the Manager's event log reads: "
+				+ manager.log.toString(), 0, manager.log.size());
 		
-		//Step 1, the manager sends a customer to employee
-		employee.msgServiceCustomer(customer);
-		assertEquals("Current customer should be set to customer. It isn't", customer, customer );
-		assertEquals("waitingCustomers should have 1 customer. It doesn't", employee.waitingCustomers.size(), 1);
+		//Step 1 the building is open for employees
+		manager.pickAndExecuteAnAction();
+		assertEquals("Manager should have 1 event logged. Instead, the Manager's event log reads: "
+				+ manager.log.toString(), 1, manager.log.size());
+
 		
-		//Step2, the employee calls the customer
-		employee.pickAndExecuteAnAction();
-		assertEquals("waitingCustomers should have 0 customers. It doesn't", employee.waitingCustomers.size(), 0);
-		assertTrue("Customer should have logged that it got called. Instead, the log reads " +
-				customer.log.getLastLoggedEvent().toString(), customer.log.containsString("Called by employee"));
+
+		//Step 2, the employee enters the building
+		manager.msgReportingForWork(employee);
+		assertEquals("waitingEmployees should have 1 employee. It doesn't", manager.waitingEmployees.size(), 1);
 		
-		//Step 3, the customer gives his orders to employee
-		employee.msgHereAreMyOrders(thingsToOrder1, customer);
-		assertEquals("Employee should have 2 current orders. It doesn't", employee.currentMarketOrders.size(), 2);
+		//Step 3, the employee is added to working Employees
+		manager.pickAndExecuteAnAction();
+		assertEquals("waitingEmployees should have 0 employee. It doesn't", manager.waitingEmployees.size(), 0);
+		assertEquals("workingEmployees should have 1 employee. It doesn't", manager.workingEmployees.size(), 1);
 		
-		//Step 4, the employee Fulfills the order
-		employee.pickAndExecuteAnAction();
-		assertEquals("Employee should have an event on it's log. Instead, the Employee's event log reads: "
+		//Step 4, the building is now open
+		manager.pickAndExecuteAnAction();
+		assertEquals("Manager should have 2 events logged. Instead, the Manager's event log reads: "
+				+ manager.log.toString(), 2, manager.log.size());
+		
+		//Step 5, a customer enters
+		manager.msgNeedToOrder(customer);
+		assertEquals("Manager should have 1 waiting customer. It doesn't", manager.waitingCustomers.size(), 1);
+		
+		//Step 6, the customer is assigned to an employee
+		manager.pickAndExecuteAnAction();
+		assertEquals("Employee should have 1 events logged. Instead, the Employees event log reads: "
 				+ employee.log.toString(), 1, employee.log.size());
+		assertEquals("Manager should have 0 waiting customers. It doesn't", manager.waitingCustomers.size(), 0);
 		
-		//Step 4, the employee sends invoice to customer 
-		employee.msgDoneProcessing();
-		employee.pickAndExecuteAnAction();
-		assertTrue("Customer should have logged that order was fulfilled. Instead, the log reads " +
-				customer.log.getLastLoggedEvent().toString(), customer.log.containsString("Order fulfilled"));
 		
-		//Step 5, the customer pays the bill
-		employee.msgHereIsPayment(customer.payment);
-		assertEquals("Employee should have 1 payment. It doesn't", employee.payments.size(), 1);
 		
-		//Step 5, the employee processes the payment
-		employee.pickAndExecuteAnAction();
-		assertTrue("Manager should have logged that money was received. Instead, the log reads " +
-				manager.log.getLastLoggedEvent().toString(), manager.log.containsString("Money received"));
-		assertEquals("Employee should have 0 current orders. It doesn't", employee.currentMarketOrders.size(), 0);
+
+
 
 		
 	}
 	
-	public void testTwoCustomers()
+	/*public void testTwoCustomers()
 	{	
 		//Check preconditions
 		assertEquals("Employee should have 0 currenet orders. It doesn't", employee.currentMarketOrders.size(), 0);
@@ -232,8 +222,9 @@ public class MarketEmployeeTest extends TestCase
 						manager.log.getLastLoggedEvent().toString(), manager.log.containsString("Money received"));
 				assertEquals("Employee should have 0 current orders. It doesn't", employee.currentMarketOrders.size(), 0);
 
-	}
+	}*/
 	
 	
 	
 }
+

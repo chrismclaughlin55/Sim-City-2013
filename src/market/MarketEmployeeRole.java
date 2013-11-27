@@ -9,7 +9,6 @@ import java.util.concurrent.Semaphore;
 
 import market.MarketManagerRole.MyCookCustomer;
 import market.gui.EmployeeGui;
-import market.Inventory;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
 import market.interfaces.MarketManager;
