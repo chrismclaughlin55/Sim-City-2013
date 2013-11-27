@@ -15,8 +15,9 @@ import javax.swing.JPanel;
 public class ApartmentGui extends JFrame implements ActionListener {
 
 	ApartmentPanel aptPanel;
+	List<Room> rooms;
 	
-	public ApartmentGui() {
+	public ApartmentGui(List<Room> r) {
 		setTitle("Apartment");
     	setVisible(false);
     	setResizable(false);
@@ -25,17 +26,21 @@ public class ApartmentGui extends JFrame implements ActionListener {
 		setBounds(0,0, 600, 400);
 		setLocation((screenSize.width/2-this.getSize().width/2), (screenSize.height/2-this.getSize().height/2));
 		setLayout(new BorderLayout());
+		rooms = r;
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 		infoPanel.setPreferredSize(new Dimension(200, 400));
-		infoPanel.add(new JLabel("Apartment"));
-		infoPanel.add(new JLabel("this is an apt"));
+		infoPanel.add(new JLabel("Tenants", JLabel.CENTER));
 		this.add(infoPanel, BorderLayout.WEST);
 		
 		aptPanel = new ApartmentPanel();
 		aptPanel.setPreferredSize(new Dimension(400, 400));
 		this.add(aptPanel, BorderLayout.CENTER);
+	}
+	
+	public void addName(PersonAgent p) {
+		
 	}
 	
 	public void actionPerformed(ActionEvent arg0) {
