@@ -269,26 +269,30 @@ public class PersonAgent extends Agent
 					WakeUp();
 					return true;
 				}
-				else {
-					if(cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
-						print(getJob());
-						WakeUp();
-						return true;
-					}
-					else if (cityData.hour>=9) {
-						WakeUp();
-						return true;
-					}
+				else if (cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
+					print(getJob());
+					WakeUp();
+					return true;
+				}
+				else if (cityData.hour>=9) {
+					System.err.println("> 9");
+					WakeUp();
+					return true;
 				}
 				return false; //put the agent thread back to sleep
 			}
 
+			if (tiredLevel >= TIRED) {
+				goToSleep();
+				return false; //intentional because the thread is being out to sleep
+			}
+			
 			if (hungerLevel >= HUNGRY) { //inventory also has to be sufficient
 				makeFood();
 				return true;
 			}
 
-			if (goToWork) {
+			if (goToWork && !home.manager.equals(this)) {
 				leaveHome(); //leave the house and set bigState to doingNothing
 				return true;
 			}
@@ -302,13 +306,19 @@ public class PersonAgent extends Agent
 				goToCouch();
 				return true;
 			}
-			if (tiredLevel >= TIRED) {
-				goToSleep();
-				return false; //intentional because the thread is being out to sleep
-			}
 			if (homeState == HomeState.none) {
-				leaveHome();
-				return true;
+				if (home.manager.equals(this) && lowInventory()) {
+					leaveHome();
+					return true;
+				}
+				else if (home.manager.equals(this)) {
+					goToCouch();
+					return true;
+				}
+				else {
+					leaveHome();
+					return true;
+				}
 			}
 		}
 		case leaveHome: {
@@ -410,7 +420,10 @@ public class PersonAgent extends Agent
 
 	private void WakeUp() {
 		goToWork = true;
-		homeState = HomeState.idle;
+		System.err.println("ring ring");
+		tiredLevel = 0;
+		homeState = homeState.idle;
+		hungerLevel = 1000;
 	}
 
 	private void makeFood() {
@@ -459,6 +472,7 @@ public class PersonAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		homeState = HomeState.sleeping;
 	}
 
 	private void goToCouch() {
