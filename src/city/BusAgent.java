@@ -98,6 +98,8 @@ public class BusAgent extends Agent implements Bus {
 					return true;
 				}
 			}
+			myState = BusState.unloading;   
+			return true;
 		}
 
 		if(myState==BusState.unloading) {
@@ -152,7 +154,7 @@ public class BusAgent extends Agent implements Bus {
 	}
 
 	private void UnloadPassenger(myPassenger p) {
-		myState = BusState.unloading;   
+		
 		//have a wait time for loading and unloading
 		p.p.msgDoneMoving();
 		try {

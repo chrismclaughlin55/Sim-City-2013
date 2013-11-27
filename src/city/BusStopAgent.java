@@ -32,6 +32,7 @@ public class BusStopAgent extends Agent implements BusStop{
     int yPosition; // will be where bus needs to be
     //actual painting coordinates will be handled by gui
     //CityData places a square at coordinates of this particular BusStop
+    int stopNumber;
 
 	public BusStopAgent(CityData cd) {
 		waitingPeople = new ArrayList<PersonAgent>();
@@ -120,5 +121,13 @@ public class BusStopAgent extends Agent implements BusStop{
     
     protected void stateChanged() {
     	super.stateChanged();
+    }
+    
+    public int getStopNumber() {
+    	return stopNumber;
+    }
+    
+    public void setStopNumber(int num) {
+    	stopNumber = num;
     }
 }

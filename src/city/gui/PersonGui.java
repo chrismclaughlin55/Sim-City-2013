@@ -30,6 +30,8 @@ public class PersonGui implements Gui{
 	
 	public static final int xBuilding[] = {52, 52, 52, 52, 232, 362, 542, 542, 542, 542, 362, 232, 243, 373, 243, 373, 243, 373, 232, 360};
 	public static final int yBuilding[] = {198, 328, 468, 598, 738, 738, 598, 468, 328, 198, 58, 58, 202, 202, 332, 332, 602, 602, 470, 470};
+	public static final int xStop[] = {115, 115, 115, 115, 265, 395, 475, 475, 475, 475, 425, 295};
+	public static final int yStop[] = {200, 330, 470, 600, 680, 680, 600, 470, 330, 200, 65, 65};
 	
 	MainGui gui;
 
@@ -177,8 +179,8 @@ public class PersonGui implements Gui{
 
 	public void DoGoToBusStop(BusStopAgent destinationBusStop) {
 		moving = true;
-		xDestination = destinationBusStop.getX();
-		yDestination = destinationBusStop.getY();
+		xDestination = xStop[destinationBusStop.getStopNumber()];
+		yDestination = yStop[destinationBusStop.getStopNumber()];
 		
 	}
 
