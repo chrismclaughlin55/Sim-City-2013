@@ -23,10 +23,7 @@ Objects (Function and visual representation)
 + Cook: Make order from market.
 + Cashier: Make payment to market for cook's order. Access the restaurant bank account.
 + Customer: same as restaurant
-+ Customer and waiter addition panels can still be used
-++ Interactions will be incomplete if Host, Cashier, or Cooks are missing
-++ If the necessary employees are present, Customers and Waiters can be added and will run normally
-++ These agents will not function properly once they leave the restaurant (this is really just a hack to allow testing of the restaurant by itself)
++ Customer and waiter addition panels can still be used. Interactions will be incomplete if Host, Cashier, or Cooks are missing. If the necessary employees are present, Customers and Waiters can be added and will run normally. These agents will not function properly once they leave the restaurant (this is really just a hack to allow testing of the restaurant by itself).
 
 #### HOME
 + Person: Manager of building that lives in the building.
