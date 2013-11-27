@@ -171,6 +171,14 @@ public class PersonAgent extends Agent
 		super.refresh();
 		if(cityData.hour == 3)
 			goToWork = true;
+		if(cityData.hour % 4 == 0 && cityData.hour > 8) {
+			tiredLevel+=2;
+			hungerLevel+=2;
+		}
+		if(cityData.hour == 0 && this.home instanceof Apartment) {
+			rent+=20;
+		}
+		
 	}
 
 	public void msgFull() {
