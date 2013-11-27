@@ -91,10 +91,10 @@ public class PersonAgent extends Agent
 		thingsToOrder.add(o2);
 		thingsToOrder.add(o3);
 		thingsToOrder.add(o4);*/
-		inventory.put("Steak", 4);
-		inventory.put("Salad", 4);
-		inventory.put("Pizza", 4);
-		inventory.put("Chicken", 4);
+		inventory.put("Steak", 3);
+		inventory.put("Salad", 3);
+		inventory.put("Pizza", 3);
+		inventory.put("Chicken", 3);
 		personGui = new PersonGui(this, gui);
 	}
 
@@ -155,6 +155,12 @@ public class PersonAgent extends Agent
 	{
 		this.home = home;
 		homeNumber = home.buildingNumber;
+	}
+	
+	public void setInventory(int num) {
+		for (String key : inventory.keySet()) {
+			inventory.put(key, num);
+		}
 	}
 
 	public void assignJobBuilding(Building jobBuilding) {
@@ -264,18 +270,12 @@ public class PersonAgent extends Agent
 		{
 		case atHome: {
 			if (homeState == HomeState.sleeping) {
-				if(cityData.hour >= 5 && job.equals("BankManager") ){//if sleeping and it is time to wake up
+				if(cityData.hour >= 5 && (job.equals("Host") || job.equals("MarketManager")) ||job.equals("BankManager") ){
 					//delete the && false when the actual rule is implemented
 					WakeUp();
 					return true;
 				}
-
-				else if (cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
-					//print(getJob());
-					WakeUp();
-					return true;
-				}
-				else if (cityData.hour>=8 && job.equals("MarketEmployee")) {
+				else if (cityData.hour>=6 && job.equals("MarketEmployee")) {
 					//print(getJob());
 					WakeUp();
 					return true;
