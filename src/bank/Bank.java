@@ -14,6 +14,7 @@ import city.PersonAgent;
 import city.Building.BuildingType;
 
 public class Bank extends Building {
+	public final static int CLOSINGTIME = 22;
 	public BankGui bankGui;
 	BankManagerRole currentManager = null;
 	Map<PersonAgent, CustomerRole> existingCustRoles;
@@ -47,7 +48,6 @@ public class Bank extends Building {
 
 				existingManagerRoles.put(p, new BankManagerRole(p));
 				setOpen(p);
-				p.print("bank is open? "+ isOpen);
 				p.msgAssignRole(existingManagerRoles.get(p));
 				currentManager = existingManagerRoles.get(p);
 				cityData.buildings.get(18).manager = currentManager.getPerson();
@@ -67,7 +67,6 @@ public class Bank extends Building {
 					currentManager.msgINeedService(role);
 				}
 				else{
-					p.print("assigned cust gui");
 					CustomerRole newRole = new CustomerRole(p);
 					existingCustRoles.put(p, newRole);
 					BankCustomerGui custGui = new BankCustomerGui(newRole);

@@ -1,5 +1,7 @@
 package bank;
 
+import java.util.concurrent.Semaphore;
+
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
@@ -19,6 +21,7 @@ public class TellerRole extends Role implements Teller{
 	State state;
 	Event event;
 	private TellerGui gui;
+	private Semaphore atDest = new Semaphore(0 ,true);
 	
 	//Constructor
 	public TellerRole(PersonAgent person) {
@@ -84,7 +87,6 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		print("made it to scheduler");
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;
@@ -109,7 +111,10 @@ public class TellerRole extends Role implements Teller{
 			processOrder();
 			return true;
 		}
-			
+		if(person.cityData.hour > Bank.CLOSINGTIME && bm.getLine().size()==0){
+			this.leaveBank();
+			return true;
+		}
 		return false;
 	}
 	//ACTIONS
@@ -126,7 +131,6 @@ public class TellerRole extends Role implements Teller{
 	}
 
 	private void makeAvailable() {	
-		//TODO may need to change logic
 		currentCustInfo = null;
 		state = State.available;
 		
@@ -146,9 +150,24 @@ public class TellerRole extends Role implements Teller{
 		state = State.doneWithCustomer;
 		event = Event.updatedBank;
 	}
+	public void msgGuiIsAtDest() {
+		print("released a atDest");
+		atDest.release();
+		
+	}
 
-
-
+	private void leaveBank() {
+		bm.msgLeavingNow(this);
+		gui.DoLeaveBank();
+		try
+		{
+			atDest.acquire();
+		}
+		catch(Exception e){}
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
+	}
 	
 
 }
