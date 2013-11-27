@@ -114,6 +114,14 @@ public class CityData implements ActionListener {
 	public int getPopulation() {
 		return people.size();
 	}
+    
+    public List getAllPeople() {
+		return people;
+	}
+	
+	public void setTimer(int delay) {
+		globalTimer.setDelay(delay);
+	}
 	
 	/*
 	CityData will hold all information regarding bus routes,
