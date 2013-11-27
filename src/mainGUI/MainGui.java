@@ -203,6 +203,7 @@ public class MainGui extends JFrame implements MouseListener {
 		BusGui bg = new BusGui(bus,this,mainAnimationPanel.cd);
 		bus.setGui(bg);
 		mainAnimationPanel.addGui(bg);
+		mainAnimationPanel.cd.buses.add(bus);
 		bus.startThread();
 		
     }

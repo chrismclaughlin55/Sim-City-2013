@@ -32,6 +32,8 @@ public class ApartmentGui extends JFrame implements ActionListener {
 		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 		infoPanel.setPreferredSize(new Dimension(200, 400));
 		infoPanel.add(new JLabel("Tenants", JLabel.CENTER));
+		infoPanel.add(new JLabel("Landlord apt in gray"));
+		infoPanel.add(new JLabel("More coming in v2"));
 		this.add(infoPanel, BorderLayout.WEST);
 		
 		aptPanel = new ApartmentPanel();

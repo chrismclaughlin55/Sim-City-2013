@@ -427,9 +427,6 @@ public class PersonAgent extends Agent
 
 	private void payRent() {
 		Apartment a = (Apartment) home;
-		System.err.println("Paying rent");
-		System.err.println(a.manager.bankInfo.moneyInAccount);
-		System.err.println(this.bankInfo.moneyInAccount);
 		bank.getManager().msgDirectDeposit(this, a.manager, rent);
 		rentDue = false;
 	}
@@ -463,13 +460,12 @@ public class PersonAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		timer.schedule(new TimerTask() {
 			public void run() {
 				homeState = HomeState.onCouch;
 				isMoving.release();
 			}
-		}, 3000);
+		}, 5000);
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
@@ -516,22 +512,23 @@ public class PersonAgent extends Agent
 			
 			while (true)
 			{
-				restNumber = 12;
+				restNumber = 0;
 				//restNumber = (int)(12+(int)(Math.random()*6));
 				if(restNumber >= 17)
 				{
 					bigState = BigState.goHome;
 					return;
 				}
-				else if(((MQRestaurantBuilding)cityData.buildings.get(restNumber)).isOpen())
+				else if(((MQRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
 					break;
 			}
-			destinationBuilding = cityData.buildings.get(restNumber);
+			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
 		else
 		{
-			destinationBuilding = jobBuilding;
-			restNumber = jobBuilding.buildingNumber;
+			//destinationBuilding = jobBuilding;
+			restNumber = 0;
+			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
 		
 		if(destinationBuilding != currentBuilding)
@@ -546,9 +543,9 @@ public class PersonAgent extends Agent
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			currentBuilding = cityData.buildings.get(restNumber);
+			currentBuilding = cityData.restaurants.get(restNumber);
 		}
-		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)currentBuilding;
+		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)destinationBuilding;
 
 		if(goToWork)
 		{
@@ -706,6 +703,7 @@ public class PersonAgent extends Agent
 		}
 		catch(Exception e) {}
 
+		currentBus = cityData.buses.get(0);
 		personGui.DoGoToBus(currentBus);
 		try
 		{
