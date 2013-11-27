@@ -6,7 +6,7 @@ import java.util.concurrent.Semaphore;
  * Base class for simple agents
  */
 public abstract class Agent {
-	Semaphore stateChange = new Semaphore(1, true); 
+	protected Semaphore stateChange = new Semaphore(1, true); 
 	Semaphore pause = new Semaphore(0, true);
 	boolean isPaused = false;
 	private AgentThread agentThread;
@@ -50,7 +50,7 @@ public abstract class Agent {
 	/**
 	 * Print message
 	 */
-	protected void print(String msg) {
+	public void print(String msg) {
 		print(msg, null);
 	}
 
@@ -140,6 +140,10 @@ public abstract class Agent {
 			goOn = false;
 			this.interrupt();
 		}
+	}
+
+	public void refresh() {
+		stateChange.release();
 	}
 }
 

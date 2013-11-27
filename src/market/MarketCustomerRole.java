@@ -3,78 +3,160 @@ package market;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
+import market.gui.CustomerGui;
 import market.interfaces.MarketCustomer;
 import city.PersonAgent;
 import city.Role;
 
 public class MarketCustomerRole extends Role implements MarketCustomer {
 
-	
+	private enum customerState {waiting, waitingForManager, readyToOrder, doneOrdering, readyToPay, donePaying, leaving, left};
+	private customerState state;
 	private List<Invoice> invoices = Collections.synchronizedList(new ArrayList<Invoice>());
 	private List<MyOrder> orders = Collections.synchronizedList(new ArrayList<MyOrder>());
 	private PersonAgent person = null;
+	private MarketManagerRole manager = null;
 	private MarketEmployeeRole employee = null;
-	private int marketNum;
+	private double amountDue = 0;
+	private CustomerGui gui = null;
 	
-	class MyOrder {
-	    String type; 
-	    int amount;
-	    boolean unfulfilled;
-	    int marketNum;
+	private Semaphore atDesk = new Semaphore(0,true);
+	private Semaphore left = new Semaphore(0,true);
 
-	    public MyOrder(String type, int amount, int marketNum) {
-	        this.type = type;
-	        this.amount = amount;
-	        this.marketNum = marketNum;
-	    }
-	}
-	
-	
-	public MarketCustomerRole(PersonAgent person, MarketEmployeeRole employee, int marketNum) {
+
+
+	public MarketCustomerRole(PersonAgent person, MarketManagerRole manager, List<MyOrder> orders) {
 		super(person);
+		print ("Customer Role created");
 		this.person = person;
-		this.employee = employee;
-		this.marketNum = marketNum;
-	}
-	
-	public void msgOrderFulFullied(Invoice invoice) {
-	    invoices.add(invoice);
-	    stateChanged();
+		this.manager = manager;
+		state = customerState.waiting;
+		this.orders = orders;
 	}
 
-	public void msgOrderUnfulfilled(String type, int amount) {
+	public void msgWhatIsYourOrder(MarketEmployeeRole employee){
+		print("Received msgWhatIsYourOrder");
+		this.employee = employee;
+		state = customerState.readyToOrder;
+		stateChanged();
+	}
+
+	/*public void msgOrderFulFullied(Invoice invoice) {
+		invoices.add(invoice);
 		for (MyOrder o : orders) {
-			if ((o.type.equals(type)) && (o.amount == amount)) {
-				o.unfulfilled = true;
+			if ((o.type.equals(invoice.type)) && (o.amount == invoice.amount)) {
+				o.orderState = OrderState.fulfilled;
 			}
 		}
+		stateChanged();
+	} */
+
+	public void msgOrderFulfullied(List<Invoice> invoice, double amountDue) {
+		
+		this.amountDue = amountDue;
+		print ("Invoice size " + invoice.size() + " orders size " + orders.size() );
+		
+		for (MyOrder o : orders) {
+			
+			for (Invoice i : invoice) {
+				if (o.type.equals(i.type)) {
+					if (o.amount == i.amount) {
+						person.thingsToOrder.remove(o);
+						person.inventory.put(o.type, person.inventory.get(o.type) + i.amount);
+					}
+				}
+			}
+			
+		}
+		
+		print ("I need to pay " + amountDue);
+		state = customerState.readyToPay;
+		stateChanged();
+	}
+
+	public void msgYouCanLeave() {
+		state = customerState.leaving;
+		stateChanged();
 	}
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		while (!invoices.isEmpty()){
-		    PayBill();
-		    return true;
+
+		if (state == customerState.readyToPay) {
+			PayBill();
+			return true;
 		}
+
+		if (state == customerState.readyToOrder) {
+			Order();
+			return true;
+		}
+		
+		if (state == customerState.leaving) {
+			LeaveMarket();
+			return true;
+		}
+		
+		if (state == customerState.waiting) {
+			manager.msgNeedToOrder(this);
+			state = customerState.waitingForManager;
+			return true;
+		}
+
 		return false;
 	}
-	
-	public void OrderItem(String type, int amount) {
-	    employee.msgHereIsAnOrder(type, amount, this);
-	    orders.add(new MyOrder(type, amount, marketNum));
+
+	private void Order(){
+		gui.DoGoToEmployee(employee);
+		try {
+			atDesk.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		employee.msgHereAreMyOrders(orders, this);
+		state = customerState.doneOrdering;
 	}
 
-	public void PayBill() {
-		
-		for (MyOrder o : orders) {
-			if (o.type.equals(invoices.get(0).type) && (o.amount == invoices.get(0).amount) && (o.marketNum == invoices.get(0).marketNum)) {
-				person.money -= invoices.get(0).price;
-				employee.msgHereIsPayment(invoices.get(0).price);
-				orders.remove(o);
-				invoices.remove(0);
-			}
+
+	private void PayBill() {
+		state = customerState.donePaying;
+		person.cash -= amountDue;
+		employee.msgHereIsPayment(amountDue);
+		orders.clear();
+		invoices.clear();
+	}
+	
+	private void LeaveMarket() {
+		state = customerState.left;
+		gui.DoLeaveMarket();
+		try {
+			left.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
+	
+	public void setGui (CustomerGui gui) {
+		this.gui = gui;
+	}
+	
+	
+	public CustomerGui getGui() {
+		return gui;
+		
+	}
+
+	public void msgAtDesk() {
+		atDesk.release();
+		stateChanged();
+	}
+	
+	public void msgLeft() {
+		left.release();
+		stateChanged();
+	}
+	
 
 }

@@ -1,20 +1,27 @@
 package market.gui;
-import Gui.*;
-import javax.swing.*;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
+
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+import Gui.Gui;
 
 
 public class AnimationPanel extends JPanel implements ActionListener {
 
 	private Image bufferImage;
 	private Dimension bufferSize;
-	private int frameDisplay = 2;
+	private int frameDisplay = 1;
 
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 
@@ -30,19 +37,6 @@ public class AnimationPanel extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		repaint();  //Will have paintComponent called
-	}
-
-	public void paintComponent(Graphics g) {
-		Graphics2D g2 = (Graphics2D)g;
-		Color tableColor = new Color(149, 165, 166);
-
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-		//Clear the screen by painting a rectangle the size of the frame
-		g2.setColor(getBackground());
-		g2.fillRect(0, 0, screenSize.width/4, screenSize.height/2 );
-
 		synchronized(guis){
 			for(Gui gui : guis) {
 				if (gui.isPresent()) {
@@ -50,6 +44,30 @@ public class AnimationPanel extends JPanel implements ActionListener {
 				}
 			}
 		}
+		repaint();  //Will have paintComponent called
+	}
+
+	public void paintComponent(Graphics g) {
+		Graphics2D g2 = (Graphics2D)g;
+		Color roomColor = new Color(236, 240, 241);
+		Color shelfColor = new Color(230, 126, 34);
+		Color deskColor = new Color(52, 73, 94);
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+		//Clear the screen by painting a rectangle the size of the frame
+		g2.setColor(getBackground());
+		g2.fillRect(0, 0, 600, 400);
+		
+		g2.setColor(roomColor);
+		g2.fillRect(270, 355, 150, 150);
+		
+		g2.setColor(shelfColor);
+		g2.fillRect(0, 355, 270, 150);
+		
+		g2.setColor(deskColor);
+		g2.fillRect(50, 150, 600, 50);
+		
 		synchronized(guis){
 			for(Gui gui : guis) {
 				if (gui.isPresent()) {
@@ -63,13 +81,15 @@ public class AnimationPanel extends JPanel implements ActionListener {
 		guis.add(gui);
 	}
 
-	public void removeGui(EmployeeGui gui) {
-		guis.remove(gui);
+	public void addGui(EmployeeGui gui) {
+		guis.add(gui);
 	}
 
 	public void addGui(ManagerGui gui) {
 		guis.add(gui);
 	}
+
+	
 
 
 }

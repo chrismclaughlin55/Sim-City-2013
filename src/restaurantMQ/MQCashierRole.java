@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import market.MarketEmployeeRole;
 import city.PersonAgent;
 import city.Role;
+import restaurantMQ.gui.RestaurantPanel;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Market;
@@ -24,6 +26,7 @@ public class MQCashierRole extends Role implements Cashier
 	public List<Payment> payments = Collections.synchronizedList(new ArrayList<Payment>());
 	public EventLog log = new EventLog();
 	public double money = 10000;
+	public RestaurantPanel restPanel;
 	
 	public class CheckRequest
 	{
@@ -55,12 +58,12 @@ public class MQCashierRole extends Role implements Cashier
 	
 	private class Bill
 	{
-		Market market;
+		MarketEmployeeRole marketEmployee;
 		double bill;
 		
-		Bill(Market market, double bill)
+		Bill(MarketEmployeeRole marketEmployee, double bill)
 		{
-			this.market = market;
+			this.marketEmployee = marketEmployee;
 			this.bill = bill;
 		}
 	}
@@ -69,9 +72,10 @@ public class MQCashierRole extends Role implements Cashier
 	/*END OF DATA*/
 	
 	/*CONSTRUCTORS*/
-	public MQCashierRole(PersonAgent person)
+	public MQCashierRole(PersonAgent person, RestaurantPanel rp)
 	{
 		super(person);
+		restPanel = rp;
 		this.name = super.getName();
 		foodMap.put("Steak", 15.99);
 		foodMap.put("Chicken", 10.99);
@@ -95,9 +99,9 @@ public class MQCashierRole extends Role implements Cashier
 		stateChanged();
 	}
 	
-	public void msgHereIsBill(Market market, double bill)
+	public void msgHereIsBill(MarketEmployeeRole marketEmployee, double bill)
 	{
-		bills.add(new Bill(market, bill));
+		bills.add(new Bill(marketEmployee, bill));
 		log.add(new LoggedEvent("Received bill."));
 		stateChanged();
 	}
@@ -136,10 +140,25 @@ public class MQCashierRole extends Role implements Cashier
 			}
 		}
 		
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && !restPanel.isOpen() 
+				&& restPanel.justCashier())
+		{
+			LeaveRestaurant();
+			return true;
+		}
+		
 		return false;
 	}
 	/*END OF SCHEDULER*/
 	
+	private void LeaveRestaurant() {
+		restPanel.cashierLeaving();
+		person.msgDoneWithJob();
+		person.exitBuilding();
+		doneWithRole();
+		
+	}
+
 	/*ACTIONS*/
 	private void processRequest(CheckRequest c)
 	{
@@ -185,8 +204,8 @@ public class MQCashierRole extends Role implements Cashier
 			payment = bill.bill;
 		}
 		money = round(money - payment);
-		System.out.println("Cashier: Paying $" + payment + " to " + bill.market.getName());
-		bill.market.msgHereIsPayment(this, payment);
+		System.out.println("Cashier: Paying $" + payment + " to " + bill.marketEmployee.getName());
+		bill.marketEmployee.msgHereIsPayment(payment);
 	}
 	/*END OF ACTIONS*/
 	

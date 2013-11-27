@@ -1,6 +1,10 @@
 package bankgui;
 
 import java.awt.Color;
+
+import bank.CustomerRole;
+import bank.utilities.*;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,9 +17,11 @@ import java.util.List;
 
 import javax.swing.*;
 
+import city.PersonAgent;
+import market.gui.CustomerGui;
 import Gui.*;
 
-public class AnimationPanel extends JPanel implements ActionListener{
+public class AnimationPanel extends JPanel implements GuiPositions, ActionListener{
     private static final int WINDOWX = 400;
     private static final int WINDOWY = 500;
     private static final int TIMEINTERVAL = 5;
@@ -29,7 +35,6 @@ public class AnimationPanel extends JPanel implements ActionListener{
 		setVisible(true);
 		setSize(WINDOWX, WINDOWY);
 		bufferSize = this.getSize();
-
 		Timer timer = new Timer(TIMEINTERVAL, this );
 		timer.start();
 
@@ -37,6 +42,13 @@ public class AnimationPanel extends JPanel implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		synchronized(guis){
+			for(Gui gui : guis) {
+				if (gui.isPresent()) {
+					gui.updatePosition();
+				}
+			}
+		}
 		repaint();  //Will have paintComponent called
 	}
 
@@ -50,15 +62,11 @@ public class AnimationPanel extends JPanel implements ActionListener{
 		g2.setColor(DeskColor);
 		g2.fill3DRect(250 ,0, 10, WINDOWY-30, true);
 		g2.setColor(Color.BLACK);
-		g2.draw3DRect(0, 200, 200, 1, true);
-		g2.draw3DRect(0, 230, 200, 1, true);
-		synchronized(guis){
-			for(Gui gui : guis) {
-				if (gui.isPresent()) {
-					gui.updatePosition();
-				}
-			}
-		}
+		g2.draw3DRect(linex, liney, 200, 1, true);
+		g2.draw3DRect(linex, liney + 30, 200, 1, true);
+		g2.setColor(Color.BLUE);
+		g2.fill3DRect(doorx, doory, 20, 50, true);
+	
 		synchronized(guis){
 			for(Gui gui : guis) {
 				if (gui.isPresent()) {
@@ -72,12 +80,22 @@ public class AnimationPanel extends JPanel implements ActionListener{
 		guis.add(gui);
 	}
 
+	
+	public void addGui(BankManagerGui gui) {
+		guis.add(gui); 
+	}
+	public void addGui(TellerGui gui) {
+		guis.add(gui);
+		
+	}
 	public void removeGui(TellerGui gui) {
+		
 		guis.remove(gui);
 	}
-
-	public void addGui(BankManagerGui gui) {
-		guis.add(gui);
+	public void removeGui(CustomerGui gui) {
+		guis.remove(gui);
 	}
-
+	public void removeGui(BankManagerGui gui) {
+		guis.remove(gui);
+	}
 }

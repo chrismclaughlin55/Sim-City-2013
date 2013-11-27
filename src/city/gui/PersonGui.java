@@ -9,6 +9,8 @@ import javax.swing.ImageIcon;
 
 import Gui.Gui;
 import mainGUI.MainGui;
+import city.BusAgent;
+import city.BusStopAgent;
 import city.PersonAgent;
 import city.Building;
 
@@ -26,18 +28,36 @@ public class PersonGui implements Gui{
 	private int xPos, yPos;
 	private int xDestination, yDestination;
 	
-	public static final int xBuilding[] = {52, 52, 52, 52, 232, 362, 542, 542, 542, 542, 362, 232, 243, 373, 243, 373, 232, 360, 243, 373};
-	public static final int yBuilding[] = {198, 328, 468, 598, 738, 738, 598, 468, 328, 198, 58, 58, 202, 202, 332, 332, 470, 470, 602, 602};
+	public static final int xBuilding[] = {52, 52, 52, 52, 232, 362, 542, 542, 542, 542, 362, 232, 243, 373, 243, 373, 243, 373, 232, 360};
+	public static final int yBuilding[] = {198, 328, 468, 598, 738, 738, 598, 468, 328, 198, 58, 58, 202, 202, 332, 332, 602, 602, 470, 470};
+	public static final int xStop[] = {115, 115, 115, 115, 265, 395, 475, 475, 475, 475, 425, 295};
+	public static final int yStop[] = {200, 330, 470, 600, 680, 680, 600, 470, 330, 200, 65, 65};
 	
 	MainGui gui;
 
 	public PersonGui(PersonAgent p, MainGui g){ //HostAgent m) {
 		agent = p;
 		gui = g;
-		xPos = INITX;
-		yPos = INITY;
-		xDestination = INITX;
-		yDestination = INITY;
+		xPos = xBuilding[agent.getHomeNumber()]-50;
+		yPos = yBuilding[agent.getHomeNumber()]+10;
+		xDestination = xBuilding[agent.getHomeNumber()]-50;
+		yDestination = yBuilding[agent.getHomeNumber()]+10;
+	}
+	
+	public void setXPos(int x) {
+		xPos = x;
+	}
+	
+	public void setYPos(int y) {
+		yPos = y;
+	}
+	
+	public void setXDes(int x) {
+		xDestination = x;
+	}
+	
+	public void setYDes(int y) {
+		yDestination = y;
 	}
 
 	public void updatePosition() {
@@ -61,6 +81,14 @@ public class PersonGui implements Gui{
             moving = false;
             agent.msgDoneMoving();
 		}
+		if (xPos == xDestination && yPos == yDestination
+        			& (xDestination == 360) & (yDestination == 20)) {
+			agent.msgAtBed();
+		}
+		if (xPos == xDestination && yPos == yDestination
+        			& (xDestination == 0) & (yDestination == 340)) {
+			agent.msgAtEntrance();
+		}
 	}
 	
 
@@ -77,6 +105,12 @@ public class PersonGui implements Gui{
 		moving = true;
 		xDestination = 0;
 		yDestination = 340;
+	}
+	
+	public void DoGoToHallway() {
+		moving = true;
+		xDestination = 0;
+		yDestination = 176;
 	}
 	
 	public void DoGoToRefridgerator() {
@@ -108,6 +142,18 @@ public class PersonGui implements Gui{
 		xDestination = 170;
 		yDestination = 190;
 	}
+	
+	public void DoGoToRoom(int roomNumber) {
+		moving = true;
+		if (roomNumber < 4) {
+			xDestination = 45 + 100*roomNumber;
+			yDestination = 140;
+		}
+		else {
+			xDestination = 40 + 100*(roomNumber - 4);
+			yDestination = 217;
+		}
+	}
 
 	@Override
 	public boolean isPresent() {
@@ -124,6 +170,24 @@ public class PersonGui implements Gui{
 	}
 
 	public void DoGoIntoBuilding() {
-		isPresent = false;
+		gui.removeGui(this);
+	}
+	
+	public void DoLeaveBuilding() {
+		isPresent = true;
+	}
+
+	public void DoGoToBusStop(BusStopAgent destinationBusStop) {
+		moving = true;
+		xDestination = xStop[destinationBusStop.getStopNumber()];
+		yDestination = yStop[destinationBusStop.getStopNumber()];
+		
+	}
+
+	public void DoGoToBus(BusAgent bus) {
+		moving = true;
+		xDestination = bus.getX() + 10;
+		yDestination = bus.getY() + 10;
+		
 	}
 }

@@ -32,8 +32,8 @@ public class HomeGui extends JFrame implements ActionListener {
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 		infoPanel.setPreferredSize(new Dimension(200, 400));
-		infoPanel.add(new JLabel("Hello"));
-		infoPanel.add(new JLabel("here is some home info this home is pretty great and stuff"));
+		infoPanel.add(new JLabel("Home"));
+		infoPanel.add(new JLabel("More coming in v2"));
 		this.add(infoPanel, BorderLayout.WEST);
 		
 		homePanel = new HomePanel();

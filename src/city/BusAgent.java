@@ -1,103 +1,190 @@
 package city;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
+import agent.Agent;
 import city.gui.BusGui;
+import city.interfaces.Bus;
+import city.interfaces.BusStop;
 
-public class BusAgent {
+public class BusAgent extends Agent implements Bus {
 
 	enum BusState { moving, leavingStop, atStop, unloading, waitingForResponse, loading }
 	enum PassengerState { gotOn, beenOn};
+	boolean readyToBoard = false;
 	class myPassenger {
 	    PersonAgent p;
-	    BusStopAgent dest;
+	    BusStop dest;
 	    PassengerState ps;
-	    public myPassenger(PersonAgent per,BusStopAgent dest) {
+	    public myPassenger(PersonAgent per,BusStop dest) {
 	        this.p=per;
 	        this.dest=dest;
 	        ps=PassengerState.gotOn;
 	    }
 	}
+	CityData cd;
 	BusState myState;
 	BusGui busgui;
-	List<myPassenger> passengers;
+	public List<myPassenger> passengers;
 	//LinkedList<BusStopAgent> stops;
-	BusStopAgent curr;
-	BusStopAgent next;
-
-	public BusAgent() {
-		BusState bs = BusState.moving;
-		passengers = new ArrayList<myPassenger>();
+	public BusStopAgent curr;
+	public BusStopAgent next;
+	private Semaphore atDestination = new Semaphore(0,true);
+	
+	public BusAgent(CityData cd) {
+		this.cd = cd;
+		curr = cd.busStops.get(0);
+		next = cd.busStops.get(1);
+		myState = BusState.leavingStop;
+		passengers = Collections.synchronizedList(new ArrayList<myPassenger>());
 		//SHOULD ALSO HAVE A DEFAULT STARTING POSITION
 	}
 	
+	public void setGui(BusGui bg) {
+		busgui = bg;
+	}
 	//MESSAGES
 	
+	//CALLED BY BUSGUI
+	/* (non-Javadoc)
+	 * @see city.Bus#msgAtDestination()
+	 */
+	@Override
+	public void msgAtDestination() {
+		
+		myState = BusState.atStop;
+		atDestination.release();
+		// TODO Auto-generated method stub
+		
+	}
+	/* (non-Javadoc)
+	 * @see city.Bus#msgPeopleAtStop(java.util.HashMap)
+	 */
+	@Override
 	public void msgPeopleAtStop(HashMap<PersonAgent,BusStopAgent>peopleAtStop) {
-        myState=BusState.loading;
+       readyToBoard = true;
         for ( PersonAgent p : peopleAtStop.keySet()) {
         	passengers.add(new myPassenger(p,peopleAtStop.get(p)));
         }
-	}
-
-	//CALLED BY BUSGUI
-	public void msgAtStop() { 
-		BusStopAgent temp=curr.nextStop;
-		curr = next;
-		next = temp;
-		myState = BusState.atStop;
+        stateChanged();
 	}
 	
+	/* (non-Javadoc)
+	 * @see city.Bus#msgOnBus()
+	 */
+	@Override
+	public void msgOnBus()
+	{
+		atDestination.release();
+	}
+
+
+
+	
 	//SCHEDULER
-	private boolean pickAndExecuteAnAction() {
+	protected boolean pickAndExecuteAnAction() {
+		
 		if(myState==BusState.atStop) {
-			UnloadPassengers();
+			curr.msgArrivedAtStop(this);
+			for(myPassenger p : passengers) {
+				if(p.dest == curr) {
+					UnloadPassenger(p);
+					passengers.remove(p);
+					return true;
+				}
+			}
+			myState = BusState.unloading;   
 			return true;
 		}
 
 		if(myState==BusState.unloading) {
-			curr.msgArrivedAtStop(this);
 			myState=BusState.waitingForResponse;
 			return true;
 	
 		}
-	    if(myState==BusState.loading) {
+		
+		if(myState == BusState.waitingForResponse && !readyToBoard)
+		{
+			super.stateChange.drainPermits();
+			return false;
+		}
+		
+	    if(readyToBoard) {
 	        BoardPassengers();
 	        return true;
 	    }
+	    
 	    if(myState==BusState.leavingStop) {
+	    	
 	        LeaveStop();
 	        return true;
 	    }
+	    
 	    return false;
 	}
 	
 	private void LeaveStop() {
-		busgui.DoGoToNextStop(CityData.busStopPositions.get(next).getX(),CityData.busStopPositions.get(next).getY());
+		BusStopAgent temp=curr.nextStop;
+		curr = next;
+		next = temp;
+		busgui.DoGoToNextStop(next.getX(),next.getY());
 	    myState=BusState.moving;
+	    atDestination.drainPermits();
+	    try {
+	    	atDestination.acquire();
+	    }
+	    catch(Exception e) {}
+	    
 	}
 
 	private void BoardPassengers() {
-		myState=BusState.leavingStop;
+		atDestination.drainPermits();
 	    for(myPassenger p: passengers) {
 	        if(p.ps==PassengerState.gotOn) {
-	            //p.p.BusIsHere(this);
+	        	//Message the people and have a semaphore acquire 
+	        	//and release cycle for every
+	        	//person getting off bus
+	        	p.ps = PassengerState.beenOn;
+	            p.p.msgBusIsHere(this);
+	            try {
+	            	atDestination.acquire();
+	            }
+	            catch(Exception e){}
 	        }
 	    }
+	    myState=BusState.leavingStop;
+	    readyToBoard = false;
 	}
 
-	private void UnloadPassengers() {
-		myState = BusState.unloading;    
-		for(myPassenger p : passengers) {
-			if (p.dest.equals(curr)) {
-				//p.p.msgArrivedAtBusStop(curr);
-				//personGui animation runs in bus’s thread until animation
-				//finished
-		        passengers.remove(p);        
-			}
-		}
+	private void UnloadPassenger(myPassenger p) {
+		
+		//have a wait time for loading and unloading
+		p.p.msgDoneMoving();
+		atDestination.drainPermits();
+		try {
+        	atDestination.acquire();
+        }
+        catch(Exception e){}
+	}
+
+	protected void stateChanged() {
+		super.stateChanged();
 	}
 	//ACTIONS
+
+	public int getX() {
+		return busgui.xPos;
+		
+	}
+	
+	public int getY() {
+		return busgui.yPos;
+		
+	}
+
+	
 }

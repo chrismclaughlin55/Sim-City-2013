@@ -3,7 +3,7 @@ package city;
 public abstract class Role 
 {
 	/*DATA MEMBERS*/
-	private PersonAgent person;
+	protected PersonAgent person;
 	private boolean isActive = false;
 	
 	/*CONSTRUCTORS*/
@@ -16,6 +16,11 @@ public abstract class Role
 	/*GETTERS/SETTERS*/
 	
 	//PersonAgent will only run a particular Role's scheduler if the Role is active
+	public PersonAgent getPerson()
+	{
+		return person;
+	}
+	
 	public boolean isActive()
 	{
 		return isActive;
@@ -37,7 +42,7 @@ public abstract class Role
 	protected void doneWithRole()
 	{
 		isActive = false;
-		person.stateChanged();
+		person.msgDoneWithRole();
 	}
 	
 	//Pause the PersonAgent
@@ -54,7 +59,10 @@ public abstract class Role
 	{
 		person.stateChanged();
 	}
-	
+	public void print(String s){
+		
+		System.out.println(person.name+": "+ s);
+	}
 	//All roles must have a scheduler
 	public abstract boolean pickAndExecuteAnAction();
 	

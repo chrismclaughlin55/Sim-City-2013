@@ -14,6 +14,7 @@ public class Home extends Building {
 	public Home(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height, mainGui);
 		homeGui = new HomeGui();
+		super.type = BuildingType.home;
 	}
 
 	public Home(int i, int j, int wIDTH, int hEIGHT, String string,
@@ -21,7 +22,7 @@ public class Home extends Building {
 		super(i, j, wIDTH, hEIGHT, string, home, mainGui);
 		homeGui = new HomeGui();
 		cityData = cd;
-		
+		super.type = BuildingType.home;
 	}
 
 	public void EnterBuilding(PersonAgent p, String s){
@@ -29,7 +30,12 @@ public class Home extends Building {
 			//allow the person into the building
 			
 		//}
-		homeGui.getHomePanel().addGui(p.getGui()); System.err.println("added to home panel");
 		cityData.removeGui(p.getGui());
+		homeGui.getHomePanel().addGui(p.getGui());
+	}
+	
+	public void LeaveBuilding(PersonAgent p) {
+		homeGui.getHomePanel().removeGui(p.getGui(), p.currentBuilding.buildingNumber);
+		cityData.addGui(p.getGui(), p.currentBuilding.buildingNumber);
 	}
 }

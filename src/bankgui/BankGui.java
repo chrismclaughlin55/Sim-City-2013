@@ -8,13 +8,16 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 
+import bank.Bank;
+import bank.utilities.GuiPositions;
 
 
-public class BankGui extends JFrame implements ActionListener {
+
+public class BankGui extends JFrame implements GuiPositions, ActionListener {
 
 		public AnimationPanel animationPanel;
 		private BankPanel bankPanel;
-
+		public Bank bank;
 		public BankGui() {
 
 			//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,7 +40,9 @@ public class BankGui extends JFrame implements ActionListener {
 			
 
 }
-
+		public void setBank(Bank b){
+			this.bank = b;
+		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub

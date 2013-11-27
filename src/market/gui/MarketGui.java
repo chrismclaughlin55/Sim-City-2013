@@ -1,5 +1,6 @@
 package market.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -10,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import market.Inventory;
+import market.Market;
 import market.MarketData;
 
 
@@ -21,30 +23,30 @@ public class MarketGui extends JFrame implements ActionListener {
 
 	public AnimationPanel animationPanel;
 	private MarketPanel marketPanel;
+	private Market market;
+	
+	
+	public MarketGui(Market market) {
 
-	public MarketGui() {
-
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.market = market;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(0,0,screenSize.width/2, screenSize.height/2);
+		setBounds(0,0,800, 600);
 		setLocation(screenSize.width/2-this.getSize().width/2, screenSize.height/2-this.getSize().height/2);
-		setLayout(new GridLayout(0,2));
-
-		MarketData chickenData = new MarketData("chicken", 10, 5.99);
-		MarketData saladData = new MarketData("salad", 10, 3.99);
-		MarketData steakData = new MarketData("steak", 10, 11.99);
-		MarketData pizzaData = new MarketData("pizza", 10, 7.99);
-		Inventory inventory = new Inventory(chickenData, saladData, steakData, pizzaData);
+		setLayout(new BorderLayout());
 
 		animationPanel = new AnimationPanel();
+		animationPanel.setPreferredSize(new Dimension(600, 600));
 		animationPanel.setVisible(true);
 		
-		marketPanel = new MarketPanel(inventory);
+		marketPanel = new MarketPanel(market);
+		marketPanel.setPreferredSize(new Dimension(200, 600));
 		marketPanel.setVisible(true);
 
 
-		add (marketPanel);
-		add (animationPanel);
+		add (marketPanel, BorderLayout.WEST);
+		add (animationPanel, BorderLayout.CENTER);
+		
+		
 
 	}
 	/**
@@ -53,28 +55,18 @@ public class MarketGui extends JFrame implements ActionListener {
 	 *
 	 * @param person customer (or waiter) object
 	 */
-	public void updateMarketPanel(Inventory inventory) {
+	public void updateMarketPanel() {
 
 		for (JLabel label : marketPanel.labels) {
-			label.setText("Quantity of steak: " + inventory.inventory.get("steak").amount);
-			label.setText("Quantity of salad: " + inventory.inventory.get("salad").amount);
-			label.setText("Quantity of chicken: " + inventory.inventory.get("chicken").amount);
-			label.setText("Quantity of pizza: " + inventory.inventory.get("pizza").amount);
+			label.setText("Quantity of steak: " + market.inventory.inventory.get("Steak").amount);
+			label.setText("Quantity of salad: " + market.inventory.inventory.get("Salad").amount);
+			label.setText("Quantity of chicken: " + market.inventory.inventory.get("Chicken").amount);
+			label.setText("Quantity of pizza: " + market.inventory.inventory.get("Pizza").amount);
 		}
 
 		marketPanel.validate();
+		
 	}
-
-
-	/*public static void main(String[] args) {
-		MarketGui gui = new MarketGui();
-		gui.setTitle("Market");
-		gui.setVisible(true);
-		gui.setResizable(true);        
-
-		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}*/
-
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

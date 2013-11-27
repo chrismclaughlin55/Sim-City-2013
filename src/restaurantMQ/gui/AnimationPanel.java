@@ -1,6 +1,9 @@
 package restaurantMQ.gui;
 import Gui.*;
+
 import javax.swing.*;
+
+import city.gui.PersonGui;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -81,4 +84,9 @@ public class AnimationPanel extends JPanel implements ActionListener {
     public void addGui(WaiterGui gui) {
     	guis.add(gui);
     }
+
+	public void addGui(PersonGui gui) {
+		guis.add(gui);
+		
+	}
 }

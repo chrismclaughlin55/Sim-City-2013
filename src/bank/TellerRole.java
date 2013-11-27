@@ -10,33 +10,88 @@ import city.Role;
 public class TellerRole extends Role implements Teller{
 
 
+=======
+import java.util.concurrent.Semaphore;
+
+import bank.interfaces.BankCustomer;
+import bank.interfaces.Teller;
+import bank.utilities.CustInfo;
+import bankgui.TellerGui;
+import city.PersonAgent;
+import city.Role;
+/*
+ *  
+ */
+public class TellerRole extends Role implements Teller{
+	String name;
+	PersonAgent me;
+	BankManagerRole bm;
+	CustInfo currentCustInfo;
+	enum State {available, waitingForInfo, waitingForResponse, doneWithCustomer, customerDecidingLoan}
+	enum Event {none, recievedHello, recievedInfo, recievedDeposit,updatedBank,loanReq, iTakeIt}
+	State state;
+	Event event;
+	private TellerGui gui;
+	private Semaphore atDest = new Semaphore(0 ,true);
+	
+	//Constructor
+
 	public TellerRole(PersonAgent person) {
 		super(person);
+		this.name = person.getName();
+		this.me = person;
+		state = State.available;
+		event = Event.none;
 		// TODO Auto-generated constructor stub
 	}
-	
-	//MESSAGES
-	@Override
-	public void msgHello(String name, BankCustomer c) {
-		// TODO Auto-generated method stub
+	//GUI messages
+	public void msgAddGui(TellerGui tellerGui) {
+		this.gui = tellerGui;
 		
+	}
+	//MESSAGES
+	public void msgAddManager(BankManagerRole bm){
+		this.bm = bm;
+		stateChanged();
+	}
+	@Override
+	public void msgHello(CustInfo c) {
+		currentCustInfo = c;
+		print(c.custName + " said hello");
+		event = Event.recievedHello;
+		stateChanged();
 	}
 
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
-		// TODO Auto-generated method stub
-		
+		event = Event.recievedInfo;
+		print("recieved info for "+ info.custName);
+		if(info != null)
+		this.currentCustInfo = info;
+		stateChanged();
 	}
 
 	@Override
 	public void msgDeposit(double money) {
-		// TODO Auto-generated method stub
-		
+		currentCustInfo.depositAmount = 0;
+		currentCustInfo.moneyInAccount += money;
+		event = Event.recievedDeposit;
+		print("recieved deposit");
+		stateChanged();
 	}
 
 	@Override
-	public void loan(double amount) {
-		// TODO Auto-generated method stub
+	public void msgloan(double amount) {
+		currentCustInfo.loanRequestAmount = amount;
+		event = Event.loanReq;
+		stateChanged();
+	}
+	@Override
+	public void msgITakeIt(double loanAmount) {
+		currentCustInfo.loanAmount = loanAmount;
+		currentCustInfo.loanApproveAmount-= loanAmount;
+		event = Event.iTakeIt;
+		stateChanged();
 		
 	}
 	
@@ -44,8 +99,87 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		// TODO Auto-generated method stub
+		if(state == State.available && event == Event.recievedHello){
+			getInfo();
+			return true;
+		}
+		if(state == State.waitingForInfo && event == Event.recievedInfo){
+			ask();
+			return true;
+		}
+		if(state == State.waitingForResponse && event == Event.recievedDeposit){
+			processOrder();
+			return true;
+		}
+		if(state == State.doneWithCustomer && event == Event.updatedBank){
+			makeAvailable();
+			return true;
+		}
+		if(state == State.waitingForResponse && event == Event.loanReq){
+			processLoan();
+			return true;
+		}
+		if(state == State.customerDecidingLoan && event == Event.iTakeIt){
+			processOrder();
+			return true;
+		}
+		if(person.cityData.hour > Bank.CLOSINGTIME && bm.getLine().size()==0){
+			this.leaveBank();
+			return true;
+		}
 		return false;
 	}
+	//ACTIONS
+	private void ask() {
+	print("asked what to do");
+		currentCustInfo.customer.msgWhatWouldYouLike();
+		state = State.waitingForResponse;
+	}
+
+	private void getInfo() {
+	print("asking for info from manager");
+		bm.msgGiveMeInfo(currentCustInfo.customer, this);
+			state = State.waitingForInfo;
+	}
+
+	private void makeAvailable() {	
+		currentCustInfo = null;
+		state = State.available;
+		
+	}
+
+	private void processLoan() {
+		if(currentCustInfo.loanRequestAmount>currentCustInfo.loanApproveAmount)
+			currentCustInfo.customer.msgCanDoThisAmount(currentCustInfo.loanApproveAmount);
+		else 
+			currentCustInfo.customer.msgCanDoThisAmount(currentCustInfo.loanRequestAmount);
+		state = State.customerDecidingLoan;
+	}
+
+	private void processOrder() {
+		//TODO this could cause problems. could lose semaphore by updating event in action
+		bm.msgUpdateInfo(currentCustInfo, this);
+		state = State.doneWithCustomer;
+		event = Event.updatedBank;
+	}
+	public void msgGuiIsAtDest() {
+		print("released a atDest");
+		atDest.release();
+		
+	}
+
+	private void leaveBank() {
+		bm.msgLeavingNow(this);
+		gui.DoLeaveBank();
+		try
+		{
+			atDest.acquire();
+		}
+		catch(Exception e){}
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
+	}
+	
 
 }

@@ -1,9 +1,13 @@
 package city;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.Timer;
 
 import mainGUI.BuildingPanel;
 import mainGUI.MainGui;
@@ -13,19 +17,23 @@ public class Building extends Rectangle2D.Double {
 	public String name;
 	public BuildingType type;
 	public enum BuildingType {home, apartment, restaurant, bank, market, room};
-	private boolean isOpen = false;
-	protected PersonAgent manager;
-	CityData cityData;
+	protected boolean isOpen = false;
+	public PersonAgent manager;
+	public CityData cityData;
+	
+	Timer buildingTimer;
+	
 	public int buildingNumber;
 
 	BuildingPanel buildingPanel;
 	MainGui mainGui;
 
 	//private List<Role> roles = Collections.synchronizedList(new ArrayList<Role>());
-	private Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
+	protected Map<PersonAgent, Role> existingRoles = Collections.synchronizedMap(new HashMap<PersonAgent, Role>());
 
-
-
+	public BusStopAgent busStop;
+	public boolean hasManager=false;
+	
 	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
 		this.mainGui = mainGui;
@@ -77,6 +85,13 @@ public class Building extends Rectangle2D.Double {
 		 * 
 		 */
 	}
+	
+	public boolean hasManager() {
+		return hasManager;
+	}
+	public void LeaveBuilding(PersonAgent p) {
+		
+	}
 
 	// assign relations between new comer and person in charge both ways
 	/*protected void GoIntoBuilding(PersonAgent p) {
@@ -109,13 +124,6 @@ public class Building extends Rectangle2D.Double {
 		}
 	}
 
-	/*class Manager {
-		PersonAgent person;
-		Role role;
-
-		Manager() {
-		}
-	}*/
 
 	public void setType(BuildingType type) {
 		this.type = type;
@@ -127,6 +135,15 @@ public class Building extends Rectangle2D.Double {
 	
 	public void setBuildingNumber(int number) {
 		buildingNumber = number;
+	}
+	
+	public void setManager(PersonAgent p) {
+		manager = p;
+		hasManager = true;
+	}
+	
+	public void setBusStop(BusStopAgent bs) {
+		busStop = bs;
 	}
 
 	public void display(Building building, int buildingNumber) {

@@ -10,22 +10,26 @@ public class ConfigParser{
 	//File config = new File("config.txt");
 	Scanner scan;
 	MainGui main;
-	public ConfigParser(MainGui m) throws FileNotFoundException {
+	boolean fileExist = false;
+	public ConfigParser(MainGui m,String filename) throws FileNotFoundException {
+		Properties props = new Properties();
+		
 		//ConfigParser cp = new ConfigParser();
-		scan = new Scanner( new File ("./config.txt"));
+		try {
+			scan = new Scanner( new File (filename));
+			fileExist=true;
+		}
+		catch(FileNotFoundException fnfe) {
+			fnfe.printStackTrace();
+		}
 		main = m;
 	}
 	
-	public void ParseAndCreatePeople() {
-		if(scan.hasNextLine()) {
-			String name = scan.next();
-			String title = scan.next();
-			main.addPerson(name,title);
-			//MAKE A New Person OBJECT
-			//WORK WITH MAINGUI TO CREATE OBJECT WITH THESE PROPERTIES THAT ARE PARSED IN
-			
-			
-		}
+	public ArrayList<HashMap<String,String>> ParseAndCreatePeople() throws FileNotFoundException {
+		ArrayList<HashMap<String,String>> peopleToCreate = new ArrayList<HashMap<String,String>>();
+		
+		
+		return peopleToCreate;
 	}
 	
 }

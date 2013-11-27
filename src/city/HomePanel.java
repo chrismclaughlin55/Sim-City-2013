@@ -54,10 +54,6 @@ public class HomePanel extends JPanel implements ActionListener {
 		repaint();  //Will have paintComponent called
 	}
 	
-	public List<Gui> getGuis() {
-		return guis;
-	}
-
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -68,15 +64,19 @@ public class HomePanel extends JPanel implements ActionListener {
 		g2.setColor(Color.BLACK);
 		g2.drawLine(width/2, 0, width/2, height - 80);
 		g2.fillRect((width/4 - 10), 0, 50, 25);
+		g2.drawString("Stove", width/4 + 40, 25);
 		g2.setColor(Color.CYAN);
 		g2.fillRect(0, height - 70, 30, 40);
+		g2.drawString("Entrance", 0, height - 70);
 		g2.setColor(Color.BLUE);
 		g2.fillRect(0, 20, 30, 40);
+		g2.drawString("Fridge", 0, 20);
 		g2.setColor(Color.PINK);
 		g2.fillRect(width - 60, 0, 60, 100);
+		g2.drawString("Bed", width - 60, 110);
 		g2.setColor(Color.GRAY);
 		g2.fillRect(width/2 - 40, height/2 - 30, 40, 60);
-		
+		g2.drawString("Couch", width/2 - 40, height/2 -30);
 
 		synchronized(guis){
 			for(Gui gui : guis) {
@@ -89,11 +89,24 @@ public class HomePanel extends JPanel implements ActionListener {
 
 	public void addGui(PersonGui gui) {
 		guis.add(gui);
+		gui.setXPos(0);
+		gui.setYPos(340);
 		gui.setPresent(true);
-		System.err.println(guis.size());
 	}
 
-
+	public void removeGui(PersonGui gui, int currentIn) {
+		guis.remove(gui);
+		gui.setXPos(gui.xBuilding[currentIn]);
+		gui.setYPos(gui.yBuilding[currentIn]);
+		gui.setXDes(gui.xBuilding[currentIn]);
+		gui.setYDes(gui.yBuilding[currentIn]);
+		gui.setPresent(false);
+	}
+	
+	public void removeGui(PersonGui gui) {
+		guis.remove(gui);
+		gui.setPresent(false);
+	}
 }
 
 
