@@ -84,13 +84,13 @@ public class PersonAgent extends Agent
 	public PersonAgent(String name) {
 		this.name = name;
 		/*MyOrder o1 = new MyOrder("Steak", 1);
-		MyOrder o2 = new MyOrder("Salad", 1);
-		MyOrder o3 = new MyOrder("Pizza", 1);
-		MyOrder o4 = new MyOrder("Chicken", 1);
-		thingsToOrder.add(o1);
-		thingsToOrder.add(o2);
-		thingsToOrder.add(o3);
-		thingsToOrder.add(o4);*/
+                MyOrder o2 = new MyOrder("Salad", 1);
+                MyOrder o3 = new MyOrder("Pizza", 1);
+                MyOrder o4 = new MyOrder("Chicken", 1);
+                thingsToOrder.add(o1);
+                thingsToOrder.add(o2);
+                thingsToOrder.add(o3);
+                thingsToOrder.add(o4);*/
 		inventory.put("Steak", 4);
 		inventory.put("Salad", 4);
 		inventory.put("Pizza", 4);
@@ -103,13 +103,13 @@ public class PersonAgent extends Agent
 		this.gui = gui;
 		this.cityData = cd;
 		/*MyOrder o1 = new MyOrder("Steak", 1);
-		MyOrder o2 = new MyOrder("Salad", 1);
-		MyOrder o3 = new MyOrder("Pizza", 1);
-		MyOrder o4 = new MyOrder("Chicken", 1);
-		thingsToOrder.add(o1);
-		thingsToOrder.add(o2);
-		thingsToOrder.add(o3);
-		thingsToOrder.add(o4);*/
+                MyOrder o2 = new MyOrder("Salad", 1);
+                MyOrder o3 = new MyOrder("Pizza", 1);
+                MyOrder o4 = new MyOrder("Chicken", 1);
+                thingsToOrder.add(o1);
+                thingsToOrder.add(o2);
+                thingsToOrder.add(o3);
+                thingsToOrder.add(o4);*/
 		inventory.put("Steak", 3);
 		inventory.put("Salad", 3);
 		inventory.put("Pizza", 3);
@@ -178,7 +178,7 @@ public class PersonAgent extends Agent
 		if(cityData.hour == 0 && this.home instanceof Apartment) {
 			rent+=20;
 		}
-		
+
 	}
 
 	public void msgFull() {
@@ -215,14 +215,14 @@ public class PersonAgent extends Agent
 
 	public void msgAtBuilding() {//from animation
 		//print("msgAtBuilding() called");
-		atBuilding.release();// = true;
-		stateChanged();
+	atBuilding.release();// = true;
+	stateChanged();
 	}
 
 	public void msgAtBed() {//from animation
 		//print("msgAtBed() called");
-		atBed.release();// = true;
-		stateChanged();
+	atBed.release();// = true;
+	stateChanged();
 	}
 
 	public void msgAtEntrance() {//from animation
@@ -487,7 +487,7 @@ public class PersonAgent extends Agent
 		if(destinationBuilding != currentBuilding)
 		{
 			takeBusToDestination();
-	
+
 			personGui.DoGoToBuilding(restNumber);
 			atBuilding.drainPermits();
 			try {
@@ -618,7 +618,7 @@ public class PersonAgent extends Agent
 
 	protected void goToMarket() {
 		destinationBuilding = cityData.market;
-		
+
 		takeBusToDestination();
 
 		personGui.DoGoToBuilding(19);
@@ -727,4 +727,3 @@ public class PersonAgent extends Agent
 		return homeNumber;
 	}
 }
-

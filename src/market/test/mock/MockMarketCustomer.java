@@ -3,6 +3,7 @@ package market.test.mock;
 import java.util.List;
 
 import market.Invoice;
+import market.MarketEmployeeRole;
 import market.interfaces.MarketCustomer;
 import restaurantMQ.test.mock.EventLog;
 import restaurantMQ.test.mock.LoggedEvent;
@@ -15,10 +16,10 @@ public class MockMarketCustomer extends Mock implements MarketCustomer {
 		super(name);
 	}
 
+	
 	@Override
-	public void msgOrderUnfulfilled(String type, int amount) {
-		// TODO Auto-generated method stub
-		
+	public void msgWhatIsYourOrder(MarketEmployeeRole marketEmployeeRole) {
+		log.add((new LoggedEvent("Called by employee")));
 	}
 
 	@Override
@@ -26,6 +27,17 @@ public class MockMarketCustomer extends Mock implements MarketCustomer {
 		// TODO Auto-generated method stub
 		
 	}
+
+
+	@Override
+	public void msgYouCanLeave() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	
+	
 
 	
 

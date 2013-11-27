@@ -11,10 +11,10 @@ public class Inventory {
 	public Map<String,MarketData> inventory = Collections.synchronizedMap(new HashMap<String,MarketData>()); 
 	private MarketGui marketGui;
 	public Inventory(MarketGui marketGui) {
-		MarketData chickenData = new MarketData("chicken", 10, 10);
-		MarketData saladData = new MarketData("salad", 10, 10);
-		MarketData steakData = new MarketData("steak", 10, 10);
-		MarketData pizzaData = new MarketData("pizza", 10, 10);
+		MarketData chickenData = new MarketData("Chicken", 10, 10);
+		MarketData saladData = new MarketData("Salad", 10, 10);
+		MarketData steakData = new MarketData("Steak", 10, 10);
+		MarketData pizzaData = new MarketData("Pizza", 10, 10);
 
 		inventory.put("Chicken", chickenData );
 		inventory.put("Salad", saladData);
