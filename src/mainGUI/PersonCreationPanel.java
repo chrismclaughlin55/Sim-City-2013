@@ -16,12 +16,17 @@ import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import city.CityData;
+import city.PersonAgent;
 import city.gui.PersonGui;
 
 /**
@@ -42,6 +47,14 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	private JButton addPerson = new JButton("Add");
 	private JTextField nameField = new JTextField(10);
 	private ButtonGroup jobs = new ButtonGroup();
+	
+	private JButton fire = new JButton("Fire!!!");
+	public JPanel timePane = new JPanel();
+	private JButton timeSetting = new JButton("Set Time Interval");
+	private JTextField timeField = new JTextField(10);
+	private JLabel timeIntervalLabel = new JLabel();
+	
+	private int timeInterval = -1;
 
 	private List<JButton> list = new ArrayList<JButton>(); 
 	private String type = "Person";
@@ -68,7 +81,13 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	public PersonCreationPanel(MainGui mainGui) {
 		this.mainGui = mainGui;
 		this.type = "person";
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(null);//new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		timePane.setLayout(new FlowLayout());
+		timePane.add(timeField);
+		timePane.add(timeSetting);
+		timePane.add(timeIntervalLabel);
+		timeIntervalLabel.setText("\t\t\tTime Interval = "+mainGui.mainAnimationPanel.GLOBALINTERVAL);
 
 		nameField.setHorizontalAlignment(JTextField.CENTER);
 		namePane.setLayout(new FlowLayout());
@@ -125,19 +144,28 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		unemployed.addActionListener(this);
 		addPerson.addActionListener(this);
 		nameField.addKeyListener(this);
+		fire.addActionListener(this);
+		timeSetting.addActionListener(this);
+		timeField.addKeyListener(this);
 
 		view.setLayout(new GridLayout(0,1));
 		pane.setViewportView(view);
 		pane.setMinimumSize(new Dimension(PANEDIM, PANEDIM));
 		pane.setPreferredSize(new Dimension(PANEDIM, PANEDIM));  
 
+		fire.setBounds(5, 5, 605, 50);
+		timePane.setBounds(0, 65, 615, 50);
 		jobsPane.setBounds(0, 0, 615, 125);
-		nameField.setBounds(0, 125, 615, 95);
-		addPerson.setBounds(0, 220, 615, 90);
+		nameField.setBounds(0, 125, 615, 90);
+		addPerson.setBounds(0, 215, 615, 90);
 		personPane.add(jobsPane);	
 		personPane.add(nameField);
 		personPane.add(addPerson);
+		personPane.setBounds(0, 120, 615, 305);
+		pane.setBounds(0, 430, 615, 343);
 
+		add(fire);
+		add(timePane);
 		add(personPane);
 		add(pane);
 
@@ -177,14 +205,39 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 			String role = "";
 			String destination;
 			
-			if(getSelectedButtonText(jobs).contains("Restaurant"))
+			if(getSelectedButtonText(jobs).contains("Bank")){
+				destination = "Bank";
+				if(getSelectedButtonText(jobs).contains("BankManager")){
+					role = "BankManager";
+				//	mainGui.mainAnimationPanel.cd.buildings.get(18).manager
+				}
+				else if(getSelectedButtonText(jobs).contains("BankTeller")){
+					role = "BankTeller";
+				}
+				/*else if(getSelectedButtonText(jobs).contains("Customer")){
+					role = "Customer";
+				}*/
+			}
+			else if(getSelectedButtonText(jobs).contains("Market")){
+				destination = "Market";
+				if(getSelectedButtonText(jobs).contains("MarketManager")){
+					role = "MarketManager";
+				}
+				else if(getSelectedButtonText(jobs).contains("MarketEmployee")){
+					role = "MarketEmployee";
+				}
+			}
+			else if(getSelectedButtonText(jobs).contains("Unemployed")||getSelectedButtonText(jobs).contains("Landlord")){
+				destination = "Home";
+			}
+			else
 			{
 				destination = "Restaurant";
-				if(getSelectedButtonText(jobs).contains("Customer"))
+				/*if(getSelectedButtonText(jobs).contains("Customer"))
 				{
 					role = "Customer";
-				}
-				else if(getSelectedButtonText(jobs).contains("Waiter"))
+				}*/
+				if(getSelectedButtonText(jobs).contains("Waiter"))
 				{
 					role = "Waiter";
 				}
@@ -200,22 +253,6 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 				{
 					role = "Cashier";
 				}
-			} else if(getSelectedButtonText(jobs).contains("Bank")){
-				destination = "Bank";
-				if(getSelectedButtonText(jobs).contains("BankManager")){
-					role = "BankManager";
-				//	mainGui.mainAnimationPanel.cd.buildings.get(18).manager
-				}
-				else if(getSelectedButtonText(jobs).contains("BankTeller")){
-					role = "BankTeller";
-				}
-				else if(getSelectedButtonText(jobs).contains("Customer")){
-					role = "Customer";
-				}
-			}
-			else
-			{
-				destination = "Home";
 			}
 			
 			mainGui.addPerson(name, role, destination);
@@ -244,6 +281,12 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		else {
 			addPerson.setEnabled(false);
 		}
+		
+		try {
+			timeInterval = Integer.parseInt(timeField.getText());
+		} catch (NumberFormatException e) {
+		     //Not an integer
+		}
 	}
 
 
@@ -260,6 +303,28 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 				addPerson(name);
 				addPerson.setEnabled(false);
 				addPerson.setEnabled(false);
+			}
+		}
+		
+		if (e.getSource() == timeSetting) {
+			if(timeInterval < 0) {
+	    		JFrame frame = new JFrame();
+	    		JOptionPane.showMessageDialog(frame, "Time interval must be a positive number!");
+	    		timeField.setText("");
+	    		return;
+	    	}
+			else {
+				mainGui.mainAnimationPanel.GLOBALINTERVAL = timeInterval;
+			}
+			timeField.setText("");
+			timeIntervalLabel.setText("\t\t\tTime Interval = " + mainGui.mainAnimationPanel.GLOBALINTERVAL);
+			mainGui.mainAnimationPanel.cd.globalTimer.setDelay(mainGui.mainAnimationPanel.GLOBALINTERVAL);
+		}
+		
+		if (e.getSource() == fire) {
+			List<PersonAgent> persons = mainGui.mainAnimationPanel.cd.getAllPeople();
+			for (PersonAgent p : persons) {
+				p.msgFire();
 			}
 		}
 	}

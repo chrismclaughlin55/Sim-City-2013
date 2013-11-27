@@ -7,10 +7,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import market.MarketManagerRole.MyCookCustomer;
 import market.gui.EmployeeGui;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
 import market.interfaces.MarketManager;
+import restaurantMQ.MQCashierRole;
+import restaurantMQ.MQCookRole;
 import restaurantMQ.test.mock.EventLog;
 import city.PersonAgent;
 import city.Role;
@@ -18,14 +21,17 @@ import city.Role;
 
 public class MarketEmployeeRole extends Role implements MarketEmployee {
 
-	private enum EmployeeState{nothing, entering, working, processing, doneProcessing, waitingForPayment}
+	private enum EmployeeState{nothing, entering, working, processing, doneProcessing, doneProcessingCookOrder, waitingForPayment}
 	private EmployeeState state;
 
 	private enum orderState {pending, processing, completed};
 	public List<MarketOrder> currentMarketOrders = Collections.synchronizedList(new ArrayList<MarketOrder>());
 	public List<Invoice> invoice = Collections.synchronizedList(new ArrayList<Invoice>());
 	public List<Double> payments = Collections.synchronizedList(new ArrayList<Double>());
+	public List<Double> restPayments = Collections.synchronizedList(new ArrayList<Double>());
 	private List<MarketCustomerRole> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomerRole>());
+	private List<MyCookCustomer> waitingCookCustomers = Collections.synchronizedList(new ArrayList<MyCookCustomer>());
+
 	public EmployeeGui gui = null;
 
 	//public Map<String,MarketData> inventory = Collections.synchronizedMap(new HashMap<String,MarketData>()); 
@@ -40,6 +46,9 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	private double amountDue;
 	private boolean isProcessed = false;
 	private MarketCustomerRole currentCustomer;
+	private MyCookCustomer currentCookCustomer;
+	private MQCashierRole cashier;
+
 
 	private Semaphore atDesk = new Semaphore(0, true);
 
@@ -99,12 +108,12 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		stateChanged();
 	}
 
-
-	/*public void msgHereIsAnOrder(String type, int quantity, MarketCustomer cust) {
-		log.add(new LoggedEvent("Received order from customer"));
-		orders.add(new MarketOrder(type, quantity, cust, orderState.pending, "person"));
+	public void msgServiceCookCustomer(MyCookCustomer cook) {
+		print ("Received msgServiceCookCustomer");
+		currentCookCustomer = cook;
+		waitingCookCustomers.add(cook);
 		stateChanged();
-	}*/
+	}
 
 
 	public void msgHereAreMyOrders(List<MyOrder> orders, MarketCustomer cust) {
@@ -120,10 +129,21 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		state = EmployeeState.doneProcessing;
 		stateChanged();
 	}
+	
+	public void msgDoneProcessingCookOrder() {
+		state = EmployeeState.doneProcessingCookOrder;
+		stateChanged();
+	}
 
 	public void msgHereIsPayment(double payment) {
 		print ("Received msgHereIsPayment");
 		payments.add(payment);
+		stateChanged();
+	}
+	
+	public void msgHereIsRestPayment(double payment) {
+		print ("Received msgHereIsPayment from cashier");
+		restPayments.add(payment);
 		stateChanged();
 	}
 
@@ -139,9 +159,36 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			}
 			return true;
 		}
+		
+		if (!restPayments.isEmpty()) {
+			ProcessRestPayment();
+			return true;
+		}
 
 		if (!payments.isEmpty()) {
 			ProcessPayment();
+			return true;
+		}
+		
+		
+		
+		if (state == EmployeeState.doneProcessingCookOrder) {
+			for (final restaurantMQ.MarketOrder o : currentCookCustomer.order) {
+				currentCookCustomer.cook.msgFoodDelivered(o.name, o.amount);
+				currentCookCustomer.cashier.msgHereIsBill(this, o.amount*inventory.inventory.get(o.name).price);
+			}
+		}
+		
+		if (state == EmployeeState.doneProcessing) {
+			currentMarketOrders.get(0).cust.msgOrderFulfullied(invoice, amountDue);
+			state = EmployeeState.waitingForPayment;
+			//currentMarketOrders.clear();
+			return true;
+		}
+
+		if (!waitingCookCustomers.isEmpty()) {
+			FulfillCookOrder(waitingCookCustomers.get(0));
+			waitingCustomers.remove(0);
 			return true;
 		}
 
@@ -151,12 +198,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			return true;
 		}
 
-		if (state == EmployeeState.doneProcessing) {
-			currentMarketOrders.get(0).cust.msgOrderFulfullied(invoice, amountDue);
-			state = EmployeeState.waitingForPayment;
-			//currentMarketOrders.clear();
-			return true;
-		}
+		
 
 		if ((!currentMarketOrders.isEmpty() && (state == EmployeeState.working))) {
 			state = EmployeeState.processing;
@@ -181,35 +223,8 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 
 
-
-
-	/*public void FulFillOrder(final MarketOrder order) {
-		if(order.quantity <= inventory.inventory.get(order.type).amount) {
-			order.state = orderState.completed;
-			inventory.inventory.get(order.type).amount -= order.quantity;
-			final double price = order.quantity * inventory.inventory.get(order.type).price;
-			timer.schedule(new TimerTask() {
-				public void run() {  
-					if (order.custType.equals("person")) {
-						order.cust.msgOrderFulfullied(new Invoice(order.type, order.quantity, price*order.quantity, marketNum));
-					}
-				}},
-				10000);//how long to wait before running task
-		}
-		else {
-			if (order.custType.equals("person")){    
-				order.cust.msgOrderUnfulfilled(order.type, order.quantity);
-				currentMarketOrders.remove(order);
-			}
-			/*if order.custType.equals("restaurant") {    
-	            order.cookCust.msgOrderUnfulfilled(order.type, order.amount);
-	            orders.remove(orders);
-	        }
-		}
-
-	}*/
-
 	public void FulfillOrder() {
+		amountDue = 0;
 		for (final MarketOrder o : currentMarketOrders) {
 			//System.out.println (o.quantity + " " + inventory.inventory.get(o.type).amount);
 			if(o.quantity <= inventory.inventory.get(o.type).amount) {
@@ -239,30 +254,69 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}
 
 
-	public void ProcessPayment() {
+	public void FulfillCookOrder(MyCookCustomer c) {
+		amountDue = 0;
+		for (final restaurantMQ.MarketOrder o : c.order) {
+			if(o.amount <= inventory.inventory.get(o.name).amount) {
+				inventory.inventory.get(o.name).amount -= o.amount;
+				inventory.update();
+				final double price = o.amount * inventory.inventory.get(o.name).price;
+				timer.schedule(new TimerTask() {
+					public void run() {  
+						Invoice i = new Invoice(o.name, o.amount, price*o.amount);
+						invoice.add(i);
+						amountDue += price;
+						if (invoice.size() == currentMarketOrders.size())
+							msgDoneProcessingCookOrder();
 
-		print ("Received: " + payments.get(0).doubleValue() + " Amount Due: " + amountDue);
-		if (payments.get(0).doubleValue() == amountDue) {
-			manager.msgHereIsMoney(payments.get(0), this);
-			currentCustomer.msgYouCanLeave();
+					}},
+					500);//how long to wait before running task
+			}
+			else {
+				Invoice i = new Invoice(o.name, 0, 0);
+				invoice.add(i);
+			}
 		}
-		else {
-			print ("You will face the wrath of Rami");
-		}
-		payments.remove(0);
 	}
 
 
-	public void setGui (EmployeeGui gui) {
-		this.gui = gui;
-		state = EmployeeState.entering;
-	}
 
-	public void msgAtDesk() {
-		atDesk.release();
-		state = EmployeeState.working;
-		stateChanged();
+public void ProcessPayment() {
+
+	print ("Received: " + payments.get(0).doubleValue() + " Amount Due: " + amountDue);
+	if (payments.get(0).doubleValue() == amountDue) {
+		manager.msgHereIsMoney(payments.get(0), this);
+		currentCustomer.msgYouCanLeave();
 	}
+	else {
+		print ("You will face the wrath of Rami");
+	}
+	payments.remove(0);
+}
+
+public void ProcessRestPayment() {
+	
+	print ("Received: " + restPayments.get(0).doubleValue() + " Amount Due: " + amountDue);
+	if (restPayments.get(0).doubleValue() == amountDue) {
+		manager.msgHereIsMoney(restPayments.get(0), this);
+	}
+	else {
+		print ("Your restaurant will face the wrath of Rami");
+	}
+	restPayments.remove(0);
+}
+
+
+public void setGui (EmployeeGui gui) {
+	this.gui = gui;
+	state = EmployeeState.entering;
+}
+
+public void msgAtDesk() {
+	atDesk.release();
+	state = EmployeeState.working;
+	stateChanged();
+}
 
 }
 

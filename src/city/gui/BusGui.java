@@ -6,12 +6,12 @@ import javax.swing.ImageIcon;
 
 import mainGUI.MainGui;
 import Gui.Gui;
-import city.BusAgent;
 import city.CityData;
+import city.interfaces.Bus;
 
 public class BusGui implements Gui {
 	CityData cd;
-	private BusAgent agent = null;
+	private Bus agent = null;
 	public int xPos;
 	public int yPos;
 	boolean xmove = false;
@@ -24,7 +24,7 @@ public class BusGui implements Gui {
     int stop;
     MainGui m;
 
-    public BusGui(BusAgent ba, MainGui main, CityData cd) {
+    public BusGui(Bus ba, MainGui main, CityData cd) {
     	this.cd = cd;
     	agent = ba;
     	xPos = cd.busStops.get(0).getX();

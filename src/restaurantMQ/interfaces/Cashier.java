@@ -1,5 +1,7 @@
 package restaurantMQ.interfaces;
 
+import market.MarketEmployeeRole;
+
 public interface Cashier {
 
 	//MESSAGES
@@ -8,7 +10,7 @@ public interface Cashier {
 
 	public abstract void msgHereIsMoney(Customer customer, double payment);
 
-	public abstract void msgHereIsBill(Market market, double bill);
+	public abstract void msgHereIsBill(MarketEmployeeRole marketEmployee, double bill);
 
 	public abstract void startThread();
 }

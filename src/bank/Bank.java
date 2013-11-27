@@ -11,6 +11,7 @@ import mainGUI.MainGui;
 import city.Building;
 import city.CityData;
 import city.PersonAgent;
+import city.Building.BuildingType;
 
 public class Bank extends Building {
 	public BankGui bankGui;
@@ -24,6 +25,7 @@ public class Bank extends Building {
 		this.bankGui = new BankGui();
 		mainGui.bankGui = this.bankGui;
 		mainGui.bankGui.bank = this;
+		super.type = BuildingType.bank;
 		existingCustRoles = new HashMap<PersonAgent, CustomerRole>();
 		existingManagerRoles = new HashMap<PersonAgent, BankManagerRole>();
 		existingTellerRoles = new HashMap<PersonAgent, TellerRole>();
@@ -39,6 +41,7 @@ public class Bank extends Building {
 				setOpen(p);
 				p.msgAssignRole(existingManagerRoles.get(p));
 				currentManager = existingManagerRoles.get(p);
+
 				}
 				else {
 				existingManagerRoles.put(p, new BankManagerRole(p));
