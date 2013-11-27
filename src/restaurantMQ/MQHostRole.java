@@ -300,6 +300,8 @@ public class MQHostRole extends Role implements Host
 	
 	//LAST METHOD CALLED
 	private void LeaveRestaurant() {
+		restPanel.hostLeaving();
+		person.msgDoneWithJob();
 		person.exitBuilding();
 		doneWithRole();
 	}

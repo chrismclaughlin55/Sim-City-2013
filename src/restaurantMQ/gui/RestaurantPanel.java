@@ -435,14 +435,14 @@ public class RestaurantPanel extends JPanel {
     
     public void addCook(PersonAgent person)
     {
-    	MQCookRole c = new MQCookRole(person, cookOrders, market, cashier, timer);
+    	MQCookRole c = new MQCookRole(person, this, cookOrders, market, cashier, timer);
 		cooks.add(c);
 		person.msgAssignRole(c);
     }
     
     public void addCashier(PersonAgent person)
     {
-    	cashier = new MQCashierRole(person);
+    	cashier = new MQCashierRole(person, this);
     	person.msgAssignRole((MQCashierRole)cashier);
     	synchronized(waiters)
     	{
@@ -516,6 +516,21 @@ public class RestaurantPanel extends JPanel {
     			(activeCustomers() == 0) && (cashier == null);
     }
     
+    public boolean justCashier()
+    {
+    	return (activeCooks() == 0) && (activeWaiters() == 0) && 
+    			(activeCustomers() == 0) && (cashier != null);
+    }
+    
+    public void hostLeaving()
+    {
+    	host = null;
+    }
+    
+    public void cashierLeaving()
+    {
+    	cashier = null;
+    }
     
     public boolean hasHost()
     {

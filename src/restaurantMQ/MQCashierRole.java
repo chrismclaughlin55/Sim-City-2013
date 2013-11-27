@@ -9,6 +9,7 @@ import java.util.Map;
 import market.MarketEmployeeRole;
 import city.PersonAgent;
 import city.Role;
+import restaurantMQ.gui.RestaurantPanel;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Market;
@@ -25,6 +26,7 @@ public class MQCashierRole extends Role implements Cashier
 	public List<Payment> payments = Collections.synchronizedList(new ArrayList<Payment>());
 	public EventLog log = new EventLog();
 	public double money = 10000;
+	public RestaurantPanel restPanel;
 	
 	public class CheckRequest
 	{
@@ -70,9 +72,10 @@ public class MQCashierRole extends Role implements Cashier
 	/*END OF DATA*/
 	
 	/*CONSTRUCTORS*/
-	public MQCashierRole(PersonAgent person)
+	public MQCashierRole(PersonAgent person, RestaurantPanel rp)
 	{
 		super(person);
+		restPanel = rp;
 		this.name = super.getName();
 		foodMap.put("Steak", 15.99);
 		foodMap.put("Chicken", 10.99);
@@ -137,10 +140,25 @@ public class MQCashierRole extends Role implements Cashier
 			}
 		}
 		
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && !restPanel.isOpen() 
+				&& restPanel.justCashier())
+		{
+			LeaveRestaurant();
+			return true;
+		}
+		
 		return false;
 	}
 	/*END OF SCHEDULER*/
 	
+	private void LeaveRestaurant() {
+		restPanel.cashierLeaving();
+		person.msgDoneWithJob();
+		person.exitBuilding();
+		doneWithRole();
+		
+	}
+
 	/*ACTIONS*/
 	private void processRequest(CheckRequest c)
 	{

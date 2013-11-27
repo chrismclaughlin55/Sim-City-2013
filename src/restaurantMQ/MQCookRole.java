@@ -10,6 +10,7 @@ import java.util.TimerTask;
 
 import market.Market;
 import restaurantMQ.CookOrder.OrderState;
+import restaurantMQ.gui.RestaurantPanel;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Host;
@@ -28,6 +29,8 @@ public class MQCookRole extends Role implements Cook
 	private Market market;
 	private List<CookOrder> cookOrders;
 	Cashier cashier;
+	
+	public RestaurantPanel restPanel;
 
 	private boolean orderReceived = false;
 	private boolean backupUsed = false;
@@ -61,9 +64,10 @@ public class MQCookRole extends Role implements Cook
 		super(person);
 	}
 	
-	public MQCookRole(PersonAgent person, List<CookOrder> cookOrders, Market market, Cashier c, Timer timer)
+	public MQCookRole(PersonAgent person, RestaurantPanel rp, List<CookOrder> cookOrders, Market market, Cashier c, Timer timer)
 	{
 		super(person);
+		restPanel = rp;
 		this.market = market;
 		cashier = c;
 		this.timer = timer;
@@ -189,9 +193,22 @@ public class MQCookRole extends Role implements Cook
 			backupUsed = false;
 		}
 				
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && orders.isEmpty() && cookOrders.isEmpty())
+		{
+			LeaveRestaurant();
+			return true;
+		}
+		
 		return false;
 	}
 	
+	private void LeaveRestaurant() {
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();
+		
+	}
+
 	//ACTIONS
 	private void CookIt(final CookOrder order)
 	{

@@ -80,6 +80,7 @@ public class BusAgent extends Agent implements Bus {
 	public void msgOnBus()
 	{
 		atDestination.release();
+		stateChanged();
 	}
 
 
