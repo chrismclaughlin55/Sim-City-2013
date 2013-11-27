@@ -93,13 +93,18 @@ public class MarketEmployeeTest extends TestCase
 		assertTrue("Customer should have logged that it got called. Instead, the log reads " +
 				customer.log.getLastLoggedEvent().toString(), customer.log.containsString("Called by employee"));
 		
-		//Step 2, the customer gives his orders to employee
+		//Step 3, the customer gives his orders to employee
 		employee.msgHereAreMyOrders(thingsToOrder1, customer);
 		assertEquals("Employee should have 2 current orders. It doesn't", employee.currentMarketOrders.size(), 2);
 		
+		//Step 4, the employee Fulfills the order
 		employee.pickAndExecuteAnAction();
 		assertEquals("Employee should have an event on it's log. Instead, the Employee's event log reads: "
 				+ employee.log.toString(), 1, employee.log.size());
+		
+		employee.msgDoneProcessing();
+		
+		
 		
 		/*// Step 1, an order comes in from a customer
 		employee.msgHereAreMyOrders(thingsToOrder1, customer);
