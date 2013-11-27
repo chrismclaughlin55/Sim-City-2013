@@ -117,8 +117,9 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 
 	public void msgHereAreMyOrders(List<MyOrder> orders, MarketCustomer cust) {
-		print ("Received msgHereAreMyOrders");
+		print ("Received msgHereAreMyOrders " + orders.size());
 		for (MyOrder o : orders) {
+			print (o.type);
 			MarketOrder marketOrder = new MarketOrder(o.type, o.amount, cust, orderState.pending, "person");
 			currentMarketOrders.add(marketOrder);
 		}
@@ -303,6 +304,7 @@ public void ProcessRestPayment() {
 	else {
 		print ("Your restaurant will face the wrath of Rami");
 	}
+	currentMarketOrders.clear();
 	restPayments.remove(0);
 }
 
