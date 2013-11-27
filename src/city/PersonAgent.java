@@ -415,7 +415,6 @@ public class PersonAgent extends Agent
 
 	private void makeFood() {
 		hungerLevel = 0;
-		homeState = homeState.hungry;
 		for (String key : inventory.keySet()) {
 			if (inventory.get(key) > 0) {
 				inventory.put(key, inventory.get(key) - 1);
@@ -602,7 +601,6 @@ public class PersonAgent extends Agent
 		destinationBuilding = cityData.bank;
 		takeBusToDestination();
 
-		//asdfasdf
 		personGui.DoGoToBuilding(18);
 		currentBuilding = cityData.buildings.get(18);
 		atBuilding.drainPermits();
