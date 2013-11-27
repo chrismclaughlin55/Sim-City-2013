@@ -130,7 +130,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		state = EmployeeState.doneProcessing;
 		stateChanged();
 	}
-	
+
 	public void msgDoneProcessingCookOrder() {
 		state = EmployeeState.doneProcessingCookOrder;
 		stateChanged();
@@ -141,7 +141,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		payments.add(payment);
 		stateChanged();
 	}
-	
+
 	public void msgHereIsRestPayment(double payment) {
 		print ("Received msgHereIsPayment from cashier");
 		restPayments.add(payment);
@@ -160,7 +160,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			}
 			return true;
 		}
-		
+
 		if (!restPayments.isEmpty()) {
 			ProcessRestPayment();
 			return true;
@@ -170,9 +170,9 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			ProcessPayment();
 			return true;
 		}
-		
-		
-		
+
+
+
 		if (state == EmployeeState.doneProcessingCookOrder) {
 			for (final restaurantMQ.MarketOrder o : currentCookCustomer.order) {
 				currentCookCustomer.cook.msgFoodDelivered(o.name, o.amount);
@@ -180,7 +180,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			}
 			return true;
 		}
-		
+
 		if (state == EmployeeState.doneProcessing) {
 			currentMarketOrders.get(0).cust.msgOrderFulfullied(invoice, amountDue);
 			state = EmployeeState.waitingForPayment;
@@ -200,21 +200,13 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			return true;
 		}
 
-		
+
 
 		if ((!currentMarketOrders.isEmpty() && (state == EmployeeState.working))) {
 			state = EmployeeState.processing;
 			FulfillOrder();
 			return true;
 		}
-
-		/*for (MarketOrder o : marketOrders) {
-			if (o.state == orderState.pending) {
-				o.state = orderState.processing;
-				FulFillOrder(o);
-				return true;
-			}
-		}*/
 
 		return false;
 	}
@@ -284,44 +276,44 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 
 
-public void ProcessPayment() {
+	public void ProcessPayment() {
 
-	print ("Received: " + payments.get(0).doubleValue() + " Amount Due: " + amountDue);
-	if (payments.get(0).doubleValue() == amountDue) {
-		manager.msgHereIsMoney(payments.get(0), this);
-		currentCustomer.msgYouCanLeave();
+		print ("Received: " + payments.get(0).doubleValue() + " Amount Due: " + amountDue);
+		if (payments.get(0).doubleValue() == amountDue) {
+			manager.msgHereIsMoney(payments.get(0), this);
+			currentCustomer.msgYouCanLeave();
+		}
+		else {
+			print ("You will face the wrath of Rami");
+		}
+		currentMarketOrders.clear();
+		state = EmployeeState.working;
+		payments.remove(0);
 	}
-	else {
-		print ("You will face the wrath of Rami");
+
+	public void ProcessRestPayment() {
+
+		print ("Received: " + restPayments.get(0).doubleValue() + " Amount Due: " + amountDue);
+		if (restPayments.get(0).doubleValue() == amountDue) {
+			manager.msgHereIsMoney(restPayments.get(0), this);
+		}
+		else {
+			print ("Your restaurant will face the wrath of Rami");
+		}
+		restPayments.remove(0);
 	}
-	currentMarketOrders.clear();
-	state = EmployeeState.working;
-	payments.remove(0);
-}
 
-public void ProcessRestPayment() {
-	
-	print ("Received: " + restPayments.get(0).doubleValue() + " Amount Due: " + amountDue);
-	if (restPayments.get(0).doubleValue() == amountDue) {
-		manager.msgHereIsMoney(restPayments.get(0), this);
+
+	public void setGui (EmployeeGui gui) {
+		this.gui = gui;
+		state = EmployeeState.entering;
 	}
-	else {
-		print ("Your restaurant will face the wrath of Rami");
+
+	public void msgAtDesk() {
+		atDesk.release();
+		state = EmployeeState.working;
+		stateChanged();
 	}
-	restPayments.remove(0);
-}
-
-
-public void setGui (EmployeeGui gui) {
-	this.gui = gui;
-	state = EmployeeState.entering;
-}
-
-public void msgAtDesk() {
-	atDesk.release();
-	state = EmployeeState.working;
-	stateChanged();
-}
 
 
 }
