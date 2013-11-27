@@ -287,24 +287,24 @@ public class MainGui extends JFrame implements MouseListener {
     
     public void assignJobBuilding(PersonAgent p, String role) {
     	if (role.equals("BankManager")) {
-    		if (!mainAnimationPanel.cd.bank.equals(null)) {
+    		if (mainAnimationPanel.cd.bank != null) {
     			p.setJobBuilding(mainAnimationPanel.cd.bank);
     			mainAnimationPanel.cd.bank.setManager(p);
     		}
     	}
     	if (role.equals("BankTeller")) {
-    		if (!mainAnimationPanel.cd.bank.equals(null)) {
+    		if (mainAnimationPanel.cd.bank != null) {
     			p.setJobBuilding(mainAnimationPanel.cd.bank);
     		}
     	}
     	if (role.equals("MarketManager")) {
-    		if (!mainAnimationPanel.cd.market.equals(null)) {
+    		if (mainAnimationPanel.cd.market != null) {
 				p.setJobBuilding(mainAnimationPanel.cd.market);
 				mainAnimationPanel.cd.market.setManager(p);
 			}
     	}
     	if (role.equals("MarketEmployee")) {
-    		if (!mainAnimationPanel.cd.market.equals(null)) {
+    		if (mainAnimationPanel.cd.market != null) {
     			p.setJobBuilding(mainAnimationPanel.cd.market);
     		}
     	}

@@ -12,6 +12,7 @@ public class Apartment extends Building {
 	
 	public Apartment(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height, mainGui);
+		super.type = BuildingType.apartment;
 		
 	}
 	
@@ -41,6 +42,15 @@ public class Apartment extends Building {
 	
 	public Room getRoom(int rn) {
 		return rooms.get(rn);
+	}
+	
+	public int getRoomNumber(PersonAgent p) {
+		for (int i = 0; i < 8; i++) {
+			if (p == rooms.get(i).tenant) {
+				return i;
+			}
+		}
+		return -1;
 	}
 	
 	

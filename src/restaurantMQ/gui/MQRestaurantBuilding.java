@@ -16,7 +16,9 @@ public class MQRestaurantBuilding extends Building
 			String name, BuildingType type, MainGui mainGui, CityData cd) 
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
-		restGui = new RestaurantGui(cd.market);
+
+		restGui = new RestaurantGui(cd.market, this);
+
 		restPanel = restGui.getRestaurantPanel();
 	}
 	
@@ -68,5 +70,10 @@ public class MQRestaurantBuilding extends Building
 	public RestaurantGui getRestaurantGui()
 	{
 		return restGui;
+	}
+
+	public void setOpen(Boolean b) {
+		isOpen = b;
+		
 	}
 }

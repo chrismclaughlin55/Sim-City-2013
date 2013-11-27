@@ -1,14 +1,19 @@
 package restaurantMQ.gui;
 
-import restaurantMQ.interfaces.Customer;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import market.Market;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Vector;
+import restaurantMQ.interfaces.Customer;
 /**
  * Main GUI class.
  * Contains the main frame and subsequent panels
@@ -20,6 +25,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
 	//JFrame animationFrame = new JFrame("Restaurant Animation");
 	JPanel mainPanel = new JPanel();
 	AnimationPanel animationPanel = new AnimationPanel();
+	MQRestaurantBuilding building;
 	
     /* restPanel holds 2 panels
      * 1) the staff listing, menu, and lists of current customers all constructed
@@ -53,10 +59,12 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
      */
-    public RestaurantGui(Market market) {
+    public RestaurantGui(Market market, MQRestaurantBuilding b) {
     	
     	restPanel = new RestaurantPanel(this, market);
+    
 
+    	building = b;
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setBounds(WIDTH, WIDTH , WINDOWX, WINDOWY);
         setVisible(false);
@@ -188,4 +196,11 @@ public class RestaurantGui extends JFrame implements ActionListener {
         gui.setResizable(false);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }*/
+	public void setOpen(Boolean b) {
+		building.setOpen(b);
+		
+	}
+	public boolean isOpen() {
+		return building.isOpen();
+	}
 }
