@@ -158,6 +158,11 @@ public class PersonAgent extends Agent
 	}
 	
 	/*MESSAGES*/
+	public void msgDoneWithJob()
+	{
+		goToWork = false;
+	}
+	
 	public void refresh() {
 		super.refresh();
 		if(cityData.hour == 3)
@@ -319,11 +324,9 @@ public class PersonAgent extends Agent
 			}
 			case doingNothing: {
 				//Decide what the next BigState will be based on current parameters
-				if(goToWork)
+				if(goToWork && jobBuilding != null)
 				{
 					destinationBuilding = jobBuilding;
-					if(!destinationBuilding.equals(null));
-						System.out.println(destinationBuilding.type);
 					desiredRole = job;
 					if(destinationBuilding.type == BuildingType.market) {
 						bigState = BigState.goToMarket;

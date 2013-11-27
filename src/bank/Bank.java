@@ -47,7 +47,7 @@ public class Bank extends Building {
 				manager = p;
 			}
 			if(p.equals(manager)){
-				if(!existingManagerRoles.get(p).equals(null)){
+				if(existingManagerRoles.get(p) != null){
 					setOpen(p);
 					p.msgAssignRole(existingManagerRoles.get(p));
 					currentManager = existingManagerRoles.get(p);

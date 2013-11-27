@@ -204,6 +204,21 @@ public class MQHostRole extends Role implements Host
 			}
 		}
 	}
+	
+	public void msgLeavingNow(Waiter waiter)
+	{
+		synchronized(myWaiters)
+		{
+			for(MyWaiter w : myWaiters)
+			{
+				if(w.waiter == waiter)
+				{
+					myWaiters.remove(w);
+					return;
+				}
+			}
+		}
+	}
 
 	public boolean pickAndExecuteAnAction() {
 		/* Think of this next rule as:

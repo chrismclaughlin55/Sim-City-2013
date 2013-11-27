@@ -22,4 +22,6 @@ public interface Host {
 
 	public abstract void msgFreeSpot(int waitingSpot);
 
+	public abstract void msgLeavingNow(Waiter waiter);
+
 }
