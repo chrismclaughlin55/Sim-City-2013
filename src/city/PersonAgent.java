@@ -12,11 +12,13 @@ import restaurantMQ.gui.MQRestaurantBuilding;
 import bank.Bank;
 import bank.utilities.CustInfo;
 import mainGUI.MainGui;
+import market.Market;
 import market.MyOrder;
 import market.Inventory;
 import agent.Agent;
 import city.Building.BuildingType;
 import city.gui.PersonGui;
+import city.interfaces.BusStop;
 
 public class PersonAgent extends Agent
 {
@@ -48,10 +50,11 @@ public class PersonAgent extends Agent
     int homeNumber;
 	int roomNumber = -1;
 	int timeUnit = 5;
-	BusStopAgent currentBusStop;
+	BusStop currentBusStop;
 	BusStopAgent destinationBusStop;
 	String desiredRole;
 	private String job;
+	Market market;
 	Timer timer = new Timer();
 	Bank bank;
 	HashMap<String, Integer> inventory = new HashMap<String, Integer>();
@@ -113,6 +116,7 @@ public class PersonAgent extends Agent
 		inventory.put("Chicken", 3);
 		personGui = new PersonGui(this, gui);
 		bank = (Bank) cd.buildings.get(18);
+		market = (Market) cd.buildings.get(19);
 	}
 	
 	public void setName(String name) {
