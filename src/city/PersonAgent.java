@@ -50,8 +50,8 @@ public class PersonAgent extends Agent
 	int homeNumber;
 	int roomNumber = -1;
 	int timeUnit = 5;
-	BusStop currentBusStop;
-	BusStopAgent destinationBusStop;
+	public BusStop currentBusStop;
+	public BusStopAgent destinationBusStop;
 	String desiredRole;
 	private String job;
 	Market market;

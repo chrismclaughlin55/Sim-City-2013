@@ -31,9 +31,13 @@ public class MarketEmployeeTest extends TestCase
 	MarketEmployeeRole employee;
 	MockMarketManager manager;
 	MockMarketCustomer customer;
+	MockMarketCustomer customer2;
+
 	Market market;
 	PersonAgent person = new PersonAgent("person");
 	List<MyOrder> thingsToOrder1;
+	List<MyOrder> thingsToOrder2;
+
 	Inventory inventory;
 	MarketGui marketGui;
 	MainGui mainGui;
@@ -57,9 +61,12 @@ public class MarketEmployeeTest extends TestCase
 		inventory = new Inventory(chickenData, saladData, steakData, pizzaData, marketGui);
 		
 		PersonAgent person = new PersonAgent("Employee");
-		employee = new MarketEmployeeRole(person, manager, inventory);
 		customer = new MockMarketCustomer("mockcustomer");
 		manager = new MockMarketManager("mockmanager");
+		employee = new MarketEmployeeRole(person, manager, inventory);
+		
+		customer2 = new MockMarketCustomer("mockcustomer2");
+
 		
 		thingsToOrder1 = Collections.synchronizedList(new ArrayList<MyOrder>());
 		MyOrder o1 = new MyOrder("Chicken", 2);
@@ -67,12 +74,70 @@ public class MarketEmployeeTest extends TestCase
 		thingsToOrder1.add(o1);
 		thingsToOrder1.add(o2);
 		
+		thingsToOrder2 = Collections.synchronizedList(new ArrayList<MyOrder>());
+		MyOrder o3 = new MyOrder("Salad", 2);
+		MyOrder o4 = new MyOrder("Pizza", 3);
+		MyOrder o5 = new MyOrder("Steak", 3);
+
+		thingsToOrder2.add(o3);
+		thingsToOrder2.add(o4);
+		thingsToOrder2.add(o5);
+		
 		employee.state = EmployeeState.working;
 		market.inventory = inventory;
 		
 	}	
 	
-	public void testOneOrderOneMarket()
+	public void testOneCustomerOneMarket()
+	{	
+		//Check preconditions
+		assertEquals("Employee should have 0 current orders. It doesn't", employee.currentMarketOrders.size(), 0);
+		assertEquals("Employee should have 0 payments. It doesn't", employee.payments.size(), 0);
+		assertEquals("Employee should have an empty event log. Instead, the Employee's event log reads: "
+				+ employee.log.toString(), 0, employee.log.size());
+		assertEquals("Employee should have 0 payments. It doesn't", employee.inventory, this.inventory);
+				
+		
+		//Step 1, the manager sends a customer to employee
+		employee.msgServiceCustomer(customer);
+		assertEquals("Current customer should be set to customer. It isn't", customer, customer );
+		assertEquals("waitingCustomers should have 1 customer. It doesn't", employee.waitingCustomers.size(), 1);
+		
+		//Step2, the employee calls the customer
+		employee.pickAndExecuteAnAction();
+		assertEquals("waitingCustomers should have 0 customers. It doesn't", employee.waitingCustomers.size(), 0);
+		assertTrue("Customer should have logged that it got called. Instead, the log reads " +
+				customer.log.getLastLoggedEvent().toString(), customer.log.containsString("Called by employee"));
+		
+		//Step 3, the customer gives his orders to employee
+		employee.msgHereAreMyOrders(thingsToOrder1, customer);
+		assertEquals("Employee should have 2 current orders. It doesn't", employee.currentMarketOrders.size(), 2);
+		
+		//Step 4, the employee Fulfills the order
+		employee.pickAndExecuteAnAction();
+		assertEquals("Employee should have an event on it's log. Instead, the Employee's event log reads: "
+				+ employee.log.toString(), 1, employee.log.size());
+		
+		//Step 4, the employee sends invoice to customer 
+		employee.msgDoneProcessing();
+		employee.pickAndExecuteAnAction();
+		assertTrue("Customer should have logged that order was fulfilled. Instead, the log reads " +
+				customer.log.getLastLoggedEvent().toString(), customer.log.containsString("Order fulfilled"));
+		
+		//Step 5, the customer pays the bill
+		employee.msgHereIsPayment(customer.payment);
+		assertEquals("Employee should have 1 payment. It doesn't", employee.payments.size(), 1);
+		
+		//Step 5, the employee processes the payment
+		employee.pickAndExecuteAnAction();
+		assertTrue("Manager should have logged that money was received. Instead, the log reads " +
+				manager.log.getLastLoggedEvent().toString(), manager.log.containsString("Money received"));
+		assertEquals("Employee should have 0 current orders. It doesn't", employee.currentMarketOrders.size(), 0);
+
+		
+	}
+	
+	public void testTwoCustomersOneMarket()
 	{	
 		//Check preconditions
 		assertEquals("Employee should have 0 currenet orders. It doesn't", employee.currentMarketOrders.size(), 0);
@@ -93,19 +158,80 @@ public class MarketEmployeeTest extends TestCase
 		assertTrue("Customer should have logged that it got called. Instead, the log reads " +
 				customer.log.getLastLoggedEvent().toString(), customer.log.containsString("Called by employee"));
 		
-		//Step 2, the customer gives his orders to employee
+		//Step 3, the customer gives his orders to employee
 		employee.msgHereAreMyOrders(thingsToOrder1, customer);
 		assertEquals("Employee should have 2 current orders. It doesn't", employee.currentMarketOrders.size(), 2);
 		
+		//Step 4, the employee Fulfills the order
 		employee.pickAndExecuteAnAction();
 		assertEquals("Employee should have an event on it's log. Instead, the Employee's event log reads: "
 				+ employee.log.toString(), 1, employee.log.size());
 		
-		/*// Step 1, an order comes in from a customer
-		employee.msgHereAreMyOrders(thingsToOrder1, customer);
-		assertEquals("Employee should have 1 current order. It doesn't", employee.currentMarketOrders.size(), 0);
-		assertEquals("Employee should have 0 payments. It doesn't", employee.payments.size(), 0);*/
+		//Step 4, the employee sends invoice to customer 
+		employee.msgDoneProcessing();
+		employee.pickAndExecuteAnAction();
+		assertTrue("Customer should have logged that order was fulfilled. Instead, the log reads " +
+				customer.log.getLastLoggedEvent().toString(), customer.log.containsString("Order fulfilled"));
 		
+		//Step 5, the customer pays the bill
+		employee.msgHereIsPayment(customer.payment);
+		assertEquals("Employee should have 1 payment. It doesn't", employee.payments.size(), 1);
+		
+		//Step 5, the employee processes the payment
+		employee.pickAndExecuteAnAction();
+		assertTrue("Manager should have logged that money was received. Instead, the log reads " +
+				manager.log.getLastLoggedEvent().toString(), manager.log.containsString("Money received"));
+		assertEquals("Employee should have 0 current orders. It doesn't", employee.currentMarketOrders.size(), 0);
+		
+		
+		//SECOND CUSTOMER
+		
+		employee.log.clear();
+		
+		//Check preconditions
+				assertEquals("Employee should have 0 currenet orders. It doesn't", employee.currentMarketOrders.size(), 0);
+				assertEquals("Employee should have 0 payments. It doesn't", employee.payments.size(), 0);
+				assertEquals("Employee should have an empty event log. Instead, the Employee's event log reads: "
+						+ employee.log.toString(), 0, employee.log.size());
+				assertEquals("Employee should have 0 payments. It doesn't", employee.inventory, this.inventory);
+						
+				
+				//Step 1, the manager sends a customer to employee
+				employee.msgServiceCustomer(customer2);
+				assertEquals("Current customer should be set to customer2. It isn't", customer2, customer2 );
+				assertEquals("waitingCustomers should have 1 customer. It doesn't", employee.waitingCustomers.size(), 1);
+				
+				//Step2, the employee calls the customer
+				employee.pickAndExecuteAnAction();
+				assertEquals("waitingCustomers should have 0 customers. It doesn't", employee.waitingCustomers.size(), 0);
+				assertTrue("Customer should have logged that it got called. Instead, the log reads " +
+						customer.log.getLastLoggedEvent().toString(), customer2.log.containsString("Called by employee"));
+				
+				//Step 3, the customer gives his orders to employee
+				employee.msgHereAreMyOrders(thingsToOrder2, customer2);
+				assertEquals("Employee should have 3 current orders. It doesn't", employee.currentMarketOrders.size(), 3);
+				
+				//Step 4, the employee Fulfills the order
+				employee.pickAndExecuteAnAction();
+				assertEquals("Employee should have an event on it's log. Instead, the Employee's event log reads: "
+						+ employee.log.toString(), 1, employee.log.size());
+				
+				//Step 4, the employee sends invoice to customer 
+				employee.msgDoneProcessing();
+				employee.pickAndExecuteAnAction();
+				assertTrue("Customer2 should have logged that order was fulfilled. Instead, the log reads " +
+						customer2.log.getLastLoggedEvent().toString(), customer2.log.containsString("Order fulfilled"));
+				
+				//Step 5, the customer pays the bill
+				employee.msgHereIsPayment(customer2.payment);
+				assertEquals("Employee should have 1 payment. It doesn't", employee.payments.size(), 1);
+				
+				//Step 5, the employee processes the payment
+				employee.pickAndExecuteAnAction();
+				assertTrue("Manager should have logged that money was received. Instead, the log reads " +
+						manager.log.getLastLoggedEvent().toString(), manager.log.containsString("Money received"));
+				assertEquals("Employee should have 0 current orders. It doesn't", employee.currentMarketOrders.size(), 0);
+
 	}
 	
 	

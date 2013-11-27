@@ -24,9 +24,9 @@ public class BusStopAgent extends Agent implements BusStop{
 	public enum BusStopState {waitingForBus, busHere, busLeaving };
 	BusStopState stopState;
 	CityData cd;
-    HashMap<PersonAgent, BusStopAgent> peopleWaiting;
+    public HashMap<PersonAgent, BusStopAgent> peopleWaiting;
     BusStopAgent nextStop;
-    Bus currentBus;
+    public Bus currentBus;
     BusStopGui busStopGui;
     int xPosition; //will be where bus should be to be next to this stop
     int yPosition; // will be where bus needs to be
