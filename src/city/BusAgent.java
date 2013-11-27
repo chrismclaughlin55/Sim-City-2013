@@ -114,6 +114,7 @@ public class BusAgent extends Agent implements Bus {
 	        LeaveStop();
 	        return true;
 	    }
+	    
 	    return false;
 	}
 	
@@ -124,6 +125,7 @@ public class BusAgent extends Agent implements Bus {
         stateChanged();
 		busgui.DoGoToNextStop(next.getX(),next.getY());
 	    myState=BusState.moving;
+	    atDestination.drainPermits();
 	    try {
 	    	atDestination.acquire();
 	    }
@@ -141,6 +143,7 @@ public class BusAgent extends Agent implements Bus {
 		        	//person getting off bus
 		        	p.ps = PassengerState.beenOn;
 		            p.p.msgBusIsHere(this);
+		            atDestination.drainPermits();
 		            try {
 		            	atDestination.acquire();
 		            }
@@ -155,6 +158,7 @@ public class BusAgent extends Agent implements Bus {
 		myState = BusState.unloading;   
 		//have a wait time for loading and unloading
 		p.p.msgDoneMoving();
+		atDestination.drainPermits();
 		try {
         	atDestination.acquire();
         }

@@ -6,7 +6,7 @@ import java.util.concurrent.Semaphore;
  * Base class for simple agents
  */
 public abstract class Agent {
-	Semaphore stateChange = new Semaphore(1, true); 
+	protected Semaphore stateChange = new Semaphore(1, true); 
 	Semaphore pause = new Semaphore(0, true);
 	boolean isPaused = false;
 	private AgentThread agentThread;
