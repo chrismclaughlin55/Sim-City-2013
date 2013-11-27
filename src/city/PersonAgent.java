@@ -57,7 +57,7 @@ public class PersonAgent extends Agent
 	Market market;
 	Timer timer = new Timer();
 	Bank bank;
-	HashMap<String, Integer> inventory = new HashMap<String, Integer>();
+	public HashMap<String, Integer> inventory = new HashMap<String, Integer>();
 	int rent = 200;
 
 
@@ -169,7 +169,7 @@ public class PersonAgent extends Agent
 
 	public void refresh() {
 		super.refresh();
-		if(cityData.hour == 3)
+		if(cityData.hour == 5)
 			goToWork = true;
 		if(cityData.hour % 4 == 0 && cityData.hour > 8) {
 			tiredLevel+=2;

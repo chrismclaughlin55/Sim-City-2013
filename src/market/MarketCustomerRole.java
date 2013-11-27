@@ -60,6 +60,19 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 		this.amountDue = amountDue;
 		print ("Invoice size " + invoice.size() + " orders size " + orders.size() );
 		
+		for (MyOrder o : orders) {
+			
+			for (Invoice i : invoice) {
+				if (o.type.equals(i.type)) {
+					if (o.amount == i.amount) {
+						person.thingsToOrder.remove(o);
+						person.inventory.put(o.type, person.inventory.get(o.type) + i.amount);
+					}
+				}
+			}
+			
+		}
+		
 		/*for (int i = 0; i < orders.size(); i++) {
 			if (orders.get(i).type.equals(invoice.get(i).type)) {
 				if (orders.get(i).amount == invoice.get(i).amount) {
