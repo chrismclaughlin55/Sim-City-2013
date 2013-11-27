@@ -269,8 +269,7 @@ public class PersonAgent extends Agent
 					WakeUp();
 					return true;
 				}
-				else {
-					if(cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
+				else if(cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
 						print(getJob());
 						WakeUp();
 						return true;
@@ -279,7 +278,6 @@ public class PersonAgent extends Agent
 						WakeUp();
 						return true;
 					}
-				}
 				return false; //put the agent thread back to sleep
 			}
 

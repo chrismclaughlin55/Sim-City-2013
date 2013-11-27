@@ -143,7 +143,6 @@ public abstract class Agent {
 	}
 
 	public void refresh() {
-		stateChange.drainPermits();
 		stateChange.release();
 	}
 }
