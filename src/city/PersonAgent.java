@@ -33,7 +33,7 @@ public class PersonAgent extends Agent
 
 	/*DATA MEMBERS*/
 	String name;
-	public int tiredLevel = 0;
+	public int tiredLevel = 16;
 	public double cash = 100;
 	public CustInfo bankInfo = new CustInfo(this.name, this, null);
 	public boolean rentDue = true;
@@ -290,14 +290,13 @@ public class PersonAgent extends Agent
 				return true;
 			}
 
-			if (tiredLevel >= TIRED) {
-				goToSleep();
-				return false; //intentional because the thread is being out to sleep
-			}
-
 			if (homeState == HomeState.onCouch) {
 				goToCouch();
 				return true;
+			}
+			if (tiredLevel >= TIRED) {
+				goToSleep();
+				return false; //intentional because the thread is being out to sleep
 			}
 			if (homeState == HomeState.none) {
 				leaveHome();
