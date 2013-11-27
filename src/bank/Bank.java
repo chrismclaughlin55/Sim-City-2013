@@ -108,7 +108,7 @@ public class Bank extends Building {
 		return currentManager;
 	}
 	
-	public void test(){
+	/*public void test(){
 		System.out.println("testing bank");
 		PersonAgent p1 = new PersonAgent("Manager");
 		p1.startThread();
@@ -128,5 +128,5 @@ public class Bank extends Building {
 		p3.startThread();
 		EnterBuilding(p3, "Customer");
 		
-	}
+	}*/
 }
