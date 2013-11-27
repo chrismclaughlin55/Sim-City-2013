@@ -48,7 +48,7 @@ public class BuildingPanel {
 			Market m = (Market) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
 			//m.addMarketGui(mainGui.marketGui);
 			m.marketGui.setVisible(true);
-			m.test();
+			//m.test();
 			break;
 			
 		default: 

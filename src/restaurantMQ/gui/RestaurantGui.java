@@ -1,12 +1,19 @@
 package restaurantMQ.gui;
 
-import restaurantMQ.interfaces.Customer;
-
-import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
+
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import market.Market;
+import restaurantMQ.interfaces.Customer;
 /**
  * Main GUI class.
  * Contains the main frame and subsequent panels
@@ -25,7 +32,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
      *    in RestaurantPanel()
      * 2) the infoPanel about the clicked Customer (created just below)
      */    
-    private RestaurantPanel restPanel = new RestaurantPanel(this);
+    private RestaurantPanel restPanel;
     
     /* infoPanel holds information about the clicked customer, if there is one*/
     /*private JPanel infoPanel;
@@ -52,7 +59,10 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
      */
-    public RestaurantGui(MQRestaurantBuilding b) {
+    public RestaurantGui(Market market, MQRestaurantBuilding b) {
+    	
+    	restPanel = new RestaurantPanel(this, market);
+    
 
     	building = b;
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

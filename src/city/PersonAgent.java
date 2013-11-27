@@ -28,7 +28,7 @@ public class PersonAgent extends Agent
 	public static final double RENT = 20;
 	public static final int THRESHOLD = 3;
 	/*END OF CONSTANTS*/
-	
+
 	/*DATA MEMBERS*/
 	String name;
 	public int tiredLevel = 0;
@@ -45,7 +45,7 @@ public class PersonAgent extends Agent
 	Building destinationBuilding;
 	Building jobBuilding;
 	Building home;
-    int homeNumber;
+	int homeNumber;
 	int roomNumber = -1;
 	int timeUnit = 5;
 	BusStopAgent currentBusStop;
@@ -57,26 +57,26 @@ public class PersonAgent extends Agent
 	HashMap<String, Integer> inventory = new HashMap<String, Integer>();
 	int rent = 200;
 
-	
+
 	boolean goToWork = false;
-	
+
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
-	
+
 	public enum BigState {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome, leaveHome};
 	public enum HomeState {sleeping, onCouch, hungry, none, idle};
 	public enum EmergencyState {fire, earthquake, none};
 	public BigState bigState = BigState.doingNothing;
 	public HomeState homeState;
 	public EmergencyState emergencyState = EmergencyState.none;
-	
+
 	public BusAgent currentBus;
-		
+
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
 	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());
 	private Semaphore atBed = new Semaphore(0, true);
 	private Semaphore atEntrance = new Semaphore(0, true);
-	
+
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
@@ -94,7 +94,7 @@ public class PersonAgent extends Agent
 		inventory.put("Chicken", 4);
 		personGui = new PersonGui(this, gui);
 	}
-	
+
 	public PersonAgent(String name, MainGui gui, CityData cd) {
 		this.name = name;
 		this.gui = gui;
@@ -114,49 +114,49 @@ public class PersonAgent extends Agent
 		personGui = new PersonGui(this, gui);
 		bank = (Bank) cd.buildings.get(18);
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public void setJob(String job) {
 		this.job = job;
 	}
-	
+
 	public void setCash(double cash) {
 		this.cash = cash;
 	}
-	
+
 	public void setBankMoney(double moneyInDaBank) {
 		this.bankInfo.moneyInAccount = moneyInDaBank;
 	}
-	
+
 	public void setHunger(int hangry) {
 		this.hungerLevel = hangry;
 	}
-	
+
 	public void setJobBuilding(Building jobBuilding) {
 		this.jobBuilding = jobBuilding;
 	}
-	
+
 	public void setDesiredRole(String role) {
 		if(this.name == "myName6")
 			print("! "+role);
 		desiredRole = role;
 	}
-	
+
 	/*SETTERS*/
-	
+
 	public void assignHome(Building home)
 	{
 		this.home = home;
-        homeNumber = home.buildingNumber;
+		homeNumber = home.buildingNumber;
 	}
-	
+
 	public void assignJobBuilding(Building jobBuilding) {
 		this.jobBuilding = jobBuilding;
 	}
-	
+
 	/*MESSAGES*/
 	public void msgDoneWithJob()
 	{
@@ -168,20 +168,20 @@ public class PersonAgent extends Agent
 		if(cityData.hour == 3)
 			goToWork = true;
 	}
-	
+
 	public void msgFull() {
 		hungerLevel = 0;
 	}
-	
+
 	public void msgDoneMoving() {
 		isMoving.release();
 	}
-	
+
 	public void msgFire() {
 		emergencyState = EmergencyState.fire;
 		stateChanged();
 	}
-	
+
 	public void msgAssignRole(Role role) {
 		for (Role r : roles) {
 			if (r == role) {
@@ -190,43 +190,43 @@ public class PersonAgent extends Agent
 				return;
 			}
 		}
-		
+
 		//If this part is reached, then 'role' is not in the list of roles
 		roles.add(role);
 		role.setActive();
 		super.stateChanged();
 	}
-	
+
 	public void msgDoneWithRole() {
 		//implement later
 	}
-	
+
 	public void msgAtBuilding() {//from animation
 		//print("msgAtBuilding() called");
 		atBuilding.release();// = true;
 		stateChanged();
 	}
-	
+
 	public void msgAtBed() {//from animation
 		//print("msgAtBed() called");
 		atBed.release();// = true;
 		stateChanged();
 	}
-	
+
 	public void msgAtEntrance() {//from animation
 		//print("msgAtEntrance() called");
 		atEntrance.release();// = true;
 		stateChanged();
 	}
-	
+
 	public void msgBusIsHere(BusAgent bus) {
 		currentBus = bus;
 		isMoving.release();
 	}
-	
+
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
-		
+
 		/*Emergency scheduler rules go here (v2)*/
 		if(emergencyState == EmergencyState.fire) {
 			ReactToFire();
@@ -247,87 +247,66 @@ public class PersonAgent extends Agent
 		if(anyActive) {
 			return false;
 		}
-		
+
 		switch(bigState)
 		{
-			case atHome: {
-				if (homeState == HomeState.sleeping) {
-					if(cityData.hour >= 5 && job.equals("BankManager")){//if sleeping and it is time to wake up
+		case atHome: {
+			if (homeState == HomeState.sleeping) {
+				if(cityData.hour >= 5 && job.equals("BankManager")){//if sleeping and it is time to wake up
 					//delete the && false when the actual rule is implemented
+					WakeUp();
+					return true;
+				}
+				else {
+					if(cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
 						WakeUp();
 						return true;
 					}
-					else {
-						if(cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
-							WakeUp();
-							return true;
-						}
-						else if (cityData.hour>=8) {
-							WakeUp();
-							return true;
-						}
+					else if (cityData.hour>=8) {
+						WakeUp();
+						return true;
 					}
-					return false; //put the agent thread back to sleep
 				}
-				
-				if (hungerLevel >= HUNGRY) { //inventory also has to be sufficient
-					makeFood();
-					return true;
-				}
-				
-				if (goToWork) {
-					leaveHome(); //leave the house and set bigState to doingNothing
-					return true;
-				}
-				
-				if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
-					payRent();
-					return true;
-				}
-				
-				if (tiredLevel >= TIRED) {
-					goToSleep();
-					return false; //intentional because the thread is being out to sleep
-				}
-				
-				if (homeState == HomeState.onCouch) {
-					goToCouch();
-					return true;
-				}
-				if (homeState == HomeState.none) {
-					leaveHome();
-					return true;
-				}
-				//personGui.DoGoToBed();
-				//return true;
+				return false; //put the agent thread back to sleep
 			}
-			case leaveHome: {
-				//personGui.DoGoToEntrance();
+
+			if (hungerLevel >= HUNGRY) { //inventory also has to be sufficient
+				makeFood();
+				return true;
+			}
+
+			if (goToWork) {
+				leaveHome(); //leave the house and set bigState to doingNothing
+				return true;
+			}
+
+			if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
+				payRent();
+				return true;
+			}
+
+			if (tiredLevel >= TIRED) {
+				goToSleep();
+				return false; //intentional because the thread is being out to sleep
+			}
+
+			if (homeState == HomeState.onCouch) {
+				goToCouch();
+				return true;
+			}
+			if (homeState == HomeState.none) {
 				leaveHome();
 				return true;
 			}
-			case goToRestaurant: {
-				goToRestaurant();
-				return true;
-			}
-			case goHome: {
-				goHome();
-				return true;
-			}
-			case goToBank: {
-				goToBank();
-				return true;
-			}
-			case goToMarket: {
-				goToMarket();
-				return true;
-			}
+		}
 			case doingNothing: {
 				//Decide what the next BigState will be based on current parameters
 				if(goToWork && jobBuilding != null)
 				{
 					destinationBuilding = jobBuilding;
 					desiredRole = job;
+
+
 					if(destinationBuilding.type == BuildingType.market) {
 						bigState = BigState.goToMarket;
 						return true;
@@ -341,34 +320,35 @@ public class PersonAgent extends Agent
 						return true;
 					}
 				}
-				
-				if(hungerLevel >= STARVING) {
-					bigState = BigState.goToRestaurant;
-					desiredRole = "Customer";
-					return true;
-				}
-				if(cash <= LOWMONEY) {
-					bigState = BigState.goToBank;
-					desiredRole = "Customer";
-					return true;
-				}
-				// Inventory of food stuff
-				if(lowInventory()) {
-					bigState = BigState.goToMarket;
-					return true;
-				}
-				
-				if(hungerLevel >= HUNGRY) {
-					bigState = BigState.goToRestaurant;
-					desiredRole = "Customer";
-					return true;
-				}
+			
+
+			if(hungerLevel >= STARVING) {
+				bigState = BigState.goToRestaurant;
+				desiredRole = "Customer";
+				return true;
+			}
+			if(cash <= LOWMONEY) {
+				bigState = BigState.goToBank;
+				desiredRole = "Customer";
+				return true;
+			}
+			// Inventory of food stuff
+			if(lowInventory()) {
+				bigState = BigState.goToMarket;
+				return true;
+			}
+
+			if(hungerLevel >= HUNGRY) {
+				bigState = BigState.goToRestaurant;
+				desiredRole = "Customer";
+				return true;
 			}
 		}
-		
+		}
+
 		return false;
 	}
-	
+
 	public boolean lowInventory() {
 		for(String food : inventory.keySet()) {
 			if(inventory.get(food) < THRESHOLD) {
@@ -382,7 +362,7 @@ public class PersonAgent extends Agent
 			return false;
 		}
 	}
-	
+
 	private void payRent() {
 		Apartment a = (Apartment) home;
 		System.err.println("Paying rent");
@@ -420,7 +400,7 @@ public class PersonAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		timer.schedule(new TimerTask() {
 			public void run() {
 				homeState = HomeState.onCouch;
@@ -433,7 +413,7 @@ public class PersonAgent extends Agent
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void goToSleep() {
@@ -445,7 +425,7 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void goToCouch() {
 		personGui.DoGoToCouch();
 		try {
@@ -464,13 +444,13 @@ public class PersonAgent extends Agent
 	protected void goToRandomPlace() {
 		//personGui.DoGoToRandomPlace();
 	}
-	
+
 	protected void goToRestaurant() {
 		int restNumber = 12;
 		//int restNumber = (int)(12+(int)(Math.random()*5));
 		destinationBuilding = cityData.buildings.get(restNumber);
 		takeBusToDestination();
-		
+
 		personGui.DoGoToBuilding(restNumber);
 		atBuilding.drainPermits();
 		try {
@@ -481,7 +461,7 @@ public class PersonAgent extends Agent
 		}
 		currentBuilding = cityData.buildings.get(restNumber);
 		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)currentBuilding;
-		
+
 		if(goToWork)
 		{
 			if(desiredRole.equals("Host") && !restaurant.hasHost()) {
@@ -509,7 +489,7 @@ public class PersonAgent extends Agent
 			return;
 		}
 	}
-	
+
 	protected void goHome() {
 		//int homeNumber = (int)((int)(Math.random()*11));
 		currentBuilding = cityData.buildings.get(this.home.buildingNumber);
@@ -540,7 +520,7 @@ public class PersonAgent extends Agent
 		bigState = BigState.atHome;
 		//hungerLevel = 10000000;
 	}
-	
+
 	protected void leaveHome() {
 		currentBuilding = cityData.buildings.get(home.buildingNumber);
 		if (home instanceof Home) {
@@ -577,12 +557,12 @@ public class PersonAgent extends Agent
 		}
 		bigState = BigState.doingNothing;
 	}
-	
+
 	protected void goToBank() {
-		
+
 		destinationBuilding = cityData.bank;
 		takeBusToDestination();
-		
+
 		//asdfasdf
 		personGui.DoGoToBuilding(18);
 		currentBuilding = cityData.buildings.get(18);
@@ -596,9 +576,9 @@ public class PersonAgent extends Agent
 		personGui.DoGoIntoBuilding();
 		print("entering the building and desired role is "+desiredRole);
 		currentBuilding.EnterBuilding(this,desiredRole );
-	
+
 	}
-	
+
 	protected void goToMarket() {
 		personGui.DoGoToBuilding(19);
 		atBuilding.drainPermits();
@@ -610,7 +590,7 @@ public class PersonAgent extends Agent
 		}
 		personGui.DoGoIntoBuilding();
 	}
-	
+
 	public void takeBusToDestination()
 	{
 		destinationBusStop = currentBuilding.busStop;
@@ -623,21 +603,21 @@ public class PersonAgent extends Agent
 		catch(Exception e){}
 		currentBusStop = destinationBusStop;
 		destinationBusStop = destinationBuilding.busStop;
-		
+
 		currentBusStop.msgWaitingAtStop(this, destinationBusStop);
 		try
 		{
 			isMoving.acquire();
 		}
 		catch(Exception e) {}
-		
+
 		personGui.DoGoToBus(currentBus);
 		try
 		{
 			isMoving.acquire();
 		}
 		catch(Exception e) {}
-		
+
 		cityData.guis.remove(personGui);
 		currentBus.msgOnBus();
 		try
@@ -645,7 +625,7 @@ public class PersonAgent extends Agent
 			isMoving.acquire();
 		}
 		catch(Exception e) {}
-		
+
 		cityData.guis.add(personGui);
 		personGui.setXPos(currentBus.getX());
 		personGui.setYPos(currentBus.getY());
@@ -657,22 +637,23 @@ public class PersonAgent extends Agent
 		}
 		catch(Exception e) {}
 	}
-	
+
 	public void setRoomNumber(int number) {
 		roomNumber = number;
 	}
-	
+
 	public int getRoomNumber() {
 		return roomNumber;
 	}
-	
+
 	protected void ReactToFire() {
 		System.out.println(name +": Stop, Drop, and Roll ");
 		emergencyState = EmergencyState.none;
 	}
-	
+
 	public void exitBuilding()
 	{
+		print("Exiting the building");
 		bigState = BigState.doingNothing;
 		cityData.addGui(personGui);
 	}
@@ -680,16 +661,16 @@ public class PersonAgent extends Agent
 	protected void stateChanged() {
 		super.stateChanged();
 	}
-	
+
 	/*GETTERS AND SETTERS*/
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setGui(PersonGui g) {
 		personGui = g;
 	}
-	
+
 	public PersonGui getGui() {
 		return personGui;
 	}
@@ -697,9 +678,9 @@ public class PersonAgent extends Agent
 	public String getJob() {
 		return job;
 	}
-    
-    public int getHomeNumber() {
-        return homeNumber;
-    }
+
+	public int getHomeNumber() {
+		return homeNumber;
+	}
 }
 

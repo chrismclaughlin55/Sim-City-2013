@@ -417,7 +417,6 @@ public class MQWaiterRole extends Role implements Waiter
 			LeaveRestaurant();
 			return true;
 		}
-		
 		if(isActive())
 			gui.DefaultAction();
 			
