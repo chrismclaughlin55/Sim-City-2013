@@ -18,11 +18,13 @@ public class Apartment extends Building {
 	public Apartment(int i, int j, int wIDTH, int hEIGHT, String string,
 			BuildingType apartment, MainGui mainGui, CityData cd) {
 		super(i, j, wIDTH, hEIGHT, string, apartment, mainGui);
-		apartmentGui = new ApartmentGui();
 		for (int k = 0; k < 8; k++) {
-			Room r = new Room(this, k);
-			rooms.add(r);
-			apartmentGui.getAptPanel().addRoomGui(r.getGui());
+			rooms.add(new Room(this, k));
+			
+		}
+		apartmentGui = new ApartmentGui(rooms);
+		for (int k = 0; k < 8; k++) {
+			apartmentGui.getAptPanel().addRoomGui(rooms.get(k).getGui());
 		}
 		
 		cityData = cd;
@@ -32,6 +34,7 @@ public class Apartment extends Building {
 	public void EnterBuilding(PersonAgent p, String s) {
 		cityData.removeGui(p.getGui());
 		apartmentGui.getAptPanel().addGui(p.getGui());
+		apartmentGui.addName(p);
 	}
 	
 	public void LeaveBuilding(PersonAgent p) {
