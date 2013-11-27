@@ -179,6 +179,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 				currentCookCustomer.cook.msgFoodDelivered(o.name, o.amount);
 				currentCookCustomer.cashier.msgHereIsBill(this, o.amount*inventory.inventory.get(o.name).price);
 			}
+			return true;
 		}
 		
 		if (state == EmployeeState.doneProcessing) {
@@ -294,6 +295,8 @@ public void ProcessPayment() {
 	else {
 		print ("You will face the wrath of Rami");
 	}
+	currentMarketOrders.clear();
+	state = EmployeeState.working;
 	payments.remove(0);
 }
 
@@ -306,7 +309,6 @@ public void ProcessRestPayment() {
 	else {
 		print ("Your restaurant will face the wrath of Rami");
 	}
-	currentMarketOrders.clear();
 	restPayments.remove(0);
 }
 

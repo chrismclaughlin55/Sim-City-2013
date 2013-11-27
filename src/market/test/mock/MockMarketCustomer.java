@@ -11,7 +11,7 @@ import restaurantMQ.test.mock.LoggedEvent;
 public class MockMarketCustomer extends Mock implements MarketCustomer {
 
 	public EventLog log = new EventLog();
-	
+	public double payment = 0;
 	public MockMarketCustomer(String name) {
 		super(name);
 	}
@@ -24,8 +24,8 @@ public class MockMarketCustomer extends Mock implements MarketCustomer {
 
 	@Override
 	public void msgOrderFulfullied(List<Invoice> invoice, double amountDue) {
-		// TODO Auto-generated method stub
-		
+		log.add((new LoggedEvent("Order fulfilled")));
+		payment = amountDue;
 	}
 
 
