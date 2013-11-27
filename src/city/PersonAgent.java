@@ -171,6 +171,14 @@ public class PersonAgent extends Agent
 		super.refresh();
 		if(cityData.hour == 5)
 			goToWork = true;
+		if(cityData.hour % 4 == 0 && cityData.hour > 8) {
+			tiredLevel+=2;
+			hungerLevel+=2;
+		}
+		if(cityData.hour == 0 && this.home instanceof Apartment) {
+			rent+=20;
+		}
+		
 	}
 
 	public void msgFull() {
@@ -477,17 +485,20 @@ public class PersonAgent extends Agent
 		int restNumber = 12;
 		//int restNumber = (int)(12+(int)(Math.random()*5));
 		destinationBuilding = cityData.buildings.get(restNumber);
-		takeBusToDestination();
-
-		personGui.DoGoToBuilding(restNumber);
-		atBuilding.drainPermits();
-		try {
-			atBuilding.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(destinationBuilding != currentBuilding)
+		{
+			takeBusToDestination();
+	
+			personGui.DoGoToBuilding(restNumber);
+			atBuilding.drainPermits();
+			try {
+				atBuilding.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			currentBuilding = cityData.buildings.get(restNumber);
 		}
-		currentBuilding = cityData.buildings.get(restNumber);
 		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)currentBuilding;
 
 		if(goToWork)
