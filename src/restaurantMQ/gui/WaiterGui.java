@@ -143,6 +143,13 @@ public class WaiterGui implements Gui
         return true;
     }
 
+    public void DoLeaveRestaurant()
+    {
+    	xDestination = -1*WIDTH;
+    	yDestination = -1*WIDTH;
+    	moving = true;
+    }
+    
     public void DoBringToTable(Customer customer) {
         xDestination = xTable + WIDTH;
         yDestination = yTable - WIDTH;

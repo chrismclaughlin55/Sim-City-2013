@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import market.MarketEmployeeRole;
 import city.PersonAgent;
 import city.Role;
 import restaurantMQ.interfaces.Cashier;
@@ -55,12 +56,12 @@ public class MQCashierRole extends Role implements Cashier
 	
 	private class Bill
 	{
-		Market market;
+		MarketEmployeeRole marketEmployee;
 		double bill;
 		
-		Bill(Market market, double bill)
+		Bill(MarketEmployeeRole marketEmployee, double bill)
 		{
-			this.market = market;
+			this.marketEmployee = marketEmployee;
 			this.bill = bill;
 		}
 	}
@@ -95,9 +96,9 @@ public class MQCashierRole extends Role implements Cashier
 		stateChanged();
 	}
 	
-	public void msgHereIsBill(Market market, double bill)
+	public void msgHereIsBill(MarketEmployeeRole marketEmployee, double bill)
 	{
-		bills.add(new Bill(market, bill));
+		bills.add(new Bill(marketEmployee, bill));
 		log.add(new LoggedEvent("Received bill."));
 		stateChanged();
 	}
@@ -185,8 +186,8 @@ public class MQCashierRole extends Role implements Cashier
 			payment = bill.bill;
 		}
 		money = round(money - payment);
-		System.out.println("Cashier: Paying $" + payment + " to " + bill.market.getName());
-		bill.market.msgHereIsPayment(this, payment);
+		System.out.println("Cashier: Paying $" + payment + " to " + bill.marketEmployee.getName());
+		bill.marketEmployee.msgHereIsPayment(payment);
 	}
 	/*END OF ACTIONS*/
 	

@@ -59,7 +59,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 		
 		if(name.equals("OutOfFood"))
 		{
-			rp.OutOfFoodHack();
+			//rp.OutOfFoodHack();
 		}
 		else if(name.equals("Broke"))
 		{
@@ -72,7 +72,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 		else if(name.equals("Poor2"))
 		{
 			money = 6;
-			rp.OutOfSaladHack();
+			//rp.OutOfSaladHack();
 		}
 		else if(name.equals("Flake"))
 		{

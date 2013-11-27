@@ -1,43 +1,26 @@
 package mainGUI;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Formatter.BigDecimalLayoutForm;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
-import restaurantMQ.gui.MQRestaurantBuilding;
-import restaurantMQ.gui.RestaurantGui;
-import market.gui.MarketGui;
+import Gui.Gui;
+import bankgui.BankGui;
 import city.Apartment;
 import city.Building;
-import city.Building.BuildingType;
 import city.BusAgent;
-import city.HomeGui;
 import city.PersonAgent;
 import city.PersonAgent.BigState;
-import city.Room;
 import city.gui.BusGui;
 import city.gui.PersonGui;
-import config.ConfigParser;
-import Gui.Gui;
-import bankgui.*;
-
-import javax.swing.Timer;
 
 
 /**
@@ -62,7 +45,6 @@ public class MainGui extends JFrame implements MouseListener {
     private int cashier = 0;
     private int host = 0;
     private int landlord = 0;
-    public MarketGui marketGui;
     //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
     //public BusStopGui busStopGui will have a list of these and add them all
@@ -305,24 +287,24 @@ public class MainGui extends JFrame implements MouseListener {
     
     public void assignJobBuilding(PersonAgent p, String role) {
     	if (role.equals("BankManager")) {
-    		if (!mainAnimationPanel.cd.bank.equals(null)) {
+    		if (mainAnimationPanel.cd.bank != null) {
     			p.setJobBuilding(mainAnimationPanel.cd.bank);
     			mainAnimationPanel.cd.bank.setManager(p);
     		}
     	}
     	if (role.equals("BankTeller")) {
-    		if (!mainAnimationPanel.cd.bank.equals(null)) {
+    		if (mainAnimationPanel.cd.bank != null) {
     			p.setJobBuilding(mainAnimationPanel.cd.bank);
     		}
     	}
     	if (role.equals("MarketManager")) {
-    		if (!mainAnimationPanel.cd.market.equals(null)) {
+    		if (mainAnimationPanel.cd.market != null) {
 				p.setJobBuilding(mainAnimationPanel.cd.market);
 				mainAnimationPanel.cd.market.setManager(p);
 			}
     	}
     	if (role.equals("MarketEmployee")) {
-    		if (!mainAnimationPanel.cd.market.equals(null)) {
+    		if (mainAnimationPanel.cd.market != null) {
     			p.setJobBuilding(mainAnimationPanel.cd.market);
     		}
     	}

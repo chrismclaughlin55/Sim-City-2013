@@ -412,14 +412,31 @@ public class MQWaiterRole extends Role implements Waiter
 			return true;
 		}
 		
-		if(person.cityData.hour > )
-		
-		gui.DefaultAction();
-		
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && customers.isEmpty())
+		{
+			LeaveRestaurant();
+			return true;
+		}
+		if(isActive())
+			gui.DefaultAction();
+			
 		return false;
 	}
 	/*END OF SCHEDULER*/
 	
+	private void LeaveRestaurant() {
+		host.msgLeavingNow(this);
+		gui.DoLeaveRestaurant();
+		try
+		{
+			actionDone.acquire();
+		}
+		catch(Exception e){}
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
+	}
+
 	/*ACTIONS*/
 	private void SeatCustomer(MyCustomer customer)
 	{

@@ -37,7 +37,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 	private int WIDTH = 100;
 	private int HEIGHT = 100;
-	public static final int GLOBALINTERVAL = 20;
+	public int GLOBALINTERVAL = 20;
 	
 	private MainGui mainGui;
 	
@@ -52,7 +52,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.apartments.add((Apartment) b);
 			BusStopAgent bs = new BusStopAgent(10+95+25, 140+i*130+35+5,cd);
 			cd.busStops.add(bs);
-			b.setBusStop(bs);
+			//b.setBusStop(bs);
 			bs.startThread();
 		}
 		for (int i = 0; i < 2; i++) {
@@ -61,7 +61,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.apartments.add((Apartment)b);
 			BusStopAgent bs = new BusStopAgent(10+95+25, 410+i*130+35+5,cd);
 			cd.busStops.add(bs);
-			b.setBusStop(bs);
+			//b.setBusStop(bs);
 			bs.startThread();
 		}
 		for (int i = 0; i < 2; i++) {
@@ -70,7 +70,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.homes.add((Home)b);
 			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 680-45,cd);
 			cd.busStops.add(bs);
-			b.setBusStop(bs);
+			//b.setBusStop(bs);
 			bs.startThread();
 		}
 		for (int i = 1; i >= 0; i--) {
@@ -79,7 +79,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.homes.add((Home)b);
 			BusStopAgent bs = new BusStopAgent(500-10-50, 410+i*130+35+5,cd);
 			cd.busStops.add(bs);
-			b.setBusStop(bs);
+			//b.setBusStop(bs);
 			bs.startThread();
 		}
 		for (int i = 1; i >= 0; i--) {
@@ -88,7 +88,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.homes.add((Home)b);
 			BusStopAgent bs = new BusStopAgent(500-10-50, 140+i*130+35+5,cd);
 			cd.busStops.add(bs);
-			b.setBusStop(bs);
+			//b.setBusStop(bs);
 			bs.startThread();
 		}
 		for (int i = 1; i >= 0; i--) {
@@ -97,7 +97,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.homes.add((Home)b);
 			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 0+35+5+55,cd);
 			cd.busStops.add(bs);
-			b.setBusStop(bs);
+			//b.setBusStop(bs);
 			bs.startThread();
 		}
 		
@@ -105,13 +105,13 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		//create restaurants
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 2; i++) {
-				Building b = new MQRestaurantBuilding(190+i*130, 140+j*130, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui);
+				Building b = new MQRestaurantBuilding(190+i*130, 140+j*130, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 				cd.buildings.add(b);
 				cd.restaurants.add((MQRestaurantBuilding) b);
 			}
 		}
 		for (int i = 0; i < 2; i++) {
-			Building b = new MQRestaurantBuilding(190+i*130, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui);
+			Building b = new MQRestaurantBuilding(190+i*130, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
 			cd.restaurants.add((MQRestaurantBuilding) b);
 		}
@@ -126,14 +126,17 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.add(market);
 		cd.market = market;
 		
+		for (int i = 0; i < 12; i++) {
+			cd.buildings.get(i).setBusStop(cd.busStops.get(i));
+		}
 		cd.buildings.get(12).setBusStop(cd.busStops.get(0));
 		cd.buildings.get(13).setBusStop(cd.busStops.get(9));
 		cd.buildings.get(14).setBusStop(cd.busStops.get(1));
 		cd.buildings.get(15).setBusStop(cd.busStops.get(8));
-		cd.buildings.get(16).setBusStop(cd.busStops.get(2));
-		cd.buildings.get(17).setBusStop(cd.busStops.get(7));
-		cd.buildings.get(18).setBusStop(cd.busStops.get(3));
-		cd.buildings.get(19).setBusStop(cd.busStops.get(6));
+		cd.buildings.get(16).setBusStop(cd.busStops.get(3));
+		cd.buildings.get(17).setBusStop(cd.busStops.get(6));
+		cd.buildings.get(18).setBusStop(cd.busStops.get(2));
+		cd.buildings.get(19).setBusStop(cd.busStops.get(7));
 		
 		cd.setBusStopRoute();
 		
