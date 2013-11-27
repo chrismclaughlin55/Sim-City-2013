@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import market.MyOrder.OrderState;
 import market.gui.CustomerGui;
 import market.interfaces.MarketCustomer;
 import city.PersonAgent;
@@ -72,21 +71,6 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 			
 		}
 		
-		/*for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).type.equals(invoice.get(i).type)) {
-				if (orders.get(i).amount == invoice.get(i).amount) {
-					print ("hey");
-					orders.get(i).orderState = OrderState.fulfilled;
-					amountDue += invoice.get(i).price*invoice.get(i).amount;
-					person.thingsToOrder.remove(orders.get(i));
-					// add the stuff to person's inventory
-				}
-				else if (invoice.get(i).amount == 0) {
-					orders.get(i).orderState = OrderState.unfulfilled;
-				}
-			}
-		}*/
-		
 		print ("I need to pay " + amountDue);
 		state = customerState.readyToPay;
 		stateChanged();
@@ -112,6 +96,7 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 		
 		if (state == customerState.leaving) {
 			LeaveMarket();
+			return true;
 		}
 		
 		if (state == customerState.waiting) {

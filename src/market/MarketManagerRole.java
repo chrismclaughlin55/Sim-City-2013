@@ -5,22 +5,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import restaurantMQ.MQCashierRole;
+import market.gui.ManagerGui;
+import market.interfaces.MarketCustomer;
+import market.interfaces.MarketEmployee;
+import market.interfaces.MarketManager;
 import restaurantMQ.MQCookRole;
 import restaurantMQ.MarketOrder;
 import restaurantMQ.interfaces.Cashier;
-import market.gui.EmployeeGui;
-import market.gui.ManagerGui;
-import market.gui.MarketGui;
-import market.interfaces.MarketEmployee;
-import market.interfaces.MarketManager;
+import restaurantMQ.test.mock.EventLog;
+import restaurantMQ.test.mock.LoggedEvent;
 import bank.BankManagerRole;
 import city.PersonAgent;
 import city.Role;
 
 public class MarketManagerRole extends Role implements MarketManager{
-	private enum ManagerState {nothing, entering, managing, leaving};
-	private ManagerState state;
+	public enum ManagerState {nothing, entering, managing, working, leaving};
+	public ManagerState state;
 	double undepositedMoney;
 	boolean endOfDay = false;
 	int bankAccountNum;
@@ -28,22 +28,22 @@ public class MarketManagerRole extends Role implements MarketManager{
 	Inventory inventory;
 	Market market = null;
 	private ManagerGui gui = null;
-
-
-	private List<MarketCustomerRole> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomerRole>());
-	private List<MyEmployee> waitingEmployees = Collections.synchronizedList(new ArrayList<MyEmployee>());
-	private List<MyEmployee> workingEmployees = Collections.synchronizedList(new ArrayList<MyEmployee>());
 	
+	public EventLog log = new EventLog();
+
+	public List<MarketCustomer> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomer>());
+	public List<MyEmployee> waitingEmployees = Collections.synchronizedList(new ArrayList<MyEmployee>());
+	public List<MyEmployee> workingEmployees = Collections.synchronizedList(new ArrayList<MyEmployee>());
 	private List<MyCookCustomer> waitingCookCustomers = Collections.synchronizedList(new ArrayList<MyCookCustomer>());
 
 	private Semaphore atHome = new Semaphore(0, true);
 
 
 	private class MyEmployee {
-		public MarketEmployeeRole employee;
+		public MarketEmployee employee;
 		public boolean isBusy;
 
-		public MyEmployee(MarketEmployeeRole employee) {
+		public MyEmployee(MarketEmployee employee) {
 			this.employee = employee;
 			isBusy = false;
 		}
@@ -69,13 +69,13 @@ public class MarketManagerRole extends Role implements MarketManager{
 		state = ManagerState.nothing;
 	}
 
-	public void msgReportingForWork(MarketEmployeeRole employee) {
+	public void msgReportingForWork(MarketEmployee employee) {
 		print("Received msgReportingForWork"); 
 		waitingEmployees.add(new MyEmployee(employee));
 		stateChanged();
 	}
 
-	public void msgNeedToOrder(MarketCustomerRole cust) {
+	public void msgNeedToOrder(MarketCustomer cust) {
 		print("Received msgNeedToOrder from customer"); 
 		waitingCustomers.add(cust);
 		stateChanged();
@@ -84,6 +84,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 	public void msgNeedToOrder(MQCookRole cook, List<MarketOrder> marketOrders, Cashier cashier) {
 		print("Received msgNeedToOrder from cook");
 		waitingCookCustomers.add(new MyCookCustomer(cook, marketOrders, cashier));
+		stateChanged();
 	}
 
 	public void msgLeavingWork(MarketEmployee employee) {
@@ -109,12 +110,15 @@ public class MarketManagerRole extends Role implements MarketManager{
 		
 		if (!market.isOpenForEmployees) {
 			market.isOpenForEmployees = true;
+			log.add (new LoggedEvent ("Market open for employees"));
 			print ("The market is now open for employees only");
 			return true;
 		}
 
-		if ((!workingEmployees.isEmpty()) && (!market.isOpen())) {
+		if ((!workingEmployees.isEmpty()) && (!market.isOpen()) && (state == ManagerState.managing)) {
+			state = ManagerState.working;
 			market.setOpen(person);
+			log.add (new LoggedEvent ("Market open for employees"));
 			print ("The market is now open");
 			return true;
 		}
@@ -190,7 +194,6 @@ public class MarketManagerRole extends Role implements MarketManager{
 		state = ManagerState.managing;
 		stateChanged();
 	}
-
 
 
 }
