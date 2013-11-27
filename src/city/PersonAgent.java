@@ -166,7 +166,7 @@ public class PersonAgent extends Agent
 	{
 		goToWork = false;
 	}
-	
+
 	public void refresh() {
 		super.refresh();
 		if(cityData.hour == 3)
@@ -303,27 +303,49 @@ public class PersonAgent extends Agent
 				return true;
 			}
 		}
-			case doingNothing: {
-				//Decide what the next BigState will be based on current parameters
-				if(goToWork && jobBuilding != null)
-				{
-					destinationBuilding = jobBuilding;
-					desiredRole = job;
+		case leaveHome: {
+			//personGui.DoGoToEntrance();
+			leaveHome();
+			return true;
+		}
+		case goToRestaurant: {
+			goToRestaurant();
+			return true;
+		}
+		case goHome: {
+			goHome();
+			return true;
+		}
+		case goToBank: {
+			goToBank();
+			return true;
+		}
+		case goToMarket: {
+			goToMarket();
+			return true;
+		}
 
-					if(destinationBuilding.type == BuildingType.market) {
-						bigState = BigState.goToMarket;
-						return true;
-					}
-					else if(destinationBuilding.type == BuildingType.bank) {
-						bigState = BigState.goToBank;
-						return true;
-					}
-					else if(destinationBuilding.type == BuildingType.restaurant) {
-						bigState = BigState.goToRestaurant;
-						return true;
-					}
+		case doingNothing: {
+			//Decide what the next BigState will be based on current parameters
+			if(goToWork && jobBuilding != null)
+			{
+				destinationBuilding = jobBuilding;
+				desiredRole = job;
+
+				if(destinationBuilding.type == BuildingType.market) {
+					bigState = BigState.goToMarket;
+					return true;
 				}
-			
+				else if(destinationBuilding.type == BuildingType.bank) {
+					bigState = BigState.goToBank;
+					return true;
+				}
+				else if(destinationBuilding.type == BuildingType.restaurant) {
+					bigState = BigState.goToRestaurant;
+					return true;
+				}
+			}
+
 
 			if(hungerLevel >= STARVING) {
 				bigState = BigState.goToRestaurant;
@@ -347,6 +369,8 @@ public class PersonAgent extends Agent
 				return true;
 			}
 		}
+
+
 		}
 
 		return false;
