@@ -96,8 +96,9 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	//ACTIONS
 	private void sayHello(){
-		//TODO GUI SHIT
+		guiGoHere(1);
 		print("say hello to teller");
+		guiGoHere(2);
 		this.t.msgHello(new CustInfo(myInfo));
 		state = CustState.AtTeller;
 
@@ -125,9 +126,9 @@ public class CustomerRole extends Role implements BankCustomer{
 	private void leave(){
 		
 		state = CustState.Left;	
-		// make instance of CustInfo
-		print("made it to leave");
-
+		guiGoHere(3);
+		//TODO leave and clear gui and update info
+		
 	}
 	private void processLoan(double approvedAmount){
 		double requestAmount = approvedAmount;  

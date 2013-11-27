@@ -84,7 +84,6 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		print("made it to scheduler");
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;

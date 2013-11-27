@@ -61,6 +61,19 @@ public class BankCustomerGui implements GuiPositions, Gui {
 			yDestination = liney;
 			atDest = false;
 		}
+		if(place == 1){
+			xDestination = linex + 200;
+			yDestination = liney;
+		}
+		if(place == 2){
+			xDestination = tellerx;
+			yDestination = teller1y;
+		}
+		if(place == 3){
+			xDestination = doorx;
+			yDestination = doory;
+			
+		}
 		
 	}
 
