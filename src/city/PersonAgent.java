@@ -275,7 +275,6 @@ public class PersonAgent extends Agent
 					return true;
 				}
 				else if (cityData.hour>=9) {
-					System.err.println("> 9");
 					WakeUp();
 					return true;
 				}
@@ -420,7 +419,6 @@ public class PersonAgent extends Agent
 
 	private void WakeUp() {
 		goToWork = true;
-		System.err.println("ring ring");
 		tiredLevel = 0;
 		homeState = homeState.idle;
 		hungerLevel = 1000;
