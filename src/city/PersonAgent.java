@@ -387,6 +387,10 @@ public class PersonAgent extends Agent
 				desiredRole = "Customer";
 				return true;
 			}
+			
+			bigState = bigState.goHome;
+			homeState = homeState.onCouch;
+			return true;
 		}
 
 
@@ -494,9 +498,29 @@ public class PersonAgent extends Agent
 	}
 
 	protected void goToRestaurant() {
-		int restNumber = 12;
-		//int restNumber = (int)(12+(int)(Math.random()*5));
-		destinationBuilding = cityData.buildings.get(restNumber);
+		int restNumber;
+		if(!goToWork)
+		{
+			
+			while(true)
+			{
+				restNumber = (int)(12+(int)(Math.random()*7));
+				if(restNumber == 18)
+				{
+					bigState = BigState.goHome;
+					return;
+				}
+				else if(cityData.buildings.get(restNumber).isOpen())
+					break;
+			}
+			destinationBuilding = cityData.buildings.get(restNumber);
+		}
+		else
+		{
+			destinationBuilding = jobBuilding;
+			restNumber = jobBuilding.buildingNumber;
+		}
+		
 		if(destinationBuilding != currentBuilding)
 		{
 			takeBusToDestination();
@@ -569,6 +593,7 @@ public class PersonAgent extends Agent
 			a.rooms.get(roomNumber).EnterBuilding(this, "");
 		}
 		bigState = BigState.atHome;
+		homeState = homeState.idle;
 		//hungerLevel = 10000000;
 	}
 
