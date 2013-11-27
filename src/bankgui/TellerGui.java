@@ -44,6 +44,7 @@ public class TellerGui implements GuiPositions, Gui {
 			if(!atSpot){
 				atSpot = true;
 				teller.msgGuiAtSpot();
+				System.out.println("released a atSpot");
 			}
 		}
 	}

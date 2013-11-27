@@ -13,7 +13,8 @@ public class BankCustomerGui implements GuiPositions, Gui {
 	Boolean isPresent = true;
 	CustomerRole c;
 	private int xPos = doorx, yPos = doory;
-	private int xDestination = 50, yDestination = 50;
+	private int xDestination = linex, yDestination = liney;
+	boolean atDest = false;
 	public BankCustomerGui(CustomerRole c) {
 		this.c = c;
 	}
@@ -30,7 +31,10 @@ public class BankCustomerGui implements GuiPositions, Gui {
 			yPos--;
 
 		if (xPos == xDestination && yPos == yDestination) {
-		//	c.msgGuiIsAtDest();
+			if(!atDest){
+			c.msgGuiIsAtDest();
+			atDest = true;
+			}
 		}
 	}
 
@@ -51,6 +55,21 @@ public class BankCustomerGui implements GuiPositions, Gui {
 	public void setPresent(boolean b) {
 		isPresent = b;
 		
+	}
+	public void goTo(int place) {
+		if(place == 0){
+			xDestination = linex;
+			yDestination = liney;
+		}
+		if(place == 1){
+			xDestination = tellerx;
+			yDestination = teller1y;
+		}
+		if(place == 2){
+			xDestination = doorx;
+			yDestination = doory;
+		}
+		atDest = false;
 	}
 
 }

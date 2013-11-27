@@ -1,5 +1,7 @@
 package bank;
 
+import java.util.concurrent.Semaphore;
+
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
@@ -19,6 +21,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	private CustState state;
 	private CustEvent event;
 	private BankCustomerGui gui;
+	private Semaphore atDest = new Semaphore(0, true);
 	public CustomerRole(PersonAgent person) {
 		super(person);
 		this.state = CustState.InLine;
@@ -98,6 +101,7 @@ public class CustomerRole extends Role implements BankCustomer{
 		print("say hello to teller");
 		this.t.msgHello(new CustInfo(myInfo));
 		state = CustState.AtTeller;
+		guiGoHere(1);
 
 	}
 	private void tellTeller(){
@@ -140,6 +144,19 @@ public class CustomerRole extends Role implements BankCustomer{
 	@Override
 	public PersonAgent returnPerson() {
 		return this.person;
+	}
+	public void guiGoHere(int place){
+		gui.goTo(place);
+		try {
+			atDest.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void msgGuiIsAtDest() {
+		atDest.release();
+		
 	}
 
 }

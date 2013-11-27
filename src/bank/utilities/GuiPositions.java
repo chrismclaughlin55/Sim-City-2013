@@ -9,5 +9,6 @@ public interface GuiPositions {
 	public final int teller4y = 130;
 	public final int doorx = 0;
 	public final int doory = 80;
-	
+	public final int linex = 240;
+	public final int liney = 40;
 }
