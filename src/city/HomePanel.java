@@ -64,15 +64,19 @@ public class HomePanel extends JPanel implements ActionListener {
 		g2.setColor(Color.BLACK);
 		g2.drawLine(width/2, 0, width/2, height - 80);
 		g2.fillRect((width/4 - 10), 0, 50, 25);
+		g2.drawString("Stove", width/4 + 40, 25);
 		g2.setColor(Color.CYAN);
 		g2.fillRect(0, height - 70, 30, 40);
+		g2.drawString("Entrance", 0, height - 70);
 		g2.setColor(Color.BLUE);
 		g2.fillRect(0, 20, 30, 40);
+		g2.drawString("Fridge", 0, 20);
 		g2.setColor(Color.PINK);
 		g2.fillRect(width - 60, 0, 60, 100);
+		g2.drawString("Bed", width - 60, 110);
 		g2.setColor(Color.GRAY);
 		g2.fillRect(width/2 - 40, height/2 - 30, 40, 60);
-		
+		g2.drawString("Couch", width/2 - 40, height/2 -30);
 
 		synchronized(guis){
 			for(Gui gui : guis) {

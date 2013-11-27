@@ -39,7 +39,7 @@ public class CityData implements ActionListener {
 	public Bank bank;
 	public List<MQRestaurantBuilding> restaurants = Collections.synchronizedList(new ArrayList<MQRestaurantBuilding>());
 	public Timer globalTimer;
-	public static int incrementLimit = 180;
+	public static int incrementLimit = 200;
 	public List<Home> homes = Collections.synchronizedList(new ArrayList<Home>());
 	public List<Apartment> apartments = Collections.synchronizedList(new ArrayList<Apartment>());
 	//ALSO needs a 2-d array of the entire place
@@ -66,7 +66,7 @@ public class CityData implements ActionListener {
 		if(increment==incrementLimit) {
 			hour++;
 			hour = hour % 24;
-			System.out.println(hour);
+			//System.out.println(hour);
 			updatePeople();
 		}
 		increment = increment % incrementLimit;
@@ -121,6 +121,10 @@ public class CityData implements ActionListener {
 	
 	public void setTimer(int delay) {
 		globalTimer.setDelay(delay);
+	}
+	
+	public int getHour() {
+		return hour;
 	}
 	
 	/*

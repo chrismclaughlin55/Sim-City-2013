@@ -30,7 +30,7 @@ public class BankManagerRole extends Role implements BankManager {
 			this.t = t;
 			state = tellerState.available;
 		}
-		
+
 	}
 	public BankManagerRole(PersonAgent person) {
 		super(person);
@@ -43,7 +43,7 @@ public class BankManagerRole extends Role implements BankManager {
 	public void msgAddTeller(TellerRole newRole) {
 		tellers.add(new myTeller(newRole));
 		print("added teller " + newRole.name);
-		
+
 	}
 	//Direct Deposit Message
 	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
@@ -60,8 +60,8 @@ public class BankManagerRole extends Role implements BankManager {
 	@Override
 	public void msgINeedService(CustomerRole c) {
 		print(c.getName()+" Needs service");
-		line.add((CustomerRole) c);
-		print(line.size()+ "");
+		getLine().add((CustomerRole) c);
+		print(getLine().size()+ "");
 		stateChanged();
 	}
 
@@ -69,12 +69,12 @@ public class BankManagerRole extends Role implements BankManager {
 	public void msgGiveMeInfo(CustomerRole c, TellerRole t) {
 		for( myTeller mt: tellers){
 			if(mt.t.equals(t)){
-		mt.state = tellerState.needsInfo;
-			print("sent info for "+c.getName());
-			mt.c = c;
+				mt.state = tellerState.needsInfo;
+				print("sent info for "+c.getName());
+				mt.c = c;
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -85,16 +85,23 @@ public class BankManagerRole extends Role implements BankManager {
 				print("updating info for "+t.currentCustInfo.custName);
 			}
 		}
-		
+
 	}
-//SCHEDULER
+	public void msgLeavingNow(TellerRole tellerRole) {
+		for(myTeller t: tellers){
+			if(t.t.equals(tellerRole)){
+				tellers.remove(t);
+			}
+		}
+	}
+	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		for( myTeller t: tellers){
-			if(t.state == tellerState.available && line.size()>0){
-				helpCustomer(line.remove(0), t);
-			return true;
-		}
+			if(t.state == tellerState.available && getLine().size()>0){
+				helpCustomer(getLine().remove(0), t);
+				return true;
+			}
 		}
 		for(myTeller t: tellers){
 			if(t.state == tellerState.needsInfo){
@@ -104,41 +111,54 @@ public class BankManagerRole extends Role implements BankManager {
 		}
 		for(myTeller t: tellers){
 			if(t.state == tellerState.updateInfo){
-			updatedb(t);
-			return true;
+				updatedb(t);
+				return true;
 			}
 		}
-		
-		
+		if(person.cityData.hour > Bank.CLOSINGTIME + 1 && tellers.size() == 0 && line.size()==0){
+				leave();
+				return true;
+				}
 		return false;
 	}
-//ACTIONS
+	private void leave() {
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
+	}
+	//ACTIONS
 	private void helpCustomer(CustomerRole c, myTeller t) {
 		print("sending cust "+c.getName()+" to teller");
 		t.c = c;
 		c.msgGoToTeller(t.t);
 		t.state = tellerState.notAvailable;
 	}
-	
+
 	private void sendInfo(myTeller t) {
 		if(!CustAccounts.get(t.c.getPerson()).equals(null))
 			t.custInfo = CustAccounts.get(t.c.getPerson());
 		else t.custInfo = null;
-		
 		t.t.msgHereIsInfo(t.custInfo);
 	}
-	
+
 	private void updatedb(myTeller t) {
 		print("made it to update database");
 		t.state = tellerState.available;
-		
+
+	}
+	public List<CustomerRole> getLine() {
+		return line;
 	}
 
-	
 
-	
 
-	
-	
-	
 }
+
+
+
+
+
+
+
+
+

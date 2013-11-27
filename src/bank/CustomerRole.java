@@ -127,8 +127,10 @@ public class CustomerRole extends Role implements BankCustomer{
 		
 		state = CustState.Left;	
 		guiGoHere(3);
-		//TODO leave and clear gui and update info
-		
+		person.bankInfo = this.myInfo;
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
 	}
 	private void processLoan(double approvedAmount){
 		double requestAmount = approvedAmount;  

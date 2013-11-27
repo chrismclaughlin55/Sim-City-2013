@@ -15,6 +15,7 @@ public class BusAgent extends Agent implements Bus {
 
 	enum BusState { moving, leavingStop, atStop, unloading, waitingForResponse, loading }
 	enum PassengerState { gotOn, beenOn};
+	boolean readyToBoard = false;
 	class myPassenger {
 	    PersonAgent p;
 	    BusStop dest;
@@ -57,7 +58,6 @@ public class BusAgent extends Agent implements Bus {
 		
 		myState = BusState.atStop;
 		atDestination.release();
-		stateChanged();
 		// TODO Auto-generated method stub
 		
 	}
@@ -66,7 +66,7 @@ public class BusAgent extends Agent implements Bus {
 	 */
 	@Override
 	public void msgPeopleAtStop(HashMap<PersonAgent,BusStopAgent>peopleAtStop) {
-        myState=BusState.loading;
+       readyToBoard = true;
         for ( PersonAgent p : peopleAtStop.keySet()) {
         	passengers.add(new myPassenger(p,peopleAtStop.get(p)));
         }
@@ -80,7 +80,6 @@ public class BusAgent extends Agent implements Bus {
 	public void msgOnBus()
 	{
 		atDestination.release();
-		stateChanged();
 	}
 
 
@@ -88,7 +87,7 @@ public class BusAgent extends Agent implements Bus {
 	
 	//SCHEDULER
 	protected boolean pickAndExecuteAnAction() {
-		//System.out.println("what");
+		
 		if(myState==BusState.atStop) {
 			curr.msgArrivedAtStop(this);
 			for(myPassenger p : passengers) {
@@ -107,10 +106,18 @@ public class BusAgent extends Agent implements Bus {
 			return true;
 	
 		}
-	    if(myState==BusState.loading) {
+		
+		if(myState == BusState.waitingForResponse && !readyToBoard)
+		{
+			super.stateChange.drainPermits();
+			return false;
+		}
+		
+	    if(readyToBoard) {
 	        BoardPassengers();
 	        return true;
 	    }
+	    
 	    if(myState==BusState.leavingStop) {
 	    	
 	        LeaveStop();
@@ -124,7 +131,6 @@ public class BusAgent extends Agent implements Bus {
 		BusStopAgent temp=curr.nextStop;
 		curr = next;
 		next = temp;
-        stateChanged();
 		busgui.DoGoToNextStop(next.getX(),next.getY());
 	    myState=BusState.moving;
 	    atDestination.drainPermits();
@@ -136,24 +142,22 @@ public class BusAgent extends Agent implements Bus {
 	}
 
 	private void BoardPassengers() {
-		myState=BusState.leavingStop;
-		synchronized(passengers) {
-		    for(myPassenger p: passengers) {
-		        if(p.ps==PassengerState.gotOn) {
-		        	//Message the people and have a semaphore acquire 
-		        	//and release cycle for every
-		        	//person getting off bus
-		        	p.ps = PassengerState.beenOn;
-		            p.p.msgBusIsHere(this);
-		            atDestination.drainPermits();
-		            try {
-		            	atDestination.acquire();
-		            }
-		            catch(Exception e){}
-		        }
-		    }
-		}
-	    
+		atDestination.drainPermits();
+	    for(myPassenger p: passengers) {
+	        if(p.ps==PassengerState.gotOn) {
+	        	//Message the people and have a semaphore acquire 
+	        	//and release cycle for every
+	        	//person getting off bus
+	        	p.ps = PassengerState.beenOn;
+	            p.p.msgBusIsHere(this);
+	            try {
+	            	atDestination.acquire();
+	            }
+	            catch(Exception e){}
+	        }
+	    }
+	    myState=BusState.leavingStop;
+	    readyToBoard = false;
 	}
 
 	private void UnloadPassenger(myPassenger p) {

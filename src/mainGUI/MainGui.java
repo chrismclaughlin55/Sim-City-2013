@@ -19,6 +19,7 @@ import city.Building;
 import city.BusAgent;
 import city.PersonAgent;
 import city.PersonAgent.BigState;
+import city.PersonAgent.HomeState;
 import city.gui.BusGui;
 import city.gui.PersonGui;
 
@@ -159,7 +160,7 @@ public class MainGui extends JFrame implements MouseListener {
 					String newPerson = scan.next();
 					if(newPerson.equals("NewPerson")) {
 						PersonAgent p = createPerson(null,null);
-						for(int i=0; i<5; i++) {
+						for(int i=0; i<6; i++) {
 							String property = scan.next();
 							String temp = scan.next();
 							if(property.equals("name")) {
@@ -170,6 +171,9 @@ public class MainGui extends JFrame implements MouseListener {
 								/*if(temp.equals("Landlord")) {
 									reassignHome(p);
 								}*/
+							}
+							if(property.equals("inventory")) {
+								p.setInventory(Integer.parseInt(temp));
 							}
 							if(property.equals("cash")) {
 								p.setCash(Double.parseDouble(temp));
@@ -258,6 +262,8 @@ public class MainGui extends JFrame implements MouseListener {
 			return;
 		}
 		assignJobBuilding(p, role);
+		p.homeState = HomeState.onCouch;
+		p.tiredLevel = 0;
 		p.startThread();
 		
 	}
