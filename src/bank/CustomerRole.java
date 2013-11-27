@@ -37,14 +37,14 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgGoToTeller(Teller t) {
 		this.t = t;
 		event = CustEvent.GoToTeller;
-		print("going to teller "+ state + event);
+		print("recieved goToTeller");
 		stateChanged();
 	}
 
 	@Override
 	public void msgWhatWouldYouLike() {
 		event = CustEvent.AskedWhatToDo;
-		print("asked What to do");
+		print("recieved asked What to do");
 		stateChanged();
 
 	}
@@ -53,6 +53,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgHaveANiceDay(double amount) {
 		person.cash+=amount;
 		event = CustEvent.Done;
+		print("recieved have nice day");
 		stateChanged();
 
 	}
@@ -65,7 +66,7 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	//SCHEDULER
 	public boolean pickAndExecuteAnAction() {
-		print("made it to scheduler");
+		//print("made it to scheduler");
 		if(state == CustState.InLine && event == CustEvent.GoToTeller){
 			sayHello();
 			return true;

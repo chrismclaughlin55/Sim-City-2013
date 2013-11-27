@@ -23,7 +23,7 @@ public class PersonAgent extends Agent
 	/*CONSTANTS*/
 	public static final int HUNGRY = 7;
 	public static final int STARVING = 14;
-	public static final int LOWMONEY = 20;
+	public static final int LOWMONEY = 10;
 	public static final int TIRED = 16;
 	public static final double RENT = 20;
 	public static final int THRESHOLD = 3;
@@ -80,7 +80,7 @@ public class PersonAgent extends Agent
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
-		MyOrder o1 = new MyOrder("Steak", 1);
+		/*MyOrder o1 = new MyOrder("Steak", 1);
 		MyOrder o2 = new MyOrder("Salad", 1);
 		MyOrder o3 = new MyOrder("Pizza", 1);
 		MyOrder o4 = new MyOrder("Chicken", 1);
@@ -91,7 +91,7 @@ public class PersonAgent extends Agent
 		inventory.put("Steak", 3);
 		inventory.put("Salad", 3);
 		inventory.put("Pizza", 3);
-		inventory.put("Chicken", 3);
+		inventory.put("Chicken", 3);*/
 		personGui = new PersonGui(this, gui);
 	}
 	
@@ -99,18 +99,18 @@ public class PersonAgent extends Agent
 		this.name = name;
 		this.gui = gui;
 		this.cityData = cd;
-		MyOrder o1 = new MyOrder("Steak", 1);
-		MyOrder o2 = new MyOrder("Salad", 1);
-		MyOrder o3 = new MyOrder("Pizza", 1);
-		MyOrder o4 = new MyOrder("Chicken", 1);
-		thingsToOrder.add(o1);
-		thingsToOrder.add(o2);
-		thingsToOrder.add(o3);
-		thingsToOrder.add(o4);
-		inventory.put("Steak", 3);
-		inventory.put("Salad", 3);
-		inventory.put("Pizza", 3);
-		inventory.put("Chicken", 3);
+//		MyOrder o1 = new MyOrder("Steak", 1);
+//		MyOrder o2 = new MyOrder("Salad", 1);
+//		MyOrder o3 = new MyOrder("Pizza", 1);
+//		MyOrder o4 = new MyOrder("Chicken", 1);
+//		thingsToOrder.add(o1);
+//		thingsToOrder.add(o2);
+//		thingsToOrder.add(o3);
+//		thingsToOrder.add(o4);
+//		inventory.put("Steak", 3);
+//		inventory.put("Salad", 3);
+//		inventory.put("Pizza", 3);
+//		inventory.put("Chicken", 3);
 		personGui = new PersonGui(this, gui);
 		bank = (Bank) cd.buildings.get(18);
 	}
@@ -266,7 +266,7 @@ public class PersonAgent extends Agent
 					return true;
 				}
 				
-				if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
+				if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen()&& !bank.isOpen()) {
 					payRent();
 					return true;
 				}
@@ -313,8 +313,7 @@ public class PersonAgent extends Agent
 				if(goToWork)
 				{
 					destinationBuilding = jobBuilding;
-					if(!destinationBuilding.equals(null));
-						System.out.println(destinationBuilding.type);
+					if(destinationBuilding != null);
 					desiredRole = job;
 					if(destinationBuilding.type == BuildingType.market) {
 						bigState = BigState.goToMarket;
@@ -567,7 +566,6 @@ public class PersonAgent extends Agent
 	}
 	
 	protected void goToBank() {
-		
 		destinationBuilding = cityData.bank;
 		takeBusToDestination();
 		

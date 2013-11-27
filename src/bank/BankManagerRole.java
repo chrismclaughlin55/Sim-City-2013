@@ -48,20 +48,19 @@ public class BankManagerRole extends Role implements BankManager {
 	//Direct Deposit Message
 	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
 		CustInfo p = CustAccounts.get(payer);
-		if(!p.equals(null)){
+		if(p != null){
 			p.moneyInAccount-=payment;
 		}
 		CustInfo rec = CustAccounts.get(reciever);
-		if(!rec.equals(null)){
+		if(rec != null){
 			rec.moneyInAccount+=payment;
 		}
 		print(rec.custName+" was paid "+payment+" by "+p.custName);
 	}
 	@Override
 	public void msgINeedService(CustomerRole c) {
-		print(c.getName()+" Needs service");
+		print("recieved "+c.getName()+" Needs service");
 		line.add((CustomerRole) c);
-		print(line.size()+ "");
 		stateChanged();
 	}
 
@@ -70,10 +69,11 @@ public class BankManagerRole extends Role implements BankManager {
 		for( myTeller mt: tellers){
 			if(mt.t.equals(t)){
 		mt.state = tellerState.needsInfo;
-			print("sent info for "+c.getName());
+		print("recieved needs info from "+t.getName());
 			mt.c = c;
 			}
 		}
+		stateChanged();
 		
 	}
 
@@ -82,7 +82,7 @@ public class BankManagerRole extends Role implements BankManager {
 		for(myTeller mt: tellers){
 			if(mt.t.equals(t)){
 				mt.state = tellerState.updateInfo;
-				print("updating info for "+t.currentCustInfo.custName);
+				print("recieved update info for "+t.currentCustInfo.custName);
 			}
 		}
 		
@@ -90,7 +90,7 @@ public class BankManagerRole extends Role implements BankManager {
 //SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		print("made it to scheduler");
+		//print("made it to scheduler");
 		for( myTeller t: tellers){
 			if(t.state == tellerState.available && line.size()>0){
 				helpCustomer(line.remove(0), t);
@@ -122,10 +122,10 @@ public class BankManagerRole extends Role implements BankManager {
 	}
 	
 	private void sendInfo(myTeller t) {
-		if(!CustAccounts.get(t.c.getPerson()).equals(null))
+		if(CustAccounts.get(t.c.getPerson()) != null)
 			t.custInfo = CustAccounts.get(t.c.getPerson());
 		else t.custInfo = null;
-		
+		print("sent info for "+t.c.getName());
 		t.t.msgHereIsInfo(t.custInfo);
 	}
 	

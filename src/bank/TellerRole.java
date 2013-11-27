@@ -50,7 +50,7 @@ public class TellerRole extends Role implements Teller{
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
 		event = Event.recievedInfo;
-		print("recieved info for "+ info.custName);
+		print("recieved info");
 		if(info != null)
 		this.currentCustInfo = info;
 		stateChanged();
@@ -84,7 +84,7 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		print("made it to scheduler");
+	//	print("made it to scheduler");
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;
