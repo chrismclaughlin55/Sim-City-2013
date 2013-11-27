@@ -56,6 +56,7 @@ public class Bank extends Building {
 				}
 				else {
 					setOpen(p);
+					existingManagerRoles.put(p, new BankManagerRole(p));
 					p.msgAssignRole(existingManagerRoles.get(p));
 					currentManager = existingManagerRoles.get(p);
 
@@ -64,7 +65,7 @@ public class Bank extends Building {
 		}
 		if(roleRequest.equals("Customer")){
 			if(isOpen()){
-				if(existingCustRoles.get(p).equals (null)){
+				if(existingCustRoles.get(p)!=null){
 					p.print("assigned cust gui");
 					CustomerRole newRole = new CustomerRole(p);
 					existingCustRoles.put(p, newRole);
@@ -88,7 +89,7 @@ public class Bank extends Building {
 		}
 		if(roleRequest.equals("BankTeller")){
 			if(isOpen()){
-				if(existingTellerRoles.get(p).equals(null)){
+				if(existingTellerRoles.get(p)!=null){
 					p.print("assigned teller gui");
 					TellerRole newRole = new TellerRole(p);
 					existingTellerRoles.put(p, newRole);
