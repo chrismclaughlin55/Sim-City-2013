@@ -306,7 +306,6 @@ public class PersonAgent extends Agent
 					destinationBuilding = jobBuilding;
 					desiredRole = job;
 
-
 					if(destinationBuilding.type == BuildingType.market) {
 						bigState = BigState.goToMarket;
 						return true;
