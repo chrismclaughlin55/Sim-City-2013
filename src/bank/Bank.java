@@ -44,6 +44,7 @@ public class Bank extends Building {
 
 				}
 				else {
+
 				existingManagerRoles.put(p, new BankManagerRole(p));
 				setOpen(p);
 				p.print("bank is open? "+ isOpen);
