@@ -1,5 +1,7 @@
 package bank;
 
+import java.util.concurrent.Semaphore;
+
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
@@ -19,7 +21,8 @@ public class TellerRole extends Role implements Teller{
 	State state;
 	Event event;
 	private TellerGui gui;
-	
+	private Semaphore atHome = new Semaphore(0, true);
+
 	//Constructor
 	public TellerRole(PersonAgent person) {
 		super(person);
@@ -27,13 +30,21 @@ public class TellerRole extends Role implements Teller{
 		this.me = person;
 		state = State.available;
 		event = Event.none;
-		// TODO Auto-generated constructor stub
+
 	}
 	//GUI messages
 	public void msgAddGui(TellerGui tellerGui) {
 		this.gui = tellerGui;
-		
 	}
+	public void msgWaitForGui(){
+		try {
+			atHome.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	//MESSAGES
 	public void msgAddManager(BankManagerRole bm){
 		this.bm = bm;
@@ -52,7 +63,7 @@ public class TellerRole extends Role implements Teller{
 		event = Event.recievedInfo;
 		print("recieved info");
 		if(info != null)
-		this.currentCustInfo = info;
+			this.currentCustInfo = info;
 		stateChanged();
 	}
 
@@ -77,14 +88,14 @@ public class TellerRole extends Role implements Teller{
 		currentCustInfo.loanApproveAmount-= loanAmount;
 		event = Event.iTakeIt;
 		stateChanged();
-		
+
 	}
-	
-	
+
+
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-	//	print("made it to scheduler");
+		//	print("made it to scheduler");
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;
@@ -109,27 +120,27 @@ public class TellerRole extends Role implements Teller{
 			processOrder();
 			return true;
 		}
-			
+
 		return false;
 	}
 	//ACTIONS
 	private void ask() {
-	print("asked what to do");
+		print("asked what to do");
 		currentCustInfo.customer.msgWhatWouldYouLike();
 		state = State.waitingForResponse;
 	}
 
 	private void getInfo() {
-	print("asking for info from manager");
+		print("asking for info from manager");
 		bm.msgGiveMeInfo(currentCustInfo.customer, this);
-			state = State.waitingForInfo;
+		state = State.waitingForInfo;
 	}
 
 	private void makeAvailable() {	
 		//TODO may need to change logic
 		currentCustInfo = null;
 		state = State.available;
-		
+
 	}
 
 	private void processLoan() {
@@ -146,9 +157,13 @@ public class TellerRole extends Role implements Teller{
 		state = State.doneWithCustomer;
 		event = Event.updatedBank;
 	}
+	public void msgGuiAtSpot() {
+		atHome.release();
+
+	}
 
 
 
-	
+
 
 }

@@ -101,11 +101,11 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	}
 	private void tellTeller(){
-		if(myInfo.loanRequestAmount>0){
-			t.msgloan(myInfo.loanRequestAmount);
-			state = CustState.AskedForLoan;
-			return;
-		}else{
+//		if(myInfo.loanRequestAmount == 0){
+//			t.msgloan(myInfo.loanRequestAmount);
+//			state = CustState.AskedForLoan;
+//			return;
+//		}else{
 			double depositAmount;
 			if(myInfo.depositAmount>cash){
 				depositAmount = cash;
@@ -117,7 +117,7 @@ public class CustomerRole extends Role implements BankCustomer{
 			}
 			t.msgDeposit(depositAmount);
 
-		}
+		//}
 		print("made it to tell teller");
 	}
 	private void leave(){

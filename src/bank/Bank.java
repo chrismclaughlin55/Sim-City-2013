@@ -85,6 +85,7 @@ public class Bank extends Building {
 					p.msgAssignRole(role);
 					role.msgAddGui(tellerGui);
 					bankGui.animationPanel.addGui(tellerGui);
+					
 					currentManager.msgAddTeller(role);
 					role.msgAddManager(currentManager);
 				}

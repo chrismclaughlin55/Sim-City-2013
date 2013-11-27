@@ -16,7 +16,7 @@ public class TellerGui implements GuiPositions, Gui {
 	private int yPos;
 	private int yDestination;
 	private boolean isPresent = true;
-
+	boolean atSpot = false;
 	public TellerGui(TellerRole tellerRole) {
 		this.teller = tellerRole;
 		xPos = doorx;
@@ -28,7 +28,7 @@ public class TellerGui implements GuiPositions, Gui {
 
 	@Override
 	public void updatePosition() {
-;
+		if(!atSpot){
 		if (xPos < xDestination)
 			xPos++;
 		else if (xPos > xDestination)
@@ -39,7 +39,13 @@ public class TellerGui implements GuiPositions, Gui {
 		else if (yPos > yDestination)
 			yPos--;
 		
-
+		}
+		if(xPos == xDestination && yPos == yDestination){
+			if(!atSpot){
+				atSpot = true;
+				teller.msgGuiAtSpot();
+			}
+		}
 	}
 	
 

@@ -30,7 +30,7 @@ public class BankManagerRole extends Role implements BankManager {
 			this.t = t;
 			state = tellerState.available;
 		}
-		
+
 	}
 	public BankManagerRole(PersonAgent person) {
 		super(person);
@@ -43,7 +43,7 @@ public class BankManagerRole extends Role implements BankManager {
 	public void msgAddTeller(TellerRole newRole) {
 		tellers.add(new myTeller(newRole));
 		print("added teller " + newRole.name);
-		
+
 	}
 	//Direct Deposit Message
 	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
@@ -68,13 +68,13 @@ public class BankManagerRole extends Role implements BankManager {
 	public void msgGiveMeInfo(CustomerRole c, TellerRole t) {
 		for( myTeller mt: tellers){
 			if(mt.t.equals(t)){
-		mt.state = tellerState.needsInfo;
-		print("recieved needs info from "+t.getName());
-			mt.c = c;
+				mt.state = tellerState.needsInfo;
+				print("recieved needs info from "+t.getName());
+				mt.c = c;
 			}
 		}
 		stateChanged();
-		
+
 	}
 
 	@Override
@@ -85,17 +85,18 @@ public class BankManagerRole extends Role implements BankManager {
 				print("recieved update info for "+t.currentCustInfo.custName);
 			}
 		}
-		
+
 	}
-//SCHEDULER
+	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		//print("made it to scheduler");
-		for( myTeller t: tellers){
-			if(t.state == tellerState.available && line.size()>0){
-				helpCustomer(line.remove(0), t);
-			return true;
-		}
+		for(myTeller t: tellers){
+			if(t.state == tellerState.updateInfo){
+				updatedb(t);
+				return true;
+			}
+
+
 		}
 		for(myTeller t: tellers){
 			if(t.state == tellerState.needsInfo){
@@ -103,24 +104,26 @@ public class BankManagerRole extends Role implements BankManager {
 				return true;
 			}
 		}
-		for(myTeller t: tellers){
-			if(t.state == tellerState.updateInfo){
-			updatedb(t);
-			return true;
+		for( myTeller t: tellers){
+			if(t.state == tellerState.available && line.size()>0){
+				helpCustomer(line.remove(0), t);
+				return true;
 			}
 		}
-		
-		
+
+
+
+
 		return false;
 	}
-//ACTIONS
+	//ACTIONS
 	private void helpCustomer(CustomerRole c, myTeller t) {
 		print("sending cust "+c.getName()+" to teller");
 		t.c = c;
 		c.msgGoToTeller(t.t);
 		t.state = tellerState.notAvailable;
 	}
-	
+
 	private void sendInfo(myTeller t) {
 		if(CustAccounts.get(t.c.getPerson()) != null)
 			t.custInfo = CustAccounts.get(t.c.getPerson());
@@ -128,18 +131,20 @@ public class BankManagerRole extends Role implements BankManager {
 		print("sent info for "+t.c.getName());
 		t.t.msgHereIsInfo(t.custInfo);
 	}
-	
+
 	private void updatedb(myTeller t) {
 		print("made it to update database");
+		CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
 		t.state = tellerState.available;
-		
+
+
 	}
 
-	
 
-	
 
-	
-	
-	
+
+
+
+
+
 }
