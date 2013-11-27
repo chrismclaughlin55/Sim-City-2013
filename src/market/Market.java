@@ -14,7 +14,6 @@ import market.gui.MarketGui;
 import city.Building;
 import city.CityData;
 import city.PersonAgent;
-import city.Role;
 
 public class Market extends Building {
 
@@ -64,8 +63,10 @@ public class Market extends Building {
 
 
 	public void EnterBuilding(PersonAgent person, String roleRequest) {
+		
+		System.out.print("ATTEMPTING TO ENTER BUILDING AS A " + roleRequest);
 
-		if (person.equals(manager)) {
+		if (person.equals(super.manager)) {
 
 			if (existingManagerRoles.get(person) != null) {
 				currentManager = existingManagerRoles.get(person);

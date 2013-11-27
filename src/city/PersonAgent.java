@@ -256,17 +256,18 @@ public class PersonAgent extends Agent
 		{
 		case atHome: {
 			if (homeState == HomeState.sleeping) {
-				if(cityData.hour >= 5 && job.equals("BankManager")){//if sleeping and it is time to wake up
+				if(cityData.hour >= 5 && (job.equals("BankManager") || job.equals("Host") || job.equals("MarketManager"))){//if sleeping and it is time to wake up
 					//delete the && false when the actual rule is implemented
 					WakeUp();
 					return true;
 				}
 				else {
-					if(cityData.hour>=7 && (job.equals("Host") || job.equals("MarketManager"))) {
+					if(cityData.hour>=5 && (job.equals("Host") || job.equals("MarketManager"))) {
+						print(getJob());
 						WakeUp();
 						return true;
 					}
-					else if (cityData.hour>=8) {
+					else if (cityData.hour>=9) {
 						WakeUp();
 						return true;
 					}
@@ -359,6 +360,7 @@ public class PersonAgent extends Agent
 			// Inventory of food stuff
 			if(lowInventory()) {
 				bigState = BigState.goToMarket;
+				desiredRole = "MarketCustomer";
 				return true;
 			}
 
@@ -609,7 +611,12 @@ public class PersonAgent extends Agent
 	}
 
 	protected void goToMarket() {
+		destinationBuilding = cityData.market;
+		
+		takeBusToDestination();
+
 		personGui.DoGoToBuilding(19);
+		currentBuilding = cityData.buildings.get(19);
 		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
@@ -618,6 +625,8 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
+		currentBuilding.EnterBuilding(this,desiredRole );
+
 	}
 
 	public void takeBusToDestination()
