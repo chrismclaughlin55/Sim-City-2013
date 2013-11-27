@@ -260,6 +260,18 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		g2.drawImage(road3.getImage(), 130, 635, null);
 		g2.drawImage(road3.getImage(), 440, 635, null);
 		
+		String clock = null;
+		if (cd.hour >= 0 && cd.hour < 12) {
+			clock = "Clock:  " + cd.hour + " AM";
+		}
+		else if (cd.hour == 12) {
+			clock = "Clock:  " + cd.hour + " PM";
+		}
+		else if (cd.hour > 12 && cd.hour < 24) {
+			clock = "Clock:  " + (cd.hour-12) + " PM";
+		}
+		g2.drawString(clock, 20, 30);
+		
 		synchronized(cd.guis){
 			for(Gui gui : cd.guis) {
 				if (gui.isPresent()) {
