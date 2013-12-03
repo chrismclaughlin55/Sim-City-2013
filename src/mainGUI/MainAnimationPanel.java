@@ -93,9 +93,9 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			bs.startThread();
 		}
 		for (int i = 1; i >= 0; i--) {
-			Building b = new Home(190+i*130, 0, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
+			Building b = new Apartment(190+i*130, 0, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
-			cd.homes.add((Home)b);
+			cd.apartments.add((Apartment)b);
 			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 0+35+5+55,cd);
 			cd.busStops.add(bs);
 			//b.setBusStop(bs);
@@ -202,9 +202,16 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 		//Draw houses
 		ImageIcon house = new ImageIcon("res/house.png");
-		for (int i = 4; i < 12; i++) {
+		for (int i = 4; i < 10; i++) {
 			g2.drawImage(house.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
+		}
+		
+		for (int i = 10; i < 12; i++) {
+			g2.drawImage(apartment.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
+			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
+			//Draw bus stop for each apartment
+			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+95, (int)cd.buildings.get(i).y+35, null);
 		}
 
 		//Draw bus stop for each house
