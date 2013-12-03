@@ -53,7 +53,6 @@ public class BusAgent extends Agent implements Bus {
 	/* (non-Javadoc)
 	 * @see city.Bus#msgAtDestination()
 	 */
-	@Override
 	public void msgAtDestination() {
 		
 		myState = BusState.atStop;
@@ -66,10 +65,10 @@ public class BusAgent extends Agent implements Bus {
 	 */
 	@Override
 	public void msgPeopleAtStop(HashMap<PersonAgent,BusStopAgent>peopleAtStop) {
-       readyToBoard = true;
         for ( PersonAgent p : peopleAtStop.keySet()) {
         	passengers.add(new myPassenger(p,peopleAtStop.get(p)));
         }
+        readyToBoard = true;
         stateChanged();
 	}
 	
@@ -89,7 +88,6 @@ public class BusAgent extends Agent implements Bus {
 	protected boolean pickAndExecuteAnAction() {
 		
 		if(myState==BusState.atStop) {
-			curr.msgArrivedAtStop(this);
 			for(myPassenger p : passengers) {
 				if(p.dest == curr) {
 					UnloadPassenger(p);
@@ -97,6 +95,7 @@ public class BusAgent extends Agent implements Bus {
 					return true;
 				}
 			}
+			curr.msgArrivedAtStop(this);
 			myState = BusState.unloading;   
 			return true;
 		}
@@ -105,12 +104,6 @@ public class BusAgent extends Agent implements Bus {
 			myState=BusState.waitingForResponse;
 			return true;
 	
-		}
-		
-		if(myState == BusState.waitingForResponse && !readyToBoard)
-		{
-			super.stateChange.drainPermits();
-			return false;
 		}
 		
 	    if(readyToBoard) {
@@ -128,12 +121,10 @@ public class BusAgent extends Agent implements Bus {
 	}
 	
 	private void LeaveStop() {
-		BusStopAgent temp=curr.nextStop;
+		BusStopAgent temp=next.nextStop;
 		curr = next;
 		next = temp;
-		busgui.DoGoToNextStop(next.getX(),next.getY());
-	    myState=BusState.moving;
-	    atDestination.drainPermits();
+		busgui.DoGoToNextStop(curr.getX(),curr.getY());
 	    try {
 	    	atDestination.acquire();
 	    }
@@ -142,7 +133,6 @@ public class BusAgent extends Agent implements Bus {
 	}
 
 	private void BoardPassengers() {
-		atDestination.drainPermits();
 	    for(myPassenger p: passengers) {
 	        if(p.ps==PassengerState.gotOn) {
 	        	//Message the people and have a semaphore acquire 
@@ -154,6 +144,7 @@ public class BusAgent extends Agent implements Bus {
 	            	atDestination.acquire();
 	            }
 	            catch(Exception e){}
+	            return;
 	        }
 	    }
 	    myState=BusState.leavingStop;
@@ -164,7 +155,6 @@ public class BusAgent extends Agent implements Bus {
 		
 		//have a wait time for loading and unloading
 		p.p.msgDoneMoving();
-		atDestination.drainPermits();
 		try {
         	atDestination.acquire();
         }
