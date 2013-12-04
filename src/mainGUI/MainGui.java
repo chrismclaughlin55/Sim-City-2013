@@ -32,7 +32,7 @@ public class MainGui extends JFrame implements MouseListener {
     /* The GUI has two frames, the control frame (in variable gui) 
      * and the animation frame, (in variable animationFrame within gui)
      */
-	private int WIDTH = 1230;
+	private int WIDTH = 1250;
 	private int HEIGHT = 800;
 	//public AnimationPanel animationPanel;
 	//JPanel InfoLayout;

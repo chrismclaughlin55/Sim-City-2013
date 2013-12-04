@@ -186,8 +186,8 @@ public class PersonGui implements Gui{
 
 	public void DoGoToBus(BusAgent bus) {
 		moving = true;
-		xDestination = bus.getX() + 10;
-		yDestination = bus.getY() + 10;
+		xDestination = bus.getX();
+		yDestination = bus.getY();
 		
 	}
 }

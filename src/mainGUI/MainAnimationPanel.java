@@ -51,7 +51,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			Building b = new Apartment(10, 140+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
 			cd.apartments.add((Apartment) b);
-			BusStopAgent bs = new BusStopAgent(10+95+25, 140+i*130+35+5,cd);
+			BusStopAgent bs = new BusStopAgent(10+95+25, 140+i*130+35+25,cd);
 			cd.busStops.add(bs);
 			//b.setBusStop(bs);
 			bs.startThread();
@@ -60,7 +60,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			Building b = new Apartment(10, 410+i*130, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
 			cd.apartments.add((Apartment)b);
-			BusStopAgent bs = new BusStopAgent(10+95+25, 410+i*130+35+5,cd);
+			BusStopAgent bs = new BusStopAgent(10+95+25, 410+i*130+35+25,cd);
 			cd.busStops.add(bs);
 			//b.setBusStop(bs);
 			bs.startThread();
@@ -69,7 +69,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			Building b = new Home(190+i*130, 680, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
 			cd.homes.add((Home)b);
-			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 680-45,cd);
+			BusStopAgent bs = new BusStopAgent(190+i*130+95-30, 680-25,cd);
 			cd.busStops.add(bs);
 			//b.setBusStop(bs);
 			bs.startThread();
@@ -78,7 +78,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			Building b = new Home(500, 410+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
 			cd.homes.add((Home)b);
-			BusStopAgent bs = new BusStopAgent(500-10-50, 410+i*130+35+5,cd);
+			BusStopAgent bs = new BusStopAgent(500-10-30, 410+i*130+35+25,cd);
 			cd.busStops.add(bs);
 			//b.setBusStop(bs);
 			bs.startThread();
@@ -87,7 +87,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			Building b = new Home(500, 140+i*130, WIDTH, HEIGHT, "home", BuildingType.home, mainGui, cd);
 			cd.buildings.add(b);
 			cd.homes.add((Home)b);
-			BusStopAgent bs = new BusStopAgent(500-10-50, 140+i*130+35+5,cd);
+			BusStopAgent bs = new BusStopAgent(500-10-30, 140+i*130+35+25,cd);
 			cd.busStops.add(bs);
 			//b.setBusStop(bs);
 			bs.startThread();
@@ -96,7 +96,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			Building b = new Apartment(190+i*130, 0, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
 			cd.apartments.add((Apartment)b);
-			BusStopAgent bs = new BusStopAgent(190+i*130+95-50, 0+35+5+55,cd);
+			BusStopAgent bs = new BusStopAgent(190+i*130+95-30, 0+35+5+55,cd);
 			cd.busStops.add(bs);
 			//b.setBusStop(bs);
 			bs.startThread();
@@ -126,6 +126,19 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		Market m = new Market(320, 410, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
 		cd.buildings.add(m);
 		cd.market =  m;
+		
+		// Construct bus stop for restaurants/bank/market
+		/*for (int i = 0; i < 2; i++) {
+			BusStopAgent bs = new BusStopAgent(190-10-30, 140+i*130+35+25, cd);
+			cd.busStops.add(bs);
+			bs.startThread();
+		}
+		for (int i = 0; i < 2; i++) {
+			BusStopAgent bs = new BusStopAgent(190-10-30, 410+i*130+35+25, cd);
+			cd.busStops.add(bs);
+			bs.startThread();
+		}
+		*/
 		
 		
 		for (int i = 0; i < 12; i++) {
@@ -207,6 +220,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
 		}
 		
+		//Draw apartments
 		for (int i = 10; i < 12; i++) {
 			g2.drawImage(apartment.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
@@ -224,6 +238,14 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 10; i < 12; i++) {
 			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+95, (int)cd.buildings.get(i).y+35, null);
 		}
+		//Draw bus stop for restaurants/bank/market
+		for (int i = 12; i < 20; i+=2) {
+			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x-15, (int)cd.buildings.get(i).y+35, null);
+		}
+		for (int i = 13; i < 20; i+=2) {
+			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+100, (int)cd.buildings.get(i).y+35, null);
+		}
+		
 		
 		//Draw restaurants
 		ImageIcon rest = new ImageIcon("res/restaurant.png");

@@ -120,16 +120,16 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		jobs.add(bankTeller);
 		
 		jobsPane.setLayout(null);
-		unemployed.setBounds(0, 0, 150, 30);
-		landlord.setBounds(145, 0, 140, 30);
-		restMQhost.setBounds(0, 30, 140, 30);
-		restMQwaiter.setBounds(145, 30, 145, 30);
-		restMQcook.setBounds(300, 30, 140, 30);
-		restMQcashier.setBounds(450, 30, 170, 30);
-		marketManager.setBounds(0, 60, 140, 30);
-		marketEmployee.setBounds(145, 60, 140, 30);
-		bankManager.setBounds(0, 90, 140, 30);
-		bankTeller.setBounds(145, 90, 140, 30);
+		unemployed.setBounds(0, 0, 160, 30);
+		landlord.setBounds(145, 0, 150, 30);
+		restMQhost.setBounds(0, 30, 160, 30);
+		restMQwaiter.setBounds(145, 30, 155, 30);
+		restMQcook.setBounds(300, 30, 150, 30);
+		restMQcashier.setBounds(450, 30, 180, 30);
+		marketManager.setBounds(0, 60, 150, 30);
+		marketEmployee.setBounds(145, 60, 150, 30);
+		bankManager.setBounds(0, 90, 150, 30);
+		bankTeller.setBounds(145, 90, 150, 30);
 		jobsPane.add(unemployed);
 		jobsPane.add(landlord);
 		jobsPane.add(restMQwaiter);
@@ -153,16 +153,16 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		pane.setMinimumSize(new Dimension(PANEDIM, PANEDIM));
 		pane.setPreferredSize(new Dimension(PANEDIM, PANEDIM));  
 
-		fire.setBounds(5, 5, 605, 50);
-		timePane.setBounds(0, 65, 615, 50);
-		jobsPane.setBounds(0, 0, 615, 125);
-		nameField.setBounds(0, 125, 615, 90);
-		addPerson.setBounds(0, 215, 615, 90);
+		fire.setBounds(5, 5, 615, 50);
+		timePane.setBounds(0, 65, 625, 50);
+		jobsPane.setBounds(0, 0, 625, 125);
+		nameField.setBounds(0, 125, 625, 90);
+		addPerson.setBounds(0, 215, 625, 90);
 		personPane.add(jobsPane);	
 		personPane.add(nameField);
 		personPane.add(addPerson);
-		personPane.setBounds(0, 120, 615, 305);
-		pane.setBounds(0, 430, 615, 343);
+		personPane.setBounds(0, 120, 625, 305);
+		pane.setBounds(0, 430, 625, 343);
 
 		add(fire);
 		add(timePane);
