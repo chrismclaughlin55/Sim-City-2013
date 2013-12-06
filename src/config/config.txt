@@ -102,13 +102,6 @@ job Unemployed
 hunger 0
 inventory 10
 
-NewPerson
-name BankCust1
-cash 5
-bankMoney 5000
-job Unemployed
-hunger 0
-inventory 10
 
 NewPerson
 name MarketManager

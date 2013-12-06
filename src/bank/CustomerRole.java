@@ -56,6 +56,8 @@ public class CustomerRole extends Role implements BankCustomer{
 	@Override
 	public void msgHaveANiceDay(double amount) {
 		person.cash+=amount;
+		print("total cash: "+ person.cash);
+		print("total money in bank "+ this.myInfo.moneyInAccount);
 		event = CustEvent.Done;
 		stateChanged();
 
@@ -116,15 +118,17 @@ public class CustomerRole extends Role implements BankCustomer{
 			if(myInfo.depositAmount>cash){
 				depositAmount = cash;
 				cash = 0;
+				state = CustState.SentDeposit;
 			}
 			else{
 				depositAmount = myInfo.depositAmount;
 				cash-=myInfo.depositAmount;
+				state = CustState.SentDeposit;
 			}
 			t.msgDeposit(depositAmount);
 
 		}
-		print("made it to tell teller");
+
 	}
 	private void leave(){
 

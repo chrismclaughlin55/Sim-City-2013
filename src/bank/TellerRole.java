@@ -156,6 +156,7 @@ public class TellerRole extends Role implements Teller{
 	private void processOrder() {
 		//TODO this could cause problems. could lose semaphore by updating event in action
 		bm.msgUpdateInfo(currentCustInfo, this);
+		currentCustInfo.customer.msgHaveANiceDay(currentCustInfo.depositAmount);
 		state = State.doneWithCustomer;
 		event = Event.updatedBank;
 	}
