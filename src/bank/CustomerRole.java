@@ -42,13 +42,14 @@ public class CustomerRole extends Role implements BankCustomer{
 		this.t = t;
 		event = CustEvent.GoToTeller;
 		print("going to teller ");
+
 		stateChanged();
 	}
 
 	@Override
 	public void msgWhatWouldYouLike() {
 		event = CustEvent.AskedWhatToDo;
-		print("asked What to do");
+		print("recieved asked What to do");
 		stateChanged();
 
 	}
@@ -59,6 +60,7 @@ public class CustomerRole extends Role implements BankCustomer{
 		print("total cash: "+ person.cash);
 		print("total money in bank "+ this.myInfo.moneyInAccount);
 		event = CustEvent.Done;
+		print("recieved have nice day");
 		stateChanged();
 
 	}
@@ -106,14 +108,15 @@ public class CustomerRole extends Role implements BankCustomer{
 		print(tmp.custName);
 		this.t.msgHello(tmp);
 		state = CustState.AtTeller;
+		guiGoHere(1);
 
 	}
 	private void tellTeller(){
-		if(myInfo.loanRequestAmount>0){
-			t.msgloan(myInfo.loanRequestAmount);
-			state = CustState.AskedForLoan;
-			return;
-		}else{
+//		if(myInfo.loanRequestAmount == 0){
+//			t.msgloan(myInfo.loanRequestAmount);
+//			state = CustState.AskedForLoan;
+//			return;
+//		}else{
 			double depositAmount;
 			if(myInfo.depositAmount>cash){
 				depositAmount = cash;
@@ -128,8 +131,7 @@ public class CustomerRole extends Role implements BankCustomer{
 			t.msgDeposit(depositAmount);
 
 		}
-
-	}
+	
 	private void leave(){
 
 		state = CustState.Left;	
@@ -154,9 +156,11 @@ public class CustomerRole extends Role implements BankCustomer{
 	public PersonAgent returnPerson() {
 		return this.person;
 	}
+
 	public void msgGuiIsAtDest() {
 		print("released a atDest");
 		atDest.release();
+
 
 	}
 

@@ -57,6 +57,12 @@ public class Bank extends Building {
 				setOpen(p);
 				p.msgAssignRole(existingManagerRoles.get(p));
 				currentManager = existingManagerRoles.get(p);
+					BankManagerRole bRole = new BankManagerRole(p);
+				existingManagerRoles.put(p, bRole);
+				setOpen(p);
+				p.print("bank is open? "+ isOpen);
+				p.msgAssignRole(bRole);
+				currentManager = bRole;
 				cityData.buildings.get(18).manager = currentManager.getPerson();
 				p.print("current manager is " + currentManager.getName());
 				}
@@ -97,6 +103,7 @@ public class Bank extends Building {
 					p.msgAssignRole(role);
 					role.msgAddGui(tellerGui);
 					bankGui.animationPanel.addGui(tellerGui);
+					
 					currentManager.msgAddTeller(role);
 					role.msgAddManager(currentManager);
 				}

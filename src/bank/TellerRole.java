@@ -21,7 +21,11 @@ public class TellerRole extends Role implements Teller{
 	State state;
 	Event event;
 	private TellerGui gui;
+
 	private Semaphore atDest = new Semaphore(0 ,true);
+
+	private Semaphore atHome = new Semaphore(0, true);
+
 
 	//Constructor
 	public TellerRole(PersonAgent person) {
@@ -39,6 +43,15 @@ public class TellerRole extends Role implements Teller{
 		else
 			print("gui doesnt add");
 	}
+	public void msgWaitForGui(){
+		try {
+			atHome.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	//MESSAGES
 	public void msgAddManager(BankManagerRole bm){
 		this.bm = bm;
@@ -57,6 +70,7 @@ public class TellerRole extends Role implements Teller{
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
 		event = Event.recievedInfo;
+
 //TODO Problem here
 		if(info != null)
 			this.currentCustInfo = info;
@@ -64,6 +78,7 @@ public class TellerRole extends Role implements Teller{
 			this.currentCustInfo = person.bankInfo;
 			print("recieved info for "+ currentCustInfo.custName);
 		}
+
 		stateChanged();
 	}
 
@@ -120,10 +135,12 @@ public class TellerRole extends Role implements Teller{
 			processOrder();
 			return true;
 		}
+
 		if(person.cityData.hour > Bank.CLOSINGTIME && bm.getLine().size()==0){
 			this.leaveBank();
 			return true;
 		}
+
 		return false;
 	}
 	//ACTIONS

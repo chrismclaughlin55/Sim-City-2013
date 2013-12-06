@@ -23,9 +23,11 @@ import city.interfaces.BusStop;
 public class PersonAgent extends Agent
 {
 	/*CONSTANTS*/
+
 	public static final int HUNGRY = 1007;
 	public static final int STARVING = 100014;
 	public static final int LOWMONEY = 20;
+
 	public static final int TIRED = 16;
 	public static final double RENT = 20;
 	public static final int THRESHOLD = 3;
@@ -103,6 +105,7 @@ public class PersonAgent extends Agent
 		this.name = name;
 		this.gui = gui;
 		this.cityData = cd;
+
 		bankInfo = new CustInfo(this.name, this, null);
 		/*MyOrder o1 = new MyOrder("Steak", 1);
                 MyOrder o2 = new MyOrder("Salad", 1);
@@ -116,6 +119,7 @@ public class PersonAgent extends Agent
 		inventory.put("Salad", 3);
 		inventory.put("Pizza", 3);
 		inventory.put("Chicken", 3);
+
 		personGui = new PersonGui(this, gui);
 		bank = (Bank) cd.buildings.get(18);
 		market = (Market) cd.buildings.get(19);
@@ -274,6 +278,7 @@ public class PersonAgent extends Agent
 		}
 		switch(bigState)
 		{
+
 		
 	case atHome: {
 		if (homeState == HomeState.sleeping) {
@@ -309,6 +314,8 @@ public class PersonAgent extends Agent
 				leaveHome();
 				return true;
 			}
+
+
 		}
 
 		if (goToWork && jobBuilding != null && (!home.manager.equals(this) && home instanceof Apartment)) {
@@ -580,6 +587,7 @@ protected void goToRestaurant() {
 		currentBuilding.EnterBuilding(this, desiredRole);
 		return;
 	}
+
 }
 
 protected void goHome() {
