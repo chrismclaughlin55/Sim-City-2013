@@ -35,5 +35,9 @@ public class CustInfo {
 		this.custName = c.custName;
 		this.accountNumber = c.accountNumber;
 		this.customer = c.customer;
+		if(this.customer != null)
+			System.out.println(this.customer.getName()+" ?= "+ c.accountHolder.getName());
+		else 
+			System.out.println(this.accountNumber+" does not have a customer ");
 	}
 }

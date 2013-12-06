@@ -77,5 +77,6 @@ public class BankCustomerGui implements GuiPositions, Gui {
 		}
 		atDest = false;
 	}
+	
 
 }

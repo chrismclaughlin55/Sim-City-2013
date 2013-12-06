@@ -33,6 +33,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	}
 	//GUI MESSAGES
 	public void msgAddGui(BankCustomerGui custGui) {
+		print("I have a gui");
 		this.gui = custGui;
 	}
 	//MESSAGES
@@ -40,7 +41,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgGoToTeller(Teller t) {
 		this.t = t;
 		event = CustEvent.GoToTeller;
-		print("going to teller "+ state + event);
+		print("going to teller ");
 		stateChanged();
 	}
 
@@ -68,7 +69,6 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	//SCHEDULER
 	public boolean pickAndExecuteAnAction() {
-		print("made it to scheduler");
 		if(state == CustState.InLine && event == CustEvent.GoToTeller){
 			sayHello();
 			return true;
@@ -99,7 +99,10 @@ public class CustomerRole extends Role implements BankCustomer{
 		guiGoHere(1);
 		print("say hello to teller");
 		guiGoHere(2);
-		this.t.msgHello(new CustInfo(myInfo));
+		print(myInfo.custName);
+		CustInfo tmp = new CustInfo(myInfo);
+		print(tmp.custName);
+		this.t.msgHello(tmp);
 		state = CustState.AtTeller;
 
 	}
@@ -124,9 +127,10 @@ public class CustomerRole extends Role implements BankCustomer{
 		print("made it to tell teller");
 	}
 	private void leave(){
-		
+
 		state = CustState.Left;	
 		guiGoHere(3);
+		gui.setPresent(false);
 		person.bankInfo = this.myInfo;
 		person.exitBuilding();
 		person.msgDoneWithJob();
@@ -135,12 +139,12 @@ public class CustomerRole extends Role implements BankCustomer{
 	private void processLoan(double approvedAmount){
 		double requestAmount = approvedAmount;  
 		if(approvedAmount< .75 * myInfo.loanRequestAmount)
-		  requestAmount = 0;
-		   
+			requestAmount = 0;
+
 		state = CustState.ProcessLoan;
-		 t.msgITakeIt(requestAmount);
-		 myInfo.loanAmount = requestAmount;
-		 myInfo.loanRequestAmount = 0;
+		t.msgITakeIt(requestAmount);
+		myInfo.loanAmount = requestAmount;
+		myInfo.loanRequestAmount = 0;
 	}
 	@Override
 	public PersonAgent returnPerson() {
@@ -149,18 +153,20 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgGuiIsAtDest() {
 		print("released a atDest");
 		atDest.release();
-		
+
 	}
 
 	private void guiGoHere(int place){
+		print(place+"");
+		if(gui != null)
 			gui.goTo(place);
 		try {
 			atDest.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		}
+		print(place+"");
+	}
 }
 
 

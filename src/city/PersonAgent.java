@@ -35,7 +35,7 @@ public class PersonAgent extends Agent
 	String name;
 	public int tiredLevel = 16;
 	public double cash = 100;
-	public CustInfo bankInfo = new CustInfo(this.name, this, null);
+	public CustInfo bankInfo;
 	public boolean rentDue = true;
 	public int criminalImpulse = 0;
 	public int hungerLevel = 0;
@@ -96,12 +96,14 @@ public class PersonAgent extends Agent
 		inventory.put("Pizza", 3);
 		inventory.put("Chicken", 3);
 		personGui = new PersonGui(this, gui);
+		bankInfo = new CustInfo(this.name, this, null);
 	}
 
 	public PersonAgent(String name, MainGui gui, CityData cd) {
 		this.name = name;
 		this.gui = gui;
 		this.cityData = cd;
+		bankInfo = new CustInfo(this.name, this, null);
 		/*MyOrder o1 = new MyOrder("Steak", 1);
                 MyOrder o2 = new MyOrder("Salad", 1);
                 MyOrder o3 = new MyOrder("Pizza", 1);
@@ -156,7 +158,7 @@ public class PersonAgent extends Agent
 		this.home = home;
 		homeNumber = home.buildingNumber;
 	}
-	
+
 	public void setInventory(int num) {
 		for (String key : inventory.keySet()) {
 			inventory.put(key, num);
@@ -221,14 +223,14 @@ public class PersonAgent extends Agent
 
 	public void msgAtBuilding() {//from animation
 		//print("msgAtBuilding() called");
-	atBuilding.release();// = true;
-	stateChanged();
+		atBuilding.release();// = true;
+		stateChanged();
 	}
 
 	public void msgAtBed() {//from animation
 		//print("msgAtBed() called");
-	atBed.release();// = true;
-	stateChanged();
+		atBed.release();// = true;
+		stateChanged();
 	}
 
 	public void msgAtEntrance() {//from animation
@@ -265,514 +267,518 @@ public class PersonAgent extends Agent
 		if(anyActive) {
 			return false;
 		}
-
+		if(this.name.contains("BankCust")){
+			print(bigState + " " +LOWMONEY+" "+cash);
+		
+		}
 		switch(bigState)
 		{
-		case atHome: {
-			if (homeState == HomeState.sleeping) {
-				if(cityData.hour >= 0 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
-					//delete the && false when the actual rule is implemented
-					WakeUp();
-					return true;
-				}
-				else if (cityData.hour>=2 && job.equals("MarketEmployee")) {
-					//print(getJob());
-					WakeUp();
-					return true;
-				}
-				else if (cityData.hour>=6) {
-					WakeUp();
-					return true;
-				}
+		
+	case atHome: {
+		if (homeState == HomeState.sleeping) {
+			if(cityData.hour >= 0 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
+				//delete the && false when the actual rule is implemented
+				WakeUp();
+				return true;
+			}
+			else if (cityData.hour>=2 && job.equals("MarketEmployee")) {
+				//print(getJob());
+				WakeUp();
+				return true;
+			}
+			else if (cityData.hour>=6) {
+				WakeUp();
+				return true;
+			}
 			return false; //put the agent thread back to sleep
-			}
+		}
 
-			if (tiredLevel >= TIRED) {
-				goToSleep();
-				return false; //intentional because the thread is being out to sleep
-			}
-			
-			if (hungerLevel >= HUNGRY) {
-				int num = (int) (Math.random() * 2);
-				if (num == 0) {
-					makeFood();
-					return true;
-				}
-				if (num == 1) {
-					leaveHome();
-					return true;
-				}
-			}
+		if (tiredLevel >= TIRED) {
+			goToSleep();
+			return false; //intentional because the thread is being out to sleep
+		}
 
-			if (goToWork && jobBuilding != null && (!home.manager.equals(this) && home instanceof Apartment)) {
+		if (hungerLevel >= HUNGRY) {
+			int num = (int) (Math.random() * 2);
+			if (num == 0) {
+				makeFood();
+				return true;
+			}
+			if (num == 1) {
 				leaveHome();
 				return true;
 			}
+		}
 
-			/*if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
+		if (goToWork && jobBuilding != null && (!home.manager.equals(this) && home instanceof Apartment)) {
+			leaveHome();
+			return true;
+		}
+
+		/*if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
 				payRent();
 				return true;
 			}*/
 
-			if (homeState == HomeState.onCouch) {
+		if (homeState == HomeState.onCouch) {
+			goToCouch();
+			return true;
+		}
+		if (homeState == HomeState.none) {
+			if (home instanceof Apartment && home.manager.equals(this) && lowInventory()) {
+				leaveHome();
+				return true;
+			}
+			else if (home instanceof Apartment && home.manager.equals(this)) {
 				goToCouch();
 				return true;
 			}
-			if (homeState == HomeState.none) {
-				if (home instanceof Apartment && home.manager.equals(this) && lowInventory()) {
-					leaveHome();
-					return true;
-				}
-				else if (home instanceof Apartment && home.manager.equals(this)) {
-					goToCouch();
-					return true;
-				}
-				else {
-					leaveHome();
-					return true;
-				}
-			}
-		}
-		case leaveHome: {
-			//personGui.DoGoToEntrance();
-			leaveHome();
-			return true;
-		}
-		case goToRestaurant: {
-			goToRestaurant();
-			return true;
-		}
-		case goHome: {
-			goHome();
-			return true;
-		}
-		case goToBank: {
-			goToBank();
-			return true;
-		}
-		case goToMarket: {
-			goToMarket();
-			return true;
-		}
-
-		case doingNothing: {
-			//Decide what the next BigState will be based on current parameters
-			if(goToWork && jobBuilding != null)
-			{
-				destinationBuilding = jobBuilding;
-				desiredRole = job;
-
-				if(destinationBuilding.type == BuildingType.market) {
-					bigState = BigState.goToMarket;
-					return true;
-				}
-				else if(destinationBuilding.type == BuildingType.bank) {
-					bigState = BigState.goToBank;
-					return true;
-				}
-				else if(destinationBuilding.type == BuildingType.restaurant) {
-					bigState = BigState.goToRestaurant;
-					return true;
-				}
-			}
-
-
-			if(hungerLevel >= STARVING) {
-				bigState = BigState.goToRestaurant;
-				desiredRole = "Customer";
+			else {
+				leaveHome();
 				return true;
 			}
-			if(cash <= LOWMONEY) {
-				bigState = BigState.goToBank;
-				desiredRole = "Customer";
-				return true;
-			}
-			// Inventory of food stuff
-			if(lowInventory()) {
+		}
+	}
+	case leaveHome: {
+		//personGui.DoGoToEntrance();
+		leaveHome();
+		return true;
+	}
+	case goToRestaurant: {
+		goToRestaurant();
+		return true;
+	}
+	case goHome: {
+		goHome();
+		return true;
+	}
+	case goToBank: {
+		goToBank();
+		return true;
+	}
+	case goToMarket: {
+		goToMarket();
+		return true;
+	}
+
+	case doingNothing: {
+		//Decide what the next BigState will be based on current parameters
+		if(goToWork && jobBuilding != null)
+		{
+			destinationBuilding = jobBuilding;
+			desiredRole = job;
+
+			if(destinationBuilding.type == BuildingType.market) {
 				bigState = BigState.goToMarket;
-				desiredRole = "MarketCustomer";
 				return true;
 			}
-
-			if(hungerLevel >= HUNGRY) {
+			else if(destinationBuilding.type == BuildingType.bank) {
+				bigState = BigState.goToBank;
+				return true;
+			}
+			else if(destinationBuilding.type == BuildingType.restaurant) {
 				bigState = BigState.goToRestaurant;
-				desiredRole = "Customer";
 				return true;
 			}
-			
-			bigState = bigState.goHome;
-			homeState = homeState.onCouch;
+		}
+
+
+		if(hungerLevel >= STARVING) {
+			bigState = BigState.goToRestaurant;
+			desiredRole = "Customer";
+			return true;
+		}
+		if(cash <= LOWMONEY) {
+			bigState = BigState.goToBank;
+			desiredRole = "Customer";
+			return true;
+		}
+		// Inventory of food stuff
+		if(lowInventory()) {
+			bigState = BigState.goToMarket;
+			desiredRole = "MarketCustomer";
 			return true;
 		}
 
-
+		if(hungerLevel >= HUNGRY) {
+			bigState = BigState.goToRestaurant;
+			desiredRole = "Customer";
+			return true;
 		}
 
+		bigState = bigState.goHome;
+		homeState = homeState.onCouch;
+		return true;
+	}
+
+
+	}
+
+	return false;
+}
+
+public boolean lowInventory() {
+	for(String food : inventory.keySet()) {
+		if(inventory.get(food) < THRESHOLD) {
+			thingsToOrder.add(new MyOrder(food, 10));
+		}
+	}
+	if(!thingsToOrder.isEmpty()) {
+		return true;
+	}
+	else {
 		return false;
 	}
+}
 
-	public boolean lowInventory() {
-		for(String food : inventory.keySet()) {
-			if(inventory.get(food) < THRESHOLD) {
-				thingsToOrder.add(new MyOrder(food, 10));
-			}
+private void payRent() {
+	Apartment a = (Apartment) home;
+	bank.directDeposit(this, a.manager, rent);
+	rentDue = false;
+}
+
+private void WakeUp() {
+	goToWork = true;
+	tiredLevel = 0;
+	homeState = homeState.idle;
+	hungerLevel = 1000;
+}
+
+private void makeFood() {
+	hungerLevel = 0;
+	for (String key : inventory.keySet()) {
+		if (inventory.get(key) > 0) {
+			inventory.put(key, inventory.get(key) - 1);
+			break;
+		} 
+	}
+	personGui.DoGoToRefridgerator();
+	try {
+		isMoving.acquire();
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	personGui.DoGoToStove();
+	try {
+		isMoving.acquire();
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	timer.schedule(new TimerTask() {
+		public void run() {
+			homeState = HomeState.onCouch;
+			isMoving.release();
 		}
-		if(!thingsToOrder.isEmpty()) {
-			return true;
-		}
-		else {
-			return false;
-		}
+	}, 5000);
+	try {
+		isMoving.acquire();
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
 
-	private void payRent() {
-		Apartment a = (Apartment) home;
-		bank.getManager().msgDirectDeposit(this, a.manager, rent);
-		rentDue = false;
+}
+
+private void goToSleep() {
+	personGui.DoGoToBed();
+	try {
+		isMoving.acquire();
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+	homeState = HomeState.sleeping;
+}
 
-	private void WakeUp() {
-		goToWork = true;
-		tiredLevel = 0;
-		homeState = homeState.idle;
-		hungerLevel = 1000;
+private void goToCouch() {
+	personGui.DoGoToCouch();
+	try {
+		isMoving.acquire();
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
-
-	private void makeFood() {
-		hungerLevel = 0;
-		for (String key : inventory.keySet()) {
-			if (inventory.get(key) > 0) {
-				inventory.put(key, inventory.get(key) - 1);
-				break;
-			} 
+	timer.schedule(new TimerTask() {
+		public void run() {
+			homeState = HomeState.none;
 		}
-		personGui.DoGoToRefridgerator();
-		try {
-			isMoving.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		personGui.DoGoToStove();
-		try {
-			isMoving.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		timer.schedule(new TimerTask() {
-			public void run() {
-				homeState = HomeState.onCouch;
-				isMoving.release();
-			}
-		}, 5000);
-		try {
-			isMoving.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	}, 3000);
+}
 
-	}
+protected void goToRandomPlace() {
+	//personGui.DoGoToRandomPlace();
+}
 
-	private void goToSleep() {
-		personGui.DoGoToBed();
-		try {
-			isMoving.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		homeState = HomeState.sleeping;
-	}
+protected void goToRestaurant() {
+	int restNumber;
+	if(!goToWork || jobBuilding == null)
+	{
 
-	private void goToCouch() {
-		personGui.DoGoToCouch();
-		try {
-			isMoving.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		timer.schedule(new TimerTask() {
-			public void run() {
-				homeState = HomeState.none;
-			}
-		}, 3000);
-	}
-
-	protected void goToRandomPlace() {
-		//personGui.DoGoToRandomPlace();
-	}
-
-	protected void goToRestaurant() {
-		int restNumber;
-		if(!goToWork || jobBuilding == null)
+		while (true)
 		{
-			
-			while (true)
-			{
-				restNumber = 0;
-				//restNumber = (int)(12+(int)(Math.random()*6));
-				if(restNumber >= 17)
-				{
-					bigState = BigState.goHome;
-					return;
-				}
-				else if(((MQRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
-					break;
-			}
-			destinationBuilding = cityData.restaurants.get(restNumber);
-		}
-		else
-		{
-			//destinationBuilding = jobBuilding;
 			restNumber = 0;
-			destinationBuilding = cityData.restaurants.get(restNumber);
-		}
-		
-		if(destinationBuilding != currentBuilding)
-		{
-			takeBusToDestination();
-
-			personGui.DoGoToBuilding(restNumber);
-			atBuilding.drainPermits();
-			try {
-				atBuilding.acquire();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			currentBuilding = cityData.restaurants.get(restNumber);
-		}
-		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)destinationBuilding;
-
-		if(goToWork)
-		{
-			if(desiredRole.equals("Host") && !restaurant.hasHost()) {
-				personGui.DoGoIntoBuilding();
-				currentBuilding.EnterBuilding(this, desiredRole);
+			//restNumber = (int)(12+(int)(Math.random()*6));
+			if(restNumber >= 17)
+			{
+				bigState = BigState.goHome;
 				return;
 			}
-			else if(restaurant.openToEmployee())
-			{
-				if(desiredRole.equals("Waiter") || desiredRole.equals("Cook")) {
-					personGui.DoGoIntoBuilding();
-					currentBuilding.EnterBuilding(this, desiredRole);
-					return;
-				}
-				else if(desiredRole.equals("Cashier") && !restaurant.hasCashier()) {
-					personGui.DoGoIntoBuilding();
-					currentBuilding.EnterBuilding(this, desiredRole);
-					return;
-				}
-			}
+			else if(((MQRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+				break;
 		}
-		else if(desiredRole.equals("Customer") && restaurant.isOpen()) {
+		destinationBuilding = cityData.restaurants.get(restNumber);
+	}
+	else
+	{
+		//destinationBuilding = jobBuilding;
+		restNumber = 0;
+		destinationBuilding = cityData.restaurants.get(restNumber);
+	}
+
+	if(destinationBuilding != currentBuilding)
+	{
+		takeBusToDestination();
+
+		personGui.DoGoToBuilding(restNumber);
+		atBuilding.drainPermits();
+		try {
+			atBuilding.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		currentBuilding = cityData.restaurants.get(restNumber);
+	}
+	MQRestaurantBuilding restaurant = (MQRestaurantBuilding)destinationBuilding;
+
+	if(goToWork)
+	{
+		if(desiredRole.equals("Host") && !restaurant.hasHost()) {
 			personGui.DoGoIntoBuilding();
 			currentBuilding.EnterBuilding(this, desiredRole);
 			return;
 		}
+		else if(restaurant.openToEmployee())
+		{
+			if(desiredRole.equals("Waiter") || desiredRole.equals("Cook")) {
+				personGui.DoGoIntoBuilding();
+				currentBuilding.EnterBuilding(this, desiredRole);
+				return;
+			}
+			else if(desiredRole.equals("Cashier") && !restaurant.hasCashier()) {
+				personGui.DoGoIntoBuilding();
+				currentBuilding.EnterBuilding(this, desiredRole);
+				return;
+			}
+		}
 	}
+	else if(desiredRole.equals("Customer") && restaurant.isOpen()) {
+		personGui.DoGoIntoBuilding();
+		currentBuilding.EnterBuilding(this, desiredRole);
+		return;
+	}
+}
 
-	protected void goHome() {
-		//int homeNumber = (int)((int)(Math.random()*11));
-		currentBuilding = cityData.buildings.get(this.home.buildingNumber);
-		personGui.DoGoToBuilding(this.home.buildingNumber); // 11 need to be replaced by the person's data of home number
-		atBuilding.drainPermits();
+protected void goHome() {
+	//int homeNumber = (int)((int)(Math.random()*11));
+	currentBuilding = cityData.buildings.get(this.home.buildingNumber);
+	personGui.DoGoToBuilding(this.home.buildingNumber); // 11 need to be replaced by the person's data of home number
+	atBuilding.drainPermits();
+	try {
+		atBuilding.acquire();
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	personGui.DoGoIntoBuilding();
+	if (home instanceof Home) {
+		currentBuilding.EnterBuilding(this, "");
+	}
+	if (home instanceof Apartment) {
+		Apartment a = (Apartment) home;
+		a.EnterBuilding(this, "");
+		personGui.DoGoToRoom(roomNumber);
 		try {
-			atBuilding.acquire();
+			isMoving.acquire();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		personGui.DoGoIntoBuilding();
-		if (home instanceof Home) {
-			currentBuilding.EnterBuilding(this, "");
-		}
-		if (home instanceof Apartment) {
-			Apartment a = (Apartment) home;
-			a.EnterBuilding(this, "");
-			personGui.DoGoToRoom(roomNumber);
-			try {
-				isMoving.acquire();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			a.rooms.get(roomNumber).EnterBuilding(this, "");
-		}
-		bigState = BigState.atHome;
-		homeState = HomeState.onCouch;
-		//hungerLevel = 10000000;
+		a.rooms.get(roomNumber).EnterBuilding(this, "");
 	}
+	bigState = BigState.atHome;
+	homeState = HomeState.onCouch;
+	//hungerLevel = 10000000;
+}
 
-	protected void leaveHome() {
-		currentBuilding = cityData.buildings.get(home.buildingNumber);
-		if (home instanceof Home) {
-			personGui.DoGoToEntrance();
-			atEntrance.drainPermits();
-			try {
-				atEntrance.acquire();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			personGui.DoLeaveBuilding();
-			currentBuilding.LeaveBuilding(this);
-		}
-		if (home instanceof Apartment) {
-			Apartment a = (Apartment) home;
-			personGui.DoGoToEntrance();
-			try {
-				isMoving.acquire();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			a.rooms.get(roomNumber).LeaveBuilding(this);
-			personGui.DoGoToHallway();
-			try {
-				isMoving.acquire();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			personGui.DoLeaveBuilding();
-			a.LeaveBuilding(this);
-		}
-		bigState = BigState.doingNothing;
-	}
-
-	protected void goToBank() {
-
-		destinationBuilding = cityData.bank;
-		takeBusToDestination();
-
-		personGui.DoGoToBuilding(18);
-		currentBuilding = cityData.buildings.get(18);
-		atBuilding.drainPermits();
+protected void leaveHome() {
+	currentBuilding = cityData.buildings.get(home.buildingNumber);
+	if (home instanceof Home) {
+		personGui.DoGoToEntrance();
+		atEntrance.drainPermits();
 		try {
-			atBuilding.acquire();
+			atEntrance.acquire();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		personGui.DoGoIntoBuilding();
-		print("entering the building and desired role is "+desiredRole);
-		currentBuilding.EnterBuilding(this,desiredRole );
-
+		personGui.DoLeaveBuilding();
+		currentBuilding.LeaveBuilding(this);
 	}
-
-	protected void goToMarket() {
-		destinationBuilding = cityData.market;
-
-		takeBusToDestination();
-
-		personGui.DoGoToBuilding(19);
-		currentBuilding = cityData.buildings.get(19);
-		atBuilding.drainPermits();
+	if (home instanceof Apartment) {
+		Apartment a = (Apartment) home;
+		personGui.DoGoToEntrance();
 		try {
-			atBuilding.acquire();
+			isMoving.acquire();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		a.rooms.get(roomNumber).LeaveBuilding(this);
+		personGui.DoGoToHallway();
+		try {
+			isMoving.acquire();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		personGui.DoGoIntoBuilding();
-		currentBuilding.EnterBuilding(this,desiredRole );
-
+		personGui.DoLeaveBuilding();
+		a.LeaveBuilding(this);
 	}
+	bigState = BigState.doingNothing;
+}
 
-	public void takeBusToDestination()
+protected void goToBank() {
+
+	destinationBuilding = cityData.bank;
+	takeBusToDestination();
+
+	personGui.DoGoToBuilding(18);
+	currentBuilding = cityData.buildings.get(18);
+	atBuilding.drainPermits();
+	try {
+		atBuilding.acquire();
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	personGui.DoGoIntoBuilding();
+	print("entering the building and desired role is "+desiredRole);
+	currentBuilding.EnterBuilding(this,desiredRole );
+
+}
+
+protected void goToMarket() {
+	destinationBuilding = cityData.market;
+
+	takeBusToDestination();
+
+	personGui.DoGoToBuilding(19);
+	currentBuilding = cityData.buildings.get(19);
+	atBuilding.drainPermits();
+	try {
+		atBuilding.acquire();
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	personGui.DoGoIntoBuilding();
+	currentBuilding.EnterBuilding(this,desiredRole );
+
+}
+
+public void takeBusToDestination()
+{
+	destinationBusStop = currentBuilding.busStop;
+	personGui.DoGoToBusStop(destinationBusStop);
+	isMoving.drainPermits();
+	try
 	{
-		destinationBusStop = currentBuilding.busStop;
-		personGui.DoGoToBusStop(destinationBusStop);
-		isMoving.drainPermits();
-		try
-		{
-			isMoving.acquire();
-		}
-		catch(Exception e){}
-		currentBusStop = destinationBusStop;
-		destinationBusStop = destinationBuilding.busStop;
-
-		currentBusStop.msgWaitingAtStop(this, destinationBusStop);
-		try
-		{
-			isMoving.acquire();
-		}
-		catch(Exception e) {}
-
-		currentBus = cityData.buses.get(0);
-		personGui.DoGoToBus(currentBus);
-		try
-		{
-			isMoving.acquire();
-		}
-		catch(Exception e) {}
-
-		cityData.guis.remove(personGui);
-		currentBus.msgOnBus();
-		try
-		{
-			isMoving.acquire();
-		}
-		catch(Exception e) {}
-
-		cityData.guis.add(personGui);
-		personGui.setXPos(currentBus.getX());
-		personGui.setYPos(currentBus.getY());
-		currentBus.msgOnBus();
-		personGui.DoGoToBusStop(destinationBusStop);
-		try
-		{
-			isMoving.acquire();
-		}
-		catch(Exception e) {}
+		isMoving.acquire();
 	}
+	catch(Exception e){}
+	currentBusStop = destinationBusStop;
+	destinationBusStop = destinationBuilding.busStop;
 
-	public void setRoomNumber(int number) {
-		roomNumber = number;
-	}
-
-	public int getRoomNumber() {
-		return roomNumber;
-	}
-
-	protected void ReactToFire() {
-		System.out.println(name +": Stop, Drop, and Roll ");
-		emergencyState = EmergencyState.none;
-	}
-
-	public void exitBuilding()
+	currentBusStop.msgWaitingAtStop(this, destinationBusStop);
+	try
 	{
-		print("Exiting the building");
-		bigState = BigState.doingNothing;
-		cityData.addGui(personGui);
+		isMoving.acquire();
 	}
-	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
-	protected void stateChanged() {
-		super.stateChanged();
-	}
+	catch(Exception e) {}
 
-	/*GETTERS AND SETTERS*/
-	public String getName() {
-		return name;
+	currentBus = cityData.buses.get(0);
+	personGui.DoGoToBus(currentBus);
+	try
+	{
+		isMoving.acquire();
 	}
+	catch(Exception e) {}
 
-	public void setGui(PersonGui g) {
-		personGui = g;
+	cityData.guis.remove(personGui);
+	currentBus.msgOnBus();
+	try
+	{
+		isMoving.acquire();
 	}
+	catch(Exception e) {}
 
-	public PersonGui getGui() {
-		return personGui;
+	cityData.guis.add(personGui);
+	personGui.setXPos(currentBus.getX());
+	personGui.setYPos(currentBus.getY());
+	currentBus.msgOnBus();
+	personGui.DoGoToBusStop(destinationBusStop);
+	try
+	{
+		isMoving.acquire();
 	}
+	catch(Exception e) {}
+}
 
-	public String getJob() {
-		return job;
-	}
+public void setRoomNumber(int number) {
+	roomNumber = number;
+}
 
-	public int getHomeNumber() {
-		return homeNumber;
-	}
+public int getRoomNumber() {
+	return roomNumber;
+}
+
+protected void ReactToFire() {
+	System.out.println(name +": Stop, Drop, and Roll ");
+	emergencyState = EmergencyState.none;
+}
+
+public void exitBuilding()
+{
+	print("Exiting the building");
+	bigState = BigState.doingNothing;
+	cityData.addGui(personGui);
+}
+/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
+protected void stateChanged() {
+	super.stateChanged();
+}
+
+/*GETTERS AND SETTERS*/
+public String getName() {
+	return name;
+}
+
+public void setGui(PersonGui g) {
+	personGui = g;
+}
+
+public PersonGui getGui() {
+	return personGui;
+}
+
+public String getJob() {
+	return job;
+}
+
+public int getHomeNumber() {
+	return homeNumber;
+}
 }

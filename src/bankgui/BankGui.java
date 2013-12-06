@@ -22,7 +22,7 @@ public class BankGui extends JFrame implements GuiPositions, ActionListener {
 
 			//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			setBounds(0,0,screenSize.width/2, screenSize.height/2);
+			setBounds(0,0,600, 400);
 			setLocation(screenSize.width/2-this.getSize().width/2, screenSize.height/2-this.getSize().height/2);
 			setLayout(new GridLayout(0,2));
 			

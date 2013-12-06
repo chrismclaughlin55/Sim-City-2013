@@ -20,6 +20,8 @@ public class Bank extends Building {
 	Map<PersonAgent, CustomerRole> existingCustRoles;
 	Map<PersonAgent, BankManagerRole> existingManagerRoles;
 	Map<PersonAgent, TellerRole> existingTellerRoles;
+	private Map<PersonAgent, CustInfo> CustAccounts;
+	private Map<String, CustInfo> BusinessAccounts;
 	public Bank(int xPos, int yPos, int width, int height, String name, BuildingType bank, MainGui mainGui, CityData cd) {
 		super(xPos, yPos, width, height, name, bank, mainGui);
 		cityData = cd;
@@ -30,6 +32,11 @@ public class Bank extends Building {
 		existingCustRoles = new HashMap<PersonAgent, CustomerRole>();
 		existingManagerRoles = new HashMap<PersonAgent, BankManagerRole>();
 		existingTellerRoles = new HashMap<PersonAgent, TellerRole>();
+		
+		//accounts
+		CustAccounts = new HashMap<PersonAgent, CustInfo>();
+		BusinessAccounts = new HashMap<String, CustInfo>();
+		
 	}
 	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
@@ -62,6 +69,7 @@ public class Bank extends Building {
 					BankCustomerGui custGui = new BankCustomerGui(role);
 					role.msgAddGui(custGui);
 					p.msgAssignRole(role);
+					p.bankInfo.customer = role;
 					bankGui.animationPanel.addGui(custGui);
 					p.print("current manager is " + currentManager.getName());
 					currentManager.msgINeedService(role);
@@ -71,6 +79,8 @@ public class Bank extends Building {
 					existingCustRoles.put(p, newRole);
 					BankCustomerGui custGui = new BankCustomerGui(newRole);
 					p.msgAssignRole(newRole);
+					newRole.msgAddGui(custGui);
+					p.bankInfo.customer = newRole;
 					bankGui.animationPanel.addGui(custGui);
 					p.print("current manager is " + currentManager.getName());
 					currentManager.msgINeedService(newRole);
@@ -96,6 +106,7 @@ public class Bank extends Building {
 					existingTellerRoles.put(p, newRole);
 					TellerGui tellerGui = new TellerGui(newRole);
 					p.msgAssignRole(newRole);
+					newRole.msgAddGui(tellerGui);
 					bankGui.animationPanel.addGui(tellerGui);
 					p.print("current manager is " + currentManager.getName());
 					currentManager.msgAddTeller(newRole);
@@ -104,11 +115,28 @@ public class Bank extends Building {
 			}
 		}
 	}
-	public BankManagerRole getManager(){
-		return currentManager;
+	public void directDeposit(PersonAgent sender, PersonAgent reciever, double amount){
+		if(currentManager != null){
+			currentManager.msgDirectDeposit(sender, reciever, amount);
+		}
+		else{
+			CustInfo send = getAccount(sender);
+			CustInfo recieve = getAccount(reciever);
+			send.moneyInAccount-=amount;
+			recieve.moneyInAccount+=amount;
+			sender.print("deposited money in "+reciever.getName()+" account");
+		}
 	}
 	
-	/*public void test(){
+	public CustInfo getAccount(PersonAgent person){
+		CustInfo personInfo = CustAccounts.get(person);
+		if(personInfo == null){
+			personInfo = new CustInfo(person.bankInfo);
+		}
+		return personInfo;
+	}
+	
+	public void test(){
 		System.out.println("testing bank");
 		PersonAgent p1 = new PersonAgent("Manager");
 		p1.startThread();
@@ -128,5 +156,5 @@ public class Bank extends Building {
 		p3.startThread();
 		EnterBuilding(p3, "Customer");
 		
-	}*/
+	}
 }
