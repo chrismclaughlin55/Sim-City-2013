@@ -24,6 +24,7 @@ public class MQRestaurantBuilding extends Building
 	
 	public void EnterBuilding(PersonAgent person, String roleRequest)
 	{
+		System.out.println(person.getName() + ": Entering RestaurantMQ as " + roleRequest);
 		if(roleRequest.equals("Customer"))
 		{
 			restPanel.addCustomer(person);
@@ -45,10 +46,11 @@ public class MQRestaurantBuilding extends Building
 			restPanel.addHost(person);
 			isOpen = true;
 		}
+		
 	}
 	
 	public boolean isOpen()
-	{
+	{	
 		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
 	}
 	

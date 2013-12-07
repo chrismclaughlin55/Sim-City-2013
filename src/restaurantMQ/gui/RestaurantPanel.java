@@ -460,7 +460,7 @@ public class RestaurantPanel extends JPanel {
     	synchronized(customers) {
 	    	for(Customer c : customers)
 	    	{
-	    		if(((MQCustomerRole)c).isActive())
+	    		if(c instanceof MQCustomerRole && ((MQCustomerRole)c).isActive())
 	    		{
 	    			++count;
 	    		}
