@@ -370,7 +370,7 @@ public class RestaurantPanel extends JPanel {
 	    			return;
 	    		}
 	    	}
-    	}
+    	
     	
     	final JCheckBox breakBox = new JCheckBox("");
     	MQWaiterRole w = new MQWaiterRole(person, this, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu), breakBox);
@@ -407,6 +407,7 @@ public class RestaurantPanel extends JPanel {
 		
 		//Start the thread
 		person.msgAssignRole(w);
+    	}
     }
     
     public void addHost(PersonAgent person)
