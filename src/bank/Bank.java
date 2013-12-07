@@ -58,7 +58,6 @@ public class Bank extends Building {
 				p.msgAssignRole(existingManagerRoles.get(p));
 				currentManager = existingManagerRoles.get(p);
 				cityData.buildings.get(18).manager = currentManager.getPerson();
-				p.print("current manager is " + currentManager.getName());
 				}
 			}
 		}
@@ -71,7 +70,6 @@ public class Bank extends Building {
 					p.msgAssignRole(role);
 					p.bankInfo.customer = role;
 					bankGui.animationPanel.addGui(custGui);
-					p.print("current manager is " + currentManager.getName());
 					currentManager.msgINeedService(role);
 				}
 				else{
@@ -82,7 +80,6 @@ public class Bank extends Building {
 					newRole.msgAddGui(custGui);
 					p.bankInfo.customer = newRole;
 					bankGui.animationPanel.addGui(custGui);
-					p.print("current manager is " + currentManager.getName());
 					currentManager.msgINeedService(newRole);
 				}
 			}
@@ -90,7 +87,6 @@ public class Bank extends Building {
 		if(roleRequest.equals("BankTeller")){
 			if(isOpen()){
 				if(existingTellerRoles.get(p) != null){
-					p.print("teller role existed for me");
 					TellerRole role = existingTellerRoles.get(p);
 					TellerGui tellerGui = new TellerGui(existingTellerRoles.get(p));
 					role.msgAddGui(tellerGui);
@@ -101,14 +97,12 @@ public class Bank extends Building {
 					role.msgAddManager(currentManager);
 				}
 				else{
-					p.print("assigned teller gui");
 					TellerRole newRole = new TellerRole(p);
 					existingTellerRoles.put(p, newRole);
 					TellerGui tellerGui = new TellerGui(newRole);
 					p.msgAssignRole(newRole);
 					newRole.msgAddGui(tellerGui);
 					bankGui.animationPanel.addGui(tellerGui);
-					p.print("current manager is " + currentManager.getName());
 					currentManager.msgAddTeller(newRole);
 					newRole.msgAddManager(currentManager);
 				}
@@ -124,7 +118,6 @@ public class Bank extends Building {
 			CustInfo recieve = getAccount(reciever);
 			send.moneyInAccount-=amount;
 			recieve.moneyInAccount+=amount;
-			sender.print("deposited money in "+reciever.getName()+" account");
 		}
 	}
 	

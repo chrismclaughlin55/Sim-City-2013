@@ -268,7 +268,7 @@ public class PersonAgent extends Agent
 			return false;
 		}
 		if(this.name.contains("BankCust")){
-			print(bigState + " " +LOWMONEY+" "+cash);
+			//print(bigState + " " +LOWMONEY+" "+cash);
 		
 		}
 		switch(bigState)
