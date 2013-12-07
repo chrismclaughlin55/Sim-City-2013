@@ -21,7 +21,11 @@ public class TellerRole extends Role implements Teller{
 	State state;
 	Event event;
 	private TellerGui gui;
+
 	private Semaphore atDest = new Semaphore(0 ,true);
+
+	private Semaphore atHome = new Semaphore(0, true);
+
 
 	//Constructor
 	public TellerRole(PersonAgent person) {
@@ -35,6 +39,15 @@ public class TellerRole extends Role implements Teller{
 	public void msgAddGui(TellerGui tellerGui) {
 		this.gui = tellerGui;
 	}
+	public void msgWaitForGui(){
+		try {
+			atHome.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	//MESSAGES
 	public void msgAddManager(BankManagerRole bm){
 		this.bm = bm;
@@ -50,12 +63,14 @@ public class TellerRole extends Role implements Teller{
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
 		event = Event.recievedInfo;
+
 //TODO Problem here
 		if(info != null)
 			this.currentCustInfo = info;
 		else{ 
 			this.currentCustInfo = person.bankInfo;
 		}
+
 		stateChanged();
 	}
 
@@ -95,7 +110,9 @@ public class TellerRole extends Role implements Teller{
 			return true;
 		}
 		if(state == State.waitingForResponse && event == Event.recievedDeposit){
+			print("made it to sched procOrd");
 			processOrder();
+			
 			return true;
 		}
 		if(state == State.doneWithCustomer && event == Event.updatedBank){
@@ -110,10 +127,12 @@ public class TellerRole extends Role implements Teller{
 			processOrder();
 			return true;
 		}
+
 		if(person.cityData.hour > Bank.CLOSINGTIME && bm.getLine().size()==0){
 			this.leaveBank();
 			return true;
 		}
+
 		return false;
 	}
 	//ACTIONS
@@ -143,7 +162,9 @@ public class TellerRole extends Role implements Teller{
 
 	private void processOrder() {
 		//TODO this could cause problems. could lose semaphore by updating event in action
+		print("processing order for "+currentCustInfo.custName);
 		bm.msgUpdateInfo(currentCustInfo, this);
+		currentCustInfo.customer.msgHaveANiceDay(currentCustInfo.depositAmount);
 		state = State.doneWithCustomer;
 		event = Event.updatedBank;
 	}

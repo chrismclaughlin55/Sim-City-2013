@@ -56,6 +56,7 @@ public class BankCustomerGui implements GuiPositions, Gui {
 		isPresent = b;
 		
 	}
+
 	public void goTo(int place){
 		if(place == 0){
 			xDestination = linex;
@@ -77,6 +78,5 @@ public class BankCustomerGui implements GuiPositions, Gui {
 		}
 		atDest = false;
 	}
-	
 
 }
