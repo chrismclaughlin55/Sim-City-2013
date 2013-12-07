@@ -46,6 +46,7 @@ public class BankManagerRole extends Role implements BankManager {
 	}
 	//Direct Deposit Message
 	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
+
 		CustInfo send = getAccount(payer);
 		CustInfo recieve = getAccount(reciever);
 		send.moneyInAccount-=payment;
@@ -55,6 +56,7 @@ public class BankManagerRole extends Role implements BankManager {
 	@Override
 	public void msgINeedService(CustomerRole c) {
 		getLine().add((CustomerRole) c);
+
 		stateChanged();
 	}
 
@@ -63,10 +65,14 @@ public class BankManagerRole extends Role implements BankManager {
 		for( myTeller mt: tellers){
 			if(mt.t.equals(t)){
 				mt.state = tellerState.needsInfo;
+
+				print("sent info for "+c.getName());
+
 				mt.c = c;
 			}
 		}
 		stateChanged();
+
 	}
 
 	@Override
@@ -74,8 +80,11 @@ public class BankManagerRole extends Role implements BankManager {
 		for(myTeller mt: tellers){
 			if(mt.t.equals(t)){
 				mt.state = tellerState.updateInfo;
+				print("recieved update info for "+t.currentCustInfo.custName);
+
 			}
 		}
+
 		stateChanged();
 	}
 	public void msgLeavingNow(TellerRole tellerRole) {
@@ -97,6 +106,7 @@ public class BankManagerRole extends Role implements BankManager {
 				helpCustomer(getLine().remove(0), t);
 				return true;
 			}
+
 		}
 		for(myTeller t: tellers){
 			if(t.state == tellerState.needsInfo){
@@ -122,12 +132,13 @@ public class BankManagerRole extends Role implements BankManager {
 		}
 		return false;
 	}
+	//ACTIONS
 	private void leave() {
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();
 	}
-	//ACTIONS
+
 	private void helpCustomer(CustomerRole c, myTeller t) {
 		t.c = c;
 		CustAccounts.put(c.getPerson(), c.getPerson().bankInfo);
@@ -143,6 +154,8 @@ public class BankManagerRole extends Role implements BankManager {
 	}
 
 	private void updatedb(myTeller t) {
+		print("made it to update database");
+		CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
 		t.state = tellerState.available;
 
 	}
@@ -156,7 +169,6 @@ public class BankManagerRole extends Role implements BankManager {
 		}
 		return personInfo;
 	}
-
 
 }
 

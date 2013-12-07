@@ -16,7 +16,10 @@ public class TellerGui implements GuiPositions, Gui {
 	private int yPos;
 	private int yDestination;
 	private boolean isPresent = true;
+
 	private boolean atDest = false;
+
+
 	public TellerGui(TellerRole tellerRole) {
 		this.teller = tellerRole;
 		xPos = doorx;
@@ -28,31 +31,36 @@ public class TellerGui implements GuiPositions, Gui {
 
 	@Override
 	public void updatePosition() {
-;
-		if (xPos < xDestination)
-			xPos++;
-		else if (xPos > xDestination)
-			xPos--;
+		if(!atDest){
+			if (xPos < xDestination)
+				xPos++;
+			else if (xPos > xDestination)
+				xPos--;
 
-		if (yPos < yDestination)
-			yPos++;
-		else if (yPos > yDestination)
-			yPos--;
-		if(xPos == xDestination && yPos == yDestination){
-			if(!atDest){
-				teller.msgGuiIsAtDest();
-				atDest = true;
+			if (yPos < yDestination)
+				yPos++;
+			else if (yPos > yDestination)
+				yPos--;
+
+			if(xPos == xDestination && yPos == yDestination){
+				if(!atDest){
+					teller.msgGuiIsAtDest();
+					atDest = true;
+				}
+
 			}
+
 		}
 
 	}
-	
+
+
 
 	@Override
 	public void draw(Graphics2D g) {
 		g.setColor(Color.red);
 		g.fillRect(xPos, yPos, 10, 10);
-		}
+	}
 
 
 	@Override
