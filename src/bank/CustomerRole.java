@@ -33,7 +33,6 @@ public class CustomerRole extends Role implements BankCustomer{
 	}
 	//GUI MESSAGES
 	public void msgAddGui(BankCustomerGui custGui) {
-		print("I have a gui");
 		this.gui = custGui;
 	}
 	//MESSAGES
@@ -42,7 +41,6 @@ public class CustomerRole extends Role implements BankCustomer{
 		this.t = t;
 		event = CustEvent.GoToTeller;
 		print("going to teller ");
-
 		stateChanged();
 	}
 
@@ -101,11 +99,8 @@ public class CustomerRole extends Role implements BankCustomer{
 	//ACTIONS
 	private void sayHello(){
 		guiGoHere(1);
-		print("say hello to teller");
 		guiGoHere(2);
-		print(myInfo.custName);
 		CustInfo tmp = new CustInfo(myInfo);
-		print(tmp.custName);
 		this.t.msgHello(tmp);
 		state = CustState.AtTeller;
 
@@ -130,7 +125,7 @@ public class CustomerRole extends Role implements BankCustomer{
 			t.msgDeposit(depositAmount);
 
 		}
-	
+
 	private void leave(){
 
 		state = CustState.Left;	
@@ -157,14 +152,12 @@ public class CustomerRole extends Role implements BankCustomer{
 	}
 
 	public void msgGuiIsAtDest() {
-		print("released a atDest");
 		atDest.release();
 
 
 	}
 
 	private void guiGoHere(int place){
-		print(place+"");
 		if(gui != null)
 			gui.goTo(place);
 		try {
@@ -172,7 +165,6 @@ public class CustomerRole extends Role implements BankCustomer{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		print(place+"");
 	}
 }
 

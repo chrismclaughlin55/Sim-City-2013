@@ -42,7 +42,6 @@ public class BankManagerRole extends Role implements BankManager {
 	//MESSAGES
 	public void msgAddTeller(TellerRole newRole) {
 		tellers.add(new myTeller(newRole));
-		print("added teller " + newRole.name);
 
 	}
 	//Direct Deposit Message
@@ -52,12 +51,10 @@ public class BankManagerRole extends Role implements BankManager {
 		CustInfo recieve = getAccount(reciever);
 		send.moneyInAccount-=payment;
 		recieve.moneyInAccount+=payment;
-		print(payer.getName() + " deposited money in "+reciever.getName()+" account");
 		stateChanged();
 	}
 	@Override
 	public void msgINeedService(CustomerRole c) {
-		print(c.getName()+" Needs service");
 		getLine().add((CustomerRole) c);
 
 		stateChanged();
@@ -68,6 +65,7 @@ public class BankManagerRole extends Role implements BankManager {
 		for( myTeller mt: tellers){
 			if(mt.t.equals(t)){
 				mt.state = tellerState.needsInfo;
+
 				print("sent info for "+c.getName());
 
 				mt.c = c;
@@ -83,6 +81,7 @@ public class BankManagerRole extends Role implements BankManager {
 			if(mt.t.equals(t)){
 				mt.state = tellerState.updateInfo;
 				print("recieved update info for "+t.currentCustInfo.custName);
+
 			}
 		}
 
@@ -92,7 +91,6 @@ public class BankManagerRole extends Role implements BankManager {
 		synchronized(tellers){ 
 			for(myTeller t: tellers){
 				if(t.t.equals(tellerRole)){
-					print("teller name "+tellerRole.getName());
 					t.state = tellerState.offDuty;
 
 				}
@@ -138,12 +136,10 @@ public class BankManagerRole extends Role implements BankManager {
 	private void leave() {
 		person.exitBuilding();
 		person.msgDoneWithJob();
-		doneWithRole();	
-		print("leaving bank. Bank Closed");
+		doneWithRole();
 	}
 
 	private void helpCustomer(CustomerRole c, myTeller t) {
-		print("sending "+c.getName()+" to teller");
 		t.c = c;
 		CustAccounts.put(c.getPerson(), c.getPerson().bankInfo);
 		c.msgGoToTeller(t.t);

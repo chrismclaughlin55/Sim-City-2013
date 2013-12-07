@@ -144,7 +144,6 @@ public class Bank extends Building {
 	}
 	
 	public void test(){
-		System.out.println("testing bank");
 		PersonAgent p1 = new PersonAgent("Manager");
 		p1.startThread();
 		manager = p1;
