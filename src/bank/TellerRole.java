@@ -120,7 +120,9 @@ public class TellerRole extends Role implements Teller{
 			return true;
 		}
 		if(state == State.waitingForResponse && event == Event.recievedDeposit){
+			print("made it to sched procOrd");
 			processOrder();
+			
 			return true;
 		}
 		if(state == State.doneWithCustomer && event == Event.updatedBank){
@@ -172,6 +174,7 @@ public class TellerRole extends Role implements Teller{
 
 	private void processOrder() {
 		//TODO this could cause problems. could lose semaphore by updating event in action
+		print("processing order for "+currentCustInfo.custName);
 		bm.msgUpdateInfo(currentCustInfo, this);
 		currentCustInfo.customer.msgHaveANiceDay(currentCustInfo.depositAmount);
 		state = State.doneWithCustomer;

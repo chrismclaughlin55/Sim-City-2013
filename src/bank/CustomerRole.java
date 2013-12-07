@@ -108,7 +108,6 @@ public class CustomerRole extends Role implements BankCustomer{
 		print(tmp.custName);
 		this.t.msgHello(tmp);
 		state = CustState.AtTeller;
-		guiGoHere(1);
 
 	}
 	private void tellTeller(){
