@@ -1,5 +1,5 @@
 NewPerson
-name Landy
+name Landy0
 cash 500
 bankMoney 500
 job Landlord
@@ -7,7 +7,7 @@ hunger 10
 inventory 10
 
 NewPerson
-name Landy
+name Landy1
 cash 500
 bankMoney 500
 job Landlord
@@ -15,7 +15,7 @@ hunger 10
 inventory 10
 
 NewPerson
-name Landy
+name Landy2
 cash 500
 bankMoney 500
 job Landlord
@@ -23,7 +23,23 @@ hunger 10
 inventory 10
 
 NewPerson
-name Landy
+name Landy3
+cash 500
+bankMoney 500
+job Landlord
+hunger 10
+inventory 7
+
+NewPerson
+name Landy4
+cash 500
+bankMoney 500
+job Landlord
+hunger 10
+inventory 6
+
+NewPerson
+name Landy5
 cash 500
 bankMoney 500
 job Landlord
