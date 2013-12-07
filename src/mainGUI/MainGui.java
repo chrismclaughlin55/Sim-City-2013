@@ -5,8 +5,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
@@ -17,6 +20,8 @@ import bankgui.BankGui;
 import city.Apartment;
 import city.Building;
 import city.BusAgent;
+import city.Home;
+import city.HomeGui;
 import city.PersonAgent;
 import city.PersonAgent.BigState;
 import city.PersonAgent.HomeState;
@@ -118,10 +123,11 @@ public class MainGui extends JFrame implements MouseListener {
 			while(scan.hasNextLine()) {
 				if(landlord<4) {
 					String newPerson = scan.next();
-
-					PersonAgent p = new PersonAgent("", this, mainAnimationPanel.cd);
+					String n = scan.next();
+					n = scan.next();
+					PersonAgent p = new PersonAgent(n, this, mainAnimationPanel.cd);
 					if(newPerson.equals("NewPerson")) {
-						for(int i=0; i<6; i++) {
+						for(int i=0; i<5; i++) {
 							String property = scan.next();
 							String temp = scan.next();
 							if(property.equals("name")) {
@@ -158,13 +164,19 @@ public class MainGui extends JFrame implements MouseListener {
 					p.setJobBuilding(mainAnimationPanel.cd.apartments.get(landlord));
 					landlord++;
 					p.startThread();
+					Apartment a = (Apartment) p.home;
+					a.apartmentGui.getAptInfoPanel().addTenant(p);
+					HomeGui hg = a.apartmentGui.getAptPanel().getRoom(0);
+    				hg.getHomeInfoPanel().addResident(p);
 					newPerson = null;
 				}
 				else {
 					String newPerson = scan.next();
 					if(newPerson.equals("NewPerson")) {
-						PersonAgent p = createPerson(null,null);
-						for(int i=0; i<6; i++) {
+						String n = scan.next();
+						n = scan.next();
+						PersonAgent p = createPerson(n,null);
+						for(int i=0; i<5; i++) {
 							String property = scan.next();
 							String temp = scan.next();
 							if(property.equals("name")) {
@@ -277,6 +289,8 @@ public class MainGui extends JFrame implements MouseListener {
     	for (Building b : mainAnimationPanel.cd.homes) {
     		if(!b.hasManager()) {
     			b.setManager(p);
+    			Home h = (Home) b;
+    			h.homeGui.getHomeInfoPanel().addResident(p);
     			return b;
     		}
     		//if(b.type==BuildingType.apartment) {
@@ -289,6 +303,9 @@ public class MainGui extends JFrame implements MouseListener {
     			if (!a.rooms.get(i).isOccupied) {
     				a.rooms.get(i).setTenant(p);
     				p.setRoomNumber(i);
+    				a.apartmentGui.getAptInfoPanel().addTenant(p);
+    				HomeGui hg = a.apartmentGui.getAptPanel().getRoom(i);
+    				hg.getHomeInfoPanel().addResident(p);
     				return b;
     			}
     		}

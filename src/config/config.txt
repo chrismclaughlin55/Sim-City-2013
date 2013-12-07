@@ -127,7 +127,7 @@ hunger 4
 inventory 10
 
 NewPerson
-name myName
+name Rupert
 cash 1000
 bankMoney 500
 job Unemployed

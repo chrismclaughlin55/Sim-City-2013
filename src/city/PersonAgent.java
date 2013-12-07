@@ -46,7 +46,7 @@ public class PersonAgent extends Agent
 	Building currentBuilding;
 	Building destinationBuilding;
 	Building jobBuilding;
-	Building home;
+	public Building home;
 	int homeNumber;
 	int roomNumber = -1;
 	int timeUnit = 5;
