@@ -45,9 +45,12 @@ public class CityData implements ActionListener {
 	public List<Apartment> apartments = Collections.synchronizedList(new ArrayList<Apartment>());
 	//ALSO needs a 2-d array of the entire place
 	int timeInterval;
+	public int day;
 	public int hour;
 	public int increment;
 	public CityData() {
+		day = 4;
+		//DAY 5 AND DAY 6 ARE WEEKENDS, 0-4 ARE WEEKDAYS
 		timeInterval=10;
 		hour = 0;
 		increment = 0;
@@ -66,6 +69,10 @@ public class CityData implements ActionListener {
 		increment++;
 		if(increment==incrementLimit) {
 			hour++;
+			if(hour==24) {
+				day++;
+				day = day%7;
+			}
 			hour = hour % 24;
 			//System.out.println(hour);
 			updatePeople();
