@@ -34,10 +34,6 @@ public class TellerRole extends Role implements Teller{
 	//GUI messages
 	public void msgAddGui(TellerGui tellerGui) {
 		this.gui = tellerGui;
-		if(gui != null)
-			print("gui added");
-		else
-			print("gui doesnt add");
 	}
 	//MESSAGES
 	public void msgAddManager(BankManagerRole bm){
@@ -47,9 +43,6 @@ public class TellerRole extends Role implements Teller{
 	@Override
 	public void msgHello(CustInfo c) {
 		currentCustInfo = c;
-		if(currentCustInfo != null)
-		print(c.custName + " said hello");
-		else print("currentCustInfo is null");
 		event = Event.recievedHello;
 		stateChanged();
 	}
@@ -62,7 +55,6 @@ public class TellerRole extends Role implements Teller{
 			this.currentCustInfo = info;
 		else{ 
 			this.currentCustInfo = person.bankInfo;
-			print("recieved info for "+ currentCustInfo.custName);
 		}
 		stateChanged();
 	}
@@ -72,8 +64,6 @@ public class TellerRole extends Role implements Teller{
 		currentCustInfo.depositAmount = 0;
 		currentCustInfo.moneyInAccount += money;
 		event = Event.recievedDeposit;
-		print("recieved deposit "+ money);
-		print("account now has " + currentCustInfo.moneyInAccount);
 		stateChanged();
 	}
 
@@ -128,13 +118,11 @@ public class TellerRole extends Role implements Teller{
 	}
 	//ACTIONS
 	private void ask() {
-		print("asked what to do");
 		currentCustInfo.customer.msgWhatWouldYouLike();
 		state = State.waitingForResponse;
 	}
 
 	private void getInfo() {
-		print("asking for info from manager");
 		bm.msgGiveMeInfo(currentCustInfo.customer, this);
 		state = State.waitingForInfo;
 	}
@@ -160,7 +148,6 @@ public class TellerRole extends Role implements Teller{
 		event = Event.updatedBank;
 	}
 	public void msgGuiIsAtDest() {
-		print("released atDest");
 		atDest.release();
 
 	}
