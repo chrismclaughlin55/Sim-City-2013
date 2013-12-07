@@ -303,6 +303,29 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		}
 		g2.drawString(clock, 20, 30);
 		
+		String day = null;
+		if(cd.day==0) {
+			day = "Monday";
+		}
+		else if(cd.day==1) {
+			day = "Tuesday";
+		} 
+		else if(cd.day==2) {
+			day = "Wednesday";
+		}
+		else if(cd.day==3) {
+			day = "Thursday";
+		}
+		else if(cd.day==4) {
+			day = "Friday";
+		}
+		else if(cd.day==5) {
+			day = "Saturday";
+		}
+		else if(cd.day==6) {
+			day = "Sunday";
+		}
+		g2.drawString(day, 20, 50);
 		synchronized(cd.guis){
 			for(Gui gui : cd.guis) {
 				if (gui.isPresent()) {
