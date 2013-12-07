@@ -24,8 +24,8 @@ public class PersonAgent extends Agent
 {
 	/*CONSTANTS*/
 
-	public static final int HUNGRY = 1007;
-	public static final int STARVING = 100014;
+	public static final int HUNGRY = 7;
+	public static final int STARVING = 14;
 	public static final int LOWMONEY = 20;
 
 	public static final int TIRED = 16;
