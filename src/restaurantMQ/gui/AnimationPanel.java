@@ -8,6 +8,7 @@ import city.gui.PersonGui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -24,7 +25,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
     private Image bufferImage;
     private Dimension bufferSize;
 
-    private List<Gui> guis = new ArrayList<Gui>();
+    private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
     
     private Vector<TableGui> tables = new Vector<TableGui>();
 
@@ -44,11 +45,14 @@ public class AnimationPanel extends JPanel implements ActionListener {
     }
 
 	public void actionPerformed(ActionEvent e) {
-		for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.updatePosition();
-            }
-        }
+		synchronized(guis)
+		{
+			for(Gui gui : guis) {
+	            if (gui.isPresent()) {
+	                gui.updatePosition();
+	            }
+	        }
+		}
 		repaint();  //Will have paintComponent called
 	}
 
@@ -65,11 +69,14 @@ public class AnimationPanel extends JPanel implements ActionListener {
         {
         	g2.fillRect(t.tableX, t.tableY, TABLEWIDTH, TABLEWIDTH);//200 and 250 need to be table params
         }
-
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.draw(g2);
-            }
+        
+        synchronized(guis)
+        {
+	        for(Gui gui : guis) {
+	            if (gui.isPresent()) {
+	                gui.draw(g2);
+	            }
+	        }
         }
     }
 

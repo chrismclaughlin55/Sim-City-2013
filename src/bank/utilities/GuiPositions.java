@@ -11,4 +11,5 @@ public interface GuiPositions {
 	public final int doory = 80;
 	public final int linex = 30;
 	public final int liney = 240;
+
 }

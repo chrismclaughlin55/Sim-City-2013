@@ -53,8 +53,7 @@ public class MainGui extends JFrame implements MouseListener {
     private int landlord = 0;
     //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
-    //public BusStopGui busStopGui will have a list of these and add them all
-    
+    //public BusStopGui busStopGui will have a list of these and add them all 
     /**
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
@@ -121,7 +120,7 @@ public class MainGui extends JFrame implements MouseListener {
     	}
 		if(fileExist) {
 			while(scan.hasNextLine()) {
-				if(landlord<4) {
+				if(landlord<6) {
 					String newPerson = scan.next();
 					String n = scan.next();
 					n = scan.next();
