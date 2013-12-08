@@ -2,7 +2,7 @@ package market;
 
 
 public class MyOrder {
-	String type; 
+	public String type; 
 	int amount;
 	int marketNum;
 	public enum OrderState {pending, fulfilled, unfulfilled};

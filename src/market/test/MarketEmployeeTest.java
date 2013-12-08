@@ -63,7 +63,7 @@ public class MarketEmployeeTest extends TestCase
 		PersonAgent person = new PersonAgent("Employee");
 		customer = new MockMarketCustomer("mockcustomer");
 		manager = new MockMarketManager("mockmanager");
-		employee = new MarketEmployeeRole(person, manager, inventory);
+		//employee = new MarketEmployeeRole(person, manager, inventory);
 		
 		customer2 = new MockMarketCustomer("mockcustomer2");
 

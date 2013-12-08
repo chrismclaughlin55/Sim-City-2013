@@ -113,6 +113,7 @@ public abstract class Building extends Rectangle2D.Double {
 	public boolean isOpen() {
 		return isOpen;
 	}
+	
 	public void setOpen(PersonAgent p) {
 		if (p.equals(manager)) {
 			isOpen = true;

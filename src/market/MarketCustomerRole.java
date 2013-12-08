@@ -5,23 +5,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import market.MyOrder.OrderState;
 import market.gui.CustomerGui;
 import market.interfaces.MarketCustomer;
 import city.PersonAgent;
 import city.Role;
+import city.TestPerson;
 
 public class MarketCustomerRole extends Role implements MarketCustomer {
 
 	private enum customerState {waiting, waitingForManager, readyToOrder, doneOrdering, readyToPay, donePaying, leaving, left};
 	private customerState state;
 	private List<Invoice> invoices = Collections.synchronizedList(new ArrayList<Invoice>());
-	private List<MyOrder> orders = Collections.synchronizedList(new ArrayList<MyOrder>());
+	public List<MyOrder> orders = Collections.synchronizedList(new ArrayList<MyOrder>());
 	private PersonAgent person = null;
 	private MarketManagerRole manager = null;
 	private MarketEmployeeRole employee = null;
 	private double amountDue = 0;
 	private CustomerGui gui = null;
-	
+
 	private Semaphore atDesk = new Semaphore(0,true);
 	private Semaphore left = new Semaphore(0,true);
 
@@ -35,6 +37,15 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 		state = customerState.waiting;
 		this.orders = orders;
 	}
+
+	/*public MarketCustomerRole(TestPerson person, MarketManagerRole manager, List<MyOrder> orders) {
+		super(person);
+		print ("Customer Role created");
+		this.person = person;
+		this.manager = manager;
+		state = customerState.waiting;
+		this.orders = orders;
+	}*/
 
 	public void msgWhatIsYourOrder(MarketEmployeeRole employee){
 		print("Received msgWhatIsYourOrder");
@@ -54,23 +65,26 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	} */
 
 	public void msgOrderFulfullied(List<Invoice> invoice, double amountDue) {
-		
+
 		this.amountDue = amountDue;
 		print ("Invoice size " + invoice.size() + " orders size " + orders.size() );
-		
-		for (MyOrder o : orders) {
-			
-			for (Invoice i : invoice) {
-				if (o.type.equals(i.type)) {
-					if (o.amount == i.amount) {
-						person.thingsToOrder.remove(o);
-						person.inventory.put(o.type, person.inventory.get(o.type) + i.amount);
+
+		synchronized(person.thingsToOrder)
+		{
+			synchronized(orders){
+				for (MyOrder o : orders) {
+					for (Invoice i : invoice) {
+						if (o.type.equals(i.type)) {
+							if (o.amount == i.amount) {
+								o.orderState = OrderState.fulfilled;
+								//person.inventory.put(o.type, person.inventory.get(o.type) + i.amount);
+							}
+						}
 					}
 				}
 			}
-			
 		}
-		
+
 		print ("I need to pay " + amountDue);
 		state = customerState.readyToPay;
 		stateChanged();
@@ -93,12 +107,12 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 			Order();
 			return true;
 		}
-		
+
 		if (state == customerState.leaving) {
 			LeaveMarket();
 			return true;
 		}
-		
+
 		if (state == customerState.waiting) {
 			manager.msgNeedToOrder(this);
 			state = customerState.waitingForManager;
@@ -122,12 +136,13 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 
 	private void PayBill() {
 		state = customerState.donePaying;
-		person.cash -= amountDue;
+		//person.cash -= amountDue;
 		employee.msgHereIsPayment(amountDue);
+		gui.TakeItems();
 		orders.clear();
 		invoices.clear();
 	}
-	
+
 	private void LeaveMarket() {
 		state = customerState.left;
 		gui.DoLeaveMarket();
@@ -137,26 +152,26 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void setGui (CustomerGui gui) {
 		this.gui = gui;
 	}
-	
-	
+
+
 	public CustomerGui getGui() {
 		return gui;
-		
+
 	}
 
 	public void msgAtDesk() {
 		atDesk.release();
 		stateChanged();
 	}
-	
+
 	public void msgLeft() {
 		left.release();
 		stateChanged();
 	}
-	
+
 
 }

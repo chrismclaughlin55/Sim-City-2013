@@ -25,5 +25,11 @@ public class MockBus implements Bus {
 		// TODO Auto-generated method stub
 		
 	}
+    
+    @Override
+	public int getRouteNumber() {
+		// TODO Auto-generated method stub
+		return 1;
+	}
 
 }

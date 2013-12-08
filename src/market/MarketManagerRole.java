@@ -17,9 +17,10 @@ import restaurantMQ.test.mock.LoggedEvent;
 import bank.BankManagerRole;
 import city.PersonAgent;
 import city.Role;
+import city.TestPerson;
 
 public class MarketManagerRole extends Role implements MarketManager{
-	public enum ManagerState {nothing, entering, managing, working, leaving};
+	public enum ManagerState {nothing, entering, setting, managing, working, leaving};
 	public ManagerState state;
 	double undepositedMoney;
 	boolean endOfDay = false;
@@ -68,6 +69,13 @@ public class MarketManagerRole extends Role implements MarketManager{
 		this.market = market;
 		state = ManagerState.nothing;
 	}
+	
+	/*public MarketManagerRole(TestPerson person, Inventory inventory, Market market) {
+		super(person);
+		this.inventory = inventory;
+		this.market = market;
+		state = ManagerState.nothing;
+	}*/
 
 	public void msgReportingForWork(MarketEmployee employee) {
 		print("Received msgReportingForWork"); 
@@ -108,8 +116,9 @@ public class MarketManagerRole extends Role implements MarketManager{
 	@Override
 	public boolean pickAndExecuteAnAction() {
 		
-		if (!market.isOpenForEmployees) {
+		if ((!market.isOpenForEmployees) && (state == ManagerState.setting))  {
 			market.isOpenForEmployees = true;
+			state = ManagerState.managing;
 			log.add (new LoggedEvent ("Market open for employees"));
 			print ("The market is now open for employees only");
 			return true;
@@ -118,7 +127,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 		if ((!workingEmployees.isEmpty()) && (!market.isOpen()) && (state == ManagerState.managing)) {
 			state = ManagerState.working;
 			market.setOpen(person);
-			log.add (new LoggedEvent ("Market open for employees"));
+			log.add (new LoggedEvent ("Market open"));
 			print ("The market is now open");
 			return true;
 		}
@@ -142,7 +151,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 		if (!waitingEmployees.isEmpty()) {
 			if (workingEmployees.size() < 10) {
 				workingEmployees.add(waitingEmployees.get(0));
-				waitingEmployees.get(0).employee.msgGoToDesk(workingEmployees.indexOf(waitingEmployees.get(0)));
+				waitingEmployees.get(0).employee.msgGoToDesk(workingEmployees.size()-1);
 				waitingEmployees.remove(0);
 			}
 			else {
@@ -191,7 +200,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 
 	public void msgEntered() {
 		atHome.release();
-		state = ManagerState.managing;
+		state = ManagerState.setting;
 		stateChanged();
 	}
 
