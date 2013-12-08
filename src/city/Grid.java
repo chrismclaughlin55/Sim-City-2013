@@ -4,8 +4,11 @@ import java.util.concurrent.Semaphore;
 
 public class Grid {
 	
+	public static final int GRIDWIDTH = 20;
+	
 	double posX;
 	double posY;
+	
 	public Grid() {
 		
 	}

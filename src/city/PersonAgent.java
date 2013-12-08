@@ -226,7 +226,8 @@ public class PersonAgent extends Agent
 	}
 
 	public void msgDoneWithRole() {
-		//implement later
+		bigState = bigState.doingNothing;
+		stateChanged();
 	}
 
 	public void msgAtBuilding() {//from animation
