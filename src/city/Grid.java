@@ -10,6 +10,9 @@ public class Grid {
 	double posX;
 	double posY;
 	public Semaphore occupied = new Semaphore(1,true);
+	public Grid() {
+		
+	}
 	public Grid(int x, int y, String type) {
 		posX = x;
 		posY = y;
