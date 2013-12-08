@@ -59,7 +59,7 @@ public class CityData implements ActionListener {
 		//POPULATE 
 	}
 	
-	public void setBusStopRoute() {
+	public void setBusStopRoute(BusAgent bus) {
         if (bus.getRouteNumber() == 1) {
 			for(int i=0; i<12; i++) {
 				busStops.get(i).setNextStop(busStops.get((i+1)%12));

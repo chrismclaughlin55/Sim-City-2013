@@ -184,5 +184,10 @@ public class BusAgent extends Agent implements Bus {
 		
 	}
 
+	@Override
+	public int getRouteNumber() {
+		return routeNumber;
+	}
+
 	
 }
