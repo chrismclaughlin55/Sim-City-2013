@@ -601,7 +601,7 @@ public class PersonAgent extends Agent
 		}
 		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)destinationBuilding;
 
-		if(goToWork)
+		if(goToWork && !desiredRole.equals("Customer"))
 		{
 			if(desiredRole.equals("Host") && !restaurant.hasHost()) {
 				personGui.DoGoIntoBuilding();
@@ -630,6 +630,8 @@ public class PersonAgent extends Agent
 			currentBuilding.EnterBuilding(this, desiredRole);
 			return;
 		}
+			bigState = bigState.goHome;
+			homeState = homeState.onCouch;
 	}
 
 	protected void goHome() {
