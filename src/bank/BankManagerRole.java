@@ -1,5 +1,6 @@
 package bank;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -168,6 +169,9 @@ public class BankManagerRole extends Role implements BankManager {
 			personInfo = new CustInfo(person.bankInfo);
 		}
 		return personInfo;
+	}
+	public List getTellers() {
+		return tellers;
 	}
 
 }
