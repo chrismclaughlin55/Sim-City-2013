@@ -460,6 +460,22 @@ public class PersonAgent extends Agent
 				break;
 			} 
 		}
+		if (personGui.isInBedroom()) {
+			personGui.DoAlmostWall();
+			try {
+				isMoving.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			personGui.DoGoToWall();
+			try {
+				isMoving.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		personGui.DoGoToRefridgerator();
 		try {
 			isMoving.acquire();
@@ -490,6 +506,20 @@ public class PersonAgent extends Agent
 	}
 
 	private void goToSleep() {
+		personGui.DoReverseWall();
+		try {
+			isMoving.acquire();
+		} catch (InterruptedException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		personGui.DoGoToWall();
+		try {
+			isMoving.acquire();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		personGui.DoGoToBed();
 		try {
 			isMoving.acquire();
@@ -501,6 +531,15 @@ public class PersonAgent extends Agent
 	}
 
 	private void goToCouch() {
+		if (personGui.isInBedroom()) {
+			personGui.DoGoToWall();
+			try {
+				isMoving.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		personGui.DoGoToCouch();
 		try {
 			isMoving.acquire();
@@ -626,6 +665,22 @@ public class PersonAgent extends Agent
 
 	protected void leaveHome() {
 		currentBuilding = cityData.buildings.get(home.buildingNumber);
+		if (personGui.isInBedroom()) {
+			personGui.DoAlmostWall();
+			try {
+				isMoving.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			personGui.DoGoToWall();
+			try {
+				isMoving.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		if (home instanceof Home) {
 			personGui.DoGoToEntrance();
 			atEntrance.drainPermits();

@@ -107,6 +107,10 @@ public class PersonGui implements Gui{
 		yDestination = 340;
 	}
 	
+	public boolean isInBedroom() {
+		return xPos >= 200;
+	}
+	
 	public void DoGoToHallway() {
 		moving = true;
 		xDestination = 0;
@@ -134,6 +138,18 @@ public class PersonGui implements Gui{
 	public void DoGoToWall() {
 		moving = true;
 		xDestination = 190;
+		yDestination = 340;
+	}
+	
+	public void DoAlmostWall() {
+		moving = true;
+		xDestination = 220;
+		yDestination = 340;
+	}
+	
+	public void DoReverseWall() {
+		moving = true;
+		xDestination = 160;
 		yDestination = 340;
 	}
 	
