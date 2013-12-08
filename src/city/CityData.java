@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.util.*;
 
 import bank.Bank;
+import city.RGrid.Direction;
 import city.gui.PersonGui;
 import Gui.Gui;
 import market.Market;
@@ -48,6 +49,9 @@ public class CityData implements ActionListener {
 	public int day;
 	public int hour;
 	public int increment;
+	
+	public Grid cityGrid[][] = new Grid[31][40];
+	
 	public CityData() {
 		day = 4;
 		//DAY 5 AND DAY 6 ARE WEEKENDS, 0-4 ARE WEEKDAYS
@@ -57,6 +61,198 @@ public class CityData implements ActionListener {
 		//POPULATE busStops through MainGui as well whlie also assigning them a position
 		//also each busStop should be initialized with its next busStopAgent
 		//POPULATE 
+		
+		for (int i = 0; i < 31; i++) {
+			for (int j = 0; j < 40; j++) {
+				cityGrid[i][j] = new Grid();
+			}
+		}
+		
+		//construct building grid
+		for (int i = 10; i < 15; i++) {
+			for (int j = 0; j < 5; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 17; i < 22; i++) {
+			for (int j = 0; j < 5; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 1; i < 6; i++) {
+			for (int j = 7; j < 12; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 10; i < 15; i++) {
+			for (int j = 7; j < 12; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 17; i < 22; i++) {
+			for (int j = 7; j < 12; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 25; i < 30; i++) {
+			for (int j = 7; j < 12; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 1; i < 6; i++) {
+			for (int j = 13; j < 18; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 10; i < 15; i++) {
+			for (int j = 13; j < 18; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 17; i < 22; i++) {
+			for (int j = 13; j < 18; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 25; i < 30; i++) {
+			for (int j = 13; j < 18; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 1; i < 6; i++) {
+			for (int j = 21; j < 26; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 10; i < 15; i++) {
+			for (int j = 21; j < 26; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 17; i < 22; i++) {
+			for (int j = 21; j < 26; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 25; i < 30; i++) {
+			for (int j = 21; j < 26; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 1; i < 6; i++) {
+			for (int j = 27; j < 32; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 10; i < 15; i++) {
+			for (int j = 27; j < 32; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 17; i < 22; i++) {
+			for (int j = 27; j < 32; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 25; i < 30; i++) {
+			for (int j = 27; j < 32; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 10; i < 15; i++) {
+			for (int j = 34; j < 39; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		for (int i = 17; i < 22; i++) {
+			for (int j = 34; j < 39; j++) {
+				cityGrid[i][j] = new BGrid();
+			}
+		}
+		
+		//construct road grid
+		/*for (int i = 0; i < 31; i++) {
+			for (int j = 18; j < 20; j++)
+				cityGrid[i][j] = new RGrid();
+		}*/
+		for (int i = 0; i < 31; i++) {
+			cityGrid[i][18] = new RGrid(Direction.west);
+		}
+		for (int i = 0; i < 31; i++) {
+			cityGrid[i][19] = new RGrid(Direction.east);
+		}
+		/*for (int i = 7; i < 24; i++) {
+			for (int j = 5; j < 7; j++)
+				cityGrid[i][j] = new RGrid();
+		}*/
+		for (int i = 7; i < 24; i++) {
+			cityGrid[i][5] = new RGrid(Direction.west);
+		}
+		for (int i = 7; i < 24; i++) {
+			cityGrid[i][6] = new RGrid(Direction.east);
+		}
+		/*for (int i = 7; i < 24; i++) {
+			for (int j = 32; j < 34; j++)
+				cityGrid[i][j] = new RGrid();
+		}*/
+		for (int i = 7; i < 24; i++) {
+			cityGrid[i][32] = new RGrid(Direction.west);
+		}
+		for (int i = 7; i < 24; i++) {
+			cityGrid[i][33] = new RGrid(Direction.east);
+		}
+		/*for (int i = 7; i < 9; i++) {
+			for (int j = 5; j < 33; j++)
+				cityGrid[i][j] = new RGrid();
+		}*/
+		for (int i = 5; i < 33; i++) {
+			cityGrid[7][i] = new RGrid(Direction.south);
+		}
+		for (int i = 5; i < 33; i++) {
+			cityGrid[8][i] = new RGrid(Direction.north);
+		}
+		/*for (int i = 23; i < 25; i++) {
+			for (int j = 5; j < 33; j++)
+				cityGrid[i][j] = new RGrid();
+		}*/
+		for (int i = 5; i < 33; i++) {
+			cityGrid[23][i] = new RGrid(Direction.south);
+		}
+		for (int i = 5; i < 33; i++) {
+			cityGrid[24][i] = new RGrid(Direction.north);
+		}
+		
+		//construct intersection
+		for (int i = 7; i < 9; i++) {
+			for (int j = 18; j < 20; j++) {
+				cityGrid[i][j] = new RGrid(Direction.none);
+			}
+		}
+		for (int i = 23; i < 25; i++) {
+			for (int j = 18; j < 20; j++) {
+				cityGrid[i][j] = new RGrid(Direction.none);
+			}
+		}
+		for (int i = 7; i < 9; i++) {
+			for (int j = 5; j < 7; j++) {
+				cityGrid[i][j] = new RGrid(Direction.none);
+			}
+		}
+		for (int i = 23; i < 25; i++) {
+			for (int j = 5; j < 7; j++) {
+				cityGrid[i][j] = new RGrid(Direction.none);
+			}
+		}
+		for (int i = 7; i < 9; i++) {
+			for (int j = 32; j < 34; j++) {
+				cityGrid[i][j] = new RGrid(Direction.none);
+			}
+		}
+		for (int i = 23; i < 25; i++) {
+			for (int j = 32; j < 34; j++) {
+				cityGrid[i][j] = new RGrid(Direction.none);
+			}
+		}
 	}
 	
 	public void setBusStopRoute(BusAgent bus) {
@@ -72,6 +268,26 @@ public class CityData implements ActionListener {
 		}
 	}
 	
+	public RGrid getNextRGrid(RGrid curr) {
+		//CHECK ITS TYPE AND TRY TO RETURN GRID OF SAME TYPE
+		//otherwise you're at an intersection?
+		//jk it's handled by direction equaling none
+		RGrid a = null;
+		String dir = curr.getDirection();
+		if(dir.equals("north")) {
+			//grids[i][j] i-1
+		}
+		if(dir.equals("south")) {
+			//i+1
+		}
+		if(dir.equals("east")) {
+			//j+1
+		}
+		if(dir.equals("west")) {
+			//j-1
+		}	
+		return a;
+	}
 	public void incrementTime() {
 		increment++;
 		if(increment==incrementLimit) {
