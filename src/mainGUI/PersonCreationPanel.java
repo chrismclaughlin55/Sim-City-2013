@@ -45,6 +45,9 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	private JPanel view = new JPanel();
 	public JPanel namePane = new JPanel();
 	private JButton addPerson = new JButton("Add");
+	private JButton robBank = new JButton("Rob the bank!");
+	private JButton carCrash = new JButton("Cause car crash!");
+	private JButton runOver = new JButton("Run someone over!");
 	private JTextField nameField = new JTextField(10);
 	private ButtonGroup jobs = new ButtonGroup();
 	
@@ -89,6 +92,13 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		timePane.add(timeIntervalLabel);
 		timeIntervalLabel.setText("\t\t\tTime Interval = "+mainGui.mainAnimationPanel.GLOBALINTERVAL);
 
+		JPanel nonNorms = new JPanel();
+		nonNorms.setVisible(true);
+		nonNorms.setLayout(new GridLayout(1, 3));
+		nonNorms.add(robBank);
+		nonNorms.add(carCrash);
+		nonNorms.add(runOver);
+		
 		nameField.setHorizontalAlignment(JTextField.CENTER);
 		namePane.setLayout(new FlowLayout());
 		
@@ -145,6 +155,9 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		addPerson.addActionListener(this);
 		nameField.addKeyListener(this);
 		fire.addActionListener(this);
+		robBank.addActionListener(this);
+		carCrash.addActionListener(this);
+		runOver.addActionListener(this);
 		timeSetting.addActionListener(this);
 		timeField.addKeyListener(this);
 
@@ -153,7 +166,10 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		pane.setMinimumSize(new Dimension(PANEDIM, PANEDIM));
 		pane.setPreferredSize(new Dimension(PANEDIM, PANEDIM));  
 
-		fire.setBounds(5, 5, 615, 50);
+		fire.setBounds(5, 5, 150, 50);
+		robBank.setBounds(160, 5, 150, 50);
+		carCrash.setBounds(315, 5, 150, 50);
+		runOver.setBounds(470, 5, 150, 50);
 		timePane.setBounds(0, 65, 625, 50);
 		jobsPane.setBounds(0, 0, 625, 125);
 		nameField.setBounds(0, 125, 625, 90);
@@ -165,6 +181,9 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		pane.setBounds(0, 430, 625, 343);
 
 		add(fire);
+		add(robBank);
+		add(carCrash);
+		add(runOver);
 		add(timePane);
 		add(personPane);
 		add(pane);
@@ -326,6 +345,18 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 			for (PersonAgent p : persons) {
 				p.msgFire();
 			}
+		}
+		
+		else if (e.getSource() == robBank) {
+			//rob the bank
+		}
+		
+		else if (e.getSource() == carCrash) {
+			//car accident
+		}
+		
+		else if (e.getSource() == runOver) {
+			//run a pedestrian over
 		}
 	}
 
