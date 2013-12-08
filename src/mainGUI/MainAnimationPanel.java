@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
 import restaurantSM.gui.SMRestaurantBuilding;
 import bank.Bank;
@@ -40,9 +41,9 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	private int WIDTH = 100;
 	private int HEIGHT = 100;
 	public int GLOBALINTERVAL = 20;
-	
+
 	private MainGui mainGui;
-	
+
 
 	public MainAnimationPanel(MainGui mainGui) {
 		//Add buildings
@@ -102,24 +103,31 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			//b.setBusStop(bs);
 			bs.startThread();
 		}
-		
-		
+
+
 		//create restaurants
-		for (int j = 0; j < 2; j++) {
-			for (int i = 0; i < 2; i++) {
-				Building b = new MQRestaurantBuilding(190+i*130, 140+j*130, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
-				cd.buildings.add(b);
-				cd.restaurants.add((MQRestaurantBuilding) b);
-			}
+
+		for (int i = 0; i < 2; i++) {
+			Building b = new MQRestaurantBuilding(190+i*130, 140, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
+			cd.buildings.add(b);
+			cd.restaurants.add((MQRestaurantBuilding) b);
 		}
+
+
+		for (int i = 0; i < 2; i++) {
+			Building b = new KCRestaurantBuilding(190+i*130, 270, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
+			cd.buildings.add(b);
+			cd.restaurants.add((KCRestaurantBuilding) b);
+		}
+
 		for (int i = 0; i < 2; i++) {
 			Building b = new SMRestaurantBuilding(190+i*130, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
 			cd.restaurants.add((SMRestaurantBuilding) b);
 		}
 		//done creating restaurants
-		
-		
+
+
 		Bank b = new Bank(190, 410, WIDTH, HEIGHT,"bank", BuildingType.bank, mainGui, cd);
 		cd.buildings.add(b);
 		cd.bank = b;
@@ -128,8 +136,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		Market m = new Market(320, 410, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
 		cd.buildings.add(m);
 		cd.market =  m;
-        
-        //create bus stop for restaurants/market/bank
+
+		//create bus stop for restaurants/market/bank
 		BusStopAgent bs12 = new BusStopAgent(190-10-30, 140+35+25, cd);
 		cd.busStops.add(bs12);
 		BusStopAgent bs13 = new BusStopAgent(190+130+120, 140+35+25, cd);
@@ -149,7 +157,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 12; i < 20; i++) {
 			cd.busStops.get(i).startThread();
 		}
-		
+
 		// Construct bus stop for restaurants/bank/market
 		/*for (int i = 0; i < 2; i++) {
 			BusStopAgent bs = new BusStopAgent(190-10-30, 140+i*130+35+25, cd);
@@ -161,9 +169,9 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.busStops.add(bs);
 			bs.startThread();
 		}
-		*/
-		
-		
+		 */
+
+
 		for (int i = 0; i < 14; i++) {
 			cd.buildings.get(i).setBusStop(cd.busStops.get(i));
 			cd.busStops.get(i).setStopNumber(i);
@@ -180,19 +188,19 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.busStops.get(18).setStopNumber(18);
 		cd.buildings.get(14).setBusStop(cd.busStops.get(19));
 		cd.busStops.get(19).setStopNumber(19);
-		
+
 		cd.buildings.get(12).setBusStop(cd.busStops.get(0));
-        cd.buildings.get(13).setBusStop(cd.busStops.get(9));
-        cd.buildings.get(14).setBusStop(cd.busStops.get(1));
-        cd.buildings.get(15).setBusStop(cd.busStops.get(8));
-        cd.buildings.get(16).setBusStop(cd.busStops.get(3));
-        cd.buildings.get(17).setBusStop(cd.busStops.get(6));
-        cd.buildings.get(18).setBusStop(cd.busStops.get(2));
-        cd.buildings.get(19).setBusStop(cd.busStops.get(7));
-		
+		cd.buildings.get(13).setBusStop(cd.busStops.get(9));
+		cd.buildings.get(14).setBusStop(cd.busStops.get(1));
+		cd.buildings.get(15).setBusStop(cd.busStops.get(8));
+		cd.buildings.get(16).setBusStop(cd.busStops.get(3));
+		cd.buildings.get(17).setBusStop(cd.busStops.get(6));
+		cd.buildings.get(18).setBusStop(cd.busStops.get(2));
+		cd.buildings.get(19).setBusStop(cd.busStops.get(7));
+
 		//cd.setBusStopRoute(1);
 		//cd.setBusStopRoute(2);
-		
+
 		//Set apartment parameters
 		for (int i = 0; i < 4; i++) {
 			cd.buildings.get(i).setBuildingNumber(i);
@@ -202,19 +210,19 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 4; i < 12; i++) {
 			cd.buildings.get(i).setBuildingNumber(i);
 		}
-		
+
 		//Set restaurant parameters
 		for (int i = 12; i < 18; i++) {
 			cd.buildings.get(i).setType(BuildingType.restaurant);
 			cd.buildings.get(i).setName("restaurant"+(i-11));
 			cd.buildings.get(i).setBuildingNumber(i);
 		}
-		
+
 		//Set bank parameters
 		cd.buildings.get(18).setType(BuildingType.bank);
 		cd.buildings.get(18).setName("bank");
 		cd.buildings.get(18).setBuildingNumber(18);
-		
+
 		//Set market parameters
 		cd.buildings.get(19).setType(BuildingType.market);
 		cd.buildings.get(19).setName("market");
@@ -222,7 +230,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.market = (Market) cd.buildings.get(19);
 		//setBackground(Color.WHITE);
 		cd.globalTimer = new Timer(GLOBALINTERVAL,(ActionListener) this);
-        
+
 		setVisible(true);
 		cd.globalTimer.start();
 	}
@@ -239,7 +247,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		//Clear the screen by painting a rectangle the size of the frame
 		ImageIcon background = new ImageIcon("res/background.png");
 		g2.drawImage(background.getImage(), 0, 0, null);
-		
+
 		ImageIcon busStop = new ImageIcon("res/busstop.png");
 		//Draw apartments
 		ImageIcon apartment = new ImageIcon("res/apartment.png");
@@ -256,7 +264,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			g2.drawImage(house.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
 		}
-		
+
 		//Draw apartments
 		for (int i = 10; i < 12; i++) {
 			g2.drawImage(apartment.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
@@ -282,20 +290,20 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		for (int i = 13; i < 20; i+=2) {
 			g2.drawImage(busStop.getImage(), (int) cd.buildings.get(i).x+100, (int)cd.buildings.get(i).y+35, null);
 		}
-		
-		
+
+
 		//Draw restaurants
 		ImageIcon rest = new ImageIcon("res/restaurant.png");
 		for (int i = 12; i < 18; i++) {
 			g2.drawImage(rest.getImage(), (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y, null);
 			g2.drawString(cd.buildings.get(i).name, (int) cd.buildings.get(i).x, (int) cd.buildings.get(i).y+10);
 		}
-		
+
 		//Draw bank
 		ImageIcon bank = new ImageIcon("res/bank.png");
 		g2.drawImage(bank.getImage(), (int) cd.buildings.get(18).x, (int) cd.buildings.get(18).y, null);
 		g2.drawString(cd.buildings.get(18).name, (int) cd.buildings.get(18).x, (int) cd.buildings.get(18).y+10);
-		
+
 		//Draw market
 		ImageIcon market = new ImageIcon("res/market.png");
 		g2.drawImage(market.getImage(), (int) cd.buildings.get(19).x, (int) cd.buildings.get(19).y, null);
@@ -326,7 +334,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		g2.drawImage(road3.getImage(), 440, 95, null);
 		g2.drawImage(road3.getImage(), 130, 635, null);
 		g2.drawImage(road3.getImage(), 440, 635, null);
-		
+
 		String clock = null;
 		if (cd.hour >= 0 && cd.hour < 12) {
 			clock = "Clock:  " + cd.hour + " AM";
@@ -338,7 +346,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			clock = "Clock:  " + (cd.hour-12) + " PM";
 		}
 		g2.drawString(clock, 20, 30);
-		
+
 		String day = null;
 		if(cd.day==0) {
 			day = "Monday";
@@ -381,10 +389,10 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	public void addGui(PersonGui gui) {
 		cd.guis.add(gui);
 	}
-	
+
 	public void addGui(BusGui gui) {
 		cd.guis.add(gui);
-		
+
 	}
 
 	public List getBuildings() {
