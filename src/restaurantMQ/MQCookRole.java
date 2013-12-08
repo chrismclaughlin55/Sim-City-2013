@@ -193,7 +193,7 @@ public class MQCookRole extends Role implements Cook
 			backupUsed = false;
 		}
 				
-		if(person.cityData.hour >= restPanel.CLOSINGTIME && orders.isEmpty() && cookOrders.isEmpty())
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && orders.isEmpty() && cookOrders.isEmpty() && restPanel.activeWaiters() == 0)
 		{
 			LeaveRestaurant();
 			return true;
