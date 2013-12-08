@@ -526,6 +526,7 @@ public class RestaurantPanel extends JPanel {
     public void hostLeaving()
     {
     	host = null;
+    	gui.setOpen(false);
     }
     
     public void cashierLeaving()

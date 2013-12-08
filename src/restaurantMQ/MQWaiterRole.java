@@ -426,6 +426,7 @@ public class MQWaiterRole extends Role implements Waiter
 	
 	private void LeaveRestaurant() {
 		host.msgLeavingNow(this);
+		System.out.println("Waiter leaving");
 		gui.DoLeaveRestaurant();
 		try
 		{
@@ -433,6 +434,7 @@ public class MQWaiterRole extends Role implements Waiter
 		}
 		catch(Exception e){}
 		person.exitBuilding();
+		person.msgFull();
 		person.msgDoneWithJob();
 		doneWithRole();	
 	}
