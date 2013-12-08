@@ -30,7 +30,7 @@ public class PersonAgent extends Agent
 	public static final int HUNGRY = 7;
 	public static final int STARVING = 14;
 	public static final int LOWMONEY = 20;
-
+	public static final int HIGHMONEY = 1200;
 	public static final int TIRED = 16;
 	public static final double RENT = 20;
 	public static final int THRESHOLD = 3;
@@ -289,7 +289,7 @@ public class PersonAgent extends Agent
 					WakeUp();
 					return true;
 				}
-				else if (cityData.hour>=2 && (job.equals("MarketEmployee") || job.equals("BankTeller"))) {
+				else if (cityData.hour>=3 && (job.equals("MarketEmployee") || job.equals("BankTeller"))) {
 					//print(getJob());
 					WakeUp();
 					return true;
@@ -399,6 +399,13 @@ public class PersonAgent extends Agent
 			if(cash <= LOWMONEY) {
 				bigState = BigState.goToBank;
 				desiredRole = "Customer";
+				bankInfo.depositAmount = (bankInfo.moneyInAccount>100)?(-100): -(bankInfo.moneyInAccount);
+				return true;
+			}
+			if(cash >= HIGHMONEY) {
+				bigState = BigState.goToBank;
+				desiredRole = "Customer";
+				bankInfo.depositAmount = cash - HIGHMONEY;
 				return true;
 			}
 			// Inventory of food stuff
