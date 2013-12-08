@@ -159,5 +159,9 @@ public class Market extends Building {
 		}
 	}
 
+	public JFrame getBuildingGui() {
+		return marketGui;
+	}
+
 
 }

@@ -1,4 +1,4 @@
-package restaurantMQ.gui;
+package restaurantSM.gui;
 
 import javax.swing.JFrame;
 
@@ -7,26 +7,26 @@ import city.Building;
 import city.CityData;
 import city.PersonAgent;
 
-public class MQRestaurantBuilding extends Building
+public class SMRestaurantBuilding extends Building
 {
 	public static final int MAXCUSTOMERS = 8;
 	
 	RestaurantGui restGui;
 	RestaurantPanel restPanel;
 	
-	public MQRestaurantBuilding(int xPos, int yPos, int width, int height,
+	public SMRestaurantBuilding(int xPos, int yPos, int width, int height,
 			String name, BuildingType type, MainGui mainGui, CityData cd) 
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
 
-		restGui = new RestaurantGui(cd.market, this);
+		restGui = new RestaurantGui();
 
-		restPanel = restGui.getRestaurantPanel();
+		//restPanel = restGui.getRestaurantPanel();
 	}
 	
 	public void EnterBuilding(PersonAgent person, String roleRequest)
 	{
-		System.out.println(person.getName() + ": Entering RestaurantMQ as " + roleRequest);
+		/*System.out.println(person.getName() + ": Entering RestaurantMQ as " + roleRequest);
 		if(roleRequest.equals("Customer"))
 		{
 			restPanel.addCustomer(person);
@@ -47,41 +47,36 @@ public class MQRestaurantBuilding extends Building
 		{
 			restPanel.addHost(person);
 			isOpen = true;
-		}
-		
-	}
-	
-	public boolean isOpen()
-	{	
-		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
-	}
-	
-	public boolean openToEmployee()
-	{
-		return isOpen && restPanel.hasHost();
-	}
-	
-	public boolean hasHost()
-	{
-		return restPanel.hasHost();
-	}
-	
-	public boolean hasCashier()
-	{
-		return restPanel.hasCashier();
-	}
-	
-	public RestaurantGui getRestaurantGui()
-	{
-		return restGui;
-	}
-
-	public void setOpen(Boolean b) {
-		isOpen = b;
+		}*/
 		
 	}
 
 	public JFrame getBuildingGui() {
 		return restGui;
 	}
+	
+	/*public boolean isOpen() {	
+		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
+	}
+	
+	public boolean openToEmployee() {
+		return isOpen && restPanel.hasHost();
+	}
+	
+	public boolean hasHost() {
+		return restPanel.hasHost();
+	}
+	
+	public boolean hasCashier() {
+		return restPanel.hasCashier();
+	}
+	
+	public RestaurantGui getRestaurantGui() {
+		return restGui;
+	}
+
+	public void setOpen(Boolean b) {
+		isOpen = b;
+		
+	}*/
 }

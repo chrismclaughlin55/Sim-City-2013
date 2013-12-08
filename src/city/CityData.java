@@ -37,7 +37,7 @@ public class CityData implements ActionListener {
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	public Market market;
 	public Bank bank;
-	public List<MQRestaurantBuilding> restaurants = Collections.synchronizedList(new ArrayList<MQRestaurantBuilding>());
+	public List<Building> restaurants = Collections.synchronizedList(new ArrayList<Building>());
 	public Timer globalTimer;
 	public static int incrementLimit = 300;
 

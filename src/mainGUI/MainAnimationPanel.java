@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import restaurantMQ.gui.MQRestaurantBuilding;
+import restaurantSM.gui.SMRestaurantBuilding;
 import bank.Bank;
 import market.Market;
 import Gui.Gui;
@@ -112,9 +113,9 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			}
 		}
 		for (int i = 0; i < 2; i++) {
-			Building b = new MQRestaurantBuilding(190+i*130, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
+			Building b = new SMRestaurantBuilding(190+i*130, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
-			cd.restaurants.add((MQRestaurantBuilding) b);
+			cd.restaurants.add((SMRestaurantBuilding) b);
 		}
 		//done creating restaurants
 		
