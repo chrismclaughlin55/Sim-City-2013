@@ -20,6 +20,7 @@ public class TellerRole extends Role implements Teller{
 	enum Event {none, recievedHello, recievedInfo, recievedDeposit,updatedBank,loanReq, iTakeIt}
 	State state;
 	Event event;
+	boolean wantToLeave = false;
 	private TellerGui gui;
 
 	private Semaphore atDest = new Semaphore(0 ,true);
@@ -43,7 +44,7 @@ public class TellerRole extends Role implements Teller{
 		try {
 			atHome.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}
@@ -101,6 +102,7 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		print(state+ " " + event + " stateChange= " + this.person.stateChange.availablePermits() + " " +((currentCustInfo != null)?currentCustInfo.custName: " "));
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;
@@ -128,11 +130,13 @@ public class TellerRole extends Role implements Teller{
 			return true;
 		}
 
-		if(person.cityData.hour > Bank.CLOSINGTIME && bm.getLine().size()==0){
-			this.leaveBank();
-			return true;
+		if(person.cityData.hour > Bank.CLOSINGTIME){
+			wantToLeave = true;
 		}
-
+		if(wantToLeave && bm.getLine().size() == 0){
+			this.leaveBank();
+		}
+			
 		return false;
 	}
 	//ACTIONS
@@ -161,7 +165,7 @@ public class TellerRole extends Role implements Teller{
 	}
 
 	private void processOrder() {
-		//TODO this could cause problems. could lose semaphore by updating event in action
+		//
 		print("processing order for "+currentCustInfo.custName);
 		bm.msgUpdateInfo(currentCustInfo, this);
 		currentCustInfo.customer.msgHaveANiceDay(currentCustInfo.depositAmount);

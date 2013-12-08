@@ -171,10 +171,10 @@ public class BusGui implements Gui {
 			}
 			
 		}
-		if(stop==0||stop==6) {
+		if(stop==0||stop==6||stop==14||stop==19) {
 			xFirst = true;
 		}
-		else if(stop==4||stop==10) {
+		else if(stop==4||stop==10||stop==13||stop==18) {
 			yFirst=true;
 		}
 		moving = true;

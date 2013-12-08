@@ -195,6 +195,8 @@ public class MainGui extends JFrame implements MouseListener {
 							}
 							if(property.equals("bankMoney")) { 
 								p.setBankMoney(Double.parseDouble(temp));
+								if(p.getName().contains("BankCust"))
+									p.bankInfo.depositAmount = 50;
 							}
 							if(property.equals("hunger")) { 
 								p.setHunger(Integer.parseInt(temp));
