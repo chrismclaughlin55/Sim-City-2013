@@ -165,7 +165,8 @@ public class BankManagerRole extends Role implements BankManager {
 	private void leave() {
 		for(CustInfo info : CustAccounts.values()){
 			try {
-				writer.write(info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
+				print(info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
+				writer.write(info.custName+" "+info.accountNumber+" "+info.moneyInAccount+'\n');
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
