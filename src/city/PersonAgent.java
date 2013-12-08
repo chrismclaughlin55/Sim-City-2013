@@ -801,6 +801,7 @@ public class PersonAgent extends Agent
 			isMoving.acquire();
 		}
 		catch(Exception e) {}
+		currentBuilding = destinationBuilding;
 	}
 
 	public void setRoomNumber(int number) {
