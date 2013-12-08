@@ -40,7 +40,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgGoToTeller(Teller t) {
 		this.t = t;
 		event = CustEvent.GoToTeller;
-		print("going to teller ");
+		print("going to teller");
 		stateChanged();
 	}
 
@@ -123,7 +123,9 @@ public class CustomerRole extends Role implements BankCustomer{
 				state = CustState.SentDeposit;
 			}
 			t.msgDeposit(depositAmount);
-
+			print("depositing $"+depositAmount);
+			print("should be depositing $"+myInfo.depositAmount);
+			print("person wants to deposit "+this.person.bankInfo.depositAmount);
 		}
 
 	private void leave(){
