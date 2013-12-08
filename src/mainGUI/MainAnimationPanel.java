@@ -127,6 +127,27 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		Market m = new Market(320, 410, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
 		cd.buildings.add(m);
 		cd.market =  m;
+        
+        //create bus stop for restaurants/market/bank
+		BusStopAgent bs12 = new BusStopAgent(190-10-30, 140+35+25, cd);
+		cd.busStops.add(bs12);
+		BusStopAgent bs13 = new BusStopAgent(190+130+120, 140+35+25, cd);
+		cd.busStops.add(bs13);
+		BusStopAgent bs14 = new BusStopAgent(190+130+120, 140+130+35+25, cd);
+		cd.busStops.add(bs14);
+		BusStopAgent bs15 = new BusStopAgent(190+130+120, 410+35+25, cd);
+		cd.busStops.add(bs15);
+		BusStopAgent bs16 = new BusStopAgent(190+130+120, 410+130+35+25, cd);
+		cd.busStops.add(bs16);
+		BusStopAgent bs17 = new BusStopAgent(190-10-30, 410+130+35+25, cd);
+		cd.busStops.add(bs17);
+		BusStopAgent bs18 = new BusStopAgent(190-10-30, 410+35+25, cd);
+		cd.busStops.add(bs18);
+		BusStopAgent bs19 = new BusStopAgent(190-10-30, 140+130+35+25, cd);
+		cd.busStops.add(bs19);
+		for (int i = 12; i < 20; i++) {
+			cd.busStops.get(i).startThread();
+		}
 		
 		// Construct bus stop for restaurants/bank/market
 		/*for (int i = 0; i < 2; i++) {
@@ -142,20 +163,34 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		*/
 		
 		
-		for (int i = 0; i < 12; i++) {
+		for (int i = 0; i < 14; i++) {
 			cd.buildings.get(i).setBusStop(cd.busStops.get(i));
 			cd.busStops.get(i).setStopNumber(i);
 		}
-		cd.buildings.get(12).setBusStop(cd.busStops.get(0));
-		cd.buildings.get(13).setBusStop(cd.busStops.get(9));
-		cd.buildings.get(14).setBusStop(cd.busStops.get(1));
-		cd.buildings.get(15).setBusStop(cd.busStops.get(8));
-		cd.buildings.get(16).setBusStop(cd.busStops.get(3));
-		cd.buildings.get(17).setBusStop(cd.busStops.get(6));
-		cd.buildings.get(18).setBusStop(cd.busStops.get(2));
-		cd.buildings.get(19).setBusStop(cd.busStops.get(7));
+		cd.buildings.get(15).setBusStop(cd.busStops.get(14));
+		cd.busStops.get(14).setStopNumber(14);
+		cd.buildings.get(19).setBusStop(cd.busStops.get(15));
+		cd.busStops.get(15).setStopNumber(15);
+		cd.buildings.get(17).setBusStop(cd.busStops.get(16));
+		cd.busStops.get(16).setStopNumber(16);
+		cd.buildings.get(16).setBusStop(cd.busStops.get(17));
+		cd.busStops.get(17).setStopNumber(17);
+		cd.buildings.get(18).setBusStop(cd.busStops.get(18));
+		cd.busStops.get(18).setStopNumber(18);
+		cd.buildings.get(14).setBusStop(cd.busStops.get(19));
+		cd.busStops.get(19).setStopNumber(19);
 		
-		cd.setBusStopRoute();
+		/*cd.buildings.get(12).setBusStop(cd.busStops.get(0));
+         cd.buildings.get(13).setBusStop(cd.busStops.get(9));
+         cd.buildings.get(14).setBusStop(cd.busStops.get(1));
+         cd.buildings.get(15).setBusStop(cd.busStops.get(8));
+         cd.buildings.get(16).setBusStop(cd.busStops.get(3));
+         cd.buildings.get(17).setBusStop(cd.busStops.get(6));
+         cd.buildings.get(18).setBusStop(cd.busStops.get(2));
+         cd.buildings.get(19).setBusStop(cd.busStops.get(7));*/
+		
+		//cd.setBusStopRoute(1);
+		//cd.setBusStopRoute(2);
 		
 		//Set apartment parameters
 		for (int i = 0; i < 4; i++) {

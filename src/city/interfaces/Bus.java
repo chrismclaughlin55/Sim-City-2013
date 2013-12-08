@@ -15,4 +15,5 @@ public interface Bus {
 
 	public abstract void msgOnBus();
 
+    public abstract int getRouteNumber();
 }

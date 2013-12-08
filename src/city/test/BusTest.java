@@ -24,7 +24,7 @@ public class BusTest extends TestCase {
 		cd = new CityData();
 		super.setUp();		
 		p = new PersonAgent("Hello",main,cd);
-		mbus = new BusAgent(cd);		
+		mbus = new BusAgent(cd, 1);
 		mbusstop = new BusStopAgent(1,1,cd);
 		p.currentBusStop = mbusstop;
 		mbus.curr = mbusstop;
