@@ -180,14 +180,14 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(14).setBusStop(cd.busStops.get(19));
 		cd.busStops.get(19).setStopNumber(19);
 		
-		/*cd.buildings.get(12).setBusStop(cd.busStops.get(0));
-         cd.buildings.get(13).setBusStop(cd.busStops.get(9));
-         cd.buildings.get(14).setBusStop(cd.busStops.get(1));
-         cd.buildings.get(15).setBusStop(cd.busStops.get(8));
-         cd.buildings.get(16).setBusStop(cd.busStops.get(3));
-         cd.buildings.get(17).setBusStop(cd.busStops.get(6));
-         cd.buildings.get(18).setBusStop(cd.busStops.get(2));
-         cd.buildings.get(19).setBusStop(cd.busStops.get(7));*/
+		cd.buildings.get(12).setBusStop(cd.busStops.get(0));
+        cd.buildings.get(13).setBusStop(cd.busStops.get(9));
+        cd.buildings.get(14).setBusStop(cd.busStops.get(1));
+        cd.buildings.get(15).setBusStop(cd.busStops.get(8));
+        cd.buildings.get(16).setBusStop(cd.busStops.get(3));
+        cd.buildings.get(17).setBusStop(cd.busStops.get(6));
+        cd.buildings.get(18).setBusStop(cd.busStops.get(2));
+        cd.buildings.get(19).setBusStop(cd.busStops.get(7));
 		
 		//cd.setBusStopRoute(1);
 		//cd.setBusStopRoute(2);
