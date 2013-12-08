@@ -449,7 +449,7 @@ public class PersonAgent extends Agent
 		goToWork = true;
 		tiredLevel = 0;
 		homeState = homeState.idle;
-		hungerLevel = 1000;
+		hungerLevel += 5;
 	}
 
 	private void makeFood() {
