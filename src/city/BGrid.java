@@ -4,7 +4,9 @@ public class BGrid extends Grid{
 
 	public BGrid() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
+	public BGrid(int x, int y) {
+		super(x, y);
+	}
 }

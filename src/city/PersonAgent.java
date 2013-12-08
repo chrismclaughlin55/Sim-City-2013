@@ -226,7 +226,8 @@ public class PersonAgent extends Agent
 	}
 
 	public void msgDoneWithRole() {
-		//implement later
+		bigState = bigState.doingNothing;
+		stateChanged();
 	}
 
 	public void msgAtBuilding() {//from animation
@@ -801,6 +802,7 @@ public class PersonAgent extends Agent
 			isMoving.acquire();
 		}
 		catch(Exception e) {}
+		currentBuilding = destinationBuilding;
 	}
 
 	public void setRoomNumber(int number) {
