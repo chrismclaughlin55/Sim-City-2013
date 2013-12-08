@@ -1,19 +1,8 @@
 package mainGUI;
-import city.*;
-
-import java.util.List;
-
-import javax.swing.JFrame;
-
-import Gui.Gui;
-import bankgui.BankGui;
 import market.Market;
-import market.gui.MarketGui;
-import restaurantMQ.gui.RestaurantGui;
+import city.Apartment;
 import city.Building;
-import city.Building.BuildingType;
 import city.Home;
-import restaurantMQ.gui.*;
 
 public class BuildingPanel {
 	
