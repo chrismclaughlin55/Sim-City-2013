@@ -2,7 +2,7 @@ package market;
 
 public class Invoice {
 
-	String type;
+	public String type;
 	int amount;
 	double price;
 	public int marketNum;
