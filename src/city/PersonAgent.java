@@ -8,6 +8,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import trace.Alert;
+import trace.AlertLog;
+import trace.TracePanel;
 import restaurantMQ.gui.MQRestaurantBuilding;
 import bank.Bank;
 import bank.utilities.CustInfo;
