@@ -7,10 +7,14 @@ import javax.swing.ImageIcon;
 import mainGUI.MainGui;
 import Gui.Gui;
 import city.CityData;
+import city.RGrid;
 import city.interfaces.Bus;
+import city.Grid;
 
 public class BusGui implements Gui {
 	CityData cd;
+	enum Direction {north, east, south, west};
+	Direction direction;
 	private Bus agent = null;
 	public int xPos;
 	public int yPos;
@@ -22,6 +26,8 @@ public class BusGui implements Gui {
     boolean moving = false;
     boolean isPresent = true;
     int stop;
+    int gridding=0;
+    RGrid currGrid;
     MainGui m;
 
     public BusGui(Bus ba, MainGui main, CityData cd) {
@@ -36,10 +42,45 @@ public class BusGui implements Gui {
     		yPos = cd.busStops.get(12).getY();
     	}
     	m = main;
+    	//currGrid = ....;
     }
 	@Override
 	public void updatePosition() {
+		
+		/////DO ALL OF THE BELOW CALCULATIONS IF GRIDDING == 0
+		/*if(gridding==0) {
+			
+		}
+		else {
+			xPos+= or -= something based on currGrid type
+			yPos+= or -= something based on currGrid type
+			gridding++;
+			gridding%=4;
+		}*/
+		direction = CalculateDirection();
+		//System.out.println(direction);
+		
+		//currGrid = (RGrid) cd.getNextRGrid(currGrid);
+		/*if(currGrid.getDirection().equals("none")) {
+			//DO SOMETHING SPECIAL
+			if(direction==Direction.east) {
+				//what was previous currGrid direction, is 90
+				//do a left or right turn
+				//if same, then go straight
+				//ACQUIRE SPECIAL INTERSECTION semaphore and do the proper animation
+			}
+			
+		}
+		else {
+			//ACQUIRE CURRGRID'S SEMAPHORE
+			//GO IN SAME DIRECTION/
+			//GO TO NEXT GRID
+			//RELEASE THAT ISH
+			//when and how does it then check for next grid?
+		}*/
+		
 		// TODO Auto-generated method stub
+		//keep going in direction 4 times until they have to release
 		if(xFirst) {
 			if (xPos < xDestination)
 		       xPos+=5;
@@ -81,8 +122,32 @@ public class BusGui implements Gui {
         }
 		
 	}
-
-
+	
+	public Direction CalculateDirection() {
+		if(xPos-xDestination>=0) {
+			if(xPos-xDestination>Math.abs(yPos-yDestination)) {
+				return Direction.west;
+			}
+			else if(yPos-yDestination>=0) {
+				return Direction.north;
+			}
+			else {
+				return Direction.south;
+			}
+		}
+		else {
+			if(Math.abs(xPos-xDestination)>Math.abs(yPos-yDestination)) {
+				return Direction.east;
+			}
+			else if(yPos - yDestination>0) {
+				return Direction.north;
+			}
+			else {
+				return Direction.south;
+			}
+		}
+	}
+	
 	@Override
 	public void draw(Graphics2D g) {
 		// TODO Auto-generated method stub

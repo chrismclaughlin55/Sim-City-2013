@@ -26,6 +26,7 @@ public class BusAgent extends Agent implements Bus {
 	        ps=PassengerState.gotOn;
 	    }
 	}
+	
 	CityData cd;
 	BusState myState;
 	BusGui busgui;

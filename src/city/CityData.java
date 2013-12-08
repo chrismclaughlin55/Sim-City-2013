@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.util.*;
 
 import bank.Bank;
+import city.RGrid.Direction;
 import city.gui.PersonGui;
 import Gui.Gui;
 import market.Market;
@@ -72,6 +73,26 @@ public class CityData implements ActionListener {
 		}
 	}
 	
+	public RGrid getNextRGrid(RGrid curr) {
+		//CHECK ITS TYPE AND TRY TO RETURN GRID OF SAME TYPE
+		//otherwise you're at an intersection?
+		//jk it's handled by direction equaling none
+		RGrid a = null;
+		String dir = curr.getDirection();
+		if(dir.equals("north")) {
+			//grids[i][j] i-1
+		}
+		if(dir.equals("south")) {
+			//i+1
+		}
+		if(dir.equals("east")) {
+			//j+1
+		}
+		if(dir.equals("west")) {
+			//j-1
+		}	
+		return a;
+	}
 	public void incrementTime() {
 		increment++;
 		if(increment==incrementLimit) {
