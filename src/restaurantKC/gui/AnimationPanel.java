@@ -20,7 +20,8 @@ public class AnimationPanel extends JPanel implements ActionListener {
 	private Image bufferImage;
 	private Dimension bufferSize;
 	private int frameDisplay = 2;
-
+	private static final int WINDOWX = 550;
+    private static final int WINDOWY = 350;
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 
 	public AnimationPanel() {
@@ -50,7 +51,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
 		//Clear the screen by painting a rectangle the size of the frame
 		g2.setColor(getBackground());
-		//g2.fillRect(0, 0, 400, 400);
+		g2.fillRect(0, 0, WINDOWX+300 , WINDOWY+300);
 		int n = 50;
 		for (int i = 0; i < 3; i++) {
 			g2.setColor(tableColor);
