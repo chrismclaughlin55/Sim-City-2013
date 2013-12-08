@@ -17,6 +17,7 @@ import restaurantMQ.test.mock.EventLog;
 import restaurantMQ.test.mock.LoggedEvent;
 import city.PersonAgent;
 import city.Role;
+import city.TestPerson;
 
 
 public class MarketEmployeeRole extends Role implements MarketEmployee {
@@ -24,7 +25,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	public enum EmployeeState{nothing, entering, working, processing, doneProcessing, doneProcessingCookOrder, waitingForPayment}
 	public EmployeeState state;
 
-	private enum orderState {pending, processing, completed};
+	public enum orderState {pending, processing, completed};
 	public List<MarketOrder> currentMarketOrders = Collections.synchronizedList(new ArrayList<MarketOrder>());
 	public List<Invoice> invoice = Collections.synchronizedList(new ArrayList<Invoice>());
 	public List<Double> payments = Collections.synchronizedList(new ArrayList<Double>());
@@ -51,34 +52,8 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 
 	private Semaphore atDesk = new Semaphore(0, true);
+	private Semaphore atStorage = new Semaphore(0, true);
 
-
-
-
-	public class MarketOrder {
-		String type;
-		int quantity;
-		MarketCustomer cust;
-		//CookRole cookCust
-		orderState state;
-		String custType;
-
-		public MarketOrder(String type, int quantity, MarketCustomer cust, orderState state, String custType) {
-			this.type = type;
-			this.quantity = quantity;
-			this.cust = cust;
-			this.state = state;
-			this.custType = custType; 
-		}
-
-		/*public MarketOrder(String type, int quantity, CookRole cookCust, orderState state, String custType) {
-	        this.type = type;
-	        this.quantity = quantity;
-	        this.cookCust = cookCust;
-	        this.state = state;
-	        this.custType = custType;
-	    }*/
-	}
 
 	public MarketEmployeeRole(PersonAgent person, MarketManager manager, Inventory inventory) {
 		super(person);
@@ -88,8 +63,16 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		state = EmployeeState.nothing;
 	}
 
+	/*public MarketEmployeeRole(TestPerson person, MarketManager manager, Inventory inventory) {
+		super(person);
+		this.person = person;
+		this.manager = manager;
+		this.inventory = inventory;
+		state = EmployeeState.nothing;
+	}*/
+
 	public void msgGoToDesk(int deskNum) {
-		print ("Received msgGoToDesk");
+		print ("Received msgGoToDesk " + deskNum);
 		this.deskNum = deskNum;
 		state = EmployeeState.entering;
 		stateChanged();
@@ -117,12 +100,12 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 
 	public void msgHereAreMyOrders(List<MyOrder> orders, MarketCustomer cust) {
-		print ("Received msgHereAreMyOrders " + orders.size());
 		for (MyOrder o : orders) {
-			print (o.type);
 			MarketOrder marketOrder = new MarketOrder(o.type, o.amount, cust, orderState.pending, "person");
 			currentMarketOrders.add(marketOrder);
 		}
+		print ("Received msgHereAreMyOrders " + currentMarketOrders.size());
+
 		stateChanged();
 	}
 
@@ -184,7 +167,6 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		if (state == EmployeeState.doneProcessing) {
 			currentMarketOrders.get(0).cust.msgOrderFulfullied(invoice, amountDue);
 			state = EmployeeState.waitingForPayment;
-			//currentMarketOrders.clear();
 			return true;
 		}
 
@@ -220,24 +202,30 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	public void FulfillOrder() {
 		amountDue = 0;
 		log.add((new LoggedEvent("Fufilling order")));
+		
+		gui.AcquireItems(currentMarketOrders);
+		try {
+			atStorage.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}	
+		
+		print ("HERE");
+		
 		for (final MarketOrder o : currentMarketOrders) {
-			//System.out.println (" " + inventory.inventory.get(o.type).amount);
 			if(o.quantity <= inventory.inventory.get(o.type).amount) {
 				o.state = orderState.completed;
 				inventory.inventory.get(o.type).amount -= o.quantity;
 				inventory.update();
 				final double price = o.quantity * inventory.inventory.get(o.type).price;
-				timer.schedule(new TimerTask() {
-					public void run() {  
-						if (o.custType.equals("person")) {
-							Invoice i = new Invoice(o.type, o.quantity, price*o.quantity);
-							invoice.add(i);
-							amountDue += price;
-							if (invoice.size() == currentMarketOrders.size())
-								msgDoneProcessing();
-						}
-					}},
-					500);//how long to wait before running task
+
+				if (o.custType.equals("person")) {
+					Invoice i = new Invoice(o.type, o.quantity, price*o.quantity);
+					invoice.add(i);
+					amountDue += price;
+					if (invoice.size() == currentMarketOrders.size())
+						msgDoneProcessing();
+				}
 			}
 			else {
 				if (o.custType.equals("person")){    
@@ -277,7 +265,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 
 	public void ProcessPayment() {
-
+		gui.GiveItems();
 		print ("Received: " + payments.get(0).doubleValue() + " Amount Due: " + amountDue);
 		if (payments.get(0).doubleValue() == amountDue) {
 			manager.msgHereIsMoney(payments.get(0), this);
@@ -287,6 +275,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			print ("You will face the wrath of Rami");
 		}
 		currentMarketOrders.clear();
+		invoice.clear();
 		state = EmployeeState.working;
 		payments.remove(0);
 	}
@@ -306,12 +295,18 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 	public void setGui (EmployeeGui gui) {
 		this.gui = gui;
-		state = EmployeeState.entering;
+		state = EmployeeState.nothing;
 	}
 
 	public void msgAtDesk() {
 		atDesk.release();
 		state = EmployeeState.working;
+		stateChanged();
+	}
+	
+
+	public void msgAtStorage() {
+		atStorage.release();
 		stateChanged();
 	}
 

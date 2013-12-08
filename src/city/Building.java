@@ -7,12 +7,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import mainGUI.BuildingPanel;
 import mainGUI.MainGui;
 
-public class Building extends Rectangle2D.Double {
+public abstract class Building extends Rectangle2D.Double {
 
 	public String name;
 	public BuildingType type;
@@ -112,6 +113,7 @@ public class Building extends Rectangle2D.Double {
 	public boolean isOpen() {
 		return isOpen;
 	}
+	
 	public void setOpen(PersonAgent p) {
 		if (p.equals(manager)) {
 			isOpen = true;
@@ -149,4 +151,6 @@ public class Building extends Rectangle2D.Double {
 	public void display(Building building, int buildingNumber) {
 		buildingPanel.displayBuildingPanel(building, buildingNumber);
 	}
+	
+	public abstract JFrame getBuildingGui();
 }

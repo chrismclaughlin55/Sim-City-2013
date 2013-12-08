@@ -3,6 +3,8 @@ package bank;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JFrame;
+
 import bank.utilities.CustInfo;
 import bankgui.BankCustomerGui;
 import bankgui.BankGui;
@@ -158,5 +160,9 @@ public class Bank extends Building {
 		p3.startThread();
 		EnterBuilding(p3, "Customer");
 
+	}
+
+	public JFrame getBuildingGui() {
+		return bankGui;
 	}
 }

@@ -27,8 +27,14 @@ public class BusGui implements Gui {
     public BusGui(Bus ba, MainGui main, CityData cd) {
     	this.cd = cd;
     	agent = ba;
-    	xPos = cd.busStops.get(0).getX();
-    	yPos = cd.busStops.get(0).getY();
+    	if (agent.getRouteNumber() == 1) {
+    		xPos = cd.busStops.get(0).getX();
+    		yPos = cd.busStops.get(0).getY();
+    	}
+    	else if (agent.getRouteNumber() == 2) {
+    		xPos = cd.busStops.get(12).getX();
+    		yPos = cd.busStops.get(12).getY();
+    	}
     	m = main;
     }
 	@Override
@@ -94,7 +100,7 @@ public class BusGui implements Gui {
 	
 	public void DoGoToNextStop(int x, int y) {
 		//System.out.println("What");
-		for(int i=0; i<11; i++) {
+		for(int i=0; i<20; i++) {
 			if(cd.busStops.get(i).getX()==x&&cd.busStops.get(i).getY()==y) {
 				stop = i;
 			}

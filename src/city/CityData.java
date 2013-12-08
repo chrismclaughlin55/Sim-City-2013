@@ -37,7 +37,7 @@ public class CityData implements ActionListener {
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	public Market market;
 	public Bank bank;
-	public List<MQRestaurantBuilding> restaurants = Collections.synchronizedList(new ArrayList<MQRestaurantBuilding>());
+	public List<Building> restaurants = Collections.synchronizedList(new ArrayList<Building>());
 	public Timer globalTimer;
 	public static int incrementLimit = 300;
 
@@ -59,9 +59,16 @@ public class CityData implements ActionListener {
 		//POPULATE 
 	}
 	
-	public void setBusStopRoute() {
-		for(int i=0; i<12; i++) {
-			busStops.get(i).setNextStop(busStops.get((i+1)%12));
+	public void setBusStopRoute(BusAgent bus) {
+        if (bus.getRouteNumber() == 1) {
+			for(int i=0; i<12; i++) {
+				busStops.get(i).setNextStop(busStops.get((i+1)%12));
+			}
+		}
+		else if (bus.getRouteNumber() == 2) {
+			for(int i = 0; i < 8; i++) {
+				busStops.get(i+12).setNextStop(busStops.get((i+1)%8+12));
+			}
 		}
 	}
 	

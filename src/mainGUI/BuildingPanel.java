@@ -26,7 +26,7 @@ public class BuildingPanel {
 	public void displayBuildingPanel(Building building, int buildingNumber) {
 		switch (building.type) {
 		case restaurant:
-			((MQRestaurantBuilding)building).getRestaurantGui().setVisible(true);
+			building.getBuildingGui().setVisible(true);
 			break;
 			
 		case bank:

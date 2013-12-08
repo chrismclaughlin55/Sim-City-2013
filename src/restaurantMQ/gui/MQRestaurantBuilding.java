@@ -1,5 +1,7 @@
 package restaurantMQ.gui;
 
+import javax.swing.JFrame;
+
 import mainGUI.MainGui;
 import city.Building;
 import city.CityData;
@@ -77,5 +79,9 @@ public class MQRestaurantBuilding extends Building
 	public void setOpen(Boolean b) {
 		isOpen = b;
 		
+	}
+
+	public JFrame getBuildingGui() {
+		return restGui;
 	}
 }

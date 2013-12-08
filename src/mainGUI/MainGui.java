@@ -210,12 +210,21 @@ public class MainGui extends JFrame implements MouseListener {
 		}
 		
 		//add bus agent
-		BusAgent bus = new BusAgent(mainAnimationPanel.cd); 
-		BusGui bg = new BusGui(bus,this,mainAnimationPanel.cd);
-		bus.setGui(bg);
-		mainAnimationPanel.addGui(bg);
-		mainAnimationPanel.cd.buses.add(bus);
-		bus.startThread();
+		BusAgent bus1 = new BusAgent(mainAnimationPanel.cd, 1);
+		BusGui bg1 = new BusGui(bus1,this,mainAnimationPanel.cd);
+		bus1.setGui(bg1);
+		mainAnimationPanel.addGui(bg1);
+		mainAnimationPanel.cd.buses.add(bus1);
+		mainAnimationPanel.cd.setBusStopRoute(bus1);
+		bus1.startThread();
+		
+		BusAgent bus2 = new BusAgent(mainAnimationPanel.cd, 2);
+		BusGui bg2 = new BusGui(bus2,this,mainAnimationPanel.cd);
+		bus2.setGui(bg2);
+		mainAnimationPanel.addGui(bg2);
+		mainAnimationPanel.cd.buses.add(bus2);
+		mainAnimationPanel.cd.setBusStopRoute(bus2);
+		bus2.startThread();
 		
     }
     
@@ -227,11 +236,11 @@ public class MainGui extends JFrame implements MouseListener {
         gui.setResizable(true);
     }
     public PersonAgent createPerson(String name, String role) {
-    	if(mainAnimationPanel.cd.getPopulation() >= 40) {
+    	/*if(mainAnimationPanel.cd.getPopulation() >= 40) {
     		JFrame frame = new JFrame();
     		JOptionPane.showMessageDialog(frame, "Population limit reached!");
     		return null;
-    	}
+    	}*/
 		PersonAgent p = new PersonAgent(name, this, mainAnimationPanel.cd);
 		p.setDesiredRole(role);
 		p.assignHome(pickHome(p));

@@ -34,11 +34,19 @@ public class BusAgent extends Agent implements Bus {
 	public BusStopAgent curr;
 	public BusStopAgent next;
 	private Semaphore atDestination = new Semaphore(0,true);
+    public int routeNumber;
 	
-	public BusAgent(CityData cd) {
+	public BusAgent(CityData cd, int routeNumber) {
 		this.cd = cd;
-		curr = cd.busStops.get(0);
-		next = cd.busStops.get(1);
+        this.routeNumber = routeNumber;
+        if (routeNumber == 1) {
+            curr = cd.busStops.get(0);
+            next = cd.busStops.get(1);
+        }
+        if (routeNumber == 2) {
+            curr = cd.busStops.get(12);
+            next = cd.busStops.get(13);
+        }
 		myState = BusState.leavingStop;
 		passengers = Collections.synchronizedList(new ArrayList<myPassenger>());
 		//SHOULD ALSO HAVE A DEFAULT STARTING POSITION
@@ -174,6 +182,11 @@ public class BusAgent extends Agent implements Bus {
 	public int getY() {
 		return busgui.yPos;
 		
+	}
+
+	@Override
+	public int getRouteNumber() {
+		return routeNumber;
 	}
 
 	

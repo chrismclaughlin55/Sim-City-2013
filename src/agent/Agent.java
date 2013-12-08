@@ -10,6 +10,7 @@ public abstract class Agent {
 	Semaphore pause = new Semaphore(0, true);
 	boolean isPaused = false;
 	private AgentThread agentThread;
+	boolean paused = false;
 	
 	protected Agent() {
 	}
@@ -80,6 +81,10 @@ public abstract class Agent {
 			isPaused = false;
 		}
 	}
+	
+	public void pause() {
+    	paused = !paused;
+    }
 
 	/**
 	 * Start agent scheduler thread.  Should be called once at init time.
