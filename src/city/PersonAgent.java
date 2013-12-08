@@ -289,7 +289,7 @@ public class PersonAgent extends Agent
 					WakeUp();
 					return true;
 				}
-				else if (cityData.hour>=2 && job.equals("MarketEmployee")) {
+				else if (cityData.hour>=2 && (job.equals("MarketEmployee") || job.equals("BankTeller"))) {
 					//print(getJob());
 					WakeUp();
 					return true;
