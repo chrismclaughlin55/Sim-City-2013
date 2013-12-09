@@ -64,7 +64,7 @@ public class PersonAgent extends Agent
 	Timer timer = new Timer();
 	Bank bank;
 	public HashMap<String, Integer> inventory = new HashMap<String, Integer>();
-	int rent = 200;
+	int rent = 50;
 
 
 	boolean goToWork = false;
@@ -277,10 +277,6 @@ public class PersonAgent extends Agent
 		if(anyActive) {
 			return false;
 		}
-		if(this.name.contains("BankCust")){
-			//print(bigState + " " +LOWMONEY+" "+cash);
-
-		}
 		switch(bigState)
 		{
 
@@ -309,6 +305,11 @@ public class PersonAgent extends Agent
 				goToSleep();
 				return false; //intentional because the thread is being out to sleep
 			}
+			
+			if (home instanceof Apartment && rentDue && !home.manager.equals(this)) {
+				payRent();
+				return true;
+			}
 
 			if (hungerLevel >= HUNGRY) {
 				int num = (int) (Math.random() * 2);
@@ -328,7 +329,7 @@ public class PersonAgent extends Agent
 			}
 
 			if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
-				//TODO
+				// TODO
 				payRent();
 				return true;
 			}
@@ -462,9 +463,10 @@ public class PersonAgent extends Agent
 			return false;
 		}
 	}
-
+//TODO
 	private void payRent() {
 		Apartment a = (Apartment) home;
+		System.err.println(bank.getAccount(a.manager).moneyInAccount);
 		bank.directDeposit(this, a.manager, rent);
 		rentDue = false;
 	}
@@ -490,14 +492,14 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 			personGui.DoGoToWall();
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				// 
 				e.printStackTrace();
 			}
 		}
@@ -505,14 +507,14 @@ public class PersonAgent extends Agent
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		personGui.DoGoToStove();
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		timer.schedule(new TimerTask() {
@@ -524,7 +526,7 @@ public class PersonAgent extends Agent
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -535,21 +537,21 @@ public class PersonAgent extends Agent
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e2) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e2.printStackTrace();
 		}
 		personGui.DoGoToWall();
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e1.printStackTrace();
 		}
 		personGui.DoGoToBed();
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		homeState = HomeState.sleeping;
@@ -561,7 +563,7 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -569,7 +571,7 @@ public class PersonAgent extends Agent
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		timer.schedule(new TimerTask() {
@@ -618,7 +620,7 @@ public class PersonAgent extends Agent
 			try {
 				atBuilding.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 			currentBuilding = cityData.restaurants.get(restNumber);
@@ -666,7 +668,7 @@ public class PersonAgent extends Agent
 		try {
 			atBuilding.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		currentBuilding = destinationBuilding;
@@ -682,7 +684,7 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 			a.rooms.get(roomNumber).EnterBuilding(this, "");
@@ -699,14 +701,14 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 			personGui.DoGoToWall();
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -716,7 +718,7 @@ public class PersonAgent extends Agent
 			try {
 				atEntrance.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 			personGui.DoLeaveBuilding();
@@ -728,7 +730,7 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e1.printStackTrace();
 			}
 			a.rooms.get(roomNumber).LeaveBuilding(this);
@@ -736,7 +738,7 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 			personGui.DoLeaveBuilding();
@@ -756,7 +758,7 @@ public class PersonAgent extends Agent
 		try {
 			atBuilding.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
@@ -776,7 +778,7 @@ public class PersonAgent extends Agent
 		try {
 			atBuilding.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();

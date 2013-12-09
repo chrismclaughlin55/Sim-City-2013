@@ -138,9 +138,10 @@ public class Bank extends Building {
 	public void directDeposit(PersonAgent sender, PersonAgent reciever, double amount){
 		CustInfo send = getAccount(sender);
 		CustInfo recieve = getAccount(reciever);
-		send.moneyInAccount-=amount;
-		recieve.moneyInAccount+=amount;
-
+		send.moneyInAccount -= amount;
+		recieve.moneyInAccount += amount;
+		CustAccounts.put(sender, send);
+		CustAccounts.put(reciever, recieve);
 	}
 
 	public CustInfo getAccount(PersonAgent person){
