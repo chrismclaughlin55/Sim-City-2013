@@ -65,6 +65,9 @@ public class PersonAgent extends Agent
 	Bank bank;
 	public HashMap<String, Integer> inventory = new HashMap<String, Integer>();
 	int rent = 200;
+	public boolean car;
+	public boolean bus;
+	public boolean walk;
 
 
 	boolean goToWork = false;
@@ -597,7 +600,7 @@ public class PersonAgent extends Agent
 		if(destinationBuilding != currentBuilding)
 		{
 			System.out.println("Going to restaurant as " + desiredRole);
-			takeBusToDestination();
+			GoToDestination();
 
 			personGui.DoGoToBuilding(destinationBuilding.buildingNumber);
 			try {
@@ -733,7 +736,7 @@ public class PersonAgent extends Agent
 	protected void goToBank() {
 
 		destinationBuilding = cityData.bank;
-		takeBusToDestination();
+		GoToDestination();
 
 		personGui.DoGoToBuilding(18);
 		currentBuilding = cityData.buildings.get(18);
@@ -753,7 +756,7 @@ public class PersonAgent extends Agent
 	protected void goToMarket() {
 		destinationBuilding = cityData.market;
 
-		takeBusToDestination();
+		GoToDestination();
 
 		personGui.DoGoToBuilding(19);
 		currentBuilding = cityData.buildings.get(19);
@@ -769,53 +772,65 @@ public class PersonAgent extends Agent
 
 	}
 
-	public void takeBusToDestination()
+	public void GoToDestination()
 	{
-		destinationBusStop = currentBuilding.busStop;
-		personGui.DoGoToBusStop(destinationBusStop);
-		isMoving.drainPermits();
-		try
-		{
-			isMoving.acquire();
+		if(walk==true) {
+			//PersonGui.DoWalk(if you ever hit an RGrid, acquire it first, and then walk through, and don't walk through bgrids)
 		}
-		catch(Exception e){}
-		currentBusStop = destinationBusStop;
-		destinationBusStop = destinationBuilding.busStop;
-
-		currentBusStop.msgWaitingAtStop(this, destinationBusStop);
-		try
-		{
-			isMoving.acquire();
+		if(car==true) {
+			//personGui.DoGoToClosestRGrid(currentBuilding);
+			//have similar mechanisms to busgridbehavior
+			//if person's rgrid is destination.closestRgrid, then, walk to building
+			//YOU WILL TURN INTO A ROBOT
 		}
-		catch(Exception e) {}
-
-		currentBus = cityData.buses.get(0);
-		personGui.DoGoToBus(currentBus);
-		try
-		{
-			isMoving.acquire();
+		if(bus==true) {
+			destinationBusStop = currentBuilding.busStop;
+			personGui.DoGoToBusStop(destinationBusStop);
+			isMoving.drainPermits();
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			currentBusStop = destinationBusStop;
+			destinationBusStop = destinationBuilding.busStop;
+	
+			currentBusStop.msgWaitingAtStop(this, destinationBusStop);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e) {}
+	
+			currentBus = cityData.buses.get(0);
+			personGui.DoGoToBus(currentBus);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e) {}
+	
+			cityData.guis.remove(personGui);
+			currentBus.msgOnBus();
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e) {}
+	
+			cityData.guis.add(personGui);
+			personGui.setXPos(currentBus.getX());
+			personGui.setYPos(currentBus.getY());
+			currentBus.msgOnBus();
+			personGui.DoGoToBusStop(destinationBusStop);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e) {}
 		}
-		catch(Exception e) {}
-
-		cityData.guis.remove(personGui);
-		currentBus.msgOnBus();
-		try
-		{
-			isMoving.acquire();
-		}
-		catch(Exception e) {}
-
-		cityData.guis.add(personGui);
-		personGui.setXPos(currentBus.getX());
-		personGui.setYPos(currentBus.getY());
-		currentBus.msgOnBus();
-		personGui.DoGoToBusStop(destinationBusStop);
-		try
-		{
-			isMoving.acquire();
-		}
-		catch(Exception e) {}
 		currentBuilding = destinationBuilding;
+		
 	}
 
 	public void setRoomNumber(int number) {

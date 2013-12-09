@@ -5,6 +5,7 @@ bankMoney 500
 job Landlord
 hunger 10
 inventory 10
+transportation bus
 
 NewPerson
 name Landy1
@@ -13,6 +14,7 @@ bankMoney 500
 job Landlord
 hunger 10
 inventory 10
+transportation bus
 
 NewPerson
 name Landy2
@@ -21,6 +23,7 @@ bankMoney 500
 job Landlord
 hunger 10
 inventory 10
+transportation bus
 
 NewPerson
 name Landy3
@@ -29,6 +32,7 @@ bankMoney 500
 job Landlord
 hunger 10
 inventory 7
+transportation bus
 
 NewPerson
 name Landy4
@@ -37,6 +41,7 @@ bankMoney 500
 job Landlord
 hunger 10
 inventory 6
+transportation bus
 
 NewPerson
 name Landy5
@@ -45,6 +50,7 @@ bankMoney 500
 job Landlord
 hunger 10
 inventory 4
+transportation bus
 
 NewPerson
 name myName0
@@ -53,6 +59,7 @@ bankMoney 500
 job Waiter
 hunger 10
 inventory 5
+transportation bus
 
 NewPerson
 name myName1
@@ -61,6 +68,7 @@ bankMoney 500
 job Cashier
 hunger 10
 inventory 3
+transportation bus
 
 NewPerson
 name myName2
@@ -69,6 +77,7 @@ bankMoney 500
 job Cook
 hunger 0
 inventory 7
+transportation bus
 
 NewPerson
 name myName3
@@ -77,6 +86,7 @@ bankMoney 500
 job Host
 hunger 10
 inventory 2
+transportation bus
 
 NewPerson
 name myName4
@@ -85,6 +95,7 @@ bankMoney 500
 job Unemployed
 hunger 5
 inventory 20
+transportation bus
 
 NewPerson
 name myName5
@@ -93,6 +104,7 @@ bankMoney 500
 job Waiter
 hunger 10
 inventory 10
+transportation bus
 
 NewPerson
 name bankManager
@@ -101,6 +113,7 @@ bankMoney 500
 job BankManager
 hunger 0
 inventory 10
+transportation bus
 
 NewPerson
 name Teller
@@ -109,6 +122,7 @@ bankMoney 500
 job BankTeller
 hunger 0
 inventory 10
+transportation bus
 
 NewPerson
 name BankCust0
@@ -117,6 +131,7 @@ bankMoney 5000
 job Unemployed
 hunger 8
 inventory 10
+transportation bus
 
 
 NewPerson
@@ -126,6 +141,7 @@ bankMoney 500
 job MarketManager
 hunger 10
 inventory 10
+transportation bus
 
 NewPerson
 name MarketEmployee
@@ -134,6 +150,7 @@ bankMoney 500
 job MarketEmployee
 hunger 4
 inventory 10
+transportation bus
 
 NewPerson
 name Rupert
@@ -142,6 +159,7 @@ bankMoney 500
 job Unemployed
 hunger 7
 inventory 9
+transportation bus
 
 NewPerson
 name myName
@@ -150,3 +168,4 @@ bankMoney 500
 job Unemployed
 hunger 10
 inventory 20
+transportation bus
