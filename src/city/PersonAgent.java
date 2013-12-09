@@ -327,10 +327,10 @@ public class PersonAgent extends Agent
 				return true;
 			}
 
-			/*if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
+			if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
 				payRent();
 				return true;
-			}*/
+			}
 
 			if (homeState == HomeState.onCouch) {
 				goToCouch();
