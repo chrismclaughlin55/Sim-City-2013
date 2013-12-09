@@ -144,6 +144,7 @@ public class Bank extends Building {
 			CustInfo recieve = getAccount(reciever);
 			send.moneyInAccount-=amount;
 			recieve.moneyInAccount+=amount;
+			System.err.println(getAccount(reciever).moneyInAccount);
 		}
 	}
 

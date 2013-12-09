@@ -64,7 +64,7 @@ public class PersonAgent extends Agent
 	Timer timer = new Timer();
 	Bank bank;
 	public HashMap<String, Integer> inventory = new HashMap<String, Integer>();
-	int rent = 200;
+	int rent = 50;
 
 
 	boolean goToWork = false;
@@ -309,6 +309,11 @@ public class PersonAgent extends Agent
 				goToSleep();
 				return false; //intentional because the thread is being out to sleep
 			}
+			
+			if (home instanceof Apartment && rentDue && !home.manager.equals(this)) {
+				payRent();
+				return true;
+			}
 
 			if (hungerLevel >= HUNGRY) {
 				int num = (int) (Math.random() * 2);
@@ -324,11 +329,6 @@ public class PersonAgent extends Agent
 
 			if (goToWork && jobBuilding != null && (!home.manager.equals(this) && home instanceof Apartment)) {
 				leaveHome();
-				return true;
-			}
-
-			if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
-				payRent();
 				return true;
 			}
 
@@ -464,6 +464,7 @@ public class PersonAgent extends Agent
 
 	private void payRent() {
 		Apartment a = (Apartment) home;
+		System.err.println(bank.getAccount(a.manager).moneyInAccount);
 		bank.directDeposit(this, a.manager, rent);
 		rentDue = false;
 	}
