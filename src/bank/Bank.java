@@ -136,15 +136,11 @@ public class Bank extends Building {
 		enter.release();
 	}
 	public void directDeposit(PersonAgent sender, PersonAgent reciever, double amount){
-		if(currentManager != null){
-			currentManager.msgDirectDeposit(sender, reciever, amount);
-		}
-		else{
-			CustInfo send = getAccount(sender);
-			CustInfo recieve = getAccount(reciever);
-			send.moneyInAccount-=amount;
-			recieve.moneyInAccount+=amount;
-		}
+		CustInfo send = getAccount(sender);
+		CustInfo recieve = getAccount(reciever);
+		send.moneyInAccount-=amount;
+		recieve.moneyInAccount+=amount;
+
 	}
 
 	public CustInfo getAccount(PersonAgent person){
@@ -186,7 +182,7 @@ public class Bank extends Building {
 		BusinessAccounts.put(b, startMoney);
 		System.out.println(b.type + " added account");
 	}
-	
+
 	public double payPerson(Building b, PersonAgent p, double amount){
 		java.lang.Double businessMoney = BusinessAccounts.get(b);
 		CustInfo personAccount = CustAccounts.get(p);
@@ -210,11 +206,11 @@ public class Bank extends Building {
 		double businessAccount = BusinessAccounts.get(b);
 		if(amount<businessAccount){
 			System.out.println(b.type+ " is withdrawing "+ amount + " with " + (businessAccount - amount) + " left");
-			
+
 			BusinessAccounts.put(b, (java.lang.Double)(businessAccount - amount));
 		}
 		else{
-System.out.println(b.type+ " is withdrawing "+ businessAccount + " with " + 0 + " left");			
+			System.out.println(b.type+ " is withdrawing "+ businessAccount + " with " + 0 + " left");			
 			BusinessAccounts.put(b, (java.lang.Double)(0.0));
 		}
 		return BusinessAccounts.get(b);

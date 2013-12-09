@@ -328,6 +328,7 @@ public class PersonAgent extends Agent
 			}
 
 			if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
+				//TODO
 				payRent();
 				return true;
 			}
