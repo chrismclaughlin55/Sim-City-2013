@@ -2,8 +2,7 @@ package restaurantLY.gui;
 
 import javax.swing.*;
 
-import restaurantLY.CustomerAgent;
-import restaurantLY.WaiterAgent;
+import restaurantLY.interfaces.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -23,6 +22,7 @@ public class ListPanel extends JPanel implements ActionListener {
 	private JPanel view = new JPanel();
 	private Vector<JButton> list = new Vector<JButton>();
 	private JButton addPersonB = new JButton("Add");
+	private JCheckBox hungerBox = new JCheckBox("Hungry?");
 	
 	private RestaurantPanel restPanel;
 	private String type;
@@ -118,6 +118,7 @@ public class ListPanel extends JPanel implements ActionListener {
 		if(name != null) {
 			JButton button = new JButton(name);
 			button.setBackground(Color.white);
+			JCheckBox hungry = new JCheckBox("Hungry?");
 
 			Dimension paneSize = pane.getSize();
 			Dimension buttonSize = new Dimension(paneSize.width - 20,
@@ -128,18 +129,18 @@ public class ListPanel extends JPanel implements ActionListener {
 			button.addActionListener(this);
 			list.add(button);
 			view.add(button);
-			restPanel.addPerson(type, name);//puts customer on list
+			restPanel.addPerson(type, name, hungry, hungerBox.isSelected());//puts customer on list
 			restPanel.showInfo(type, name);//puts hungry button on panel
 			validate();
 		}
 	}
 	
-	public void updateInfoPanel(Object person) {
+	/*public void updateInfoPanel(Object person) {
     	myStateCB.setVisible(true);
     	currentPerson = person;
     	
-    	if (person instanceof CustomerAgent) {
-    		CustomerAgent customer = (CustomerAgent) person;
+    	if (person instanceof Customer) {
+    		Customer customer = (Customer) person;
     		myStateCB.setText("Hungry?");
     		//Should checkmark be there? 
     		myStateCB.setSelected(customer.getGui().isHungry());
@@ -149,8 +150,8 @@ public class ListPanel extends JPanel implements ActionListener {
     		//myLabel.setText(
     		//		"<html><pre>     Name: " + customer.getName() + " </pre></html>");
     	}
-    	else if (person instanceof WaiterAgent) {
-    		WaiterAgent waiter = (WaiterAgent) person;
+    	else if (person instanceof Waiter) {
+    		Waiter waiter = (Waiter) person;
     		myStateCB.setText("On Break");
     		//Should checkmark be there? 
     		myStateCB.setSelected(waiter.getGui().isOnBreak());
@@ -163,13 +164,13 @@ public class ListPanel extends JPanel implements ActionListener {
     	validate();
     }
 	
-	public void setCustomerEnabled(CustomerAgent c) {
-    	if (currentPerson instanceof CustomerAgent) {
-    		CustomerAgent cust = (CustomerAgent) currentPerson;
+	public void setCustomerEnabled(Customer c) {
+    	if (currentPerson instanceof Customer) {
+    		Customer cust = (Customer) currentPerson;
     		if (c.equals(cust)) {
     			myStateCB.setEnabled(true);
     			myStateCB.setSelected(false); 
     		}
     	}
-    }
+    }*/
 }

@@ -16,4 +16,6 @@ public class Grid {
 		posX = x;
 		posY = y;
 	}
+	
+	public void setSemaphore(Semaphore s) {} //to be overridden in RGrid
 }

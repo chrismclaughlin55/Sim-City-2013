@@ -20,6 +20,7 @@ public interface Customer {
 	public abstract void msgOweMoney();
 	public abstract void msgAnimationFinishedLeaveRestaurant();
 	public abstract void msgAtTable();
+	public abstract void msgLeft();
 	public abstract String getName();
 	public abstract int getHungerLevel();
 	public abstract void setHungerLevel(int hungerLevel);

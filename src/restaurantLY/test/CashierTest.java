@@ -1,11 +1,17 @@
 package restaurantLY.test;
 
-import restaurantLY.CashierAgent.*;
+import restaurantLY.interfaces.Cashier;
 import restaurantLY.*;
+import restaurantLY.LYCashierRole.checkState;
+import restaurantLY.LYCashierRole.marketCheckState;
 import restaurantLY.test.mock.*;
 import junit.framework.*;
+import market.Market;
+import restaurantLY.LYCashierRole;
 
 import java.util.*;
+
+import city.PersonAgent;
 
 /**
  * 
@@ -17,13 +23,14 @@ import java.util.*;
  */
 public class CashierTest extends TestCase {
 	//these are instantiated for each test separately via the setUp() method.
-	CashierAgent cashier;
+	LYCashierRole cashier;
 	MockWaiter waiter;
 	MockCustomer customer;
 	MockCustomer customer2;
 	MockCustomer customer3;
 	MockMarket market;
 	MockMarket market2;
+	PersonAgent p = new PersonAgent("cashier");
 	
 	 /**
      * This method is run before each test. You can use it to instantiate the class variables
@@ -31,7 +38,7 @@ public class CashierTest extends TestCase {
      */
     public void setUp() throws Exception{
             super.setUp();                
-            cashier = new CashierAgent("Cashier", 100.0);                
+            cashier = new LYCashierRole(p, 100.0, null);                
             customer = new MockCustomer("MockCustomer");
             customer2 = new MockCustomer("MockCustomer");
             customer3 = new MockCustomer("MockCustomer");
@@ -51,7 +58,7 @@ public class CashierTest extends TestCase {
         				+ cashier.log.toString(), 0, cashier.log.size());
 		
 		//step 1 of the test
-		cashier.msgGetBillFromMarket(market, 9.9);//send the message from a market
+		//******cashier.msgGetBillFromMarket(market, 9.9, null);//send the message from a market
 		//cashier.pickAndExecuteAnAction();
 		
 		//check postconditions for step 1 and preconditions for step 2
@@ -98,7 +105,7 @@ public class CashierTest extends TestCase {
 		marketChecks.add(3.96);
 		marketChecks.add(5.94);
 		for (int i = 0; i < marketNumber; i++) {
-			cashier.msgGetBillFromMarket(markets.get(i), marketChecks.get(i));//send the message from a market
+			//******cashier.msgGetBillFromMarket(markets.get(i), marketChecks.get(i), null);//send the message from a market
 		}
 		
 		//check postconditions for step 1 and preconditions for step 2
@@ -393,7 +400,7 @@ public class CashierTest extends TestCase {
 		for (int i = 0; i < customerNumber; i++) {
 			cashier.msgCreateCheck(waiter, customers.get(i), customerOrders.get(i));//send the message from a waiter
 		}
-		cashier.msgGetBillFromMarket(market, 9.9);//send the message from a market
+		//******cashier.msgGetBillFromMarket(market, 9.9, null);//send the message from a market
 		
 		//check postconditions for step 1 and preconditions for step 2
 		assertEquals("MockWaiter should have an empty event log before the Cashier's scheduler is called. Instead, the MockWaiter's event log reads: "

@@ -6,15 +6,17 @@ import restaurantSM.gui.*;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
+import city.PersonAgent;
+import city.Role;
 import restaurantSM.utils.*;
 import restaurantSM.utils.Order.OrderStatus;
 
-public class CookAgent extends Agent {
+public class SMCookRole extends Role {
 	String name;
 	List<Order> orders = new ArrayList<Order>();
 	Timer timer = new Timer();
 	Menu menu = new Menu();
-	Stock s = new Stock(1);
+	Stock s = new Stock(10);
 	int threshold = 2;
 	List<MarketAgent> markets = new ArrayList<MarketAgent>();
 	int nextMarket = 0;
@@ -24,8 +26,9 @@ public class CookAgent extends Agent {
 	CookGui cookGui;
 	private Semaphore isMoving = new Semaphore(0,true);
 
-	public CookAgent(String n) {
-		name = n;
+	public SMCookRole(PersonAgent p) {
+		super(p);
+		name = p.getName();
 	}
 	
 	public void setGui(CookGui g) {
@@ -57,17 +60,14 @@ public class CookAgent extends Agent {
 	}
 
 	public void msgHeresSomeStock(Stock stock, Request r){
-		Do("got request back");
 		currentReq = r;
 		for (String item : stock.stock.keySet()) {
-			Do("changing " + item + " from " + s.stock.get(item) + " to " + (s.stock.get(item) + stock.stock.get(item)));
 			s.stock.put(item, s.stock.get(item) + stock.stock.get(item));
 		}
 		for (String item : r.order.keySet()) {
 			if (r.order.get(item) > 0) {
 				orderFulfilled = false;
 				resubmit = true;
-				Do("resubmit is true");
 				stateChanged();
 				return;
 			}
@@ -82,7 +82,6 @@ public class CookAgent extends Agent {
 		for (MarketAgent market : markets) {
 			if (!r.askedMarkets.contains(market)){
 				resubmit = true;
-				Do("Asking another market for that request.");
 				stateChanged();
 				return;
 			}
@@ -93,10 +92,9 @@ public class CookAgent extends Agent {
 	}
 
 
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 
 			if (resubmit) {
-				Do("Resubmitting old request");
 				RequestStock(currentReq);
 				resubmit = false;
 				return true;
@@ -113,7 +111,6 @@ public class CookAgent extends Agent {
 						}
 					}
 					if (!r.order.keySet().isEmpty()) {
-						Do("Making request");
 						RequestStock(r);
 						orderFulfilled = false;
 					}					
@@ -201,7 +198,6 @@ public class CookAgent extends Agent {
 	public void RequestStock(Request r){
 		for (MarketAgent market : markets) {
 			if (!r.askedMarkets.contains(market)) {
-				Do("Sending order to " + market.getName());
 				r.askedMarkets.add(market);
 				market.msgRequestStock(r);
 				return;

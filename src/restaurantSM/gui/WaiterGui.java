@@ -2,9 +2,9 @@ package restaurantSM.gui;
 
 
 
-import restaurantSM.CustomerAgent;
-import restaurantSM.HostAgent;
-import restaurantSM.WaiterAgent;
+import restaurantSM.SMCustomerRole;
+import restaurantSM.SMHostRole;
+import restaurantSM.SMWaiterRole;
 import restaurantSM.utils.*;
 
 import java.awt.*;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class WaiterGui implements Gui {
 
-    private WaiterAgent agent = null;
+    private SMWaiterRole agent = null;
 
     private int xPos = -20, yPos = -20;//default waiter position
     private int xDestination = -20, yDestination = -20;//default start position
@@ -25,7 +25,7 @@ public class WaiterGui implements Gui {
     public boolean moving = false;
     private String statusText = "";
 
-    public WaiterGui(WaiterAgent agent, int loc) {
+    public WaiterGui(SMWaiterRole agent, int loc) {
         this.agent = agent;
         yHome = 20;
         xHome = 50 + (loc*20) + (10 * loc);

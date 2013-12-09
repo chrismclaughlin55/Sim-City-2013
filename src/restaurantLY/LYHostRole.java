@@ -1,10 +1,14 @@
 package restaurantLY;
 
 import agent.Agent;
+import restaurantLY.gui.RestaurantPanel;
 import restaurantLY.interfaces.*;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
+
+import city.PersonAgent;
+import city.Role;
 
 //no gui animation for host
 
@@ -15,7 +19,7 @@ import java.util.concurrent.Semaphore;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class HostAgent extends Agent implements Host {
+public class LYHostRole extends Role implements Host {
 	
 	// ******** Lab 3 Part 2 ********
 	static int NTABLES = 4;//a global for the number of tables.
@@ -23,7 +27,7 @@ public class HostAgent extends Agent implements Host {
 	//with List semantics.
 	public List<myCustomer> waitingCustomers
 	= Collections.synchronizedList(new ArrayList<myCustomer>());
-	private List<myWaiter> waiters = Collections.synchronizedList(new ArrayList<myWaiter>());
+	private List<myWaiter> myWaiters = Collections.synchronizedList(new ArrayList<myWaiter>());
 	private int waiterNumber = 0;
 	public Table tables[];
 	//public Collection<Table> tables;
@@ -33,11 +37,15 @@ public class HostAgent extends Agent implements Host {
 	private String name;
 	
 	private Semaphore atCust = new Semaphore(0, true);
+    
+    RestaurantPanel restPanel;
+    private List<Cook> cooks = new ArrayList<Cook>();
+    private List<Waiter> waiters = new ArrayList<Waiter>();
 	
-	public HostAgent(String name) {
-		super();
-		
-		this.name = name;
+	public LYHostRole(PersonAgent person, RestaurantPanel rp) {
+		super(person);
+		restPanel = rp;
+		this.name = super.getName();
 		// make some tables
 		tables = new Table[NTABLES];
 		for(int i = 0; i < NTABLES; i++) {
@@ -58,7 +66,7 @@ public class HostAgent extends Agent implements Host {
 	}
 	
 	public List getWaiters() {
-		return waiters;
+		return myWaiters;
 	}
 	
 	public Table[] getTables() {
@@ -66,7 +74,7 @@ public class HostAgent extends Agent implements Host {
 	}
 	
 	public void setWaiter(Waiter waiter) {
-		this.waiters.add(new myWaiter(waiter));
+		this.myWaiters.add(new myWaiter(waiter));
 		stateChanged();
 	}
 
@@ -85,8 +93,8 @@ public class HostAgent extends Agent implements Host {
 
 	public void msgAskForBreak(Waiter waiter) {
 		print(waiter.getName() + " asking for break");
-		synchronized (waiters) {
-			for (myWaiter mw : waiters) {
+		synchronized (myWaiters) {
+			for (myWaiter mw : myWaiters) {
 				if (mw.waiter.equals(waiter)) {
 					mw.waiting = true;
 				}
@@ -97,8 +105,8 @@ public class HostAgent extends Agent implements Host {
 	
 	public void msgBackToWork(Waiter waiter) {
 		//print(waiter.getName() + " resuming work");
-		synchronized (waiters) {
-			for (myWaiter mw : waiters) {
+		synchronized (myWaiters) {
+			for (myWaiter mw : myWaiters) {
 				if (mw.waiter.equals(waiter)) {
 					mw.waiting = false;
 				}
@@ -133,21 +141,47 @@ public class HostAgent extends Agent implements Host {
 		atCust.release();
 		stateChanged();
 	}
+	
+	public void msgLeavingNow(Waiter waiter)
+	{
+		synchronized(myWaiters)
+		{
+			for(myWaiter w : myWaiters)
+			{
+				if(w.waiter == waiter)
+				{
+					myWaiters.remove(w);
+					return;
+				}
+			}
+		}
+	}
 
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && restPanel.isOpen())
+		{
+			restPanel.setOpen(false);
+			return true;
+		}
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && !restPanel.isOpen() 
+				&& restPanel.justHost())
+		{
+			LeaveRestaurant();
+			return true;
+		}
 		/* Think of this next rule as:
         	Does there exist a table and customer,
         	so that table is unoccupied and customer is waiting.
         	If so seat him at the table.
 		*/
 		myWaiter temp = null;
-		synchronized (waiters) {
+		synchronized (myWaiters) {
 			temp = null;
-			for (myWaiter mw : waiters) {
+			for (myWaiter mw : myWaiters) {
 				if (mw.waiting) {
 					temp = mw;
 					break;
@@ -161,8 +195,8 @@ public class HostAgent extends Agent implements Host {
 
 		boolean full = true;
 		boolean onBreak = true;
-		synchronized (waiters) {
-			for (myWaiter mw : waiters) {
+		synchronized (myWaiters) {
+			for (myWaiter mw : myWaiters) {
 				if (mw.working)
 					onBreak = false;
 			}
@@ -205,10 +239,10 @@ public class HostAgent extends Agent implements Host {
 			return true;
 		}
 		
-		synchronized (waiters) {
-			if(!waitingCustomers.isEmpty() && !waiters.isEmpty() && !onBreak){
-				while(!waiters.get(waiterNumber).working){
-					waiterNumber = (waiterNumber+1)%waiters.size();
+		synchronized (myWaiters) {
+			if(!waitingCustomers.isEmpty() && !myWaiters.isEmpty() && !onBreak){
+				while(!myWaiters.get(waiterNumber).working){
+					waiterNumber = (waiterNumber+1)%myWaiters.size();
 				}
 			
 				for(int i = 0; i < NTABLES; i++) {
@@ -223,7 +257,7 @@ public class HostAgent extends Agent implements Host {
 							}
 						}
 						if (t != null) {
-							callWaiterToSeatCustomer(waiters.get(waiterNumber), t, i, waitingCustomers.indexOf(t));
+							callWaiterToSeatCustomer(myWaiters.get(waiterNumber), t, i, waitingCustomers.indexOf(t));
 							return true;	
 						}
 					}
@@ -236,6 +270,13 @@ public class HostAgent extends Agent implements Host {
 		//nothing to do. So return false to main loop of abstract agent
 		//and wait.
 	}
+    
+    private void LeaveRestaurant() {
+        restPanel.hostLeaving();
+        person.msgDoneWithJob();
+        person.exitBuilding();
+        doneWithRole();
+    }
 
 	// Actions
 
@@ -250,15 +291,15 @@ public class HostAgent extends Agent implements Host {
 			e.printStackTrace();
 		}
 		waitingCustomers.remove(customer);
-		waiterNumber = (waiterNumber+1)%waiters.size();
+		waiterNumber = (waiterNumber+1)%myWaiters.size();
 		stateChanged();
 	}
 
 	private void considerBreak(myWaiter waiter) {
 		waiter.waiting = false;
 		int workingWaiter = 0;
-		synchronized (waiters) {
-			for (myWaiter mw : waiters) {
+		synchronized (myWaiters) {
+			for (myWaiter mw : myWaiters) {
 				if (mw.working) {
 					workingWaiter++;
 				}
@@ -280,6 +321,35 @@ public class HostAgent extends Agent implements Host {
 	private void tellCustomerRestaurantIsFull(myCustomer cust) {
 		cust.customer.msgRestaurantIsFull();
 		cust.state = customerState.deciding;
+	}
+    
+    public void setCooks(List<Cook> cooks) {
+        this.cooks = cooks;
+    }
+    
+    public void setWaiters(List<Waiter> waiters) {
+        this.waiters = waiters;
+    }
+	
+	public void addWaiter(Waiter waiter)
+	{
+		myWaiters.add(new myWaiter(waiter));
+		stateChanged();
+	}
+	
+	public void removeWaiter(Waiter waiter)
+	{
+		synchronized(myWaiters)
+		{
+			for(myWaiter w : myWaiters)
+			{
+				if(w.waiter == waiter)
+				{
+					myWaiters.remove(w);
+					return;
+				}
+			}
+		}
 	}
 	
 	//utilities

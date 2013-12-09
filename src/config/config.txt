@@ -67,7 +67,7 @@ name myName2
 cash 100
 bankMoney 500
 job Cook
-hunger 10
+hunger 0
 inventory 7
 
 NewPerson
