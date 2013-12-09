@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import restaurantBK.gui.BKRestaurantBuilding;
 import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantLY.gui.LYRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
@@ -117,12 +119,24 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.restaurants.add((MQRestaurantBuilding) b);
 		}
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			Building b = new KCRestaurantBuilding(200+i*140, 260, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
 			cd.restaurants.add((KCRestaurantBuilding) b);
 		}
-
+		for(int i=0; i<1; i++) {
+			Building b;
+			try {
+				b = new BKRestaurantBuilding(200+140,260,WIDTH,HEIGHT,"",BuildingType.restaurant, mainGui,cd);
+				cd.buildings.add(b);
+				cd.restaurants.add((BKRestaurantBuilding) b);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
 		for (int i = 0; i < 1; i++) {
 			Building b = new SMRestaurantBuilding(200+i*140, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);

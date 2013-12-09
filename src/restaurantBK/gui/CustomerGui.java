@@ -1,6 +1,6 @@
 package restaurantBK.gui;
 
-import restaurantBK.HostAgent;
+import restaurantBK.BKHostRole;
 import restaurantBK.interfaces.Customer;
 
 import java.awt.*;

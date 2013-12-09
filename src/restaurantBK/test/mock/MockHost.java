@@ -3,7 +3,7 @@ package restaurantBK.test.mock;
 import java.util.Collection;
 import java.util.List;
 
-import restaurantBK.CustomerAgent;
+import restaurantBK.BKCustomerRole;
 import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Host;
 import restaurantBK.interfaces.Waiter;

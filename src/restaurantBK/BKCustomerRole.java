@@ -3,6 +3,7 @@ package restaurantBK;
 
 import restaurantBK.gui.CustomerGui;
 import restaurantBK.gui.RestaurantGui;
+import restaurantBK.gui.RestaurantPanel;
 import restaurantBK.interfaces.Cashier;
 import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Host;
@@ -14,10 +15,14 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import city.PersonAgent;
+import city.Role;
+
 /**
  * Restaurant customer agent.
  */
-public class CustomerAgent extends Agent implements Customer {
+public class BKCustomerRole extends Role implements Customer {
+	RestaurantPanel rest;
 	private Customer temp = this;
 	private String name;
 	private int hungerLevel = 5;        // determines length of meal
@@ -30,7 +35,7 @@ public class CustomerAgent extends Agent implements Customer {
 	int seatNumber;
 	double money;
 	double bill;
-	Menu menu;
+	ItalianMenu menu;
 	// agent correspondents
 	private Cashier cashier;
 	private Host host;
@@ -50,8 +55,9 @@ public class CustomerAgent extends Agent implements Customer {
 	 * @param name name of the customer
 	 * @param gui  reference to the customergui so the customer can send it messages
 	 */
-	public CustomerAgent(String name){
-		super();
+	public BKCustomerRole(PersonAgent person, String name, RestaurantPanel rest){
+		super(person);
+		this.rest = rest;
 		if(name.equals("broke")||name.equals("punk")) {
 			this.money=0.00;
 		}
@@ -135,7 +141,7 @@ public class CustomerAgent extends Agent implements Customer {
 	public void msgWaitHerePlease(int x) {
 		waitingX=startX+startX*x;
 	}
-	public void msgFollowMeToTable(Waiter w, int tableNumber, Menu m) {
+	public void msgFollowMeToTable(Waiter w, int tableNumber, ItalianMenu m) {
 		setWaiter(w);
 		menu = m;
 		print("Received msgFollowMeToTable");
@@ -216,7 +222,7 @@ public class CustomerAgent extends Agent implements Customer {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		//	CustomerAgent is a finite state machine
 
 		if (state == AgentState.DoingNothing && event == AgentEvent.gotHungry ){
@@ -345,7 +351,7 @@ public class CustomerAgent extends Agent implements Customer {
 	}
 			
 	private void goToRestaurant() {
-		Do("Going to restaurant");
+		//Do("Going to restaurant");
 		host.msgIWantFood(this);//send our instance, so he can respond to us
 		customerGui.DoGoToWait(waitingX,waitingY);
 	}
@@ -358,7 +364,7 @@ public class CustomerAgent extends Agent implements Customer {
 		host.msgNoTablesImLeaving(this);
 	}
 	private void SitDown() {
-		Do("Being seated. Going to table");
+		//Do("Being seated. Going to table");
 		if(seatNumber==1)
 		{
 			customerGui.DoGoToSeat(this.seatNumber,200,250);	
@@ -405,7 +411,7 @@ public class CustomerAgent extends Agent implements Customer {
 		}
 	}
 	private void EatFood() {
-		Do("Eating Food");
+		//Do("Eating Food");
 		//This next complicated line creates and starts a timer thread.
 		//We schedule a deadline of getHungerLevel()*1000 milliseconds.
 		//When that time elapses, it will call back to the run routine
@@ -436,8 +442,8 @@ public class CustomerAgent extends Agent implements Customer {
 	}
 
 	private void leaveTableToPay() {
-		Do("Leaving to pay cashier.");
-		waiter.msgLeavingTableToPay(this);
+		//Do("Leaving to pay cashier.");
+	//	waiter.msgLeavingTableToPay(this);
 		customerGui.DoGoToCashier();
 		//NEED A SEMAPHORE HERE
 		//IF HE ISN'T GONNA FLAKE

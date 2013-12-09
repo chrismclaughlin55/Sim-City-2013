@@ -2,7 +2,7 @@ package restaurantBK.interfaces;
 
 import java.util.List;
 
-import restaurantBK.CustomerAgent;
+import restaurantBK.BKCustomerRole;
 import restaurantBK.gui.WaiterGui;
 
 public interface Waiter {

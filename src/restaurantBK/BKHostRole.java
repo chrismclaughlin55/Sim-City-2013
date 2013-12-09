@@ -5,6 +5,9 @@ import agent.Agent;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
+import city.PersonAgent;
+import city.Role;
+import restaurantBK.gui.RestaurantPanel;
 import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Host;
 import restaurantBK.interfaces.Waiter;
@@ -16,11 +19,12 @@ import restaurantBK.interfaces.Waiter;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class HostAgent extends Agent implements Host {
+public class BKHostRole extends Role implements Host {
 	static final int NTABLES = 3;//a global for the number of tables.
 	static final int WIDTH = 50;
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
+	RestaurantPanel rest;
 	public List<Customer> waitingCustomers	= Collections.synchronizedList(new ArrayList<Customer>());
 	//public Collection<Table> tables;
 	private int lobbycusts=0;
@@ -43,8 +47,9 @@ public class HostAgent extends Agent implements Host {
 	//private Semaphore atTable = new Semaphore(0,true);
 
 	//public HostGui hostGui = null;
-	public HostAgent(String name) {
-		super();
+	public BKHostRole(PersonAgent person, String name, RestaurantPanel rest) {
+		super(person);
+		this.rest = rest;
 		this.ot=opentables.open;
 		this.count = 0;
 		this.name = name;
@@ -193,7 +198,7 @@ public class HostAgent extends Agent implements Host {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		/* Think of this next rule as:
             Does there exist a table and customer,
             so that table is unoccupied and customer is waiting.

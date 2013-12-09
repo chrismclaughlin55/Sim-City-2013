@@ -1,9 +1,10 @@
 package restaurantBK.test;
 
-import restaurantBK.CashierAgent;
-import restaurantBK.CashierAgent.CheckState;
-import restaurantBK.CashierAgent.Check;
-import restaurantBK.CashierAgent.ShipmentState;
+import city.PersonAgent;
+import restaurantBK.BKCashierRole;
+import restaurantBK.BKCashierRole.CheckState;
+import restaurantBK.BKCashierRole.Check;
+import restaurantBK.BKCashierRole.ShipmentState;
 import restaurantBK.test.mock.MockCustomer;
 import restaurantBK.test.mock.MockMarket;
 import restaurantBK.test.mock.MockWaiter;
@@ -20,7 +21,7 @@ import junit.framework.*;
 public class CashierTest extends TestCase
 {
 	//these are instantiated for each test separately via the setUp() method.
-	CashierAgent cashier;
+	BKCashierRole cashier;
 	MockWaiter waiter;
 	MockCustomer customer;
 	MockMarket market1;
@@ -33,7 +34,8 @@ public class CashierTest extends TestCase
 	 */
 	public void setUp() throws Exception{
 		super.setUp();		
-		cashier = new CashierAgent("cashier");		
+		PersonAgent p = new PersonAgent("cashier");
+		cashier = new BKCashierRole(p,"cashier",null);		
 		customer = new MockCustomer("mockcustomer");		
 		waiter = new MockWaiter("mockwaiter");
 		market1 = new MockMarket("mockmarket1");
