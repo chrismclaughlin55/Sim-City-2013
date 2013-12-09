@@ -113,12 +113,10 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 		//create restaurants
 
-		for (int j = 0; j < 2; j++) {
-			for (int i = 0; i < 2; i++) {
-				Building b = new SMRestaurantBuilding(190+i*130, 140+j*130, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
-				cd.buildings.add(b);
-				cd.restaurants.add((SMRestaurantBuilding) b);
-			}
+		for (int i = 0; i < 2; i++) {
+			Building b = new SMRestaurantBuilding(200+i*140, 140, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
+			cd.buildings.add(b);
+			cd.restaurants.add((SMRestaurantBuilding) b);
 		}
 
 		for (int i = 0; i < 1; i++) {
@@ -269,8 +267,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(19).setType(BuildingType.market);
 		cd.buildings.get(19).setName("market");
 		cd.buildings.get(19).setBuildingNumber(19);
-		
-		cd.market = (Market)(cd.buildings.get(19));
+
 		//setBackground(Color.WHITE);
 		cd.globalTimer = new Timer(GLOBALINTERVAL,(ActionListener) this);
 

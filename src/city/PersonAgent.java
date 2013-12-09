@@ -125,8 +125,8 @@ public class PersonAgent extends Agent
 		inventory.put("Chicken", 3);
 
 		personGui = new PersonGui(this, gui);
-		bank = (Bank) cd.buildings.get(18);
-		market = (Market) cd.buildings.get(19);
+		bank = cd.bank;
+		market = cd.market;
 	}
 
 	public void setName(String name) {
