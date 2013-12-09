@@ -83,6 +83,7 @@ public class PersonAgent extends Agent
 
 	public BusAgent currentBus;
 
+	public Grid currGrid;
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
 	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());
