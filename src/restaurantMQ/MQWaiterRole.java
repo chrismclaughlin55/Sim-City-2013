@@ -488,9 +488,12 @@ public class MQWaiterRole extends Role implements Waiter
 		gui.setCooking(order.choice, order.customer);
 		
 		cookOrders.add(new CookOrder(order.choice, order.table, this));
+		synchronized(cooks) {
 		for(Cook c : cooks)
 		{
-			c.msgOrdersUpdated();
+			if(((MQCookRole)c).isActive())
+				c.msgOrdersUpdated();
+		}
 		}
 	}
 	

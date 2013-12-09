@@ -2,6 +2,7 @@ package city;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 import bank.Bank;
 import city.RGrid.Direction;
@@ -222,35 +223,47 @@ public class CityData implements ActionListener {
 			cityGrid[24][i] = new RGrid(Direction.north);
 		}
 		
-		//construct intersection
+		//construct intersections
+		Semaphore occupied = new Semaphore(1, true);
 		for (int i = 7; i < 9; i++) {
 			for (int j = 18; j < 20; j++) {
 				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
+		occupied = new Semaphore(1, true);
 		for (int i = 23; i < 25; i++) {
 			for (int j = 18; j < 20; j++) {
 				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
+		occupied = new Semaphore(1, true);
 		for (int i = 7; i < 9; i++) {
 			for (int j = 5; j < 7; j++) {
 				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
+		occupied = new Semaphore(1, true);
 		for (int i = 23; i < 25; i++) {
 			for (int j = 5; j < 7; j++) {
 				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
+		occupied = new Semaphore(1, true);
 		for (int i = 7; i < 9; i++) {
 			for (int j = 32; j < 34; j++) {
 				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
+		occupied = new Semaphore(1, true);
 		for (int i = 23; i < 25; i++) {
 			for (int j = 32; j < 34; j++) {
 				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
 	}

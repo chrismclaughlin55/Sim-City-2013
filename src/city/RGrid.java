@@ -34,4 +34,9 @@ public class RGrid extends Grid {
 		}
 		return d;
 	}
+	
+	public void setSempahore(Semaphore s)
+	{
+		occupied = s;
+	}
 }
