@@ -1,0 +1,75 @@
+package bank;
+
+import java.util.concurrent.Semaphore;
+
+import bankgui.BankRobberGui;
+import city.PersonAgent;
+import city.Role;
+
+public class BankRobber extends Role {
+
+	private Semaphore isMoving = new Semaphore(0, true);
+	private PersonAgent me;
+	private enum RobState {aboutToRob, robbed};
+	RobState robState;
+	private BankRobberGui gui;
+	private Bank bank;
+	
+	BankRobber(PersonAgent p, Bank b) {
+		super(p);
+		me = p;
+		bank = b;
+		robState = RobState.aboutToRob;
+		gui = new BankRobberGui(this);
+		bank.bankGui.animationPanel.addGui(gui);
+	}
+	
+	public void msgPleaseDontShoot(int n) {
+		me.cash += n;
+		System.err.println(me.cash);
+		robState = RobState.robbed;
+		stateChanged();
+	}
+	
+	public void msgDoneMoving() {
+		isMoving.release();
+	}
+	
+	public boolean pickAndExecuteAnAction() {
+		if (robState == RobState.aboutToRob) {
+			robBank();
+			return true;
+		}
+		if (robState == RobState.robbed) {
+			leaveBank();
+			return true;
+		}
+		return false;
+	}
+	
+	private void robBank() {
+		gui.DoGoToTeller();
+		try {
+			isMoving.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		bank.currentManager.tellers.get(0).t.msgStickEmUp(this);
+	}
+	
+	private void leaveBank() {
+		gui.DoGoToDoorway();
+		try {
+			isMoving.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		gui.DoLeaveBuilding();
+		bank.bankGui.animationPanel.addGui(gui);
+		me.exitBuilding();
+		me.setJob("Unemployed");
+	}
+
+}

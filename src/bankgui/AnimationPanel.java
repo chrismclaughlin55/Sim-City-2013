@@ -80,7 +80,10 @@ public class AnimationPanel extends JPanel implements GuiPositions, ActionListen
 	public void addGui(BankCustomerGui gui) {
 		guis.add(gui);
 	}
-
+	
+	public void addGui(BankRobberGui gui) {
+		guis.add(gui);
+	}
 	
 	public void addGui(BankManagerGui gui) {
 		guis.add(gui); 
@@ -90,12 +93,17 @@ public class AnimationPanel extends JPanel implements GuiPositions, ActionListen
 		
 	}
 	public void removeGui(TellerGui gui) {
-		
 		guis.remove(gui);
 	}
+	
+	public void removeGui(BankRobberGui gui) {
+		guis.remove(gui);
+	}
+	
 	public void removeGui(CustomerGui gui) {
 		guis.remove(gui);
 	}
+	
 	public void removeGui(BankManagerGui gui) {
 		guis.remove(gui);
 	}

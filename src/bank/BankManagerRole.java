@@ -25,15 +25,15 @@ public class BankManagerRole extends Role implements BankManager {
 	private String name;
 	private PersonAgent me;
 	private List<CustomerRole> line = Collections.synchronizedList(new ArrayList<CustomerRole>());
-	List<myTeller> tellers = Collections.synchronizedList(new ArrayList<myTeller>());
-	private Map<PersonAgent, CustInfo> d;
-	private Map<String, CustInfo> b;
+	public List<myTeller> tellers = Collections.synchronizedList(new ArrayList<myTeller>());
+	private Map<PersonAgent, CustInfo> CustAccounts;
+	private Map<String, CustInfo> BusinessAccounts;
 	private boolean leave = false;
 	private boolean allGone = false;
 	Bank bank;
 	enum tellerState {available, needsInfo, notAvailable, updateInfo, offDuty }
 	class myTeller{
-		TellerRole t;
+		public TellerRole t;
 		tellerState state;
 		CustomerRole c;
 		CustInfo custInfo;
@@ -65,14 +65,14 @@ public class BankManagerRole extends Role implements BankManager {
 
 	}
 	//Direct Deposit Message
-	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
-		print("recieved deposit from "+payer.getName()+" to "+reciever.getName()+" for $"+payment);
-		CustInfo send = getAccount(payer);
-		CustInfo recieve = getAccount(reciever);
-		send.moneyInAccount-=payment;
-		recieve.moneyInAccount+=payment;
-		stateChanged();
-	}
+//	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
+//		print("recieved deposit from "+payer.getName()+" to "+reciever.getName()+" for $"+payment);
+//		CustInfo send = getAccount(payer);
+//		CustInfo recieve = getAccount(reciever);
+//		send.moneyInAccount-=payment;
+//		recieve.moneyInAccount+=payment;
+//		stateChanged();
+//	}
 	@Override
 	public void msgINeedService(CustomerRole c) {
 		getLine().add((CustomerRole) c);
@@ -114,6 +114,8 @@ public class BankManagerRole extends Role implements BankManager {
 				}
 			}
 		}
+		bank.payPerson(bank, tellerRole.getPerson(), 150);
+		print(tellerRole.getName()+" gets paid 150 for today");
 		stateChanged();
 	}
 	//SCHEDULER
@@ -201,17 +203,13 @@ public class BankManagerRole extends Role implements BankManager {
 		updatedb(fakeTeller);
 		person.bankInfo.depositAmount = 0;
 		for(CustInfo info : bank.CustAccounts.values()){
-			try {
-				print(info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
-				writer.write(info.custName+" "+info.accountNumber+" "+info.moneyInAccount+'\n');
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			print(info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
 		}
 		print("bank closed. Leaving");
 		leave = false;
+		bank.payPerson(bank, me, 300);
+		print("I get paid 300 for today");
+		bank.setClosed(person);
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();
@@ -237,7 +235,7 @@ public class BankManagerRole extends Role implements BankManager {
 		print("updating db for "+t.custInfo.custName);
 		bank.CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
 		t.state = tellerState.available;
-		//	bank.bankGui.bankPanel.updateLabels();
+			bank.bankGui.updatebankPanel();
 
 	}
 	public List<CustomerRole> getLine() {
@@ -255,7 +253,7 @@ public class BankManagerRole extends Role implements BankManager {
 		for( myTeller t : tellers){
 			if(t.state != tellerState.offDuty)
 				allGone = false;
-			
+
 		}
 		return allGone;
 	}

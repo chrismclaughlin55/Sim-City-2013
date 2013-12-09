@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 
 import bank.Bank;
 import bank.utilities.CustInfo;
@@ -31,7 +33,7 @@ public class BankGui extends JFrame implements GuiPositions, ActionListener {
 			
 			animationPanel = new AnimationPanel();
 			animationPanel.setVisible(true);
-			bankPanel = new BankPanel(bank);
+			bankPanel =  new BankPanel(bank);
 			bankPanel.setVisible(true);
 
 
@@ -49,9 +51,10 @@ public class BankGui extends JFrame implements GuiPositions, ActionListener {
 			
 		}
 		public void updatebankPanel() {
-			bankPanel.labels.clear();
+			bankPanel.removeAll();
+			bankPanel.add(new JLabel("Name \t Acct# \t MoneyinBank"));
 			for(CustInfo info : bank.CustAccounts.values()){
-				bankPanel.labels.add(new JLabel(info.custName + " " + info.accountNumber + " " +info.moneyInAccount+" "+info.accountHolder.cash));	
+				bankPanel.add(new JLabel(info.custName + " " + info.accountNumber + " " +info.moneyInAccount));	
 			}
 			
 			

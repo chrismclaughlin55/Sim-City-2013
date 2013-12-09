@@ -127,6 +127,7 @@ public class PersonGui implements Gui{
 			Graphics2D g2 = (Graphics2D)g;
 			ImageIcon person = new ImageIcon("res/person.png");
 			g2.drawImage(person.getImage(), xPos, yPos, null);
+            g2.drawString(agent.getName(), xPos, yPos);
 		}
 		else {
 			Graphics2D g2 = (Graphics2D)g;
