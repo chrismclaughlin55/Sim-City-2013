@@ -122,6 +122,7 @@ bankMoney 500
 job BankTeller
 hunger 0
 inventory 10
+transportation bus
 
 NewPerson
 name Teller1
