@@ -1,7 +1,7 @@
 package restaurantSM.utils;
 
-import restaurantSM.CustomerAgent;
-import restaurantSM.WaiterAgent;
+import restaurantSM.SMCustomerRole;
+import restaurantSM.SMWaiterRole;
 import restaurantSM.interfaces.Customer;
 
 public class Order {
@@ -10,7 +10,7 @@ public class Order {
 	}
 	Customer c;
 	String choice;
-	WaiterAgent w;
+	SMWaiterRole w;
 	public enum OrderStatus {Received, OutOfStock, Cooking, Cooked};
 	public OrderStatus orderStatus;
 	
@@ -26,11 +26,11 @@ public class Order {
 		return choice;
 	}
 	
-	public void setWaiter(WaiterAgent waiter) {
+	public void setWaiter(SMWaiterRole waiter) {
 		w = waiter;
 	}
 	
-	public WaiterAgent getWaiter() {
+	public SMWaiterRole getWaiter() {
 		return w;
 	}
 	

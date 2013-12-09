@@ -1,7 +1,7 @@
 package restaurantSM.interfaces;
 
-import restaurantSM.CustomerAgent;
-import restaurantSM.WaiterAgent;
+import restaurantSM.SMCustomerRole;
+import restaurantSM.SMWaiterRole;
 import restaurantSM.utils.*;
 
 public interface Waiter {

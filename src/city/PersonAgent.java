@@ -12,6 +12,7 @@ import trace.Alert;
 import trace.AlertLog;
 import trace.TracePanel;
 import restaurantMQ.gui.MQRestaurantBuilding;
+import restaurantSM.gui.SMRestaurantBuilding;
 import bank.Bank;
 import bank.utilities.CustInfo;
 import mainGUI.MainGui;
@@ -70,7 +71,7 @@ public class PersonAgent extends Agent
 
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 
-	public enum BigState {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome, leaveHome};
+	public enum BigState {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome, leaveHome, waiting};
 	public enum HomeState {sleeping, onCouch, hungry, none, idle};
 	public enum EmergencyState {fire, earthquake, none};
 	public BigState bigState = BigState.doingNothing;
@@ -289,7 +290,7 @@ public class PersonAgent extends Agent
 					WakeUp();
 					return true;
 				}
-				else if (cityData.hour>=2 && (job.equals("MarketEmployee") || job.equals("BankTeller"))) {
+				else if (cityData.hour>=2 && isEmployee()) {
 					//print(getJob());
 					WakeUp();
 					return true;
@@ -572,7 +573,7 @@ public class PersonAgent extends Agent
 					bigState = BigState.goHome;
 					return;
 				}
-				else if(((MQRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+				else if(((SMRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
 					break;
 			}
 			destinationBuilding = cityData.restaurants.get(restNumber);
@@ -598,7 +599,7 @@ public class PersonAgent extends Agent
 			}
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
-		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)destinationBuilding;
+		SMRestaurantBuilding restaurant = (SMRestaurantBuilding)destinationBuilding;
 
 		if(goToWork)
 		{
@@ -627,6 +628,7 @@ public class PersonAgent extends Agent
 		if(desiredRole.equals("Customer") && restaurant.isOpen()) {
 			personGui.DoGoIntoBuilding();
 			currentBuilding.EnterBuilding(this, desiredRole);
+			bigState = BigState.waiting;
 			return;
 		}
 	}
@@ -842,6 +844,10 @@ public class PersonAgent extends Agent
 
 	public String getJob() {
 		return job;
+	}
+	
+	public boolean isEmployee() {
+		return job.equals("MarketEmployee") || job.equals("BankTeller") || job.equals("Cashier") || job.equals("Waiter") || job.equals("Cook");
 	}
 
 	public int getHomeNumber() {

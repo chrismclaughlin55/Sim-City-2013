@@ -1,7 +1,7 @@
 package restaurantSM.gui;
 
-import restaurantSM.CustomerAgent;
-import restaurantSM.HostAgent;
+import restaurantSM.SMCustomerRole;
+import restaurantSM.SMHostRole;
 
 import javax.swing.*;
 import java.awt.*;
@@ -134,7 +134,7 @@ public class ListPanel extends JPanel implements ActionListener {
             button.addActionListener(this);
             list.add(button);
             view.add(button);
-            restPanel.addPerson(type, name, hungry);//puts customer on list
+            //restPanel.addPerson(type, name, hungry);//puts customer on list
             restPanel.showInfo(type, name);//puts hungry button on panel
             validate();
         }

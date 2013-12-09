@@ -19,35 +19,30 @@ public class SMRestaurantBuilding extends Building
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
 
-		restGui = new RestaurantGui();
+		restGui = new RestaurantGui(this);
 
-		//restPanel = restGui.getRestaurantPanel();
+		restPanel = restGui.getRestaurantPanel();
 	}
 	
 	public void EnterBuilding(PersonAgent person, String roleRequest)
 	{
-		/*System.out.println(person.getName() + ": Entering RestaurantMQ as " + roleRequest);
-		if(roleRequest.equals("Customer"))
-		{
+		System.out.println(person.getName() + ": Entering RestaurantSM as " + roleRequest);
+		if(roleRequest.equals("Customer")) {
 			restPanel.addCustomer(person);
 		}
-		else if(roleRequest.equals("Waiter"))
-		{
+		else if(roleRequest.equals("Waiter")) {
 			restPanel.addWaiter(person);
 		}
-		else if(roleRequest.equals("Cook"))
-		{
+		else if(roleRequest.equals("Cook")) {
 			restPanel.addCook(person);
 		}
-		else if(roleRequest.equals("Cashier"))
-		{
+		else if(roleRequest.equals("Cashier")) {
 			restPanel.addCashier(person);
 		}
-		else if(roleRequest.equals("Host"))
-		{
+		else if(roleRequest.equals("Host")) {
 			restPanel.addHost(person);
 			isOpen = true;
-		}*/
+		}
 		
 	}
 
@@ -55,20 +50,20 @@ public class SMRestaurantBuilding extends Building
 		return restGui;
 	}
 	
-	/*public boolean isOpen() {	
+	public boolean isOpen() {	
 		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
 	}
 	
 	public boolean openToEmployee() {
-		return isOpen && restPanel.hasHost();
+		return isOpen && restPanel.activeHost();
 	}
 	
 	public boolean hasHost() {
-		return restPanel.hasHost();
+		return restPanel.activeHost();
 	}
 	
 	public boolean hasCashier() {
-		return restPanel.hasCashier();
+		return restPanel.activeCashier();
 	}
 	
 	public RestaurantGui getRestaurantGui() {
@@ -78,5 +73,5 @@ public class SMRestaurantBuilding extends Building
 	public void setOpen(Boolean b) {
 		isOpen = b;
 		
-	}*/
+	}
 }
