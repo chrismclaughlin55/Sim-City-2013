@@ -59,12 +59,16 @@ public class BusGui implements Gui {
 		}*/
 		direction = CalculateDirection();
 		//System.out.println(direction);
-		
+		//String prevDir = currGrid.getDirection();
 		//currGrid = (RGrid) cd.getNextRGrid(currGrid);
 		/*if(currGrid.getDirection().equals("none")) {
 			//DO SOMETHING SPECIAL
 			if(direction==Direction.east) {
-				//what was previous currGrid direction, is 90
+				//and prevDir == east, go straight
+				 * if prevDir = north, turn right;
+				 * if prevDir = south, turn left;
+				 *
+				 *SAME MECHANISM FOR CARS... but stuffed in persongui
 				//do a left or right turn
 				//if same, then go straight
 				//ACQUIRE SPECIAL INTERSECTION semaphore and do the proper animation

@@ -8,15 +8,20 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.awt.Color;
 
+import city.PersonAgent;
+import city.Role;
+import market.Market;
+
 /**
  * Restaurant Cook Agent
  */
 
-public class CookAgent extends Agent implements Cook {
+public class LYCookRole extends Role implements Cook {
 	private String name;
 	
 	private List<Order> orders = Collections.synchronizedList(new ArrayList<Order>());
-	private List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
+	//private List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
+    private Market market;
 	private Map<String, Amount> inventory = Collections.synchronizedMap(new TreeMap<String, Amount>());
 	private List<MarketOrder> marketOrders = Collections.synchronizedList(new ArrayList<MarketOrder>());
 	
@@ -27,11 +32,20 @@ public class CookAgent extends Agent implements Cook {
 	private Semaphore atCookingArea = new Semaphore(0, true);
 	private Semaphore atPlacingArea = new Semaphore(0, true);
 	private Semaphore atRefrigerator = new Semaphore(0, true);
+	private Semaphore left = new Semaphore(0, true);
+    
+    private List<Waiter> waiters = new ArrayList<Waiter>();
+    public RestaurantPanel restPanel;
 
-	public CookAgent(String name) {
-		super();
-		
-		this.name = name;
+    public LYCookRole(PersonAgent person) {
+        super(person);
+    }
+    
+	public LYCookRole(PersonAgent person, RestaurantPanel rp, Market market) {
+		super(person);
+		restPanel = rp;
+		this.name = super.getName();
+        this.market = market;
 		inventory.put("Steak",new Amount(10)); // 10 inventory of steak
 		inventory.put("Chicken",new Amount(10)); // 10 inventory of chicken
 		inventory.put("Pizza",new Amount(0)); // 0 inventory of pizza
@@ -44,6 +58,10 @@ public class CookAgent extends Agent implements Cook {
 	
 	public String toString() {
 		return "Cook " + getName();
+	}
+    
+    public void addWaiter(Waiter waiter) {
+		waiters.add(waiter);
 	}
 
 	// Messages
@@ -92,11 +110,16 @@ public class CookAgent extends Agent implements Cook {
 		atRefrigerator.release();// = true;
 		stateChanged();
 	}
+	
+	public void msgLeft() {//from animation
+        left.release();
+        stateChanged();
+    }
 
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		Order order = null;
 		synchronized (orders) {
 			order = null;
@@ -141,11 +164,28 @@ public class CookAgent extends Agent implements Cook {
 			return true;
 		}
 		
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && orders.isEmpty() && orders.isEmpty() && restPanel.activeWaiters() == 0)
+		{
+			LeaveRestaurant();
+			return true;
+		}
+		
 		return false;
 		//we have tried all our rules (in this case only one) and found
 		//nothing to do. So return false to main loop of abstract agent
 		//and wait.
 	}
+    
+    private void LeaveRestaurant() {
+    	cookGui.DoLeaveRestaurant();
+        try {
+            left.acquire();
+        } catch(Exception e){}
+        person.exitBuilding();
+        person.msgFull();
+        person.msgDoneWithJob();
+        doneWithRole();
+    }
 
 	// Actions
 
@@ -165,28 +205,14 @@ public class CookAgent extends Agent implements Cook {
 	}
 	
 	private void orderFromMarket(Order order) {
-		Market market = new MarketAgent("");
-		int orderAmount = 0;
-		int orderLeft = 10;
-		while (orderLeft > 0) {
-			synchronized (markets) {
-				for (Market m : markets) {
-					print("Asking " + m.getName());
-					orderAmount = m.checkInventory(order.choice);
-					orderLeft -= orderAmount;
-					if (orderAmount > 0) {
-						market = m;
-						break;
-					}
-					else {
-						print(m.getName() + " running out of " + order.choice);
-					}
-				}
-			}
+		int orderAmount = 10;
+		print("Asking " + market.name);
+		if (market.isOpen()) {
 			final MarketOrder mo = new MarketOrder(market, order.choice, orderAmount, marketOrderState.waiting);
-			print("Ordering " + mo.choice + " from " + mo.market.getName());
+			print("Ordering " + mo.choice + " from " + mo.market.name);
 			marketOrders.add(mo);
-			mo.market.msgGetOrderFromCook(this, mo.choice, mo.amount);
+			//*****implement later
+			//mo.market.currentManager.msgNeedToOrder(cook, marketOrders, cashier);//msgGetOrderFromCook(this, mo.choice, mo.amount);
 			mo.state = marketOrderState.ordered;
 			timer.schedule(new TimerTask() {
 				public void run() {
@@ -199,7 +225,7 @@ public class CookAgent extends Agent implements Cook {
 
 	private void addInventory(MarketOrder mo) {
 		if (mo.amount == 0) {
-			markets.remove(mo.market);
+			//markets.remove(mo.market);
 			mo.state = marketOrderState.done;
 		}
 		else {
@@ -259,9 +285,9 @@ public class CookAgent extends Agent implements Cook {
 		//cookGui.DoGoToCookingArea();
 	}
 	
-	public void addMarket(Market market) {
+	/*public void addMarket(Market market) {
 		markets.add(market);
-	}
+	}*/
 	
 	public void setGui(CookGui gui) {
 		cookGui = gui;
@@ -308,4 +334,8 @@ public class CookAgent extends Agent implements Cook {
 		}
 	}
 	public enum marketOrderState {waiting, ordered, got, done}
+	
+	public void setHost(Host host) {
+		//this.host = host;
+	}
 }

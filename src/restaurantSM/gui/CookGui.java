@@ -1,13 +1,13 @@
 package restaurantSM.gui;
 
-import restaurantSM.CookAgent;
-import restaurantSM.HostAgent;
+import restaurantSM.SMCookRole;
+import restaurantSM.SMHostRole;
 
 import java.awt.*;
 
 public class CookGui implements Gui{
 
-	private CookAgent agent = null;
+	private SMCookRole agent = null;
 	private boolean isPresent = false;
 	private String statusText = "";
 
@@ -31,7 +31,7 @@ public class CookGui implements Gui{
 	public static final int yHome = 50;
 	public boolean food = false;
 
-	public CookGui(CookAgent c, RestaurantGui gui){ //HostAgent m) {
+	public CookGui(SMCookRole c, RestaurantGui gui){ //HostAgent m) {
 		agent = c;
 		xPos = xHome;
 		yPos = yHome;

@@ -1,7 +1,8 @@
 package restaurantBK;
 
 import agent.Agent;
-import restaurantBK.CustomerAgent.AgentEvent;
+import restaurantBK.BKCustomerRole.AgentEvent;
+import restaurantBK.gui.RestaurantPanel;
 import restaurantBK.gui.WaiterGui;
 import restaurantBK.interfaces.Cashier;
 import restaurantBK.interfaces.Cook;
@@ -12,6 +13,9 @@ import restaurantBK.interfaces.Waiter;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
+import city.PersonAgent;
+import city.Role;
+
 /**
  * Restaurant Host Agent
  */
@@ -19,7 +23,7 @@ import java.util.concurrent.Semaphore;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class WaiterAgent extends Agent implements Waiter {
+public class BKWaiterRole extends Role implements Waiter {
 	//static final int NTABLES = 3;//a global for the number of tables.
 	static final int WIDTH = 50;
 	//Notice that we implement waitingCustomers using ArrayList, but type it
@@ -45,19 +49,21 @@ public class WaiterAgent extends Agent implements Waiter {
 	//Later we will see how it is implemented
 	public enum WorkingState {wantsBreak,waitingForResponse,allowedBreak,breaking,goingBackToWork,working }
 	WorkingState ws;
-	private Menu m;
+	private ItalianMenu m;
 	private String name;
+	RestaurantPanel rest;
 	private Semaphore atDestination = new Semaphore(0,true);
 	//private Semaphore goingToTakeOrder = new Semaphore(0,true);
 	//private Semaphore tellCook = new Semaphore(0,true);
 	//private Semaphore getOrder = new Semaphore(0,true);
 	//private Semaphore 
 	public WaiterGui waiterGui = null;
-	public WaiterAgent(String name) {
-		super();
+	public BKWaiterRole(PersonAgent person, String name, RestaurantPanel rest) {
+		super(person);
+		this.rest = rest;
 		ws = WorkingState.working;
 		this.name = name;
-		m = new Menu();
+		m = new ItalianMenu();
 	}
 
 	/* (non-Javadoc)
@@ -313,7 +319,7 @@ public class WaiterAgent extends Agent implements Waiter {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		/* Think of this next rule as:
             Does there exist a table and customer,
             so that table is unoccupied and customer is waiting.
@@ -588,7 +594,7 @@ public class WaiterAgent extends Agent implements Waiter {
 	private void seatCustomer(myCustomer customer, int tn) {
 		GoGetCustomer(customer.waitPos);
 		print("Follow me to your table");
-		customer.c.msgFollowMeToTable(this, tn, new Menu());
+		customer.c.msgFollowMeToTable(this, tn, new ItalianMenu());
 		DoSeatCustomer(customer.c,tn); //ACQUIRE SEMAPHORE, UNTIL AT DEST
 		customer.cs=CustomerState.seated;
 		//waiterGui.DoLeaveCustomer();

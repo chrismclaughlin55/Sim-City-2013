@@ -175,4 +175,10 @@ public class MockCustomer extends Mock implements Customer {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public void msgLeft() {
+		// TODO Auto-generated method stub
+		
+	}
 }

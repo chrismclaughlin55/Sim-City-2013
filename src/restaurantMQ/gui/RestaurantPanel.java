@@ -565,7 +565,7 @@ public class RestaurantPanel extends JPanel {
     	{
     		m.OutOfFoodHack();
     	}
-<<<<<<< HEAD
+
     }*/
     
 

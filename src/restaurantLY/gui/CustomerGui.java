@@ -1,12 +1,14 @@
 package restaurantLY.gui;
 
-import restaurantLY.CustomerAgent;
+import Gui.Gui;
+import restaurantLY.LYCustomerRole;
+import restaurantLY.interfaces.Customer;
 
 import java.awt.*;
 
 public class CustomerGui implements Gui{
 
-	private CustomerAgent agent = null;
+	private Customer agent = null;
 	private boolean isPresent = false;
 	private boolean isHungry = false;
 
@@ -23,7 +25,7 @@ public class CustomerGui implements Gui{
     private int custX, custY;
     private String order;
 
-	public CustomerGui(CustomerAgent c, RestaurantGui gui){
+	public CustomerGui(LYCustomerRole c, RestaurantGui gui){
 		agent = c;
 		xPos = -40;
 		yPos = -40;
@@ -33,7 +35,7 @@ public class CustomerGui implements Gui{
 		this.gui = gui;
 	}
 	
-	public CustomerGui(CustomerAgent c, RestaurantGui gui, int x, int y){
+	public CustomerGui(LYCustomerRole c, RestaurantGui gui, int x, int y){
 		agent = c;
 		xPos = x;
 		yPos = y;
@@ -72,6 +74,10 @@ public class CustomerGui implements Gui{
         		agent.msgAtTable();
         	}
         }
+		if (xPos == xDestination && yPos == yDestination
+        		& (xDestination == -20) & (yDestination == -20)) {
+        	agent.msgLeft();
+        }
 	}
 
 	public void draw(Graphics2D g) {
@@ -108,8 +114,8 @@ public class CustomerGui implements Gui{
 	}
 
 	public void DoExitRestaurant() {
-		xDestination = -40;
-		yDestination = -40;
+		xDestination = -20;
+		yDestination = -20;
 		command = Command.LeaveRestaurant;
 	}
 	

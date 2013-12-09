@@ -1,6 +1,6 @@
 package restaurantBK.interfaces;
 
-import restaurantBK.CustomerAgent;
+import restaurantBK.BKCustomerRole;
 
 public interface Cashier {
 

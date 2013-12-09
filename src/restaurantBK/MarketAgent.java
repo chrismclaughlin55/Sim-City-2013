@@ -15,8 +15,8 @@ import agent.Agent;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-import restaurantBK.CookAgent.OrderState;
-import restaurantBK.CustomerAgent.AgentEvent;
+import restaurantBK.BKCookRole.OrderState;
+import restaurantBK.BKCustomerRole.AgentEvent;
 import restaurantBK.interfaces.Cashier;
 import restaurantBK.interfaces.Cook;
 import restaurantBK.interfaces.Market;

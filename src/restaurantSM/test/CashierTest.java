@@ -1,6 +1,7 @@
 package restaurantSM.test;
 
-import restaurantSM.CashierAgent;
+import city.PersonAgent;
+import restaurantSM.SMCashierRole;
 import restaurantSM.interfaces.Market;
 import restaurantSM.test.mock.MockCustomer;
 import restaurantSM.test.mock.MockMarket;
@@ -21,7 +22,7 @@ import junit.framework.*;
 public class CashierTest extends TestCase
 {
 	//these are instantiated for each test separately via the setUp() method.
-	CashierAgent cashier;
+	SMCashierRole cashier;
 	MockWaiter waiter;
 	MockCustomer customer1;
 	MockCustomer customer2;
@@ -37,7 +38,7 @@ public class CashierTest extends TestCase
 	 */
 	public void setUp() throws Exception{
 		super.setUp();		
-		cashier = new CashierAgent("cashier");
+		cashier = new SMCashierRole(new PersonAgent("cashier1"));
 		customer1 = new MockCustomer("mockcustomer");		
 		waiter = new MockWaiter("mockwaiter");
 		market1 = new MockMarket("mockmarket1", cashier);

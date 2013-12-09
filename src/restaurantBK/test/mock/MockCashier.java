@@ -1,6 +1,6 @@
 package restaurantBK.test.mock;
 
-import restaurantBK.CustomerAgent;
+import restaurantBK.BKCustomerRole;
 import restaurantBK.interfaces.Cashier;
 import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Market;

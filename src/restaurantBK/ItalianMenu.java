@@ -3,9 +3,9 @@ package restaurantBK;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class Menu extends HashMap<String,Double>{
+public final class ItalianMenu extends HashMap<String,Double>{
 	
-	public Menu() {
+	public ItalianMenu() {
 		//prices = new HashMap<String,Double>();
 		this.put("Steak",15.99);
 		this.put("Chicken", 10.99);

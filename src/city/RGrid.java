@@ -32,6 +32,9 @@ public class RGrid extends Grid {
 		if(direction==Direction.west) {
 			d = "west";
 		}
+		if(direction==Direction.none) {
+			d = "none";
+		}
 		return d;
 	}
 	

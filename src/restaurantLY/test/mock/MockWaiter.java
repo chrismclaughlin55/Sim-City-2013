@@ -138,12 +138,6 @@ public class MockWaiter extends Mock implements Waiter {
 	}
 
 	@Override
-	public void setCook(Cook cook) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void setHost(Host host) {
 		// TODO Auto-generated method stub
 		
@@ -169,6 +163,12 @@ public class MockWaiter extends Mock implements Waiter {
 
 	@Override
 	public void setGuiPanel(RestaurantGui gui) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgLeft() {
 		// TODO Auto-generated method stub
 		
 	}

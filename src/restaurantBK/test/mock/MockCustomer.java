@@ -1,7 +1,7 @@
 package restaurantBK.test.mock;
 
 
-import restaurantBK.Menu;
+import restaurantBK.ItalianMenu;
 import restaurantBK.gui.CustomerGui;
 import restaurantBK.interfaces.Cashier;
 import restaurantBK.interfaces.Customer;
@@ -92,7 +92,7 @@ public class MockCustomer extends Mock implements Customer {
 	}
 
 	@Override
-	public void msgFollowMeToTable(Waiter w, int tableNumber, Menu m) {
+	public void msgFollowMeToTable(Waiter w, int tableNumber, ItalianMenu m) {
 		// TODO Auto-generated method stub
 		
 	}

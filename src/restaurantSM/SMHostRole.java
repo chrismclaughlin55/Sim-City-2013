@@ -1,28 +1,35 @@
 package restaurantSM;
 
 import agent.Agent;
+
 import java.util.*;
 import java.util.concurrent.Semaphore;
+
+import city.PersonAgent;
+import city.Role;
 import restaurantSM.utils.*;
 
-public class HostAgent extends Agent {
+public class SMHostRole extends Role {
 	
 	List<Table> tables;
 	static final int NTABLES = 3;
-	List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
-	List<WaiterAgent> waiters = new ArrayList<WaiterAgent>();
-	List<CustomerAgent> fullCustomers = new ArrayList<CustomerAgent>();
+	List<SMCustomerRole> waitingCustomers = Collections.synchronizedList(new ArrayList<SMCustomerRole>());
+	List<SMWaiterRole> waiters = Collections.synchronizedList(new ArrayList<SMWaiterRole>());
+	List<SMCustomerRole> fullCustomers = new ArrayList<SMCustomerRole>();
 	String name;
 	
-	public HostAgent(String n){
-		name = n;
+	public SMHostRole(PersonAgent p, List<SMCustomerRole> custs, List<SMWaiterRole> waits){
+		super(p);
+		name = p.getName();
+		waitingCustomers = custs;
+		waiters = waits;
 		tables = new ArrayList<Table>(NTABLES);
 		for (int ix = 1; ix <= NTABLES; ix++) {
 			tables.add(new Table(ix));
 		}
 	}
 
-	public List<WaiterAgent> getWaiters(){
+	public List<SMWaiterRole> getWaiters(){
 		return waiters;
 	}
 	
@@ -30,29 +37,25 @@ public class HostAgent extends Agent {
 		return name;
 	}
 	
-	public void msgAskForBreak(WaiterAgent w){
+	public void msgAskForBreak(SMWaiterRole w){
 		if (waiters.size() > 1){
 			waiters.remove(w);
 			w.msgGoOnBreak();
-			Do("break approved");
-		}
-		else {
-			Do("break denied");
 		}
 		stateChanged();
 	}
 	
-	public void msgIWillWait(CustomerAgent c) {
+	public void msgIWillWait(SMCustomerRole c) {
 		waitingCustomers.add(c);
 		stateChanged();
 	}
 	
-	public void msgDoneWithBreak(WaiterAgent w) {
+	public void msgDoneWithBreak(SMWaiterRole w) {
 		this.addWaiter(w);
 		stateChanged();
 	}
 	
-	public void addWaiter(WaiterAgent w) {
+	public void addWaiter(SMWaiterRole w) {
 		waiters.add(w);
 		stateChanged();
 	}
@@ -66,7 +69,7 @@ public class HostAgent extends Agent {
 		return true;
 	}
 	
-	public void msgIWantFood(CustomerAgent c){
+	public void msgIWantFood(SMCustomerRole c){
 		if (!restIsFull()) {
 			waitingCustomers.add(c);
 		}
@@ -81,7 +84,7 @@ public class HostAgent extends Agent {
 		stateChanged();
 	}
 	
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		
 		if (!fullCustomers.isEmpty()) {
 			askToWait(fullCustomers.get(0));
@@ -89,25 +92,27 @@ public class HostAgent extends Agent {
 			return true;
 		}
 		
-		if (!waitingCustomers.isEmpty()) {	
-			for (Table table : tables){
-				if (!table.isOccupied()) {
-					seatCustomer(waitingCustomers.get(0), table);
-					return true;
+		synchronized(waitingCustomers) {
+			if (!waitingCustomers.isEmpty()) {	
+				for (Table table : tables){
+					if (!table.isOccupied()) {
+						seatCustomer(waitingCustomers.get(0), table);
+						return true;
+					}
 				}
 			}
 		}
 		return false;
 	}
 	
-	private void askToWait(CustomerAgent customer){
+	private void askToWait(SMCustomerRole customer){
 		customer.msgWaitPlease();
 	}
 	
-	private void seatCustomer(CustomerAgent customer, Table table) {
+	private void seatCustomer(SMCustomerRole customer, Table table) {
 		if (!waiters.isEmpty()){
-			WaiterAgent min = waiters.get(0);
-			for (WaiterAgent w : waiters){
+			SMWaiterRole min = waiters.get(0);
+			for (SMWaiterRole w : waiters){
 				if (w.getNumCustomers() < min.getNumCustomers()){
 					min = w;
 				}

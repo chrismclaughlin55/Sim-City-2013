@@ -1,6 +1,9 @@
 package restaurantLY;
 
 import agent.Agent;
+import city.PersonAgent;
+import city.Role;
+import restaurantLY.gui.RestaurantPanel;
 import restaurantLY.interfaces.*;
 import restaurantLY.test.mock.EventLog;
 import restaurantLY.test.mock.LoggedEvent;
@@ -8,13 +11,17 @@ import restaurantLY.test.mock.LoggedEvent;
 import java.util.*;
 import java.math.BigDecimal;
 
+import market.Market;
+import market.MarketEmployeeRole;
+import city.PersonAgent;
+
 // no gui animation for cashier
 
 /**
  * Restaurant Cashier Agent
  */
 
-public class CashierAgent extends Agent implements Cashier {
+public class LYCashierRole extends Role implements Cashier {
 	public List<myCustomer> customers = Collections.synchronizedList(new ArrayList<myCustomer>());
 	public List<myMarket> markets = Collections.synchronizedList(new ArrayList<myMarket>());
 	String name;
@@ -22,15 +29,16 @@ public class CashierAgent extends Agent implements Cashier {
 	double money;
 	double debt;
 	boolean oweMoney;
+    public RestaurantPanel restPanel;
 	
 	Timer timer = new Timer();
 	
 	public EventLog log = new EventLog();
 	
-	public CashierAgent(String name, double money) {
-		super();
-		
-		this.name = name;
+	public LYCashierRole(PersonAgent person, double money, RestaurantPanel rp) {
+		super(person);
+		restPanel = rp;
+		this.name = super.getName();
 		this.menu = new Menu();
 		this.money = money;
 		//this.debt = 0.0;
@@ -74,8 +82,10 @@ public class CashierAgent extends Agent implements Cashier {
 		stateChanged();
 	}
 	
-	public void msgGetBillFromMarket(Market market, double price) {
-		markets.add(new myMarket(market, marketCheckState.ready, price));
+	public void msgGetBillFromMarket(Market market, double price, MarketEmployeeRole marketEmployee) {
+		markets.add(new myMarket(market, marketCheckState.ready, price, marketEmployee));
+		//bills.add(new Bill(marketEmployee, price));
+		//log.add(new LoggedEvent("Received bill."));
 		stateChanged();
 	}
 
@@ -112,6 +122,18 @@ public class CashierAgent extends Agent implements Cashier {
 			return true;
 		}
 		
+		/*Bill temp = null;
+		synchronized (bills) {
+			temp = null;
+			for (Bill b : bills) {
+				temp = b;
+				break;
+			}
+		}
+		if (temp != null) {
+			payToMarket(temp);
+			return true;
+		}*/
 		myMarket temp = null;
 		synchronized (markets) {
 			temp = null;
@@ -127,8 +149,22 @@ public class CashierAgent extends Agent implements Cashier {
 			return true;
 		}
 		
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && !restPanel.isOpen() 
+				&& restPanel.justCashier())
+		{
+			LeaveRestaurant();
+			return true;
+		}
+		
 		return false;
 	}
+    
+    private void LeaveRestaurant() {
+        restPanel.cashierLeaving();
+        person.msgDoneWithJob();
+        person.exitBuilding();
+        doneWithRole();
+    }
 	
 	// Actions
 	
@@ -177,10 +213,29 @@ public class CashierAgent extends Agent implements Cashier {
 		print("Now restaurant having $" + moneyBD);
 	}
 	
-	private void payToMarket(myMarket market) {
+	private void payToMarket(myMarket market) {//Bill bill) {
+		/*double payment;
+		if(money < bill.bill)
+		{
+			payment = money;
+		}
+		else
+		{
+			payment = bill.bill;
+		}
+		log.add(new LoggedEvent("Paying $" + payment + " to " + bill.marketEmployee.getName()));
+		if (this.debt == 0) {
+			this.oweMoney = false;
+		}
+		else {
+			this.oweMoney = true;
+		}
+		print("Paying $" + payment + " to " + bill.marketEmployee.getName());
+		this.money = money - payment;
+		bill.marketEmployee.msgHereIsPayment(payment);*/
 		BigDecimal moneyBD = new BigDecimal(market.money);
 		moneyBD = moneyBD.setScale(2, BigDecimal.ROUND_HALF_UP);
-		log.add(new LoggedEvent("Paying $" + moneyBD + " to " + market.market.getName()));
+		log.add(new LoggedEvent("Paying $" + moneyBD + " to " + market.market.name));
 		if (this.debt == 0) {
 			this.oweMoney = false;
 		}
@@ -190,8 +245,8 @@ public class CashierAgent extends Agent implements Cashier {
 		if (this.money - market.money >= 0 && !this.oweMoney) {
 			BigDecimal moneyBD2 = new BigDecimal(market.money);
 			moneyBD2 = moneyBD2.setScale(2, BigDecimal.ROUND_HALF_UP);
-			print("Paying $" + moneyBD2 + " to " + market.market.getName());
-			market.market.msgHereIsMoney(market.money);
+			print("Paying $" + moneyBD2 + " to " + market.market.name);
+			market.marketEmployee.msgHereIsPayment(market.money);
 			this.money -= market.money;
 		}
 		else {
@@ -202,7 +257,7 @@ public class CashierAgent extends Agent implements Cashier {
 				this.debt += market.money;
 			}
 			print("No enough for market, paying $" + this.money + ", owe $" + (market.money - this.money) + ", pay next time");
-			market.market.msgNoMoney();
+			market.marketEmployee.msgHereIsPayment(this.money);
 		}
 		market.state = marketCheckState.done;
 		stateChanged();
@@ -256,13 +311,19 @@ public class CashierAgent extends Agent implements Cashier {
 		public Market market;
 		public double money;
 		public marketCheckState state;
+		MarketEmployeeRole marketEmployee;
 		
-		myMarket(Market market, marketCheckState state, double money) {
+		myMarket(Market market, marketCheckState state, double money, MarketEmployeeRole marketEmployee) {
 			this.market = market;
 			this.state = state;
 			this.money = money;
+			this.marketEmployee = marketEmployee;
 		}
 	}
 	public enum marketCheckState {ready, done}
+	
+	public void startThread() {
+		
+	}
 }
 

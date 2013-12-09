@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import restaurantBK.gui.BKRestaurantBuilding;
 import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantLY.gui.LYRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
@@ -112,17 +114,29 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		//create restaurants
 
 		for (int i = 0; i < 2; i++) {
-			Building b = new MQRestaurantBuilding(200+i*140, 140, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
+			Building b = new SMRestaurantBuilding(200+i*140, 140, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
-			cd.restaurants.add((MQRestaurantBuilding) b);
+			cd.restaurants.add((SMRestaurantBuilding) b);
 		}
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			Building b = new KCRestaurantBuilding(200+i*140, 260, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
 			cd.restaurants.add((KCRestaurantBuilding) b);
 		}
-
+		for(int i=0; i<1; i++) {
+			Building b;
+			try {
+				b = new BKRestaurantBuilding(200+140,260,WIDTH,HEIGHT,"",BuildingType.restaurant, mainGui,cd);
+				cd.buildings.add(b);
+				cd.restaurants.add((BKRestaurantBuilding) b);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
 		for (int i = 0; i < 1; i++) {
 			Building b = new SMRestaurantBuilding(200+i*140, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
@@ -255,8 +269,10 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(19).setType(BuildingType.market);
 		cd.buildings.get(19).setName("market");
 		cd.buildings.get(19).setBuildingNumber(19);
+
 		cd.market = (Market) cd.buildings.get(19);
 		cd.bank.addBusinessAccount(cd.buildings.get(19), 5000.0);
+
 		//setBackground(Color.WHITE);
 		cd.globalTimer = new Timer(GLOBALINTERVAL,(ActionListener) this);
 

@@ -3,7 +3,7 @@ package restaurantBK.interfaces;
 import java.util.Collection;
 import java.util.List;
 
-import restaurantBK.CustomerAgent;
+import restaurantBK.BKCustomerRole;
 
 public interface Host {
 

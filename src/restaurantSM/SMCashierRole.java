@@ -6,14 +6,15 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import city.PersonAgent;
+import city.Role;
 import restaurantSM.interfaces.Cashier;
 import restaurantSM.interfaces.Market;
 import restaurantSM.interfaces.Waiter;
-
 import restaurantSM.utils.*;
 import agent.Agent;
 
-public class CashierAgent extends Agent implements Cashier {
+public class SMCashierRole extends Role implements Cashier {
 	String name;
 	public Menu menu = new Menu();
 	public List<Bill> pendingBills = new ArrayList<Bill>();
@@ -23,8 +24,9 @@ public class CashierAgent extends Agent implements Cashier {
 	public DecimalFormat df = new DecimalFormat("#.00");
 	List<MarketAgent> markets = new ArrayList<MarketAgent>();
 	
-	public CashierAgent(String n) {
-		name = n;
+	public SMCashierRole(PersonAgent p) {
+		super(p);
+		name = p.getName();
 	}
 	
 	public String getName(){
@@ -81,13 +83,11 @@ public class CashierAgent extends Agent implements Cashier {
 	
 	private void CalculateChange(Bill b) {
 		total += b.total;
-		Do("total = " + df.format(total));
 		for (MarketAgent m : markets) {
 			if (m.tab > 0 && total > 0) {
 				double min = min(m.tab, total);
 				total -= min;
 				m.msgPayDownTab(min);
-				Do("Paying down " + min + " on my tab at " + m.getName());
 			}
 		}
 		b.calcChange();
@@ -105,12 +105,10 @@ public class CashierAgent extends Agent implements Cashier {
 		double tabAmt = 0;
 		if (total - b.total >= 0) {
 			total -= b.total;
-			Do("total = " + df.format(total));
 			b.market.msgReceivePayment(b.total, tabAmt);
 		}
 		else {
 			tabAmt = -1 * (total - b.total);
-			Do("Unable to pay full amount, adding " + df.format(tabAmt) + " to the cashier's tab at " + b.market.getName());
 			total = 0;
 			b.market.msgReceivePayment(b.total - tabAmt, tabAmt);
 		}
