@@ -227,7 +227,8 @@ public class PersonAgent extends Agent
 	}
 
 	public void msgDoneWithRole() {
-		//implement later
+		bigState = BigState.doingNothing;
+		super.stateChanged();
 	}
 
 	public void msgAtBuilding() {//from animation
@@ -391,35 +392,43 @@ public class PersonAgent extends Agent
 				}
 			}
 
-
 			if(hungerLevel >= STARVING) {
 				bigState = BigState.goToRestaurant;
 				desiredRole = "Customer";
+				if(!goToWork)
+					System.out.println(name + job + desiredRole);
 				return true;
 			}
 			if(cash <= LOWMONEY) {
 				bigState = BigState.goToBank;
 				desiredRole = "Customer";
+				if(!goToWork)
+					System.out.println(name + job + desiredRole);
 				return true;
 			}
 			// Inventory of food stuff
 			if(lowInventory()) {
 				bigState = BigState.goToMarket;
 				desiredRole = "MarketCustomer";
+				if(!goToWork)
+					System.out.println(name + job + desiredRole);
 				return true;
 			}
 
 			if(hungerLevel >= HUNGRY) {
 				bigState = BigState.goToRestaurant;
 				desiredRole = "Customer";
+				if(!goToWork)
+					System.out.println(name + job + desiredRole);
 				return true;
 			}
-
-			bigState = bigState.goHome;
-			homeState = homeState.onCouch;
+			
+			bigState = BigState.goHome;
+			homeState = HomeState.onCouch;
+			if(!goToWork)
+				System.out.println(name + job + bigState);
 			return true;
 		}
-
 
 		}
 
@@ -449,7 +458,7 @@ public class PersonAgent extends Agent
 	private void WakeUp() {
 		goToWork = true;
 		tiredLevel = 0;
-		homeState = homeState.idle;
+		homeState = HomeState.idle;
 		hungerLevel += 5;
 	}
 
@@ -601,7 +610,7 @@ public class PersonAgent extends Agent
 		}
 		SMRestaurantBuilding restaurant = (SMRestaurantBuilding)destinationBuilding;
 
-		if(goToWork)
+		if(goToWork && !desiredRole.equals("Customer"))
 		{
 			if(desiredRole.equals("Host") && !restaurant.hasHost()) {
 				personGui.DoGoIntoBuilding();
@@ -631,19 +640,22 @@ public class PersonAgent extends Agent
 			bigState = BigState.waiting;
 			return;
 		}
+			bigState = BigState.goHome;
+			homeState = HomeState.onCouch;
 	}
 
 	protected void goHome() {
 		//int homeNumber = (int)((int)(Math.random()*11));
-		currentBuilding = cityData.buildings.get(this.home.buildingNumber);
+		destinationBuilding = cityData.buildings.get(this.home.buildingNumber);
 		personGui.DoGoToBuilding(this.home.buildingNumber); // 11 need to be replaced by the person's data of home number
-		atBuilding.drainPermits();
 		try {
 			atBuilding.acquire();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		currentBuilding = destinationBuilding;
+		
 		personGui.DoGoIntoBuilding();
 		if (home instanceof Home) {
 			currentBuilding.EnterBuilding(this, "");
@@ -803,6 +815,7 @@ public class PersonAgent extends Agent
 			isMoving.acquire();
 		}
 		catch(Exception e) {}
+		currentBuilding = destinationBuilding;
 	}
 
 	public void setRoomNumber(int number) {
@@ -820,9 +833,9 @@ public class PersonAgent extends Agent
 
 	public void exitBuilding()
 	{
+		cityData.addGui(personGui);
 		print("Exiting the building");
 		bigState = BigState.doingNothing;
-		cityData.addGui(personGui);
 	}
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
 	protected void stateChanged() {

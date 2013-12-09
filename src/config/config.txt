@@ -99,7 +99,7 @@ name bankManager
 cash 100
 bankMoney 500
 job BankManager
-hunger 10
+hunger 0
 inventory 10
 
 NewPerson
@@ -107,15 +107,15 @@ name Teller
 cash 100
 bankMoney 500
 job BankTeller
-hunger 10
+hunger 0
 inventory 10
 
 NewPerson
 name BankCust0
-cash 0
+cash 1500
 bankMoney 5000
 job Unemployed
-hunger 0
+hunger 8
 inventory 10
 
 

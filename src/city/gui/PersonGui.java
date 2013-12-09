@@ -28,10 +28,10 @@ public class PersonGui implements Gui{
 	private int xPos, yPos;
 	private int xDestination, yDestination;
 	
-	public static final int xBuilding[] = {52, 52, 52, 52, 232, 362, 542, 542, 542, 542, 362, 232, 243, 373, 243, 373, 243, 373, 232, 360};
-	public static final int yBuilding[] = {198, 328, 468, 598, 738, 738, 598, 468, 328, 198, 58, 58, 202, 202, 332, 332, 602, 602, 470, 470};
-	public static final int xStop[] = {115, 115, 115, 115, 265, 395, 475, 475, 475, 475, 425, 295};
-	public static final int yStop[] = {200, 330, 470, 600, 680, 680, 600, 470, 330, 200, 65, 65};
+	public static final int xBuilding[] = {60, 60, 60, 60, 240, 380, 560, 560, 560, 560, 380, 240, 260, 400, 260, 400, 260, 400, 240, 380};
+	public static final int yBuilding[] = {200, 320, 480, 600, 740, 740, 600, 480, 320, 200, 60, 60, 200, 200, 320, 320, 600, 600, 480, 480};
+	public static final int xStop[] = {120, 120, 120, 120, 260, 400, 500, 500, 500, 500, 440, 300};
+	public static final int yStop[] = {200, 320, 480, 600, 680, 680, 600, 480, 320, 200, 60, 60};
 	
 	MainGui gui;
 
@@ -94,8 +94,6 @@ public class PersonGui implements Gui{
 
 	@Override
 	public void draw(Graphics2D g) {
-		//g.setColor(Color.GREEN);
-		//g.fillRect(xPos, yPos, WIDTH, WIDTH);
 		Graphics2D g2 = (Graphics2D)g;
 		ImageIcon person = new ImageIcon("res/person.png");
 		g2.drawImage(person.getImage(), xPos, yPos, null);

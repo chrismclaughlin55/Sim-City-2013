@@ -356,6 +356,7 @@ public class RestaurantPanel extends JPanel {
     	person.msgAssignRole(c);
     }
     
+    //adding from outside restaurant
     public void addWaiter(PersonAgent person)
     {
     	MQWaiterRole waiter;
@@ -410,6 +411,7 @@ public class RestaurantPanel extends JPanel {
     	}
     }
     
+    //adding from restaurant
     public void addHost(PersonAgent person)
     {
         host = new MQHostRole(person, this);
@@ -434,6 +436,7 @@ public class RestaurantPanel extends JPanel {
         person.msgAssignRole((MQHostRole)host);
     }
     
+    //adding from outside restaurant
     public void addCook(PersonAgent person)
     {
     	MQCookRole c = new MQCookRole(person, this, cookOrders, market, cashier, timer);
@@ -441,6 +444,7 @@ public class RestaurantPanel extends JPanel {
 		person.msgAssignRole(c);
     }
     
+    //adding from outside restaurant
     public void addCashier(PersonAgent person)
     {
     	cashier = new MQCashierRole(person, this);
@@ -526,6 +530,7 @@ public class RestaurantPanel extends JPanel {
     public void hostLeaving()
     {
     	host = null;
+    	gui.setOpen(false);
     }
     
     public void cashierLeaving()
