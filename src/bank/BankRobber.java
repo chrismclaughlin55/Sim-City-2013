@@ -69,6 +69,7 @@ public class BankRobber extends Role {
 		gui.DoLeaveBuilding();
 		bank.bankGui.animationPanel.addGui(gui);
 		me.exitBuilding();
+		me.setJob("Unemployed");
 	}
 
 }
