@@ -2,8 +2,8 @@ package restaurantLY.interfaces;
 
 import java.util.List;
 
-import restaurantLY.CustomerAgent;
-import restaurantLY.WaiterAgent;
+import restaurantLY.interfaces.Customer;
+import restaurantLY.interfaces.Waiter;
 
 public interface Host {
 	public abstract void msgIWantToEat(Customer cust);
@@ -18,4 +18,5 @@ public interface Host {
 	public abstract List getWaitingCustomers();
 	public abstract List getWaiters();
 	public abstract void setWaiter(Waiter waiter);
+	public abstract void msgLeavingNow(Waiter waiter);
 }

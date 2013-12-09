@@ -2,6 +2,7 @@ package restaurantLY.gui;
 
 import javax.swing.JFrame;
 
+import restaurantLY.gui.RestaurantGui;
 import mainGUI.MainGui;
 import city.Building;
 import city.CityData;
@@ -19,14 +20,14 @@ public class LYRestaurantBuilding extends Building
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
 
-		restGui = new RestaurantGui();
+		restGui = new RestaurantGui(cd.market, this);
 
-		//restPanel = restGui.getRestaurantPanel();
+		restPanel = restGui.getRestaurantPanel();
 	}
 	
 	public void EnterBuilding(PersonAgent person, String roleRequest)
 	{
-		/*System.out.println(person.getName() + ": Entering RestaurantMQ as " + roleRequest);
+		System.out.println(person.getName() + ": Entering RestaurantLY as " + roleRequest);
 		if(roleRequest.equals("Customer"))
 		{
 			restPanel.addCustomer(person);
@@ -47,36 +48,40 @@ public class LYRestaurantBuilding extends Building
 		{
 			restPanel.addHost(person);
 			isOpen = true;
-		}*/
+		}
 		
 	}
-
-	public JFrame getBuildingGui() {
-		return restGui;
-	}
 	
-	/*public boolean isOpen() {	
+	public boolean isOpen() {
 		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
 	}
 	
-	public boolean openToEmployee() {
+	public boolean openToEmployee()
+	{
 		return isOpen && restPanel.hasHost();
 	}
 	
-	public boolean hasHost() {
+	public boolean hasHost()
+	{
 		return restPanel.hasHost();
 	}
 	
-	public boolean hasCashier() {
+	public boolean hasCashier()
+	{
 		return restPanel.hasCashier();
 	}
 	
-	public RestaurantGui getRestaurantGui() {
+	public RestaurantGui getRestaurantGui()
+	{
 		return restGui;
 	}
 
 	public void setOpen(Boolean b) {
 		isOpen = b;
 		
-	}*/
+	}
+
+	public JFrame getBuildingGui() {
+		return restGui;
+	}
 }
