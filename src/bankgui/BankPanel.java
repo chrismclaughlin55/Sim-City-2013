@@ -1,5 +1,9 @@
 package bankgui;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -8,6 +12,7 @@ import bank.utilities.CustInfo;
 
 public class BankPanel extends JPanel{
 	Bank bank;
+	public List<JLabel> labels = Collections.synchronizedList(new ArrayList<JLabel>());
 	BankPanel(Bank bank){
 		this.bank = bank;
 		add(new JLabel("Name \t Acct# \t $inBank \t Cash"));

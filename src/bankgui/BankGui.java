@@ -7,8 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import bank.Bank;
+import bank.utilities.CustInfo;
 import bank.utilities.GuiPositions;
 
 
@@ -44,6 +46,16 @@ public class BankGui extends JFrame implements GuiPositions, ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
+			
+		}
+		public void updatebankPanel() {
+			bankPanel.labels.clear();
+			for(CustInfo info : bank.CustAccounts.values()){
+				bankPanel.labels.add(new JLabel(info.custName + " " + info.accountNumber + " " +info.moneyInAccount+" "+info.accountHolder.cash));	
+			}
+			
+			
+			bankPanel.validate();
 			
 		}
 		

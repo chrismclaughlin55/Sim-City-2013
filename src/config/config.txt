@@ -148,6 +148,7 @@ bankMoney 1000
 job Unemployed
 hunger 10
 inventory 10
+transportation bus
 
 NewPerson
 name MarketManager0
