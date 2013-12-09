@@ -11,9 +11,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import restaurantKC.CustomerAgent;
-import restaurantKC.WaiterAgent;
+import restaurantKC.KCCustomerRole;
+import restaurantKC.KCWaiterRole;
 import restaurantKC.interfaces.Customer;
+import restaurantMQ.gui.MQRestaurantBuilding;
+import restaurantMQ.gui.RestaurantCustomer;
 /**
  * Main GUI class.
  * Contains the main frame and subsequent panels
@@ -32,13 +34,10 @@ public class RestaurantGui extends JFrame implements ActionListener {
 	private static final int WIDTH = 50;
 	private static final double RESIZE1 = 0.6;
 	private static final double RESIZE2 = 0.25;
-
-	/* restPanel holds 2 panels
-	 * 1) the staff listing, menu, and lists of current customers all constructed
-	 *    in RestaurantPanel()
-	 * 2) the infoPanel about the clicked Customer (created just below)
-	 */    
+  
 	public RestaurantPanel restPanel;
+	KCRestaurantBuilding building;
+
 
 	/* infoPanel holds information about the clicked customer, if there is one*/
 	private JPanel infoPanel;
@@ -55,11 +54,13 @@ public class RestaurantGui extends JFrame implements ActionListener {
 	 * Constructor for RestaurantGui class.
 	 * Sets up all the gui components.
 	 */
-	public RestaurantGui() {
-
+	public RestaurantGui(KCRestaurantBuilding b) {
+		building = b;
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		animationPanel = new AnimationPanel();
 		animationPanel.setVisible(true);
+		
+		setResizable(false);
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(WIDTH, WIDTH , WINDOWX, WINDOWY);
@@ -99,15 +100,15 @@ public class RestaurantGui extends JFrame implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == stateCB) {
-			if (currentPerson instanceof CustomerAgent) {
-				CustomerAgent c = (CustomerAgent) currentPerson;
+			if (currentPerson instanceof Customer) {
+				Customer c = (Customer) currentPerson;
 				c.getGui().setHungry();
 				stateCB.setEnabled(false);
 			}
 		}
 		if (e.getSource() == stateCB) {
-			if (currentPerson instanceof WaiterAgent) {
-				WaiterAgent w = (WaiterAgent) currentPerson;
+			if (currentPerson instanceof KCWaiterRole) {
+				KCWaiterRole w = (KCWaiterRole) currentPerson;
 				w.getGui().setBreak();
 				stateCB.setEnabled(false);
 			}
@@ -120,8 +121,8 @@ public class RestaurantGui extends JFrame implements ActionListener {
 	 * @param agent reference to the customer
 	 */
 	public void setCustomerEnabled(Customer agent) {
-		if (currentPerson instanceof CustomerAgent) {
-			CustomerAgent cust = (CustomerAgent) currentPerson;
+		if (currentPerson instanceof Customer) {
+			Customer cust = (Customer)currentPerson;
 			if (agent.equals(cust)) {
 				stateCB.setEnabled(true);
 				stateCB.setSelected(false);
@@ -129,9 +130,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
 		}
 	}
 
-	public void setWaiterEnabled(WaiterAgent w) {
-		if (currentPerson instanceof WaiterAgent) {
-			WaiterAgent waiter = (WaiterAgent) currentPerson;
+	public void setWaiterEnabled(KCWaiterRole w) {
+		if (currentPerson instanceof KCWaiterRole) {
+			KCWaiterRole waiter = (KCWaiterRole) currentPerson;
 			if (w.equals(waiter)) {
 				stateCB.setEnabled(true);
 				stateCB.setSelected(false);
@@ -149,4 +150,14 @@ public class RestaurantGui extends JFrame implements ActionListener {
 
 		gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}*/
+	
+	public boolean isOpen() {
+		return building.isOpen();
+	}
+	
+	public void setOpen(Boolean b) {
+		building.setOpen(b);
+	}
+
+	 
 }

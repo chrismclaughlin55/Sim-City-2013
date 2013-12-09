@@ -6,14 +6,16 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import restaurantKC.interfaces.Cashier;
+import restaurantKC.interfaces.Cook;
 import restaurantKC.interfaces.Market;
 import agent.Agent;
 
 
 public class MarketAgent extends Agent implements Market {
 
-	private CookAgent cook;
-	private CashierAgent cashier;
+	private Cook cook;
+	private Cashier cashier;
 	double money = 0;
 	Timer timer = new Timer();
 	class MyFood {
@@ -44,7 +46,7 @@ public class MarketAgent extends Agent implements Market {
 	
 	
 
-	public MarketAgent(String name, int numPizza, int numSalad, int numSteak, int numChicken, CookAgent cook, CashierAgent cashier) {
+	public MarketAgent(String name, int numPizza, int numSalad, int numSteak, int numChicken, Cook cook, Cashier cashier) {
 		super();
 		this.name = name;
 		this.cook = cook;

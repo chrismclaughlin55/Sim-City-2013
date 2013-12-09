@@ -126,7 +126,7 @@ public class MainGui extends JFrame implements MouseListener {
 					n = scan.next();
 					PersonAgent p = new PersonAgent(n, this, mainAnimationPanel.cd);
 					if(newPerson.equals("NewPerson")) {
-						for(int i=0; i<5; i++) {
+						for(int i=0; i<6; i++) {
 							String property = scan.next();
 							String temp = scan.next();
 							if(property.equals("name")) {
@@ -147,6 +147,23 @@ public class MainGui extends JFrame implements MouseListener {
 							}
 							if(property.equals("hunger")) { 
 								p.setHunger(Integer.parseInt(temp));
+							}
+							if(property.equals("transportation")) {
+								if(temp.equals("car")) {
+									p.car = true;
+									p.bus = false;
+									p.walk = false;
+								}
+								if(temp.equals("bus")) {
+									p.car = false;
+									p.bus = true;
+									p.walk = false;
+								}
+								if(temp.equals("walk")) {
+									p.car = false;
+									p.bus = false;
+									p.walk = false;
+								}
 							}
 						}
 					}
@@ -175,7 +192,7 @@ public class MainGui extends JFrame implements MouseListener {
 						String n = scan.next();
 						n = scan.next();
 						PersonAgent p = createPerson(n,null);
-						for(int i=0; i<5; i++) {
+						for(int i=0; i<6; i++) {
 							String property = scan.next();
 							String temp = scan.next();
 							if(property.equals("name")) {
@@ -200,6 +217,23 @@ public class MainGui extends JFrame implements MouseListener {
 							}
 							if(property.equals("hunger")) { 
 								p.setHunger(Integer.parseInt(temp));
+							}
+							if(property.equals("transportation")) {
+								if(temp.equals("car")) {
+									p.car = true;
+									p.bus = false;
+									p.walk = false;
+								}
+								if(temp.equals("bus")) {
+									p.car = false;
+									p.bus = true;
+									p.walk = false;
+								}
+								if(temp.equals("walk")) {
+									p.car = false;
+									p.bus = false;
+									p.walk = false;
+								}
 							}
 						}
 						assignJobBuilding(p,p.getJob());

@@ -11,6 +11,7 @@ import java.util.concurrent.Semaphore;
 import trace.Alert;
 import trace.AlertLog;
 import trace.TracePanel;
+import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
 import restaurantSM.gui.SMRestaurantBuilding;
 import bank.Bank;
@@ -65,7 +66,9 @@ public class PersonAgent extends Agent
 	Bank bank;
 	public HashMap<String, Integer> inventory = new HashMap<String, Integer>();
 	int rent = 50;
-
+	public boolean car;
+	public boolean bus;
+	public boolean walk;
 
 	boolean goToWork = false;
 
@@ -277,10 +280,6 @@ public class PersonAgent extends Agent
 		if(anyActive) {
 			return false;
 		}
-		if(this.name.contains("BankCust")){
-			//print(bigState + " " +LOWMONEY+" "+cash);
-
-		}
 		switch(bigState)
 		{
 
@@ -292,7 +291,7 @@ public class PersonAgent extends Agent
 					return true;
 				}
 
-				else if (cityData.hour>=2 && isEmployee()) {
+				else if (cityData.hour>=3 && isEmployee()) {
 
 					//print(getJob());
 					WakeUp();
@@ -329,6 +328,12 @@ public class PersonAgent extends Agent
 
 			if (goToWork && jobBuilding != null && (!home.manager.equals(this) && home instanceof Apartment)) {
 				leaveHome();
+				return true;
+			}
+
+			if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
+				// TODO
+				payRent();
 				return true;
 			}
 
@@ -461,7 +466,7 @@ public class PersonAgent extends Agent
 			return false;
 		}
 	}
-
+//TODO
 	private void payRent() {
 		Apartment a = (Apartment) home;
 		System.err.println(bank.getAccount(a.manager).moneyInAccount);
@@ -490,14 +495,14 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 			personGui.DoGoToWall();
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				// 
 				e.printStackTrace();
 			}
 		}
@@ -505,14 +510,14 @@ public class PersonAgent extends Agent
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		personGui.DoGoToStove();
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		timer.schedule(new TimerTask() {
@@ -524,7 +529,7 @@ public class PersonAgent extends Agent
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -535,21 +540,21 @@ public class PersonAgent extends Agent
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e2) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e2.printStackTrace();
 		}
 		personGui.DoGoToWall();
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e1.printStackTrace();
 		}
 		personGui.DoGoToBed();
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		homeState = HomeState.sleeping;
@@ -561,7 +566,7 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -569,7 +574,7 @@ public class PersonAgent extends Agent
 		try {
 			isMoving.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		timer.schedule(new TimerTask() {
@@ -597,6 +602,7 @@ public class PersonAgent extends Agent
 					bigState = BigState.goHome;
 					return;
 				}
+
 				else if(((SMRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
 					break;
 			}
@@ -612,17 +618,18 @@ public class PersonAgent extends Agent
 		if(destinationBuilding != currentBuilding)
 		{
 			System.out.println("Going to restaurant as " + desiredRole);
-			takeBusToDestination();
+			GoToDestination();
 
 			personGui.DoGoToBuilding(destinationBuilding.buildingNumber);
 			try {
 				atBuilding.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
+
 		SMRestaurantBuilding restaurant = (SMRestaurantBuilding)destinationBuilding;
 
 		if(goToWork && !desiredRole.equals("Customer"))
@@ -666,7 +673,7 @@ public class PersonAgent extends Agent
 		try {
 			atBuilding.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		currentBuilding = destinationBuilding;
@@ -682,7 +689,7 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 			a.rooms.get(roomNumber).EnterBuilding(this, "");
@@ -699,14 +706,14 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 			personGui.DoGoToWall();
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -716,7 +723,7 @@ public class PersonAgent extends Agent
 			try {
 				atEntrance.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 			personGui.DoLeaveBuilding();
@@ -728,7 +735,7 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e1.printStackTrace();
 			}
 			a.rooms.get(roomNumber).LeaveBuilding(this);
@@ -736,7 +743,7 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				//   Auto-generated catch block
 				e.printStackTrace();
 			}
 			personGui.DoLeaveBuilding();
@@ -748,7 +755,7 @@ public class PersonAgent extends Agent
 	protected void goToBank() {
 
 		destinationBuilding = cityData.bank;
-		takeBusToDestination();
+		GoToDestination();
 
 		personGui.DoGoToBuilding(18);
 		currentBuilding = cityData.buildings.get(18);
@@ -756,7 +763,7 @@ public class PersonAgent extends Agent
 		try {
 			atBuilding.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
@@ -768,7 +775,7 @@ public class PersonAgent extends Agent
 	protected void goToMarket() {
 		destinationBuilding = cityData.market;
 
-		takeBusToDestination();
+		GoToDestination();
 
 		personGui.DoGoToBuilding(19);
 		currentBuilding = cityData.buildings.get(19);
@@ -776,7 +783,7 @@ public class PersonAgent extends Agent
 		try {
 			atBuilding.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//   Auto-generated catch block
 			e.printStackTrace();
 		}
 		personGui.DoGoIntoBuilding();
@@ -784,53 +791,95 @@ public class PersonAgent extends Agent
 
 	}
 
-	public void takeBusToDestination()
+	public void GoToDestination()
 	{
-		destinationBusStop = currentBuilding.busStop;
-		personGui.DoGoToBusStop(destinationBusStop);
-		isMoving.drainPermits();
-		try
-		{
-			isMoving.acquire();
+		if(walk==true) {
+			//PersonGui.DoWalk(if you ever hit an RGrid, acquire it first, and then walk through, and don't walk through bgrids)
+			personGui.DoGoToBuilding(destinationBuilding.buildingNumber);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			
+			currentBuilding = destinationBuilding;
+			
+			
 		}
-		catch(Exception e){}
-		currentBusStop = destinationBusStop;
-		destinationBusStop = destinationBuilding.busStop;
-
-		currentBusStop.msgWaitingAtStop(this, destinationBusStop);
-		try
-		{
-			isMoving.acquire();
+		if(car==true) {
+			
+			//personGui.DoWalkToClosestRGrid(currentBuilding);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			
+			personGui.getInOrOutCar();
+			//personGui.DriveToClosestRGrid(destinationBuilding); **** have similar mechanisms to busgridbehavior
+			//if person's rgrid is destination.closestRgrid, then, walk to building
+			
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			
+			//personGui
+			//have similar mechanisms to busgridbehavior
+			//if person's rgrid is destination.closestRgrid, then, walk to building
+			//YOU WILL TURN INTO A ROBOT
+			currentBuilding = destinationBuilding;
 		}
-		catch(Exception e) {}
-
-		currentBus = cityData.buses.get(0);
-		personGui.DoGoToBus(currentBus);
-		try
-		{
-			isMoving.acquire();
+		if(bus==true) {
+			destinationBusStop = currentBuilding.busStop;
+			personGui.DoGoToBusStop(destinationBusStop);
+			isMoving.drainPermits();
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			currentBusStop = destinationBusStop;
+			destinationBusStop = destinationBuilding.busStop;
+	
+			currentBusStop.msgWaitingAtStop(this, destinationBusStop);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e) {}
+	
+			currentBus = cityData.buses.get(0);
+			personGui.DoGoToBus(currentBus);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e) {}
+	
+			cityData.guis.remove(personGui);
+			currentBus.msgOnBus();
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e) {}
+	
+			cityData.guis.add(personGui);
+			personGui.setXPos(currentBus.getX());
+			personGui.setYPos(currentBus.getY());
+			currentBus.msgOnBus();
+			personGui.DoGoToBusStop(destinationBusStop);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e) {}
+			currentBuilding = destinationBuilding;
 		}
-		catch(Exception e) {}
-
-		cityData.guis.remove(personGui);
-		currentBus.msgOnBus();
-		try
-		{
-			isMoving.acquire();
-		}
-		catch(Exception e) {}
-
-		cityData.guis.add(personGui);
-		personGui.setXPos(currentBus.getX());
-		personGui.setYPos(currentBus.getY());
-		currentBus.msgOnBus();
-		personGui.DoGoToBusStop(destinationBusStop);
-		try
-		{
-			isMoving.acquire();
-		}
-		catch(Exception e) {}
-		currentBuilding = destinationBuilding;
+		
+		
 	}
 
 	public void setRoomNumber(int number) {

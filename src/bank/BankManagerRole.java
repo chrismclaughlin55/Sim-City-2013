@@ -29,6 +29,7 @@ public class BankManagerRole extends Role implements BankManager {
 	private Map<PersonAgent, CustInfo> CustAccounts;
 	private Map<String, CustInfo> BusinessAccounts;
 	private boolean leave = false;
+	private boolean allGone = false;
 	Bank bank;
 	enum tellerState {available, needsInfo, notAvailable, updateInfo, offDuty }
 	class myTeller{
@@ -47,8 +48,6 @@ public class BankManagerRole extends Role implements BankManager {
 		this.name = person.getName();
 		this.me = person;
 		this.bank = bank;
-		CustAccounts = Collections.synchronizedMap(new HashMap<PersonAgent, CustInfo>());
-		BusinessAccounts = Collections.synchronizedMap(new HashMap<String, CustInfo>());
 		File file = new File("tellerstate.txt");
 		try {
 			file.createNewFile();
@@ -154,10 +153,16 @@ public class BankManagerRole extends Role implements BankManager {
 				return true;
 			}
 		}
-		if(person.cityData.hour > Bank.CLOSINGTIME)
+		if(person.cityData.hour > Bank.CLOSINGTIME){
 			leave = true;
+			allGone = true;
+			for( myTeller t : tellers){
+				if(t.state != tellerState.offDuty)
+					allGone = false;
 
-		if(leave && tellers.size() == 0 && line.size()==0){
+			}
+		}
+		if(leave && allGone && line.size()==0){
 			leave();
 			return true;
 		}
@@ -165,6 +170,7 @@ public class BankManagerRole extends Role implements BankManager {
 	}
 	//ACTIONS
 	private void leave() {
+		tellers.clear();
 		myTeller fakeTeller = new myTeller(null);
 		if(person.bankInfo.depositAmount < 0){
 			if(person.bankInfo.depositAmount + person.bankInfo.moneyInAccount < 0){
@@ -194,9 +200,9 @@ public class BankManagerRole extends Role implements BankManager {
 		fakeTeller.custInfo = person.bankInfo;
 		updatedb(fakeTeller);
 		person.bankInfo.depositAmount = 0;
-		for(CustInfo info : CustAccounts.values()){
+		for(CustInfo info : bank.CustAccounts.values()){
 			try {
-				print(info.custName+" "+info.accountNumber+" "+info.moneyInAccount + " "+ info.depositAmount);
+				print(info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
 				writer.write(info.custName+" "+info.accountNumber+" "+info.moneyInAccount+'\n');
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -213,15 +219,15 @@ public class BankManagerRole extends Role implements BankManager {
 
 	private void helpCustomer(CustomerRole c, myTeller t) {
 		t.c = c;
-		CustAccounts.put(c.getPerson(), c.getPerson().bankInfo);
+		bank.CustAccounts.put(c.getPerson(), c.getPerson().bankInfo);
 		c.msgGoToTeller(t.t, tellers.indexOf(t) + 5);
 		t.state = tellerState.notAvailable;
 	}
 
 	private void sendInfo(myTeller t) {
 		print("sending info to "+t.t.getName());
-		if(CustAccounts.get(t.c.getPerson()) != null )
-			t.custInfo = CustAccounts.get(t.c.getPerson());
+		if(bank.CustAccounts.get(t.c.getPerson()) != null )
+			t.custInfo = bank.CustAccounts.get(t.c.getPerson());
 		else t.custInfo = null;
 		t.t.msgHereIsInfo(t.custInfo);
 		t.state = tellerState.notAvailable;
@@ -229,23 +235,29 @@ public class BankManagerRole extends Role implements BankManager {
 
 	private void updatedb(myTeller t) {
 		print("updating db for "+t.custInfo.custName);
-		CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
+		bank.CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
 		t.state = tellerState.available;
-	//	bank.bankGui.bankPanel.updateLabels();
-		
+		//	bank.bankGui.bankPanel.updateLabels();
+
 	}
 	public List<CustomerRole> getLine() {
 		return line;
 	}
 	public CustInfo getAccount(PersonAgent person){
-		CustInfo personInfo = CustAccounts.get(person);
+		CustInfo personInfo = bank.CustAccounts.get(person);
 		if(personInfo == null){
 			personInfo = new CustInfo(person.bankInfo);
 		}
 		return personInfo;
 	}
-	public List getTellers() {
-		return tellers;
+	public boolean tellerPresent() {
+		allGone = true;
+		for( myTeller t : tellers){
+			if(t.state != tellerState.offDuty)
+				allGone = false;
+			
+		}
+		return allGone;
 	}
 
 }

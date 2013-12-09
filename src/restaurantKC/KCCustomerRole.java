@@ -7,13 +7,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import restaurantKC.gui.CustomerGui;
+import restaurantKC.interfaces.Cashier;
 import restaurantKC.interfaces.Customer;
-import agent.Agent;
+import restaurantKC.interfaces.Host;
+import restaurantKC.interfaces.Waiter;
+import city.PersonAgent;
+import city.Role;
 
 /**
  * Restaurant customer agent.
  */
-public class CustomerAgent extends Agent implements Customer {
+public class KCCustomerRole extends Role implements Customer {
 	private String name;
 	private int hungerLevel = 4; // determines length of meal
 	private String choice;
@@ -29,9 +33,9 @@ public class CustomerAgent extends Agent implements Customer {
 
 
 	// agent correspondents
-	private HostAgent host;
-	private WaiterAgent waiter;
-	private CashierAgent cashier;
+	private Host host;
+	private Waiter waiter;
+	private Cashier cashier;
 
 	private Menu myMenu;
 	Check check;
@@ -50,9 +54,9 @@ public class CustomerAgent extends Agent implements Customer {
 	 * @param name name of the customer
 	 * @param gui  reference to the customergui so the customer can send it messages
 	 */
-	public CustomerAgent(String name){
-		super();
-		this.name = name;
+	public KCCustomerRole(PersonAgent person){
+		super(person);
+		this.name = super.getName();
 		if ((name.equals("flake")) || (name.equals("Flake"))) {
 			money = 0;
 		}
@@ -63,11 +67,11 @@ public class CustomerAgent extends Agent implements Customer {
 	/**
 	 * hack to establish connection to Host agent.
 	 */
-	public void setHost(HostAgent host) {
+	public void setHost(Host host) {
 		this.host = host;
 	}
 
-	public void setWaiter(WaiterAgent waiter) {
+	public void setWaiter(Waiter waiter) {
 		this.waiter = waiter;
 	}
 
@@ -152,7 +156,7 @@ public class CustomerAgent extends Agent implements Customer {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		//	CustomerAgent is a finite state machine
 
 		if (state == AgentState.DoingNothing && event == AgentEvent.gotHungry ){
@@ -244,17 +248,17 @@ public class CustomerAgent extends Agent implements Customer {
 	// Actions
 
 	private void GoToRestaurant() {
-		Do("Going to restaurant");
+		print("Going to restaurant");
 		host.msgIWantFood(this);//send our instance, so he can respond to us
 	}
 
 	private void SitDown() {
-		Do("Being seated. Going to table");
+		print("Being seated. Going to table");
 		customerGui.DoGoToSeat();//hack; only one table
 	}
 
 	private void CallWaiter() {
-		Do("Calling waiter for food");
+		print("Calling waiter for food");
 		waiter.msgImReadyToOrder(this);
 	}
 
@@ -266,7 +270,7 @@ public class CustomerAgent extends Agent implements Customer {
 			Random randomGenerator = new Random();
 			int randomInt = randomGenerator.nextInt(4);
 			choice = myMenu.menuItems[randomInt];
-			Do ("I would like to order " + choice); 
+			print ("I would like to order " + choice); 
 			waiter.msgHereIsMyChoice(choice, this);
 		}
 
@@ -289,7 +293,7 @@ public class CustomerAgent extends Agent implements Customer {
 						choice = "Chicken";
 
 					if (availableOptions.contains(choice)) {
-						Do ("I would like to order " + choice); 
+						print ("I would like to order " + choice); 
 						waiter.msgHereIsMyChoice(choice, this);
 					}
 				}
@@ -299,7 +303,7 @@ public class CustomerAgent extends Agent implements Customer {
 					int randomInt = randomGenerator.nextInt(availableOptions.size());
 					choice = availableOptions.get(randomInt);
 					waiter.msgHereIsMyChoice(choice, this);
-					Do ("I would like to order " + choice);
+					print ("I would like to order " + choice);
 				}
 			}
 			else {
@@ -307,14 +311,14 @@ public class CustomerAgent extends Agent implements Customer {
 				int randomInt = randomGenerator.nextInt(availableOptions.size());
 				choice = availableOptions.get(randomInt);
 				waiter.msgHereIsMyChoice(choice, this);
-				Do ("I would like to order " + choice);
+				print ("I would like to order " + choice);
 			}
 		}
 	}
 
 
 	private void EatFood() {
-		Do("Eating Food");
+		print("Eating Food");
 		timer.schedule(new TimerTask() {
 			public void run() {
 				print("Done eating");
@@ -355,13 +359,17 @@ public class CustomerAgent extends Agent implements Customer {
 
 
 	private void LeaveTable() {
-		Do("Leaving.");
+		print("Leaving.");
 		waiter.msgLeaving(this);
 		customerGui.DoExitRestaurant();
+		
+		person.exitBuilding();
+		person.msgFull();
+		doneWithRole();
 	}
 
 	private void LeaveTableWithoutEating() {
-		Do ("Leaving");
+		print ("Leaving");
 		if (waiter != null)
 			waiter.msgLeaving(this);
 		else
@@ -386,7 +394,7 @@ public class CustomerAgent extends Agent implements Customer {
 		return "customer " + getName();
 	}
 
-	public void setCashier(CashierAgent c) {
+	public void setCashier(Cashier c) {
 		cashier = c;
 	}
 
@@ -403,6 +411,13 @@ public class CustomerAgent extends Agent implements Customer {
 		print ("Stole 100 dollars");
 		money += 100;
 	}
+
+	@Override
+	public void startThread() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	
 

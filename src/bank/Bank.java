@@ -25,8 +25,8 @@ public class Bank extends Building {
 	Map<PersonAgent, CustomerRole> existingCustRoles;
 	Map<PersonAgent, BankManagerRole> existingManagerRoles;
 	Map<PersonAgent, TellerRole> existingTellerRoles;
-	private static Map<PersonAgent, CustInfo> CustAccounts = new HashMap<PersonAgent, CustInfo>();
-	private static Map<Building, java.lang.Double> BusinessAccounts = new HashMap<Building, java.lang.Double>();
+	public static Map<PersonAgent, CustInfo> CustAccounts = new HashMap<PersonAgent, CustInfo>();
+	public static Map<Building, java.lang.Double> BusinessAccounts = new HashMap<Building, java.lang.Double>();
 
 	public Bank(int xPos, int yPos, int width, int height, String name, BuildingType bank, MainGui mainGui, CityData cd) {
 		super(xPos, yPos, width, height, name, bank, mainGui);
@@ -82,7 +82,7 @@ public class Bank extends Building {
 
 		if(roleRequest.equals("Customer")){
 			if(isOpen() && this.currentManager != null){
-				if(this.currentManager.getTellers().size() != 0 ){
+				if(currentManager.tellerPresent()){
 					if(existingCustRoles.get(p) != null){
 						CustomerRole role = existingCustRoles.get(p);
 						BankCustomerGui custGui = new BankCustomerGui(role);
@@ -110,7 +110,7 @@ public class Bank extends Building {
 			if(isOpen()){
 				if(existingTellerRoles.get(p) != null){
 					TellerRole role = existingTellerRoles.get(p);
-					TellerGui tellerGui = new TellerGui(existingTellerRoles.get(p));
+					TellerGui tellerGui = new TellerGui(existingTellerRoles.get(p), currentManager.tellers.size()+5);
 					role.msgAddGui(tellerGui);
 					p.msgAssignRole(role);
 					role.msgAddGui(tellerGui);
@@ -122,7 +122,7 @@ public class Bank extends Building {
 				else{
 					TellerRole newRole = new TellerRole(p);
 					existingTellerRoles.put(p, newRole);
-					TellerGui tellerGui = new TellerGui(newRole);
+					TellerGui tellerGui = new TellerGui(newRole, currentManager.tellers.size()+5);
 					p.msgAssignRole(newRole);
 					newRole.msgAddGui(tellerGui);
 					bankGui.animationPanel.addGui(tellerGui);
@@ -141,16 +141,12 @@ public class Bank extends Building {
 		enter.release();
 	}
 	public void directDeposit(PersonAgent sender, PersonAgent reciever, double amount){
-		if(currentManager != null){
-			currentManager.msgDirectDeposit(sender, reciever, amount);
-		}
-		else{
-			CustInfo send = getAccount(sender);
-			CustInfo recieve = getAccount(reciever);
-			send.moneyInAccount-=amount;
-			recieve.moneyInAccount+=amount;
-			System.err.println(getAccount(reciever).moneyInAccount);
-		}
+		CustInfo send = getAccount(sender);
+		CustInfo recieve = getAccount(reciever);
+		send.moneyInAccount -= amount;
+		recieve.moneyInAccount += amount;
+		CustAccounts.put(sender, send);
+		CustAccounts.put(reciever, recieve);
 	}
 
 	public CustInfo getAccount(PersonAgent person){
@@ -192,7 +188,7 @@ public class Bank extends Building {
 		BusinessAccounts.put(b, startMoney);
 		System.out.println(b.type + " added account");
 	}
-	
+
 	public double payPerson(Building b, PersonAgent p, double amount){
 		java.lang.Double businessMoney = BusinessAccounts.get(b);
 		CustInfo personAccount = CustAccounts.get(p);
@@ -216,11 +212,11 @@ public class Bank extends Building {
 		double businessAccount = BusinessAccounts.get(b);
 		if(amount<businessAccount){
 			System.out.println(b.type+ " is withdrawing "+ amount + " with " + (businessAccount - amount) + " left");
-			
+
 			BusinessAccounts.put(b, (java.lang.Double)(businessAccount - amount));
 		}
 		else{
-System.out.println(b.type+ " is withdrawing "+ businessAccount + " with " + 0 + " left");			
+			System.out.println(b.type+ " is withdrawing "+ businessAccount + " with " + 0 + " left");			
 			BusinessAccounts.put(b, (java.lang.Double)(0.0));
 		}
 		return BusinessAccounts.get(b);

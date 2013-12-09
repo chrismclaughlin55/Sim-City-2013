@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import restaurantKC.CookAgent;
+import restaurantKC.KCCookRole;
+import restaurantKC.interfaces.Cook;
 
 public class CookGui implements Gui {
 
-	private CookAgent agent = null;
+	private KCCookRole agent = null;
 	//public CookFoodGui food = null;
 
 
@@ -52,8 +53,8 @@ public class CookGui implements Gui {
 	public static List<Location> grills = new ArrayList<Location>();
 	public static List<Location> plates = new ArrayList<Location>();
 
-	public CookGui(CookAgent agent) {
-		this.agent = agent;
+	public CookGui(Cook agent) {
+		this.agent = (KCCookRole) agent;
 		int n = 340;
 		for (int i = 0; i < 3; i++) {
 			grills.add(new Location(n, 10));
@@ -192,4 +193,10 @@ public class CookGui implements Gui {
 	public void setAnimationPanel(AnimationPanel ap) {
 		animationPanel = ap;
 	}
+	
+	public void DoLeaveRestaurant()
+    {
+    	xDestination = -30;
+        yDestination = -30;
+    }
 }

@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -18,15 +17,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import city.PersonAgent;
-import restaurantKC.CashierAgent;
-import restaurantKC.CookAgent;
-import restaurantKC.CustomerAgent;
-import restaurantKC.HostAgent;
+import restaurantKC.KCCashierRole;
+import restaurantKC.KCCookRole;
+import restaurantKC.KCCustomerRole;
+import restaurantKC.KCHostRole;
+import restaurantKC.KCWaiterRole;
 import restaurantKC.MarketAgent;
-import restaurantKC.WaiterAgent;
 import restaurantKC.pcCookOrder;
+import restaurantKC.interfaces.Cashier;
+import restaurantKC.interfaces.Cook;
 import restaurantKC.interfaces.Customer;
+import restaurantKC.interfaces.Host;
+import restaurantKC.interfaces.Waiter;
+import city.PersonAgent;
 
 /**
  * Panel in frame that contains all the restaurant information,
@@ -34,27 +37,30 @@ import restaurantKC.interfaces.Customer;
  */
 public class RestaurantPanel extends JPanel implements ActionListener {
 
-	//Host, cook, waiters and customers
-	private HostAgent host = new HostAgent("Rami");
-	private HostGui hostGui = new HostGui(host);
-	boolean isPaused = false;
 
+	public static final int CLOSINGTIME = 20;
+
+
+	boolean isPaused = false;
 	private RestaurantGui gui; //reference to main gui
 
-	
-    private List<pcCookOrder> cookOrders = Collections.synchronizedList(new ArrayList<pcCookOrder>());
 
-	private List<MarketAgent> markets = new ArrayList<MarketAgent>();
+	private List<pcCookOrder> cookOrders = Collections.synchronizedList(new ArrayList<pcCookOrder>());
 
-	private CookAgent cook = new CookAgent("Sarah", cookOrders); 
+	private Cook cook = null; 
+	private Host host = null; 
+	private Cashier cashier = null;
+
+	/*private Cook cook = new KCCookRole("Sarah", cookOrders, null); 
 	private CookGui cookGui = new CookGui(cook);
-	private CashierAgent cashier = new CashierAgent("Cashier");
+	private CashierAgent cashier = new CashierAgent("Cashier");*/
 
-	private MarketAgent market1 = new MarketAgent("Market 1", 2, 10, 10, 10, cook, cashier);
+	/*private MarketAgent market1 = new MarketAgent("Market 1", 2, 10, 10, 10, cook, cashier);
 	private MarketAgent market2 = new MarketAgent("Market 2", 0, 0, 0, 0, cook, cashier);
-	private MarketAgent market3 = new MarketAgent("Market 3", 7, 15, 21, 11, cook, cashier);
-	private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
-	private Vector<WaiterAgent> waiters = new Vector<WaiterAgent>();
+	private MarketAgent market3 = new MarketAgent("Market 3", 7, 15, 21, 11, cook, cashier);*/
+	private List<Customer> customers = Collections.synchronizedList(new ArrayList<Customer>());
+	private List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
+	private List<MarketAgent> markets = new ArrayList<MarketAgent>();
 
 	int custnum = -1;
 	private JPanel restLabel = new JPanel();
@@ -74,11 +80,11 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 
 	public RestaurantPanel(RestaurantGui gui) {
 		this.gui = gui;
-		host.setGui(hostGui);
+		/*host.setGui(hostGui);
 
 
 		gui.animationPanel.addGui(hostGui);
-		host.startThread();
+		//host.startThread();
 
 		markets.add(market1);
 		markets.add(market2);
@@ -88,9 +94,9 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 		gui.animationPanel.addGui(cookGui);
 		cook.setGui(cookGui);
 		cookGui.setAnimationPanel(gui.animationPanel);
-		cook.startThread();
+		//cook.startThread();
 
-		cashier.startThread();
+		cashier.startThread();*/
 
 
 
@@ -156,21 +162,19 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 	 * @param type indicates whether the person is a customer or waiter (later)
 	 * @param name name of person
 	 */
-	public void addPerson(String type, String name) {
-		
+	/*public void addPerson(String type, String name) {
+
 		if (type.equals("Customers")) {
-			custnum++;
-			if (custnum == 2)
-				custnum = -1;
-			CustomerAgent c = new CustomerAgent(name);	
-			CustomerGui g = new CustomerGui(c, gui, custnum);
-			gui.animationPanel.addGui(g);
-			c.setHost(host);
-			c.setCashier(cashier);
-			c.setGui(g);
-			g.setAnimationPanel(gui.animationPanel);
-			customers.add(c);
-			c.startThread();
+			PersonAgent p = new PersonAgent(name);
+    		Customer c = new KCCustomerRole(p);	
+    		CustomerGui g = new CustomerGui(c, gui, 0);
+    		gui.animationPanel.addGui(g);// dw
+    		c.setHost(host);
+    		c.setCashier(cashier);
+    		c.setGui(g);
+
+    		p.msgAssignRole((KCCustomerRole)c);
+    		p.startThread(); //Hack. PersonAgent's thread should already be going
 		}
 
 		if (type.equals("Waiters")) {
@@ -187,13 +191,15 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 			gui.animationPanel.addGui(g);
 			w.startThread();
 		}
-	}
+	}*/
+
+
 
 	public void markHungry(String name)
 	{
 		for (int i = 0; i < customers.size(); i++)
 		{
-			CustomerAgent temp = customers.get(i);
+			Customer temp = customers.get(i);
 			if (temp.getName() == name)
 			{
 				temp.getGui().setHungry();
@@ -205,7 +211,7 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 	{
 		for (int i = 0; i < waiters.size(); i++)
 		{
-			WaiterAgent temp = waiters.get(i);
+			Waiter temp = (KCWaiterRole) waiters.get(i);
 			if (temp.getName() == name)
 			{
 				temp.getGui().setBreak();
@@ -216,58 +222,176 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// pause each customer, waiter, host, and cook
-		if (e.getSource() == b1) {
-			for (CustomerAgent c : customers) {
-				c.msgPause();
-			}
-			host.msgPause();
-			for (WaiterAgent w : waiters) {
-				w.msgPause();
-			}
-			isPaused = !isPaused;
-			if (isPaused) {b1.setText("Unpause");}
-			else {b1.setText("Pause");}
-		}
-		else if (e.getSource() == b2) {
+		if (e.getSource() == b2) {
 			cook.drainInventory();
 		}
 
 	}
-	
-	
+
+	public void addHost(PersonAgent person)
+	{
+		host = new KCHostRole(person, this);
+		HostGui hostGui = new HostGui(host);
+		gui.animationPanel.addGui(hostGui);
+		host.setGui(hostGui);
+		//((KCHostRole)host).setCooks(cooks);
+
+		//update other agents
+		synchronized(waiters)
+		{
+			for(Waiter w : waiters)
+			{
+				((KCHostRole)host).msgWaiterReporting(w);;
+				((KCWaiterRole)w).setHost(host);
+			}
+		}
+		person.msgAssignRole((KCHostRole)host);
+	}
+
 	public void addCustomer(PersonAgent person) {
+		System.out.println("Adding Customer");
+		Customer c = new KCCustomerRole(person);	
+		CustomerGui g = new CustomerGui(c, gui);
+		c.setGui(g);
+		gui.animationPanel.addGui(g);
+		customers.add(c);
+		c.setGui(g);
+		c.setHost(host);
+		c.setCashier(cashier);
+		markHungry(person.getName());
+		person.msgAssignRole((KCCustomerRole)c);
+		//c.msgGotHungry();
+		//person.startThread(); //Hack. PersonAgent's thread should already be going
+	}
 
-    	/*//THIS WILL BE CALLED BY THE PERSON AGENT
-    	Customer cust;
-    	for(Customer c : customers)
-    	{
-    		cust = (CustomerAgent)c;
-    		if(cust.getPerson() == person)
-    		{
-    			person.msgAssignRole(cust);
-    			cust.msgGotHungry();
-    			return;
-    		}
-    	}
-    	
-    	
-    	JCheckBox hungry = new JCheckBox("Hungry?");
-    	MQCustomerRole c = new MQCustomerRole(person, timer, hungry, this);	
-    	
-    	CustomerGui g = new CustomerGui(c, gui);
-    	
-    	hungry.addActionListener(gui);
-    	gui.addRestaurantCustomer(c, hungry);
-    	
-    	gui.animationPanel.addGui(g);// dw
-    	c.setHost(host);
-    	c.setCashier(cashier);
-    	c.setGui(g);
-    	
-    	customers.add(c);
-    	hungry.doClick(); //set the customer to hungry
-    	person.msgAssignRole(c);*/
-    }
+	/*c.setHost(host);
+	c.setCashier(cashier);*/
 
+	public void addWaiter(PersonAgent person)
+	{
+		System.out.println ("Adding Waiter");
+		Waiter w = new KCWaiterRole(cookOrders, person, this);	
+		waiters.add(w);
+		int waiterNum = waiters.indexOf(w);
+		WaiterGui g = new WaiterGui(w, this, waiterNum);
+		w.setGui(g);
+		w.setHost(host);
+		w.setCook(cook);
+		w.setCashier(cashier);
+		host.msgWaiterReporting(w);
+		g.setAnimationPanel(gui.animationPanel);
+		gui.animationPanel.addGui(g);
+
+		//w.startThread();
+		//Start the thread
+
+		person.msgAssignRole((KCWaiterRole)w);
+	}
+	// SET COOK & Cashier
+
+	public void addCashier(PersonAgent person) {
+		cashier = new KCCashierRole(person, this);
+		person.msgAssignRole((KCCashierRole)cashier);
+		synchronized(waiters) {
+			for(Waiter w : waiters) {
+				((KCWaiterRole)w).setCashier(cashier);
+			}
+			for(Customer c : customers) {
+				((KCCustomerRole)c).setCashier(cashier);
+			}
+		}
+	}
+	//public KCCookRole(List<pcCookOrder> cookOrders, PersonAgent p) {
+
+	public void addCook(PersonAgent person) {
+		cook = new KCCookRole(cookOrders, person, this);
+		CookGui cookGui = new CookGui(cook);
+		cook.setGui(cookGui);
+		gui.animationPanel.addGui(cookGui);
+		cookGui.setAnimationPanel(gui.animationPanel);
+		person.msgAssignRole((KCCookRole)cook);
+
+		for(Waiter w : waiters) {
+			((KCWaiterRole)w).setCook(cook);
+		}
+	}
+
+
+
+	public int activeCustomers() {
+		int count = 0;
+		synchronized(customers) {
+			for(Customer c : customers) {
+				if(c instanceof KCCustomerRole && ((KCCustomerRole)c).isActive()) {
+					++count;
+				}
+			}
+		}
+		return count;
+	}
+
+	public int activeWaiters()
+	{
+		int count = 0;
+		synchronized(waiters) {
+			for(Waiter w : waiters) {
+				if(((KCWaiterRole)w).isActive()) {
+					++count;
+				}
+			}
+		}
+		return count;
+	}
+
+	public int activeCooks()
+	{
+		if (cook != null) {
+			if(((KCCookRole)cook).isActive())
+				return 1;
+			else 
+				return 0;
+		}
+		else
+			return 0;
+	}
+
+
+	public boolean fullyStaffed() {
+		return (activeCooks() > 0) && (activeWaiters() > 0) && (host != null) && (cashier != null);
+	}
+
+	public boolean justHost() {
+		return (activeCooks() == 0) && (activeWaiters() == 0) && 
+				(activeCustomers() == 0) && (cashier == null);
+	}
+
+	public boolean justCashier() {
+		return (activeCooks() == 0) && (activeWaiters() == 0) && 
+				(activeCustomers() == 0) && (cashier != null);
+	}
+
+	public void hostLeaving() {
+		host = null;
+	}
+
+	public void cashierLeaving() {
+		cashier = null;
+	}
+
+	public boolean hasHost() {
+		return host != null;
+	}
+
+	public boolean hasCashier() {
+		return cashier != null;
+	}
+
+	public boolean isOpen() {
+		return gui.isOpen();
+	}
+
+	public void setOpen(Boolean b) {
+		gui.setOpen(b);
+	}
 
 }

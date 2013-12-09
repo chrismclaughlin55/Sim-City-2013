@@ -1,11 +1,13 @@
 package restaurantKC.test.mock;
 
 
-import restaurantKC.CashierAgent;
 import restaurantKC.Check;
 import restaurantKC.Menu;
 import restaurantKC.gui.CustomerGui;
+import restaurantKC.interfaces.Cashier;
 import restaurantKC.interfaces.Customer;
+import restaurantKC.interfaces.Host;
+import restaurantKC.interfaces.Waiter;
 
 /**
  * A sample MockCustomer built to unit test a CashierAgent.
@@ -18,7 +20,7 @@ public class MockCustomer extends Mock implements Customer {
 	/**
 	 * Reference to the Cashier under test that can be set by the unit test.
 	 */
-	public CashierAgent cashier;
+	public Cashier cashier;
 	public Check check1 = null;
 	public double money;
 
@@ -37,7 +39,7 @@ public class MockCustomer extends Mock implements Customer {
 	}
 
 	
-	public void setCashier(CashierAgent c) {
+	public void setCashier(Cashier c) {
 		cashier = c;
 	}
 
@@ -75,6 +77,54 @@ public class MockCustomer extends Mock implements Customer {
 	public CustomerGui getGui() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setWaiter(Waiter waiter) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgAnimationFinishedGoToSeat() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgAnimationFinishedLeaveRestaurant() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgGotHungry() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setHost(Host host) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setGui(CustomerGui g) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startThread() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgPause() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

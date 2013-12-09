@@ -7,17 +7,22 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import restaurantKC.Check.CheckState;
+import restaurantKC.gui.RestaurantPanel;
 import restaurantKC.gui.WaiterGui;
+import restaurantKC.interfaces.Cashier;
+import restaurantKC.interfaces.Cook;
 import restaurantKC.interfaces.Customer;
+import restaurantKC.interfaces.Host;
 import restaurantKC.interfaces.Waiter;
-import agent.Agent;
+import city.PersonAgent;
+import city.Role;
 
 /**
  * Restaurant Host Agent
  */
 
 
-public class WaiterAgent extends Agent implements Waiter{
+public class KCWaiterRole extends Role implements Waiter{
 	int plateNum = 0;
 	private String name;
 	public Semaphore atTable = new Semaphore(0, true);
@@ -28,17 +33,21 @@ public class WaiterAgent extends Agent implements Waiter{
 	public Semaphore serveFood = new Semaphore(0, true);
 	public Semaphore takingBreak = new Semaphore(0,true);
 	public Semaphore atPlate = new Semaphore(0,true);
+	public Semaphore leaving = new Semaphore(0,true);
 
 	boolean readyCustomers = false;
 	boolean WantBreak = false;
 	public boolean onBreak = false;
 	boolean pendingActions = true;
-	private CashierAgent cashier;
+	private Cashier cashier;
+
+	private RestaurantPanel restPanel;
+
 
 	enum CustomerState{waiting, seated, readyToOrder, asked, ordered, orderGiven, done, notAvailable, doneEating, eating, gone};
 
 	private class MyCustomer {
-		public MyCustomer(CustomerAgent customer, int table, CustomerState state) {
+		public MyCustomer(Customer customer, int table, CustomerState state) {
 			c = customer;
 			t = table;
 			s = state;
@@ -66,26 +75,27 @@ public class WaiterAgent extends Agent implements Waiter{
 	private List<Check> checks = Collections.synchronizedList(new ArrayList<Check>());
 
 	private List<pcCookOrder> cookOrders;
-	
+
 	public WaiterGui waiterGui = null;
-	private CookAgent cook;
-	private HostAgent host;
+	private KCCookRole cook;
+	private KCHostRole host;
 
 
 
 
-	public WaiterAgent(String name, List<pcCookOrder> cookOrders) {
-		super();
-		this.name = name;
+	public KCWaiterRole(List<pcCookOrder> cookOrders, PersonAgent p, RestaurantPanel restPanel) {
+		super(p);
+		this.name = person.getName();
 		this.cookOrders = cookOrders;
+		this.restPanel = restPanel;
 	}
 
-	public void setCook(CookAgent c) {
-		cook = c;
+	public void setCook(Cook c) {
+		cook = (KCCookRole) c;
 	}
 
-	public void setHost(HostAgent h) {
-		host = h;
+	public void setHost(Host h) {
+		host = (KCHostRole) h;
 	}
 
 
@@ -94,14 +104,14 @@ public class WaiterAgent extends Agent implements Waiter{
 	}
 
 
-	public void msgSitAtTable(CustomerAgent cust, int table) {
+	public void msgSitAtTable(Customer cust, int table) {
 		print("Received message sit at table");
 		customers.add(new MyCustomer(cust, table, CustomerState.waiting));
 		//WantBreak = true;
 		stateChanged();
 	}
 
-	public void msgImReadyToOrder(CustomerAgent cust) {
+	public void msgImReadyToOrder(Customer cust) {
 		for (MyCustomer mc : customers)
 		{
 			if (cust.equals(mc.c)) {
@@ -112,7 +122,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		}
 	}
 
-	public void msgHereIsMyChoice(String choice, CustomerAgent c) {
+	public void msgHereIsMyChoice(String choice, Customer c) {
 		print ("Received choice of " + choice + " from " + c.getName());
 		orderGiven.release();
 		for (MyCustomer mc : customers)
@@ -133,7 +143,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		stateChanged();
 	}
 
-	public void msgDoneEating(CustomerAgent c){
+	public void msgDoneEating(Customer c){
 		for(MyCustomer mc:customers){
 			if(mc.c.equals(c)){
 				mc.s = CustomerState.doneEating;
@@ -143,7 +153,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		}
 	}
 
-	public void msgLeaving(CustomerAgent c) {
+	public void msgLeaving(Customer c) {
 		for (MyCustomer mc : customers)
 		{
 			if (c.equals(mc.c)) {
@@ -179,7 +189,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		atCook.release();
 		stateChanged();
 	}
-	
+
 	public void msgAtPlate() {
 		atPlate.release();
 		stateChanged();
@@ -221,7 +231,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	 * Scheduler.  Determine what action is called for, and do it.
 	 * @return 
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 
 		if (!onBreak) {
 			if(!customers.isEmpty()){
@@ -377,6 +387,13 @@ public class WaiterAgent extends Agent implements Waiter{
 			return true;
 		}
 
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && customers.isEmpty()) {
+			LeaveRestaurant();
+			return true;
+		}
+
+
+
 
 		return false;
 	}
@@ -474,43 +491,47 @@ public class WaiterAgent extends Agent implements Waiter{
 
 	private void TakeFoodToCustomer()
 	{
-		for (MyCustomer mc : customers) {
-			if (!readyOrders.isEmpty())
-			{
-				if (mc.s != CustomerState.done)
-				{
-					if (readyOrders.get(0).table == mc.t) {
-						waiterGui.DoGoToCook(plateNum);
-						System.out.println(plateNum);
-						atPlate.drainPermits();
-						try {
-							atPlate.acquire();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						cook.msgImTakingTheFood(mc.choice, mc.t);
-						waiterGui.procureFood(mc.choice, mc.t);
-						waiterGui.DoGoToTable(mc.t); 
-						atTable.drainPermits();
-						try {
-							atTable.acquire(); 
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						serveFood.drainPermits();
-						waiterGui.DoDeliverFood(mc.t, mc.choice, mc.c.getGui());
-						try {
-							serveFood.acquire(); 
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						mc.c.msgHereIsYourFood();
-						readyOrders.remove(0);
-						mc.s = CustomerState.eating;
-						waiterGui.DoLeaveCustomer();
+		synchronized(customers){
+			for (MyCustomer mc : customers) {
+				synchronized(readyOrders) {
+					if (!readyOrders.isEmpty())
+					{
+						if (mc.s != CustomerState.done)
+						{
+							if (readyOrders.get(0).table == mc.t) {
+								waiterGui.DoGoToCook(plateNum);
+								System.out.println(plateNum);
+								atPlate.drainPermits();
+								try {
+									atPlate.acquire();
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								cook.msgImTakingTheFood(mc.choice, mc.t);
+								waiterGui.procureFood(mc.choice, mc.t);
+								waiterGui.DoGoToTable(mc.t); 
+								atTable.drainPermits();
+								try {
+									atTable.acquire(); 
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								serveFood.drainPermits();
+								waiterGui.DoDeliverFood(mc.t, mc.choice, mc.c.getGui());
+								try {
+									serveFood.acquire(); 
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								mc.c.msgHereIsYourFood();
+								readyOrders.remove(0);
+								mc.s = CustomerState.eating;
+								waiterGui.DoLeaveCustomer();
 
+							}
+						}
 					}
 				}
 			}
@@ -545,7 +566,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	}
 
 
-	public void setCashier(CashierAgent cashier){
+	public void setCashier(Cashier cashier){
 		this.cashier = cashier;
 	}
 
@@ -561,6 +582,22 @@ public class WaiterAgent extends Agent implements Waiter{
 		host.msgImOffBreak(this);
 	}
 
+	private void LeaveRestaurant() {
+		//host.msgLeavingNow(this);
+		waiterGui.DoLeaveRestaurant();
+		try{
+			leaving.acquire();
+		}
+		catch(Exception e){}
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
+	}
+
+	public void msgDoneLeaving() {
+		leaving.release();
+		stateChanged();
+		;	}
 
 
 }

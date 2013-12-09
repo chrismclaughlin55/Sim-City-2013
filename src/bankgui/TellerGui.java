@@ -16,16 +16,14 @@ public class TellerGui implements GuiPositions, Gui {
 	private int yPos;
 	private int yDestination;
 	private boolean isPresent = true;
-
 	private boolean atDest = false;
 
 
-	public TellerGui(TellerRole tellerRole) {
+	public TellerGui(TellerRole tellerRole, int place) {
 		this.teller = tellerRole;
 		xPos = doorx;
 		yPos = doory;
-		yDestination = teller1y;
-		xDestination = tellerx;
+		goTo(place);
 	}
 
 
@@ -75,10 +73,28 @@ public class TellerGui implements GuiPositions, Gui {
 	}
 
 
-	public void DoLeaveBank() {
-		xDestination = doorx;
-		yDestination = doory;
-		atDest = false;
+	public void goTo(int place) {
+		if(place == 5){
+			xDestination = tellerx;
+			yDestination = teller1y;
+		}
+		if(place == 6){
+			xDestination = tellerx;
+			yDestination = teller2y;
+		}
+		if(place == 7){
+			xDestination = tellerx;
+			yDestination = teller3y;
+		}
+		if(place == 8){
+			xDestination = tellerx;
+			yDestination = teller4y;
+		}	
+		if(place == 9){
+			xDestination = doorx;
+			yDestination = doory;
+			
+		}
 	}
 
 }
