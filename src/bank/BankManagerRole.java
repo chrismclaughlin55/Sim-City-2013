@@ -25,15 +25,15 @@ public class BankManagerRole extends Role implements BankManager {
 	private String name;
 	private PersonAgent me;
 	private List<CustomerRole> line = Collections.synchronizedList(new ArrayList<CustomerRole>());
-	List<myTeller> tellers = Collections.synchronizedList(new ArrayList<myTeller>());
-	private Map<PersonAgent, CustInfo> d;
-	private Map<String, CustInfo> b;
+	public List<myTeller> tellers = Collections.synchronizedList(new ArrayList<myTeller>());
+	private Map<PersonAgent, CustInfo> CustAccounts;
+	private Map<String, CustInfo> BusinessAccounts;
 	private boolean leave = false;
 	private boolean allGone = false;
 	Bank bank;
 	enum tellerState {available, needsInfo, notAvailable, updateInfo, offDuty }
 	class myTeller{
-		TellerRole t;
+		public TellerRole t;
 		tellerState state;
 		CustomerRole c;
 		CustInfo custInfo;

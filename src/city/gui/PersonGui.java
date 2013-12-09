@@ -19,7 +19,7 @@ public class PersonGui implements Gui{
 	private PersonAgent agent = null;
 	private boolean isPresent = true;
 	boolean moving = false;
-	
+	boolean inCar = false;
 	
 	private static final int INITX = 40;
 	private static final int INITY = 40;
@@ -61,42 +61,78 @@ public class PersonGui implements Gui{
 	}
 
 	public void updatePosition() {
-		if (xPos < xDestination)
-			xPos++;
-		else if (xPos > xDestination)
-			xPos--;
-
-		if (yPos < yDestination)
-			yPos++;
-		else if (yPos > yDestination)
-			yPos--;
 		
-		for (int i = 0; i < 20; i++) {
-        	if (xPos == xDestination && yPos == yDestination
-        			& (xDestination == xBuilding[i]) & (yDestination == yBuilding[i])) {
-        		agent.msgAtBuilding();
-        	}
-        }
-		if (xPos == xDestination && yPos == yDestination && moving == true) {
-            moving = false;
-            agent.msgDoneMoving();
+		if(inCar) {
+			//MOVE LIKE A CAR DOES WHICH MOVES LIKE A BUS DOES.
+			
+			
 		}
-		if (xPos == xDestination && yPos == yDestination
-        			& (xDestination == 360) & (yDestination == 20)) {
-			agent.msgAtBed();
-		}
-		if (xPos == xDestination && yPos == yDestination
-        			& (xDestination == 0) & (yDestination == 340)) {
-			agent.msgAtEntrance();
+		
+		else {
+			
+			/*if(nextGrid is !RGrid, keep going) {
+				
+			}
+			else {
+				find closest not bgrid walk towards it 
+				
+				acquire that grid's semaphore, and continue walking
+				"get next grid" will be based on their walking position
+				use same calculate direction to decide which way they want t ogo
+				if next grid they want to go is a BGrid, don't allow it, if it's an RGrid
+				make them acquire the semaphore first, and then go.
+			}*/
+			
+			if (xPos < xDestination)
+				xPos++;
+			else if (xPos > xDestination)
+				xPos--;
+	
+			if (yPos < yDestination)
+				yPos++;
+			else if (yPos > yDestination)
+				yPos--;
+			
+			for (int i = 0; i < 20; i++) {
+	        	if (xPos == xDestination && yPos == yDestination
+	        			& (xDestination == xBuilding[i]) & (yDestination == yBuilding[i])) {
+	        		agent.msgAtBuilding();
+	        	}
+	        }
+			if (xPos == xDestination && yPos == yDestination && moving == true) {
+	            moving = false;
+	            agent.msgDoneMoving();
+			}
+			if (xPos == xDestination && yPos == yDestination
+	        			& (xDestination == 360) & (yDestination == 20)) {
+				agent.msgAtBed();
+			}
+			if (xPos == xDestination && yPos == yDestination
+	        			& (xDestination == 0) & (yDestination == 340)) {
+				agent.msgAtEntrance();
+			}
 		}
 	}
 	
+	public void DoWalkToRGrid(int number) {
+		//WALK TO cd.buildings.get(number).getClosestRGrid(); 
+	}
 
+	public void getInOrOutCar() {
+		inCar=!inCar;
+	}
 	@Override
 	public void draw(Graphics2D g) {
-		Graphics2D g2 = (Graphics2D)g;
-		ImageIcon person = new ImageIcon("res/person.png");
-		g2.drawImage(person.getImage(), xPos, yPos, null);
+		if(!inCar) {
+			Graphics2D g2 = (Graphics2D)g;
+			ImageIcon person = new ImageIcon("res/person.png");
+			g2.drawImage(person.getImage(), xPos, yPos, null);
+		}
+		else {
+			Graphics2D g2 = (Graphics2D)g;
+			ImageIcon person = new ImageIcon("res/car.png");
+			g2.drawImage(person.getImage(),xPos,yPos,null);
+		}
 	}
 	
 	public void DoGoToEntrance() {

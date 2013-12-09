@@ -22,6 +22,8 @@ public class TellerRole extends Role implements Teller{
 	Event event;
 	boolean wantToLeave = false;
 	private TellerGui gui;
+	private boolean bankRobbery = false;
+	private BankRobber bankRobber;
 
 	private Semaphore atDest = new Semaphore(0 ,true);
 
@@ -47,6 +49,12 @@ public class TellerRole extends Role implements Teller{
 
 			e.printStackTrace();
 		}
+	}
+	
+	public void msgStickEmUp(BankRobber br) {
+		bankRobbery = true;
+		bankRobber = br;
+		stateChanged();
 	}
 
 	//MESSAGES
@@ -100,6 +108,11 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		if (bankRobbery) {
+			payTheMan();
+			return true;
+		}
+		
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;
@@ -153,6 +166,12 @@ public class TellerRole extends Role implements Teller{
 
 	}
 
+	private void payTheMan() {
+		System.err.println("IM BEING ROBBED");
+		bankRobber.msgPleaseDontShoot(400);
+		bankRobbery = false;
+	}
+	
 	private void processLoan() {
 		if(currentCustInfo.loanRequestAmount>currentCustInfo.loanApproveAmount)
 			currentCustInfo.customer.msgCanDoThisAmount(currentCustInfo.loanApproveAmount);

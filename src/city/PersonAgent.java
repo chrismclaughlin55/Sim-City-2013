@@ -787,12 +787,41 @@ public class PersonAgent extends Agent
 	{
 		if(walk==true) {
 			//PersonGui.DoWalk(if you ever hit an RGrid, acquire it first, and then walk through, and don't walk through bgrids)
+			personGui.DoGoToBuilding(destinationBuilding.buildingNumber);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			
+			currentBuilding = destinationBuilding;
+			
+			
 		}
 		if(car==true) {
-			//personGui.DoGoToClosestRGrid(currentBuilding);
+			
+			//personGui.DoWalkToClosestRGrid(currentBuilding);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			
+			personGui.getInOrOutCar();
+			//personGui.DriveToClosestRGrid(destinationBuilding); **** have similar mechanisms to busgridbehavior
+			//if person's rgrid is destination.closestRgrid, then, walk to building
+			
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			
+			//personGui
 			//have similar mechanisms to busgridbehavior
 			//if person's rgrid is destination.closestRgrid, then, walk to building
 			//YOU WILL TURN INTO A ROBOT
+			currentBuilding = destinationBuilding;
 		}
 		if(bus==true) {
 			destinationBusStop = currentBuilding.busStop;
@@ -839,8 +868,9 @@ public class PersonAgent extends Agent
 				isMoving.acquire();
 			}
 			catch(Exception e) {}
+			currentBuilding = destinationBuilding;
 		}
-		currentBuilding = destinationBuilding;
+		
 		
 	}
 

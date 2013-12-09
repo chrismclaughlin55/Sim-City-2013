@@ -186,3 +186,12 @@ job Unemployed
 hunger 10
 inventory 20
 transportation bus
+
+NewPerson
+name robber
+cash 200
+bankMoney 300
+job BankRobber
+hunger 0
+inventory 13
+transportation bus

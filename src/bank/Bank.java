@@ -21,7 +21,7 @@ public class Bank extends Building {
 	public Semaphore enter = new Semaphore(1, true);
 	public final static int CLOSINGTIME = 22;
 	public BankGui bankGui;
-	BankManagerRole currentManager = null;
+	public BankManagerRole currentManager = null;
 	Map<PersonAgent, CustomerRole> existingCustRoles;
 	Map<PersonAgent, BankManagerRole> existingManagerRoles;
 	Map<PersonAgent, TellerRole> existingTellerRoles;
@@ -133,7 +133,12 @@ public class Bank extends Building {
 				}
 			}
 			else p.exitBuilding();
-
+		}
+		if (roleRequest.equals("BankRobber")) {
+			if (isOpen()) {
+				BankRobber robber = new BankRobber(p, this);
+				p.msgAssignRole(robber);
+			}
 		}
 		enter.release();
 	}
