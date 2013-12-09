@@ -18,9 +18,8 @@ public class BankGui extends JFrame implements GuiPositions, ActionListener {
 		public AnimationPanel animationPanel;
 		private BankPanel bankPanel;
 		public Bank bank;
-		public BankGui() {
-
-			//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		public BankGui(Bank bank) {
+			this.bank = bank;
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			setBounds(0,0,600, 400);
 			setLocation(screenSize.width/2-this.getSize().width/2, screenSize.height/2-this.getSize().height/2);
@@ -30,8 +29,7 @@ public class BankGui extends JFrame implements GuiPositions, ActionListener {
 			
 			animationPanel = new AnimationPanel();
 			animationPanel.setVisible(true);
-			
-			bankPanel = new BankPanel();
+			bankPanel = new BankPanel(bank);
 			bankPanel.setVisible(true);
 
 

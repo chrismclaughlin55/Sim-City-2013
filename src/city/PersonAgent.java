@@ -290,7 +290,7 @@ public class PersonAgent extends Agent
 					WakeUp();
 					return true;
 				}
-				else if (cityData.hour>=2 && (job.equals("MarketEmployee") || job.equals("BankTeller"))) {
+				else if (cityData.hour>=3 && (job.equals("MarketEmployee") || job.equals("BankTeller"))) {
 					//print(getJob());
 					WakeUp();
 					return true;
@@ -466,6 +466,7 @@ public class PersonAgent extends Agent
 	}
 
 	private void WakeUp() {
+		print("is going to work");
 		goToWork = true;
 		tiredLevel = 0;
 		homeState = HomeState.idle;

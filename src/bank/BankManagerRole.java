@@ -29,6 +29,7 @@ public class BankManagerRole extends Role implements BankManager {
 	private Map<PersonAgent, CustInfo> CustAccounts;
 	private Map<String, CustInfo> BusinessAccounts;
 	private boolean leave = false;
+	Bank bank;
 	enum tellerState {available, needsInfo, notAvailable, updateInfo, offDuty }
 	class myTeller{
 		TellerRole t;
@@ -41,10 +42,11 @@ public class BankManagerRole extends Role implements BankManager {
 		}
 
 	}
-	public BankManagerRole(PersonAgent person) {
+	public BankManagerRole(PersonAgent person, Bank bank) {
 		super(person);
 		this.name = person.getName();
 		this.me = person;
+		this.bank = bank;
 		CustAccounts = Collections.synchronizedMap(new HashMap<PersonAgent, CustInfo>());
 		BusinessAccounts = Collections.synchronizedMap(new HashMap<String, CustInfo>());
 		File file = new File("tellerstate.txt");
@@ -229,7 +231,7 @@ public class BankManagerRole extends Role implements BankManager {
 		print("updating db for "+t.custInfo.custName);
 		CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
 		t.state = tellerState.available;
-
+		
 	}
 	public List<CustomerRole> getLine() {
 		return line;

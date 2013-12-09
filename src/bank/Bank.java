@@ -23,11 +23,21 @@ public class Bank extends Building {
 	Map<PersonAgent, BankManagerRole> existingManagerRoles;
 	Map<PersonAgent, TellerRole> existingTellerRoles;
 	private Map<PersonAgent, CustInfo> CustAccounts;
+	public Map<String, CustInfo> getBusinessAccounts() {
+		return BusinessAccounts;
+	}
+	public void setBusinessAccounts(Map<String, CustInfo> businessAccounts) {
+		BusinessAccounts = businessAccounts;
+	}
+	public Map<PersonAgent, CustInfo> getCustAccounts() {
+		return CustAccounts;
+	}
+
 	private Map<String, CustInfo> BusinessAccounts;
 	public Bank(int xPos, int yPos, int width, int height, String name, BuildingType bank, MainGui mainGui, CityData cd) {
 		super(xPos, yPos, width, height, name, bank, mainGui);
 		cityData = cd;
-		this.bankGui = new BankGui();
+		this.bankGui = new BankGui(this);
 		mainGui.bankGui = this.bankGui;
 		mainGui.bankGui.bank = this;
 		super.type = BuildingType.bank;
@@ -56,11 +66,11 @@ public class Bank extends Building {
 				}
 				else {
 
-					existingManagerRoles.put(p, new BankManagerRole(p));
+					existingManagerRoles.put(p, new BankManagerRole(p, this));
 					setOpen(p);
 					p.msgAssignRole(existingManagerRoles.get(p));
 					currentManager = existingManagerRoles.get(p);
-					BankManagerRole bRole = new BankManagerRole(p);
+					BankManagerRole bRole = new BankManagerRole(p, this);
 					existingManagerRoles.put(p, bRole);
 					setOpen(p);
 					p.print("bank is open? "+ isOpen);
