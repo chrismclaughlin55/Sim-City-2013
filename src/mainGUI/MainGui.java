@@ -148,6 +148,23 @@ public class MainGui extends JFrame implements MouseListener {
 							if(property.equals("hunger")) { 
 								p.setHunger(Integer.parseInt(temp));
 							}
+							if(property.equals("transportation")) {
+								if(temp.equals("car")) {
+									p.car = true;
+									p.bus = false;
+									p.walk = false;
+								}
+								if(temp.equals("bus")) {
+									p.car = false;
+									p.bus = true;
+									p.walk = false;
+								}
+								if(temp.equals("walk")) {
+									p.car = false;
+									p.bus = false;
+									p.walk = false;
+								}
+							}
 						}
 					}
 					mainAnimationPanel.cd.apartments.get(landlord).setManager(p);
