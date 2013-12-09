@@ -1,7 +1,7 @@
 package restaurantBK.gui;
 
-import restaurantBK.CustomerAgent;
-import restaurantBK.WaiterAgent;
+import restaurantBK.BKCustomerRole;
+import restaurantBK.BKWaiterRole;
 import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Waiter;
 
@@ -29,7 +29,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
      *    in RestaurantPanel()
      * 2) the infoPanel about the clicked Customer (created just below)
      */    
-    private RestaurantPanel restPanel = new RestaurantPanel(this);
+    RestaurantPanel restPanel = new RestaurantPanel(this);
     
     /* infoPanel holds information about the clicked customer, if there is one*/
     private JPanel infoPanel;
@@ -46,7 +46,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * Sets up all the gui components.
      * @throws IOException 
      */
-    public RestaurantGui() throws IOException {
+    public RestaurantGui() {
         int WINDOWX = 550;
         int WINDOWY = 350;        
 
@@ -117,7 +117,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
         stateCB.setVisible(true);
         currentPerson = person;
 
-        if (person instanceof CustomerAgent) {
+        if (person instanceof BKCustomerRole) {
             Customer customer = (Customer) person;
             stateCB.setText("Hungry?");
           //Should checkmark be there? 
@@ -128,7 +128,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
             infoLabel.setText(
                "<html><pre>     Name: " + customer.getName() + " </pre></html>");
         }
-        if(person instanceof WaiterAgent) {
+        if(person instanceof BKWaiterRole) {
         	Waiter waiter = (Waiter) person;
         	stateCB.setText("Break?");
         	stateCB.setSelected(waiter.wantsBreak());
@@ -144,14 +144,14 @@ public class RestaurantGui extends JFrame implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == stateCB) {
-            if (currentPerson instanceof CustomerAgent) {
+            if (currentPerson instanceof BKCustomerRole) {
                 Customer c = (Customer) currentPerson;
                 c.getGui().setHungry();
                 stateCB.setEnabled(false);
             }
         }
         if(e.getSource()==stateCB) {
-        	if(currentPerson instanceof WaiterAgent) {
+        	if(currentPerson instanceof BKWaiterRole) {
         		Waiter w = (Waiter) currentPerson;
         		if(!stateCB.isSelected()) {
         			w.msgGoBackToWork();
@@ -170,7 +170,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * @param c reference to the customer
      */
     public void setCustomerEnabled(Customer c) {
-        if (currentPerson instanceof CustomerAgent) {
+        if (currentPerson instanceof BKCustomerRole) {
             Customer cust = (Customer) currentPerson;
             if (c.equals(cust)) {
                 stateCB.setEnabled(true);
@@ -179,7 +179,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
         }
     }
     public void setWaiterEnabled(Waiter w,boolean select) {
-    	if(currentPerson instanceof WaiterAgent) {
+    	if(currentPerson instanceof BKWaiterRole) {
     		Waiter wait = (Waiter) currentPerson;
     		if(w.equals(wait)) {
     			stateCB.setEnabled(true);
@@ -191,11 +191,11 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * Main routine to get gui started
      * @throws IOException 
      */
-    public static void main(String[] args) throws IOException {
+  /*  public static void main(String[] args) {
         RestaurantGui gui = new RestaurantGui();
         gui.setTitle("csci201 Restaurant");
-        gui.setVisible(true);
+        gui.setVisible(false);
         gui.setResizable(false);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
+    }*/
 }

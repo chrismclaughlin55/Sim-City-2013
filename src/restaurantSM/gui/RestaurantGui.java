@@ -1,7 +1,7 @@
 package restaurantSM.gui;
 
-import restaurantSM.CustomerAgent;
-import restaurantSM.WaiterAgent;
+import restaurantSM.SMCustomerRole;
+import restaurantSM.SMWaiterRole;
 
 import javax.swing.*;
 
@@ -39,6 +39,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
             new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     private JPanel view = new JPanel();
+    SMRestaurantBuilding building;
 
     private JPanel listContentHolder = new JPanel();
     private Object currentPerson;/* Holds the agent that the info is about.
@@ -48,8 +49,10 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
      */
-    public RestaurantGui() {
-        int WINDOWX = 1000;
+    public RestaurantGui(SMRestaurantBuilding b) {
+        building = b;
+    	
+    	int WINDOWX = 1000;
         int WINDOWY = 600;
         int smallBound = 50;
         int largeBound = 100;
@@ -132,8 +135,8 @@ public class RestaurantGui extends JFrame implements ActionListener {
         breakCB.setVisible(false);
         currentPerson = person;
 
-        if (person instanceof CustomerAgent) {
-            CustomerAgent customer = (CustomerAgent) person;
+        if (person instanceof SMCustomerRole) {
+            SMCustomerRole customer = (SMCustomerRole) person;
             stateCB.setVisible(true);
             stateCB.setText("Hungry?");
           //Should checkmark be there? 
@@ -144,8 +147,8 @@ public class RestaurantGui extends JFrame implements ActionListener {
             infoLabel.setText(
                "<html><pre>     Name: " + customer.getName() + " </pre></html>");
         }
-        if (person instanceof WaiterAgent) {
-        	WaiterAgent waiter = (WaiterAgent) person;
+        if (person instanceof SMWaiterRole) {
+        	SMWaiterRole waiter = (SMWaiterRole) person;
         	breakCB.setVisible(true);
         	breakCB.setText("Break?");
         	breakCB.setSelected(waiter.getGui().isOnBreak());
@@ -162,8 +165,8 @@ public class RestaurantGui extends JFrame implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == stateCB) {
-            if (currentPerson instanceof CustomerAgent) {
-                CustomerAgent c = (CustomerAgent) currentPerson;
+            if (currentPerson instanceof SMCustomerRole) {
+                SMCustomerRole c = (SMCustomerRole) currentPerson;
                 c.getGui().setHungry();
                 stateCB.setEnabled(false);
             }
@@ -173,8 +176,8 @@ public class RestaurantGui extends JFrame implements ActionListener {
         	waiterName.setText("");
         }
         else if (e.getSource() == breakCB) {
-        	if (currentPerson instanceof WaiterAgent) {
-        		WaiterAgent waiter = (WaiterAgent) currentPerson;
+        	if (currentPerson instanceof SMWaiterRole) {
+        		SMWaiterRole waiter = (SMWaiterRole) currentPerson;
         		waiter.getGui().breakPlease();
         		breakCB.setEnabled(false);
         	}
@@ -201,7 +204,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
             button.addActionListener(this);
             list.add(button);
             view.add(button);
-            restPanel.addPerson("Waiter", name, false);//puts customer on list
+            //restPanel.addPerson("Waiter", name, false);//puts customer on list
             //restPanel.showInfo(type, name);//puts hungry button on panel
             validate();
     	}
@@ -212,15 +215,29 @@ public class RestaurantGui extends JFrame implements ActionListener {
      *
      * @param c reference to the customer
      */
-    public void setCustomerEnabled(CustomerAgent c) {
-        if (currentPerson instanceof CustomerAgent) {
-            CustomerAgent cust = (CustomerAgent) currentPerson;
+    public void setCustomerEnabled(SMCustomerRole c) {
+        if (currentPerson instanceof SMCustomerRole) {
+            SMCustomerRole cust = (SMCustomerRole) currentPerson;
             if (c.equals(cust)) {
                 stateCB.setEnabled(true);
                 stateCB.setSelected(false);
             }
         }
     }
+    
+    public boolean isOpen() {
+    	return building.isOpen();
+    }
+    
+    public void setOpen(Boolean b) {
+    	building.setOpen(b);
+    }
+    
+    public RestaurantPanel getRestaurantPanel() {
+    	return restPanel;
+    }
+    
+    
     /**
      * Main routine to get gui started
      */

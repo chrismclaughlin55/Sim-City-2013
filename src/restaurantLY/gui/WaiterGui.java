@@ -1,13 +1,15 @@
 package restaurantLY.gui;
 
-import restaurantLY.WaiterAgent;
+import restaurantLY.interfaces.Waiter;
+import Gui.Gui;
 
 import java.awt.*;
 
 public class WaiterGui implements Gui {
 
-    private WaiterAgent agent = null;
+    private Waiter agent = null;
     private boolean isOnBreak = false;
+    private boolean isPresent = false;
 
     //private int xPos = 5, yPos = 30;//default waiter position
     //private int xDestination = 5, yDestination = 30;//default start position
@@ -22,7 +24,7 @@ public class WaiterGui implements Gui {
     public static final int xCust[] = {30, 55, 80, 105, 130, 155, 180, 205, 230, 255, 280, 305, 330, 355, 380, 405};
     public static final int yCust[] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     
-    public WaiterGui(WaiterAgent agent) {
+    public WaiterGui(Waiter agent) {
         this.agent = agent;
         xPos = 5;
         yPos = 30;
@@ -30,7 +32,7 @@ public class WaiterGui implements Gui {
         yDestination = 30;
     }
     
-    public WaiterGui(WaiterAgent agent, int x, int y) {
+    public WaiterGui(Waiter agent, int x, int y) {
         this.agent = agent;
         xPos = x;
         yPos = y;
@@ -66,6 +68,10 @@ public class WaiterGui implements Gui {
         if (xPos == xDestination && yPos == yDestination
     			& (xDestination == xOrigin) & (yDestination == yOrigin)) {
     		agent.msgAtDoor();
+    	}
+        if (xPos == xDestination && yPos == yDestination
+    			& (xDestination == -20) & (yDestination == -20)) {
+    		agent.msgLeft();
     	}
         
         for (int i = 0; i < 16; i++) {
@@ -133,4 +139,14 @@ public class WaiterGui implements Gui {
     public void removeFood() {
     	this.order = null;
     }
+    
+    public void DoLeaveRestaurant()
+    {
+    	xDestination = -20;
+    	yDestination = -20;
+    }
+    
+	public void setPresent(boolean p) {
+		isPresent = p;
+	}
 }

@@ -4,21 +4,14 @@ import agent.Agent;
 //import restaurant.gui.WaiterGui;
 
 
-
-
-
-
-
-
-
-
-
-
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-import restaurantBK.CustomerAgent.AgentEvent;
+import city.PersonAgent;
+import city.Role;
+import restaurantBK.BKCustomerRole.AgentEvent;
 import restaurantBK.gui.CookGui;
+import restaurantBK.gui.RestaurantPanel;
 import restaurantBK.gui.WaiterGui;
 import restaurantBK.interfaces.Cook;
 import restaurantBK.interfaces.Market;
@@ -32,11 +25,12 @@ import restaurantBK.interfaces.Waiter;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class CookAgent extends Agent implements Cook {
+public class BKCookRole extends Role implements Cook {
 	
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	//Later we will see how it is implemented
+	RestaurantPanel rest;
 	private int amountorder=3;
 	private class Food {
 		String choice;
@@ -77,13 +71,14 @@ public class CookAgent extends Agent implements Cook {
 	public List<Order> orders = Collections.synchronizedList(new ArrayList<Order>());
 	public enum OrderState {pending,cooking,plated,done};
 	private Semaphore atDestination = new Semaphore(0,true);
-	public CookAgent(String name) {
-		super();
+	public BKCookRole(PersonAgent person, String name, RestaurantPanel rest) {
+		super(person);
+		this.rest = rest;
 		markets = new ArrayList<myMarket>();
-		Food st = new Food("Steak",3000,3);
-		Food ch = new Food("Chicken",2000,3);
-		Food sa = new Food("Salad",2000,0);
-		Food pi = new Food("Pizza", 2000, 0);
+		Food st = new Food("Steak",3000,5);
+		Food ch = new Food("Chicken",2000,5);
+		Food sa = new Food("Salad",2000,5);
+		Food pi = new Food("Pizza", 2000, 5);
 		foods=new HashMap<String,Food>();
 		foods.put("Steak", st);
 		foods.put("Chicken", ch);
@@ -178,7 +173,7 @@ public class CookAgent extends Agent implements Cook {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		
 		CheckInventory();
 		synchronized(orders) {

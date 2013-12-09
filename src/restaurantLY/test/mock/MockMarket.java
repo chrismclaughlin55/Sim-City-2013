@@ -44,4 +44,16 @@ public class MockMarket extends Mock implements Market {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public void setPause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setRestart() {
+		// TODO Auto-generated method stub
+		
+	}
 }

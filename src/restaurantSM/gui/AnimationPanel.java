@@ -2,9 +2,14 @@ package restaurantSM.gui;
 
 import javax.swing.*;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -18,7 +23,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
     private int yTable[] = { 200, 300, 400};
     private int tableSize = 50;
 
-    private List<Gui> guis = new ArrayList<Gui>();
+    private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 
     public AnimationPanel() {
     	setSize(WINDOWX, WINDOWY);
@@ -31,6 +36,14 @@ public class AnimationPanel extends JPanel implements ActionListener {
     }
 
 	public void actionPerformed(ActionEvent e) {
+		synchronized(guis)
+		{
+			for(Gui gui : guis) {
+	            if (gui.isPresent()) {
+	                gui.updatePosition();
+	            }
+	        }
+		}
 		repaint();  //Will have paintComponent called
 	}
 
@@ -47,18 +60,14 @@ public class AnimationPanel extends JPanel implements ActionListener {
         g2.fillRect(xTable,  yTable[1], tableSize, tableSize);
         g2.fillRect(xTable,  yTable[2],  tableSize, tableSize);
         
-
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.updatePosition();
-            }
+        synchronized (guis) {
+        	for(Gui gui : guis) {
+	            if (gui.isPresent()) {
+	                gui.draw(g2);
+	            }
+	        }
         }
-
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
-                gui.draw(g2);
-            }
-        }
+	        
     }
 
     public void addGui(CustomerGui gui) {

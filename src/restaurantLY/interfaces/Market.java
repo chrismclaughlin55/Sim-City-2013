@@ -5,6 +5,8 @@ public interface Market {
 	public abstract int checkInventory(String choice);
 	public abstract String getName();
 	public abstract String toString();
+	public abstract void setPause();
+	public abstract void setRestart();
 	public abstract void msgHereIsMoney(double price);
 	public abstract void msgNoMoney();
 }

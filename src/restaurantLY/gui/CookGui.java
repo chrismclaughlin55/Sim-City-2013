@@ -3,10 +3,12 @@ package restaurantLY.gui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import restaurantLY.CookAgent;
+import restaurantLY.LYCookRole;
+import restaurantLY.interfaces.Cook;
+import Gui.Gui;
 
 public class CookGui implements Gui {
-	private CookAgent agent = null;
+	private Cook agent = null;
 	
 	private int xPos, yPos;//default waiter position
     private int xDestination, yDestination;//default start position
@@ -15,9 +17,12 @@ public class CookGui implements Gui {
 	private boolean cooking = false;
 	
 	private int foodX, foodY;
+	
+    RestaurantGui gui;
+	private boolean isPresent = false;
     
-    public CookGui(CookAgent agent) {
-        this.agent = agent;
+    public CookGui(LYCookRole c) {
+        agent = c;
         xPos = 145;
         yPos = 450;
         xDestination = 145;
@@ -48,6 +53,11 @@ public class CookGui implements Gui {
         if (xPos == xDestination && yPos == yDestination
     			& (xDestination == 235) & (yDestination == 450)) {
     		agent.msgAtRefrigerator();
+    	}
+        
+        if (xPos == xDestination && yPos == yDestination
+    			& (xDestination == -20) & (yDestination == -20)) {
+    		agent.msgLeft();
     	}
 	}
 	
@@ -104,4 +114,14 @@ public class CookGui implements Gui {
 	public void removeFood() {
 		this.order = null;
 	}
+	
+	public void setPresent(boolean p) {
+		isPresent = p;
+	}
+	
+	public void DoLeaveRestaurant()
+    {
+    	xDestination = -20;
+    	yDestination = -20;
+    }
 }

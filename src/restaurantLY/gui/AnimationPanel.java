@@ -1,10 +1,16 @@
 package restaurantLY.gui;
 
+import Gui.*;
+import Gui.Gui;
+
 import javax.swing.*;
+
+import city.gui.PersonGui;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -20,7 +26,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
     int WINDOWX = 430;
     int WINDOWY = 512;
 
-    private List<Gui> guis = new ArrayList<Gui>();
+    private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 
     public AnimationPanel() {
     	setSize(WINDOWX, WINDOWY);
@@ -28,11 +34,19 @@ public class AnimationPanel extends JPanel implements ActionListener {
         
         bufferSize = this.getSize();
  
-    	Timer timer = new Timer(10, this);
+    	Timer timer = new Timer(0, this);
     	timer.start();
     }
 
 	public void actionPerformed(ActionEvent e) {
+        synchronized(guis)
+		{
+			for(Gui gui : guis) {
+	            if (gui.isPresent()) {
+	                gui.updatePosition();
+	            }
+	        }
+		}
 		repaint();  //Will have paintComponent called
 	}
 
@@ -70,12 +84,6 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
         for(Gui gui : guis) {
             if (gui.isPresent()) {
-                gui.updatePosition();
-            }
-        }
-
-        for(Gui gui : guis) {
-            if (gui.isPresent()) {
                 gui.draw(g2);
             }
         }
@@ -92,6 +100,11 @@ public class AnimationPanel extends JPanel implements ActionListener {
     public void addGui(CookGui gui) {
     	guis.add(gui);
     }
+    
+    public void addGui(PersonGui gui) {
+		guis.add(gui);
+		
+	}
     
     /*public void setPause() {
     	for (Gui gui : guis) {

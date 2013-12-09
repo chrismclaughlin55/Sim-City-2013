@@ -11,11 +11,16 @@ import java.util.*;
 import java.awt.Color;
 import java.util.concurrent.*;
 
+import javax.swing.JCheckBox;
+
+import city.PersonAgent;
+import city.Role;
+
 /**
  * Restaurant customer agent.
  */
 
-public class CustomerAgent extends Agent implements Customer{
+public class LYCustomerRole extends Role implements Customer{
 	private String name;
 	private int hungerLevel = 5;        // determines length of meal
 	Timer timer = new Timer();
@@ -41,6 +46,7 @@ public class CustomerAgent extends Agent implements Customer{
 	AgentEvent event = AgentEvent.none;
 	
 	private RestaurantGui gui;
+	private RestaurantPanel restPanel;
 	
 	private double money;
 	private double change;
@@ -54,10 +60,14 @@ public class CustomerAgent extends Agent implements Customer{
 	
 	private Semaphore atTable = new Semaphore(0, true);
 	private Semaphore meetWaiter = new Semaphore(0, true);
+	private Semaphore left = new Semaphore(0, true);
+	private Semaphore atWaiting = new Semaphore(0, true);
 	
 	public EventLog log = new EventLog();
 	
 	public String custOrder;
+    
+    private JCheckBox hungerBox;
 	
 	/**
 	 * Constructor for CustomerAgent class
@@ -65,11 +75,11 @@ public class CustomerAgent extends Agent implements Customer{
 	 * @param name name of the customer
 	 * @param gui  reference to the customergui so the customer can send it messages
 	 */
-	public CustomerAgent(String name, RestaurantGui gui) {
-		super();
+	public LYCustomerRole(PersonAgent person, RestaurantPanel rp, JCheckBox hunger) {//RestaurantGui gui) {
+		super(person);
 		
-		this.name = name;
-		this.gui = gui;
+		this.name = super.getName();
+		restPanel = rp;
 		customerGui = new CustomerGui(this, gui);
 		if (name.equals("NoMoney") || name.equals("NoMoneyL") || name.equals("NoMoneyO")) {
 			this.money = 5.0;
@@ -83,6 +93,7 @@ public class CustomerAgent extends Agent implements Customer{
 		this.change = 0.0;
 		this.check = 0.0;
 		NonNormLeave = false;
+        hungerBox = hunger;
 	}
 	
 	/**
@@ -101,6 +112,10 @@ public class CustomerAgent extends Agent implements Customer{
 	}
 	
 	// Messages
+    
+    public void msgGotHungry() {
+        hungerBox.doClick();
+    }
 	
 	public void gotHungry() {//from animation
 		print("I'm hungry");
@@ -205,10 +220,21 @@ public class CustomerAgent extends Agent implements Customer{
 		stateChanged();
 	}
 	
+	public void msgLeft() {//from animation
+        left.release();
+        stateChanged();
+    }
+	
+	public void msgAtWaiting() {//from animation
+		//print("msgAtWaiting() called");
+		atWaiting.release();// = true;
+		stateChanged();
+	}
+	
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		//  CustomerAgent is a finite state machine
 
 		if (state == AgentState.DoingNothing && event == AgentEvent.gotHungry) {
@@ -260,7 +286,9 @@ public class CustomerAgent extends Agent implements Customer{
 	// Actions
 	
 	private void goToRestaurant() {
-		Do("Going to restaurant, having $" + this.money);
+		print("Going to restaurant, having $" + this.money);
+		//customerGui.DoGoToWaitingArea();
+		
 		host.msgIWantToEat(this);//send our instance, so he can respond to us
 		stateChanged();
 	}
@@ -349,7 +377,7 @@ public class CustomerAgent extends Agent implements Customer{
 	
 	private void EatFood() {
 		customerGui.placeFood(custOrder);
-		Do("Eating Food");
+		print("Eating Food");
 		//This next complicated line creates and starts a timer thread.
 		//We schedule a deadline of getHungerLevel()*1000 milliseconds.
 		//When that time elapses, it will call back to the run routine
@@ -372,7 +400,7 @@ public class CustomerAgent extends Agent implements Customer{
 	
 	private void leaveTable() {
 		customerGui.removeFood();
-		Do("Leaving table");
+		print("Leaving table");
 		if(NonNormLeave) {
 			waiter.msgLeaving(this);
 			this.msgLeaving();
@@ -382,8 +410,15 @@ public class CustomerAgent extends Agent implements Customer{
 		}
 		customerGui.DoExitRestaurant();
 		isHungry = false;
-		gui.setCustomerEnabled(this);
+		//gui.setCustomerEnabled(this);
 		stateChanged();
+        left.drainPermits();
+        try {
+            left.acquire();
+        } catch(Exception e){}
+		person.exitBuilding();
+		person.msgFull();
+		doneWithRole();
 	}
 	
 	private void waitOrLeave() {
@@ -415,6 +450,9 @@ public class CustomerAgent extends Agent implements Customer{
 			host.msgCustomerLeaving(c);
 			c.msgLeaving();
 			customerGui.DoExitRestaurant();
+			person.exitBuilding();
+			person.msgFull();
+			doneWithRole();
 		}
 		stateChanged();
 	}

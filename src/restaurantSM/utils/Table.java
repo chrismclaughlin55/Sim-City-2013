@@ -1,16 +1,16 @@
 package restaurantSM.utils;
 
-import restaurantSM.CustomerAgent;
+import restaurantSM.SMCustomerRole;
 
 public class Table {
-	CustomerAgent occupiedBy;
+	SMCustomerRole occupiedBy;
 	public int tableNumber;
 
 	public Table(int tableNumber) {
 		this.tableNumber = tableNumber;
 	}
 
-	public void setOccupant(CustomerAgent cust) {
+	public void setOccupant(SMCustomerRole cust) {
 		occupiedBy = cust;
 	}
 
@@ -18,7 +18,7 @@ public class Table {
 		occupiedBy = null;
 	}
 
-	public CustomerAgent getOccupant() {
+	public SMCustomerRole getOccupant() {
 		return occupiedBy;
 	}
 

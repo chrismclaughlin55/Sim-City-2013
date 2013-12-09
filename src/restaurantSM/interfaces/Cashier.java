@@ -1,7 +1,7 @@
 package restaurantSM.interfaces;
 
 import restaurantSM.MarketAgent;
-import restaurantSM.WaiterAgent;
+import restaurantSM.SMWaiterRole;
 import restaurantSM.test.mock.EventLog;
 import restaurantSM.utils.Bill;
 import restaurantSM.utils.MyCustomer;

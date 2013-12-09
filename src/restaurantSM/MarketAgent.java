@@ -18,8 +18,8 @@ public class MarketAgent extends Agent implements Market{
 	Menu menu = new Menu();
 	public Stock s = new Stock(1);
 	public List<Request> requestList = new ArrayList<Request>();
-	CookAgent cook;
-	CashierAgent cashier;
+	SMCookRole cook;
+	SMCashierRole cashier;
 	public double total = 0.00;
 	public double tab = 0.00;
 	public DecimalFormat df = new DecimalFormat("#.00");
@@ -37,11 +37,11 @@ public class MarketAgent extends Agent implements Market{
 		return name;
 	}
 	
-	public void setCook(CookAgent c){
+	public void setCook(SMCookRole c){
 		cook = c;
 	}
 	
-	public void setCashier(CashierAgent c){
+	public void setCashier(SMCashierRole c){
 		cashier = c;
 	}
 	

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
-import restaurantSM.CashierAgent;
-import restaurantSM.CookAgent;
+import restaurantSM.SMCashierRole;
+import restaurantSM.SMCookRole;
 import restaurantSM.interfaces.Cashier;
 import restaurantSM.interfaces.Market;
 import restaurantSM.utils.Menu;

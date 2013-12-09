@@ -1,33 +1,32 @@
-package restaurantLY.gui;
+package restaurantBK.gui;
+
+import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import restaurantLY.gui.RestaurantGui;
+import restaurantBK.gui.RestaurantGui;
 import mainGUI.MainGui;
 import city.Building;
 import city.CityData;
 import city.PersonAgent;
+import city.Building.BuildingType;
 
-public class LYRestaurantBuilding extends Building
-{
-	public static final int MAXCUSTOMERS = 8;
-	
+public class BKRestaurantBuilding extends Building {
+
 	RestaurantGui restGui;
 	RestaurantPanel restPanel;
-	
-	public LYRestaurantBuilding(int xPos, int yPos, int width, int height,
-			String name, BuildingType type, MainGui mainGui, CityData cd) 
+	public BKRestaurantBuilding(int xPos, int yPos, int width, int height,
+			String name, BuildingType type, MainGui mainGui, CityData cd) throws IOException 
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
-
-		restGui = new RestaurantGui(cd.market, this);
-
-		restPanel = restGui.getRestaurantPanel();
+		restGui = new RestaurantGui();
+		this.restPanel = restGui.restPanel;
+		// TODO Auto-generated constructor stub
 	}
-	
+
 	public void EnterBuilding(PersonAgent person, String roleRequest)
 	{
-		System.out.println(person.getName() + ": Entering RestaurantLY as " + roleRequest);
+		System.out.println(person.getName() + ": Entering RestaurantBK as " + roleRequest);
 		if(roleRequest.equals("Customer"))
 		{
 			restPanel.addCustomer(person);
@@ -49,16 +48,22 @@ public class LYRestaurantBuilding extends Building
 			restPanel.addHost(person);
 			isOpen = true;
 		}
-		
+		if(restPanel.hasHost()&&restPanel.hasCashier()&&restPanel.hasCook()&&restPanel.hasWaiters()) {
+			restPanel.fullyStaffed = true;
+		}
+		else {
+			restPanel.fullyStaffed = false;
+		}
 	}
 	
-	public boolean isOpen() {
-		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
+	public boolean isOpen()
+	{	
+		return isOpen && restPanel.fullyStaffed;
 	}
 	
 	public boolean openToEmployee()
 	{
-		return isOpen && restPanel.hasHost();
+		return restPanel.hasHost();
 	}
 	
 	public boolean hasHost()
@@ -76,12 +81,15 @@ public class LYRestaurantBuilding extends Building
 		return restGui;
 	}
 
-	public void setOpen(Boolean b) {
+	public void setOpen(boolean b) {
 		isOpen = b;
 		
 	}
-
+	
+	@Override
 	public JFrame getBuildingGui() {
+		// TODO Auto-generated method stub
 		return restGui;
 	}
+
 }

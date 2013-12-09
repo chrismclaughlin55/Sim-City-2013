@@ -204,6 +204,7 @@ public class MQCookRole extends Role implements Cook
 	
 	private void LeaveRestaurant() {
 		person.exitBuilding();
+		person.msgFull();
 		person.msgDoneWithJob();
 		doneWithRole();
 		

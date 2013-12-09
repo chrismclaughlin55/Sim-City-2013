@@ -144,7 +144,7 @@ public abstract class Building extends Rectangle2D.Double {
 		hasManager = true;
 	}
 	
-	public void setBusStop(BusStopAgent bs) {
+	public void setBusStop(BusStopAgent bs, int routeNumber) {
 		busStop = bs;
 	}
 

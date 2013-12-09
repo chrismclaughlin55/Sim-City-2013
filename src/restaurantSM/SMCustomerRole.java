@@ -11,21 +11,23 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
+import city.PersonAgent;
+import city.Role;
 import restaurantSM.*;
 /**
  * Restaurant customer agent.
  */
-public class CustomerAgent extends Agent implements Customer {
+public class SMCustomerRole extends Role implements Customer {
 	private String name;
 	private int hungerLevel = 5;        // determines length of meal
 	Timer timer = new Timer();
 	private CustomerGui customerGui;
-	private CashierAgent cashier;
+	private SMCashierRole cashier;
 	private int sitAtTableNumber = -1;
 	private Waiter waiter;
 	private Menu menu = new Menu();
 	// agent correspondents
-	private HostAgent host;
+	private SMHostRole host;
 	private String choice;
 	public double bankRoll = 25.00;
 	private Bill bill;
@@ -48,19 +50,19 @@ public class CustomerAgent extends Agent implements Customer {
 	 * @param name name of the customer
 	 * @param gui  reference to the customergui so the customer can send it messages
 	 */
-	public CustomerAgent(String name){
-		super();
-		this.name = name;
+	public SMCustomerRole(PersonAgent p){
+		super(p);
+		name = p.getName();
 	}
 
 	/**
 	 * hack to establish connection to Host agent.
 	 */
-	public void setHost(HostAgent host) {
+	public void setHost(SMHostRole host) {
 		this.host = host;
 	}
 	
-	public void setCashier(CashierAgent cash) {
+	public void setCashier(SMCashierRole cash) {
 		cashier = cash;
 	}
 
@@ -76,14 +78,14 @@ public class CustomerAgent extends Agent implements Customer {
 	}
 	
 	public void msgWaitPlease(){
-		Random generator = new Random();
-		int waiting = generator.nextInt(2);
-		if (waiting == 1) {
+		//Random generator = new Random();
+		//int waiting = generator.nextInt(2);
+		//if (waiting == 1) {
 			event = AgentEvent.willWait;
-		}
-		else {
-			event = AgentEvent.leave;
-		}
+		//}
+		//else {
+			//event = AgentEvent.leave;
+		//}
 		stateChanged();
 	}
 
@@ -101,7 +103,6 @@ public class CustomerAgent extends Agent implements Customer {
 	public void msgHeresYourChange(Bill b){
 		event = AgentEvent.leave;
 		bill = b;
-		Do("Got " + df.format(b.change) + " in change.");
 		bankRoll += b.change;
 		stateChanged();
 	}
@@ -139,7 +140,7 @@ public class CustomerAgent extends Agent implements Customer {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		//	CustomerAgent is a finite state machine
 
 		if (state == AgentState.DoingNothing && event == AgentEvent.gotHungry ){
@@ -159,7 +160,6 @@ public class CustomerAgent extends Agent implements Customer {
 		}
 		if ((state == AgentState.WaitingInRestaurant || state == AgentState.AtRestaurant) && event == AgentEvent.followWaiter ){
 			state = AgentState.BeingSeated;
-			Do("sitting down");
 			SitDown(sitAtTableNumber);
 			return true;
 		}
@@ -222,12 +222,10 @@ public class CustomerAgent extends Agent implements Customer {
 	}
 	
 	private void WillingToWait() {
-		Do("I'll wait");
 		host.msgIWillWait(this);
 	}
 	
 	private void UnwillingToWait() {
-		Do("I won't wait.");
 		customerGui.DoExitRestaurant();
 		
 	}
@@ -271,7 +269,6 @@ public class CustomerAgent extends Agent implements Customer {
 	}
 
 	private void GiveBillToCashier(){
-		Do("Paying " + df.format(bankRoll) + " for my bill.");
 		cashier.msgHeresMyBill(bankRoll, bill);
 		bankRoll -= bankRoll;
 	}
@@ -305,6 +302,9 @@ public class CustomerAgent extends Agent implements Customer {
 		customerGui.setStatusText("");
 		waiter.msgDoneEating(this);
 		customerGui.DoExitRestaurant();
+		person.exitBuilding();
+		person.msgFull();
+		doneWithRole();
 	}
 
 	// Accessors, etc.

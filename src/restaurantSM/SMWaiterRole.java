@@ -10,6 +10,9 @@ import restaurantSM.utils.Order.OrderStatus;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
+import city.PersonAgent;
+import city.Role;
+
 /**
  * Restaurant Host Agent
  */
@@ -17,25 +20,25 @@ import java.util.concurrent.Semaphore;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the WaiterAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class WaiterAgent extends Agent implements Waiter {
+public class SMWaiterRole extends Role implements Waiter {
 	//a global for the number of tables.
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	private List<MyCustomer> custList = Collections.synchronizedList(new ArrayList<MyCustomer>());
 	
-	private HostAgent host;
+	private SMHostRole host;
 	private String name;
 	public Semaphore isMoving = new Semaphore(0,true);
 	WaiterGui waiterGui;
-	CookAgent cook;
-	CashierAgent cashier;
+	SMCookRole cook;
+	SMCashierRole cashier;
 	public boolean onBreak = false;
 	Menu menu = new Menu();
 	Timer timer = new Timer();
 	Bill b;
 	private List<Bill> bills = Collections.synchronizedList(new ArrayList<Bill>());
 	
-	public void setCook(CookAgent c) {
+	public void setCook(SMCookRole c) {
 		cook = c;
 	}
 	
@@ -43,10 +46,10 @@ public class WaiterAgent extends Agent implements Waiter {
 		return custList.size();
 	}
 
-	public WaiterAgent(String name) {
-		super();
+	public SMWaiterRole(PersonAgent p) {
+		super(p);
 
-		this.name = name;
+		name = p.getName();
 		// make some tables
 	
 	}
@@ -59,11 +62,11 @@ public class WaiterAgent extends Agent implements Waiter {
 		return name;
 	}
 
-	public void setHost(HostAgent host) {
+	public void setHost(SMHostRole host) {
 		this.host = host;
 	}
 	
-	public void setCashier(CashierAgent cash){
+	public void setCashier(SMCashierRole cash){
 		cashier = cash;
 	}
 	
@@ -161,7 +164,7 @@ public class WaiterAgent extends Agent implements Waiter {
 	public void pauseAllCustomers(){
 		synchronized(custList){
 			for (MyCustomer cust : custList){
-				cust.getCustomer().pause();
+				//cust.getCustomer().pause();
 			}
 		}
 	}
@@ -180,7 +183,7 @@ public class WaiterAgent extends Agent implements Waiter {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		synchronized(custList){
 			for (MyCustomer cust : custList){
 				if (cust.CustomerStatus == MyCustomer.CustStatus.SeatMe){
@@ -333,7 +336,7 @@ public class WaiterAgent extends Agent implements Waiter {
 		myCust.CustomerStatus = MyCustomer.CustStatus.none;
 		Customer customer = myCust.getCustomer();
 		Table table = myCust.getTable();
-		CustomerAgent cust = (CustomerAgent) myCust.getCustomer();
+		SMCustomerRole cust = (SMCustomerRole) myCust.getCustomer();
 		waiterGui.DoGoToLine(cust.getGui().getIndex());
 		try {
 			isMoving.acquire();
@@ -357,11 +360,10 @@ public class WaiterAgent extends Agent implements Waiter {
 	}
 	
 	private void TakeBreak(){
-		final WaiterAgent self = this;
+		final SMWaiterRole self = this;
 		timer.schedule(new TimerTask() {
 			public void run() {
 				host.msgDoneWithBreak(self);
-				Do("returning from break now");
 			}
 		}, 5000);
 	}

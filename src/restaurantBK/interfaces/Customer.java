@@ -1,6 +1,6 @@
 package restaurantBK.interfaces;
 
-import restaurantBK.Menu;
+import restaurantBK.ItalianMenu;
 import restaurantBK.gui.CustomerGui;
 
 public interface Customer {
@@ -23,7 +23,7 @@ public interface Customer {
 	public abstract void msgWouldYouLikeToWait(int numberahead);
 
 	public abstract void msgFollowMeToTable(Waiter w, int tableNumber,
-			Menu m);
+			ItalianMenu m);
 
 	public abstract void msgWhatWouldYouLike();
 

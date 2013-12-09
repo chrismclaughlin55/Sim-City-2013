@@ -10,16 +10,20 @@ import agent.Agent;
 
 
 
+
+
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-import restaurantBK.CustomerAgent.AgentEvent;
+import city.Role;
+import restaurantBK.BKCustomerRole.AgentEvent;
+import restaurantBK.gui.RestaurantPanel;
 import restaurantBK.interfaces.Cashier;
 import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Market;
 import restaurantBK.interfaces.Waiter;
 import restaurantBK.test.mock.EventLog;
-
+import city.PersonAgent;
 
 /**
  * Restaurant Host Agent
@@ -28,12 +32,13 @@ import restaurantBK.test.mock.EventLog;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class CashierAgent extends Agent implements Cashier {
+public class BKCashierRole extends Role implements Cashier {
 	
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	//Later we will see how it is implemented
 	
+	RestaurantPanel rest;
 	public Timer timer = new Timer();
 	public EventLog log = new EventLog();
 	private String name;
@@ -70,8 +75,10 @@ public class CashierAgent extends Agent implements Cashier {
 	public Map<Customer,Double> oweme;
 	public List<Check> checks = Collections.synchronizedList(new ArrayList<Check>());
 	public enum CheckState {pending,delivered,beingPaid,paid};
-	public CashierAgent(String name) {
-		super();
+	public BKCashierRole(PersonAgent person, String name, RestaurantPanel rest) {//, PersonAgent person) {
+		super(person);
+		this.rest = rest;
+		//getPersonAgent, super(Person)
 		oweme = new HashMap<Customer,Double>();
 		this.name = name;
 		capital=500.00;

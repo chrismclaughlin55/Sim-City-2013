@@ -1,6 +1,6 @@
 package restaurantSM.interfaces;
 
-import restaurantSM.WaiterAgent;
+import restaurantSM.SMWaiterRole;
 import restaurantSM.utils.Bill;
 import restaurantSM.utils.Menu;
 
@@ -21,8 +21,6 @@ public interface Customer {
 	public abstract void msgWhatWouldYouLike(Menu m);
 	
 	public abstract void msgHeresYourOrder();
-
-	public abstract void pause();
 	
 	
 	

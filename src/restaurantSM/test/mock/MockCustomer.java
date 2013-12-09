@@ -61,11 +61,11 @@ public class MockCustomer extends Mock implements Customer {
 		log.add(new LoggedEvent("receieved msgHeresYourOrder"));
 	}
 
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		log.add(new LoggedEvent("receieved msg"));
-	}
+//	@Override
+//	public void pause() {
+//		// TODO Auto-generated method stub
+//		log.add(new LoggedEvent("receieved msg"));
+//	}
 
 	
 }
