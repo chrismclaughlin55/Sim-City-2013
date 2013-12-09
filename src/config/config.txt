@@ -115,9 +115,16 @@ name BankCust0
 cash 1500
 bankMoney 5000
 job Unemployed
-hunger 8
+hunger 6
 inventory 10
 
+NewPerson
+name BankCust1
+cash 50
+bankMoney 1000
+job Unemployed
+hunger 10
+inventory 10
 
 NewPerson
 name MarketManager

@@ -42,6 +42,7 @@ public class Bank extends Building {
 	}
 	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
+
 		if(roleRequest.equals("BankManager")){
 			if(manager == null){
 				manager = p;
@@ -69,6 +70,7 @@ public class Bank extends Building {
 				}
 			}
 		}
+
 		if(roleRequest.equals("Customer")){
 			if(isOpen() && this.currentManager != null){
 				if(this.currentManager.getTellers().size() != 0 ){
@@ -91,7 +93,8 @@ public class Bank extends Building {
 						bankGui.animationPanel.addGui(custGui);
 						currentManager.msgINeedService(newRole);
 					}
-				} else p.exitBuilding();
+				} else{ p.exitBuilding();
+				}
 			}
 		}
 		if(roleRequest.equals("BankTeller")){
@@ -119,6 +122,7 @@ public class Bank extends Building {
 				}
 			}
 			else p.exitBuilding();
+
 		}
 	}
 	public void directDeposit(PersonAgent sender, PersonAgent reciever, double amount){

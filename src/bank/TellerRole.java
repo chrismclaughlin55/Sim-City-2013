@@ -64,12 +64,10 @@ public class TellerRole extends Role implements Teller{
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
 		event = Event.recievedInfo;
-
-//TODO Problem here
-		if(info != null)
-			this.currentCustInfo = info;
-		else{ 
-			this.currentCustInfo = person.bankInfo;
+		if(info != null){
+			this.currentCustInfo.moneyInAccount = info.moneyInAccount;
+			this.currentCustInfo.loanApproveAmount = info.loanApproveAmount;
+			this.currentCustInfo.loanAmount = info.loanAmount;
 		}
 
 		stateChanged();
@@ -102,7 +100,6 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		print(state+ " " + event + " stateChange= " + this.person.stateChange.availablePermits() + " " +((currentCustInfo != null)?currentCustInfo.custName: " "));
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;

@@ -29,8 +29,8 @@ public class PersonAgent extends Agent
 
 	public static final int HUNGRY = 7;
 	public static final int STARVING = 14;
-	public static final int LOWMONEY = 20;
-
+	public static final int LOWMONEY = 80;
+	public static final int HIGHMONEY = 1200;
 	public static final int TIRED = 16;
 	public static final double RENT = 20;
 	public static final int THRESHOLD = 3;
@@ -401,9 +401,20 @@ public class PersonAgent extends Agent
 			if(cash <= LOWMONEY) {
 				bigState = BigState.goToBank;
 				desiredRole = "Customer";
+				double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100; 
+				bankInfo.depositAmount = - withdrawAmount;
+				print("want to withdraw $"+withdrawAmount);
 				if(!goToWork)
 					System.out.println(name + job + desiredRole);
 				return true;
+			}
+			
+			if(cash >= HIGHMONEY){
+				bigState = BigState.goToBank;
+				desiredRole = "Customer";
+				bankInfo.depositAmount = cash - HIGHMONEY;
+				print("want to deposit $"+bankInfo.depositAmount);
+				
 			}
 			// Inventory of food stuff
 			if(lowInventory()) {

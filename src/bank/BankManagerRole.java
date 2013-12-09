@@ -118,15 +118,15 @@ public class BankManagerRole extends Role implements BankManager {
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-//		try {
-//			if(tellers.size() > 0){
-//		//		writer.write(tellers.get(0).t.getName()+" "+tellers.get(0).state +"my StateChange= "+person.stateChange.availablePermits()+"\n");
-//				continue;
-//			}
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		//		try {
+		//			if(tellers.size() > 0){
+		//		//		writer.write(tellers.get(0).t.getName()+" "+tellers.get(0).state +"my StateChange= "+person.stateChange.availablePermits()+"\n");
+		//				continue;
+		//			}
+		//		} catch (IOException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 		for( myTeller t: tellers){
 			if(t.state == tellerState.available && getLine().size()>0){
 				helpCustomer(getLine().remove(0), t);
@@ -154,7 +154,7 @@ public class BankManagerRole extends Role implements BankManager {
 		}
 		if(person.cityData.hour > Bank.CLOSINGTIME)
 			leave = true;
-		
+
 		if(leave && tellers.size() == 0 && line.size()==0){
 			leave();
 			return true;
@@ -163,14 +163,44 @@ public class BankManagerRole extends Role implements BankManager {
 	}
 	//ACTIONS
 	private void leave() {
+		myTeller fakeTeller = new myTeller(null);
+		if(person.bankInfo.depositAmount < 0){
+			if(person.bankInfo.depositAmount + person.bankInfo.moneyInAccount < 0){
+				person.cash += person.bankInfo.moneyInAccount;
+				person.bankInfo.moneyInAccount = 0;
+				person.bankInfo.depositAmount = 0;
+			}
+			else{
+				person.cash -= person.bankInfo.depositAmount;
+				person.bankInfo.moneyInAccount += person.bankInfo.depositAmount;
+				person.bankInfo.depositAmount = 0;
+			}
+
+		}else if(person.bankInfo.depositAmount > 0){
+			if(person.cash - person.bankInfo.depositAmount < 0){
+				person.bankInfo.moneyInAccount += person.cash;
+				person.cash = 0;
+				person.bankInfo.depositAmount = 0;
+			}
+			else{
+				person.bankInfo.moneyInAccount += person.bankInfo.depositAmount;
+				person.cash -=person.bankInfo.depositAmount;
+				person.bankInfo.depositAmount = 0;
+
+			}
+		}
+		fakeTeller.custInfo = person.bankInfo;
+		updatedb(fakeTeller);
+		person.bankInfo.depositAmount = 0;
 		for(CustInfo info : CustAccounts.values()){
 			try {
-				print(info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
+				print(info.custName+" "+info.accountNumber+" "+info.moneyInAccount + " "+ info.depositAmount);
 				writer.write(info.custName+" "+info.accountNumber+" "+info.moneyInAccount+'\n');
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
 		}
 		print("bank closed. Leaving");
 		leave = false;
@@ -182,7 +212,7 @@ public class BankManagerRole extends Role implements BankManager {
 	private void helpCustomer(CustomerRole c, myTeller t) {
 		t.c = c;
 		CustAccounts.put(c.getPerson(), c.getPerson().bankInfo);
-		c.msgGoToTeller(t.t);
+		c.msgGoToTeller(t.t, tellers.indexOf(t) + 5);
 		t.state = tellerState.notAvailable;
 	}
 
