@@ -403,7 +403,6 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToRestaurant;
 				desiredRole = "Customer";
 				if(!goToWork)
-					System.out.println(name + job + desiredRole);
 				return true;
 			}
 			if(cash <= LOWMONEY) {
@@ -411,9 +410,7 @@ public class PersonAgent extends Agent
 				desiredRole = "Customer";
 				double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100; 
 				bankInfo.depositAmount = - withdrawAmount;
-				print("want to withdraw $"+withdrawAmount);
 				if(!goToWork)
-					System.out.println(name + job + desiredRole);
 				return true;
 			}
 
@@ -421,15 +418,12 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToBank;
 				desiredRole = "Customer";
 				bankInfo.depositAmount = cash - HIGHMONEY;
-				print("want to deposit $"+bankInfo.depositAmount);
-
 			}
 			// Inventory of food stuff
 			if(lowInventory()) {
 				bigState = BigState.goToMarket;
 				desiredRole = "MarketCustomer";
 				if(!goToWork)
-					System.out.println(name + job + desiredRole);
 				return true;
 			}
 
@@ -437,14 +431,12 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToRestaurant;
 				desiredRole = "Customer";
 				if(!goToWork)
-					System.out.println(name + job + desiredRole);
 				return true;
 			}
 
 			bigState = BigState.goHome;
 			homeState = HomeState.onCouch;
 			if(!goToWork)
-				System.out.println(name + job + bigState);
 			return true;
 		}
 
