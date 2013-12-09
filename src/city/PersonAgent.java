@@ -11,6 +11,7 @@ import java.util.concurrent.Semaphore;
 import trace.Alert;
 import trace.AlertLog;
 import trace.TracePanel;
+import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
 import bank.Bank;
 import bank.utilities.CustInfo;
@@ -580,7 +581,7 @@ public class PersonAgent extends Agent
 					bigState = BigState.goHome;
 					return;
 				}
-				else if(((MQRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+				else if(((KCRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
 					break;
 			}
 			destinationBuilding = cityData.restaurants.get(restNumber);
@@ -606,7 +607,7 @@ public class PersonAgent extends Agent
 			}
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
-		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)destinationBuilding;
+		KCRestaurantBuilding restaurant = (KCRestaurantBuilding)destinationBuilding;
 
 		if(goToWork)
 		{

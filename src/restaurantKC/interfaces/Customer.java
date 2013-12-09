@@ -34,6 +34,26 @@ public interface Customer {
 
 	public abstract CustomerGui getGui();
 
+	public abstract String getName();
+
+	public abstract void setWaiter(Waiter waiter);
+
+	public abstract void msgAnimationFinishedGoToSeat();
+
+	public abstract void msgAnimationFinishedLeaveRestaurant();
+
+	public abstract void msgGotHungry();
+
+	public abstract void setHost(Host host);
+
+	public abstract void setCashier(Cashier cashier);
+
+	public abstract void setGui(CustomerGui g);
+
+	public abstract void startThread();
+
+	public abstract void msgPause();
+
 
 
 }

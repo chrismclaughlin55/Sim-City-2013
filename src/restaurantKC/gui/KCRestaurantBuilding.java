@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import mainGUI.MainGui;
 import city.Building;
 import city.CityData;
+import city.PersonAgent;
 
 public class KCRestaurantBuilding extends Building
 {
@@ -17,13 +18,13 @@ public class KCRestaurantBuilding extends Building
 			String name, BuildingType type, MainGui mainGui, CityData cd) 
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
-		restGui = new RestaurantGui();
+		restGui = new RestaurantGui(this);
 		restPanel = restGui.restPanel;
 	}
 	
-	/*public void EnterBuilding(PersonAgent person, String roleRequest)
+	public void EnterBuilding(PersonAgent person, String roleRequest)
 	{
-		System.out.println(person.getName() + ": Entering RestaurantMQ as " + roleRequest);
+		System.out.println(person.getName() + ": Entering RestaurantKC as " + roleRequest);
 		if(roleRequest.equals("Customer"))
 		{
 			restPanel.addCustomer(person);
@@ -76,7 +77,7 @@ public class KCRestaurantBuilding extends Building
 	public void setOpen(Boolean b) {
 		isOpen = b;
 		
-	}*/
+	}
 
 	public JFrame getBuildingGui() {
 		return restGui;

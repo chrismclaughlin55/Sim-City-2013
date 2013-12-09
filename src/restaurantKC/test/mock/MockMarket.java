@@ -1,8 +1,8 @@
 package restaurantKC.test.mock;
 
 
-import restaurantKC.CashierAgent;
-import restaurantKC.CookAgent;
+import restaurantKC.interfaces.Cashier;
+import restaurantKC.interfaces.Cook;
 import restaurantKC.interfaces.Market;
 
 /**
@@ -16,9 +16,9 @@ public class MockMarket extends Mock implements Market {
 	/**
 	 * Reference to the Cashier under test that can be set by the unit test.
 	 */
-	public CashierAgent cashier;
+	public Cashier cashier;
 
-	public MockMarket(String name, int i, int j, int k, int l, CookAgent cook, CashierAgent cashier2) {
+	public MockMarket(String name, int i, int j, int k, int l, Cook cook, Cashier cashier2) {
 		super(name);
 
 	}
