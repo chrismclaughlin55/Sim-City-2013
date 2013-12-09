@@ -65,14 +65,14 @@ public class BankManagerRole extends Role implements BankManager {
 
 	}
 	//Direct Deposit Message
-	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
-		print("recieved deposit from "+payer.getName()+" to "+reciever.getName()+" for $"+payment);
-		CustInfo send = getAccount(payer);
-		CustInfo recieve = getAccount(reciever);
-		send.moneyInAccount-=payment;
-		recieve.moneyInAccount+=payment;
-		stateChanged();
-	}
+//	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
+//		print("recieved deposit from "+payer.getName()+" to "+reciever.getName()+" for $"+payment);
+//		CustInfo send = getAccount(payer);
+//		CustInfo recieve = getAccount(reciever);
+//		send.moneyInAccount-=payment;
+//		recieve.moneyInAccount+=payment;
+//		stateChanged();
+//	}
 	@Override
 	public void msgINeedService(CustomerRole c) {
 		getLine().add((CustomerRole) c);
@@ -114,6 +114,8 @@ public class BankManagerRole extends Role implements BankManager {
 				}
 			}
 		}
+		bank.payPerson(bank, tellerRole.getPerson(), 150);
+		print(tellerRole.getName()+" gets paid 150 for today");
 		stateChanged();
 	}
 	//SCHEDULER
@@ -205,6 +207,8 @@ public class BankManagerRole extends Role implements BankManager {
 		}
 		print("bank closed. Leaving");
 		leave = false;
+		bank.payPerson(bank, me, 300);
+		print("I get paid 300 for today");
 		bank.setClosed(person);
 		person.exitBuilding();
 		person.msgDoneWithJob();
