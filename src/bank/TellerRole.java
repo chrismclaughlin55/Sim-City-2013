@@ -44,7 +44,7 @@ public class TellerRole extends Role implements Teller{
 		try {
 			atHome.acquire();
 		} catch (InterruptedException e) {
-			
+
 			e.printStackTrace();
 		}
 	}
@@ -64,12 +64,10 @@ public class TellerRole extends Role implements Teller{
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
 		event = Event.recievedInfo;
-
-//TODO Problem here
-		if(info != null)
-			this.currentCustInfo = info;
-		else{ 
-			this.currentCustInfo = person.bankInfo;
+		if(info != null){
+			this.currentCustInfo.moneyInAccount = info.moneyInAccount;
+			this.currentCustInfo.loanApproveAmount = info.loanApproveAmount;
+			this.currentCustInfo.loanAmount = info.loanAmount;
 		}
 
 		stateChanged();
@@ -102,7 +100,6 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		print(state+ " " + event + " stateChange= " + this.person.stateChange.availablePermits() + " " +((currentCustInfo != null)?currentCustInfo.custName: " "));
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;
@@ -114,7 +111,7 @@ public class TellerRole extends Role implements Teller{
 		if(state == State.waitingForResponse && event == Event.recievedDeposit){
 			print("made it to sched procOrd");
 			processOrder();
-			
+
 			return true;
 		}
 		if(state == State.doneWithCustomer && event == Event.updatedBank){
@@ -134,9 +131,9 @@ public class TellerRole extends Role implements Teller{
 			wantToLeave = true;
 		}
 		if(wantToLeave && bm.getLine().size() == 0){
-			this.leaveBank();
+			this.guiGoHere(9);
 		}
-			
+
 		return false;
 	}
 	//ACTIONS
@@ -177,18 +174,21 @@ public class TellerRole extends Role implements Teller{
 
 	}
 
-	private void leaveBank() {
-		bm.msgLeavingNow(this);
-		gui.DoLeaveBank();
+	private void guiGoHere(int place) {
+		if(place == 9)
+			bm.msgLeavingNow(this);
+		gui.goTo(place);
 		try
 		{
 			atDest.acquire();
 		}
 		catch(Exception e){}
-		gui.setPresent(false);
-		person.exitBuilding();
-		person.msgDoneWithJob();
-		doneWithRole();	
+		if(place == 9){
+			gui.setPresent(false);
+			person.exitBuilding();
+			person.msgDoneWithJob();
+			doneWithRole();
+		}
 	}
 
 

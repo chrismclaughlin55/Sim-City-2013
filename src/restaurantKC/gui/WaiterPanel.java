@@ -10,8 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,6 +17,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+import city.PersonAgent;
 
 /**
  * Subpanel of restaurantPanel.
@@ -142,7 +142,9 @@ public class WaiterPanel extends JPanel implements ActionListener, KeyListener{
             button.addActionListener(this);
             list.add(button);
             view.add(button);
-            restPanel.addPerson(type, name);
+            
+            PersonAgent p = new PersonAgent(name);
+            restPanel.addWaiter(p);
             validate();
         }
     }

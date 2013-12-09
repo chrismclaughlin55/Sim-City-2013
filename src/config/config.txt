@@ -1,6 +1,6 @@
 NewPerson
 name Landy0
-cash 500
+cash 1500
 bankMoney 500
 job Landlord
 hunger 10
@@ -10,7 +10,7 @@ transportation bus
 NewPerson
 name Landy1
 cash 500
-bankMoney 500
+bankMoney 1500
 job Landlord
 hunger 10
 inventory 10
@@ -19,7 +19,7 @@ transportation bus
 NewPerson
 name Landy2
 cash 500
-bankMoney 500
+bankMoney 2500
 job Landlord
 hunger 10
 inventory 10
@@ -28,7 +28,7 @@ transportation bus
 NewPerson
 name Landy3
 cash 500
-bankMoney 500
+bankMoney 3500
 job Landlord
 hunger 10
 inventory 7
@@ -37,7 +37,7 @@ transportation bus
 NewPerson
 name Landy4
 cash 500
-bankMoney 500
+bankMoney 4500
 job Landlord
 hunger 10
 inventory 6
@@ -46,14 +46,14 @@ transportation bus
 NewPerson
 name Landy5
 cash 500
-bankMoney 500
+bankMoney 5500
 job Landlord
 hunger 10
 inventory 4
 transportation bus
 
 NewPerson
-name myName0
+name Waiter0
 cash 100
 bankMoney 500
 job Waiter
@@ -62,7 +62,7 @@ inventory 5
 transportation bus
 
 NewPerson
-name myName1
+name Cashier0
 cash 100
 bankMoney 500
 job Cashier
@@ -71,7 +71,7 @@ inventory 3
 transportation bus
 
 NewPerson
-name myName2
+name Cook0
 cash 100
 bankMoney 500
 job Cook
@@ -80,7 +80,7 @@ inventory 7
 transportation bus
 
 NewPerson
-name myName3
+name Host0
 cash 100
 bankMoney 500
 job Host
@@ -89,7 +89,7 @@ inventory 2
 transportation bus
 
 NewPerson
-name myName4
+name Moneybag0
 cash 1000
 bankMoney 500
 job Unemployed
@@ -98,7 +98,7 @@ inventory 20
 transportation bus
 
 NewPerson
-name myName5
+name Waiter1
 cash 100
 bankMoney 500
 job Waiter
@@ -107,7 +107,7 @@ inventory 10
 transportation bus
 
 NewPerson
-name bankManager
+name bankManager0
 cash 100
 bankMoney 500
 job BankManager
@@ -116,7 +116,15 @@ inventory 10
 transportation bus
 
 NewPerson
-name Teller
+name Teller0
+cash 100
+bankMoney 500
+job BankTeller
+hunger 0
+inventory 10
+
+NewPerson
+name Teller1
 cash 100
 bankMoney 500
 job BankTeller
@@ -129,13 +137,20 @@ name BankCust0
 cash 1500
 bankMoney 5000
 job Unemployed
-hunger 8
+hunger 6
 inventory 10
 transportation bus
 
+NewPerson
+name BankCust1
+cash 50
+bankMoney 1000
+job Unemployed
+hunger 10
+inventory 10
 
 NewPerson
-name MarketManager
+name MarketManager0
 cash 100
 bankMoney 500
 job MarketManager
@@ -144,7 +159,7 @@ inventory 10
 transportation bus
 
 NewPerson
-name MarketEmployee
+name MarketEmployee0
 cash 100
 bankMoney 500
 job MarketEmployee
@@ -153,7 +168,7 @@ inventory 10
 transportation bus
 
 NewPerson
-name Rupert
+name Moneybag1
 cash 1000
 bankMoney 500
 job Unemployed
@@ -162,7 +177,7 @@ inventory 9
 transportation bus
 
 NewPerson
-name myName
+name Moneybag2
 cash 1000
 bankMoney 500
 job Unemployed

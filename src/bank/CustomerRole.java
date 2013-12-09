@@ -15,6 +15,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	private double cash;
 	private String name;
 	private Teller t;
+	private int position;
 	CustInfo myInfo;
 	enum CustState { InLine, AtTeller, AskedForLoan, SentDeposit, Left, ProcessLoan};
 	enum CustEvent { GoToTeller, AskedWhatToDo, RecievedMoney, Done, RecievedLoanInfo};
@@ -37,10 +38,12 @@ public class CustomerRole extends Role implements BankCustomer{
 	}
 	//MESSAGES
 	@Override
-	public void msgGoToTeller(Teller t) {
+	public void msgGoToTeller(Teller t, int pos) {
 		this.t = t;
 		event = CustEvent.GoToTeller;
+		position = pos;
 		print("going to teller");
+		print("event: "+ event+" state: "+state);
 		stateChanged();
 	}
 
@@ -48,6 +51,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgWhatWouldYouLike() {
 		event = CustEvent.AskedWhatToDo;
 		print("recieved asked What to do");
+		print("event: "+ event+" state: "+state);
 		stateChanged();
 
 	}
@@ -59,6 +63,7 @@ public class CustomerRole extends Role implements BankCustomer{
 		print("total money in bank "+ this.myInfo.moneyInAccount);
 		event = CustEvent.Done;
 		print("recieved have nice day");
+		print("event: "+ event+" state: "+state);
 		stateChanged();
 
 	}
@@ -98,19 +103,21 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	//ACTIONS
 	private void sayHello(){
-		guiGoHere(1);
-		guiGoHere(2);
+		guiGoHere(4);
+		guiGoHere(position);
 		CustInfo tmp = new CustInfo(myInfo);
-		this.t.msgHello(tmp);
-		state = CustState.AtTeller;
+			state = CustState.AtTeller;
+			this.t.msgHello(tmp);
+	
 
 	}
 	private void tellTeller(){
-//		if(myInfo.loanRequestAmount == 0){
-//			t.msgloan(myInfo.loanRequestAmount);
-//			state = CustState.AskedForLoan;
-//			return;
-//		}else{
+		//		if(myInfo.loanRequestAmount == 0){
+		//			t.msgloan(myInfo.loanRequestAmount);
+		//			state = CustState.AskedForLoan;
+		//			return;
+		//		}else{
+		/*
 			double depositAmount;
 			if(myInfo.depositAmount>cash){
 				depositAmount = cash;
@@ -125,13 +132,48 @@ public class CustomerRole extends Role implements BankCustomer{
 			t.msgDeposit(depositAmount);
 			print("depositing $"+depositAmount);
 			print("should be depositing $"+myInfo.depositAmount);
-			print("person wants to deposit "+this.person.bankInfo.depositAmount);
+			print("person wants to deposit "+this.person.bankInfo.depositAmount);*/
+		print("depositing $"+myInfo.depositAmount);
+		if(myInfo.depositAmount < 0){
+			if(myInfo.depositAmount + myInfo.moneyInAccount < 0){
+				this.cash += person.bankInfo.moneyInAccount;
+				myInfo.moneyInAccount = 0;
+				t.msgDeposit(myInfo.depositAmount);
+				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
+			}
+			else{
+				person.cash -= myInfo.depositAmount;
+				myInfo.moneyInAccount += myInfo.depositAmount;
+				t.msgDeposit(myInfo.depositAmount);
+				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
+			}
+
+		}else if(myInfo.depositAmount > 0){
+			if(person.cash - myInfo.depositAmount < 0){
+				myInfo.moneyInAccount += person.cash;
+				person.cash = 0;
+				t.msgDeposit(myInfo.depositAmount);
+				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
+			}
+			else{
+				myInfo.moneyInAccount += myInfo.depositAmount;
+				person.cash -=myInfo.depositAmount;
+				t.msgDeposit(myInfo.depositAmount);
+				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
+
+			}
 		}
+	
+	}
 
 	private void leave(){
 
 		state = CustState.Left;	
-		guiGoHere(3);
+		guiGoHere(9);
 		gui.setPresent(false);
 		person.bankInfo = this.myInfo;
 		person.exitBuilding();

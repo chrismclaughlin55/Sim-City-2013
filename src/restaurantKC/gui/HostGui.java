@@ -6,17 +6,19 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
-import restaurantKC.HostAgent;
+import restaurantKC.KCHostRole;
+import restaurantKC.interfaces.Host;
 
 public class HostGui implements Gui {
 
-    private HostAgent agent = null;
+    private KCHostRole agent = null;
 
-    private int xPos = 365, yPos = 800;//default waiter position
+    private int xPos = 0, yPos = 0;//default waiter position
+    private int xDestination = 450, yDestination = 450;
             
 
-    public HostGui(HostAgent agent) {
-        this.agent = agent;
+    public HostGui(Host agent) {
+        this.agent = (KCHostRole) agent;
     }
 
     public void draw(Graphics2D g) {
@@ -39,7 +41,21 @@ public class HostGui implements Gui {
 
 	@Override
 	public void updatePosition() {
-		// TODO Auto-generated method stub
+		if (xPos < xDestination)
+			xPos++;
+		else if (xPos > xDestination)
+			xPos--;
+
+		if (yPos < yDestination)
+			yPos++;
+		else if (yPos > yDestination)
+			yPos--;
 		
 	}
+	
+	public void DoLeaveRestaurant()
+    {
+    	xDestination = -30;
+        yDestination = -30;
+    }
 }
