@@ -126,7 +126,7 @@ public class MainGui extends JFrame implements MouseListener {
 					n = scan.next();
 					PersonAgent p = new PersonAgent(n, this, mainAnimationPanel.cd);
 					if(newPerson.equals("NewPerson")) {
-						for(int i=0; i<5; i++) {
+						for(int i=0; i<6; i++) {
 							String property = scan.next();
 							String temp = scan.next();
 							if(property.equals("name")) {
