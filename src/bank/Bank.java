@@ -2,7 +2,8 @@ package bank;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.concurrent.Semaphore;
+import java.lang.Double;
 import javax.swing.JFrame;
 
 import bank.utilities.CustInfo;
@@ -14,26 +15,19 @@ import city.Building;
 import city.CityData;
 import city.PersonAgent;
 import city.Building.BuildingType;
+import city.interfaces.Bus;
 
 public class Bank extends Building {
+	public Semaphore enter = new Semaphore(1, true);
 	public final static int CLOSINGTIME = 22;
 	public BankGui bankGui;
 	BankManagerRole currentManager = null;
 	Map<PersonAgent, CustomerRole> existingCustRoles;
 	Map<PersonAgent, BankManagerRole> existingManagerRoles;
 	Map<PersonAgent, TellerRole> existingTellerRoles;
-	private Map<PersonAgent, CustInfo> CustAccounts;
-	public Map<String, CustInfo> getBusinessAccounts() {
-		return BusinessAccounts;
-	}
-	public void setBusinessAccounts(Map<String, CustInfo> businessAccounts) {
-		BusinessAccounts = businessAccounts;
-	}
-	public Map<PersonAgent, CustInfo> getCustAccounts() {
-		return CustAccounts;
-	}
+	private static Map<PersonAgent, CustInfo> CustAccounts = new HashMap<PersonAgent, CustInfo>();
+	private static Map<Building, java.lang.Double> BusinessAccounts = new HashMap<Building, java.lang.Double>();
 
-	private Map<String, CustInfo> BusinessAccounts;
 	public Bank(int xPos, int yPos, int width, int height, String name, BuildingType bank, MainGui mainGui, CityData cd) {
 		super(xPos, yPos, width, height, name, bank, mainGui);
 		cityData = cd;
@@ -46,13 +40,18 @@ public class Bank extends Building {
 		existingTellerRoles = new HashMap<PersonAgent, TellerRole>();
 
 		//accounts
-		CustAccounts = new HashMap<PersonAgent, CustInfo>();
-		BusinessAccounts = new HashMap<String, CustInfo>();
+
+
 
 	}
 	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
-
+		try {
+			enter.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(roleRequest.equals("BankManager")){
 			if(manager == null){
 				manager = p;
@@ -134,6 +133,7 @@ public class Bank extends Building {
 			else p.exitBuilding();
 
 		}
+		enter.release();
 	}
 	public void directDeposit(PersonAgent sender, PersonAgent reciever, double amount){
 		if(currentManager != null){
@@ -178,5 +178,45 @@ public class Bank extends Building {
 
 	public JFrame getBuildingGui() {
 		return bankGui;
+	}
+
+
+	//BUSINESS BANK ACCOUNT METHODS
+	public void addBusinessAccount(Building b, java.lang.Double startMoney){
+		BusinessAccounts.put(b, startMoney);
+		System.out.println(b.type + " added account");
+	}
+	
+	public double payPerson(Building b, PersonAgent p, double amount){
+		java.lang.Double businessMoney = BusinessAccounts.get(b);
+		CustInfo personAccount = CustAccounts.get(p);
+		businessMoney = businessMoney - amount;
+		personAccount.moneyInAccount += amount;
+		System.out.println(b.type + "is paying " +p.getName()+" $"+amount+" for work");
+		CustAccounts.put(p, personAccount);
+		BusinessAccounts.put(b, businessMoney);
+		return businessMoney;
+
+	}
+	public double depositMoney(Building b, double amount){
+		java.lang.Double account = BusinessAccounts.get(b);
+		System.out.println(b.type + " depositing amount = "+ amount);
+		System.out.println(b.type + " old balance: " +account);
+		account+= amount;
+		System.out.println(b.type + " new balance: "+ account);
+		return account;
+	}
+	public double withdrawMoney(Building b, double amount){
+		double businessAccount = BusinessAccounts.get(b);
+		if(amount<businessAccount){
+			System.out.println(b.type+ " is withdrawing "+ amount + " with " + (businessAccount - amount) + " left");
+			
+			BusinessAccounts.put(b, (java.lang.Double)(businessAccount - amount));
+		}
+		else{
+System.out.println(b.type+ " is withdrawing "+ businessAccount + " with " + 0 + " left");			
+			BusinessAccounts.put(b, (java.lang.Double)(0.0));
+		}
+		return BusinessAccounts.get(b);
 	}
 }

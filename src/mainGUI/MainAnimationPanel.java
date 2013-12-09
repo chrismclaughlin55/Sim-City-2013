@@ -144,7 +144,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		Market m = new Market(340, 420, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
 		cd.buildings.add(m);
 		cd.market =  m;
-
+		
+		
         
         //create bus stop for restaurants/market/bank
 		BusStopAgent bs12 = new BusStopAgent(200-20-20, 140+40+20, cd);
@@ -242,6 +243,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.buildings.get(i).setType(BuildingType.restaurant);
 			cd.buildings.get(i).setName("restaurant"+(i-11));
 			cd.buildings.get(i).setBuildingNumber(i);
+			cd.bank.addBusinessAccount(cd.buildings.get(i), 5000.0);
 		}
 
 		//Set bank parameters
@@ -254,6 +256,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(19).setName("market");
 		cd.buildings.get(19).setBuildingNumber(19);
 		cd.market = (Market) cd.buildings.get(19);
+		cd.bank.addBusinessAccount(cd.buildings.get(19), 5000.0);
 		//setBackground(Color.WHITE);
 		cd.globalTimer = new Timer(GLOBALINTERVAL,(ActionListener) this);
 

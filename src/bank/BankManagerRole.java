@@ -231,6 +231,7 @@ public class BankManagerRole extends Role implements BankManager {
 		print("updating db for "+t.custInfo.custName);
 		CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
 		t.state = tellerState.available;
+		bank.bankGui.bankPanel.updateLabels();
 		
 	}
 	public List<CustomerRole> getLine() {

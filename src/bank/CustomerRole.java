@@ -43,6 +43,7 @@ public class CustomerRole extends Role implements BankCustomer{
 		event = CustEvent.GoToTeller;
 		position = pos;
 		print("going to teller");
+		print("event: "+ event+" state: "+state);
 		stateChanged();
 	}
 
@@ -50,6 +51,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgWhatWouldYouLike() {
 		event = CustEvent.AskedWhatToDo;
 		print("recieved asked What to do");
+		print("event: "+ event+" state: "+state);
 		stateChanged();
 
 	}
@@ -61,6 +63,7 @@ public class CustomerRole extends Role implements BankCustomer{
 		print("total money in bank "+ this.myInfo.moneyInAccount);
 		event = CustEvent.Done;
 		print("recieved have nice day");
+		print("event: "+ event+" state: "+state);
 		stateChanged();
 
 	}
@@ -103,8 +106,9 @@ public class CustomerRole extends Role implements BankCustomer{
 		guiGoHere(4);
 		guiGoHere(position);
 		CustInfo tmp = new CustInfo(myInfo);
-		this.t.msgHello(tmp);
-		state = CustState.AtTeller;
+			state = CustState.AtTeller;
+			this.t.msgHello(tmp);
+	
 
 	}
 	private void tellTeller(){
@@ -136,12 +140,14 @@ public class CustomerRole extends Role implements BankCustomer{
 				myInfo.moneyInAccount = 0;
 				t.msgDeposit(myInfo.depositAmount);
 				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
 			}
 			else{
 				person.cash -= myInfo.depositAmount;
 				myInfo.moneyInAccount += myInfo.depositAmount;
 				t.msgDeposit(myInfo.depositAmount);
 				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
 			}
 
 		}else if(myInfo.depositAmount > 0){
@@ -150,12 +156,14 @@ public class CustomerRole extends Role implements BankCustomer{
 				person.cash = 0;
 				t.msgDeposit(myInfo.depositAmount);
 				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
 			}
 			else{
 				myInfo.moneyInAccount += myInfo.depositAmount;
 				person.cash -=myInfo.depositAmount;
 				t.msgDeposit(myInfo.depositAmount);
 				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
 
 			}
 		}

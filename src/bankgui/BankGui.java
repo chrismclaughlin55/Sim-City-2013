@@ -16,7 +16,7 @@ import bank.utilities.GuiPositions;
 public class BankGui extends JFrame implements GuiPositions, ActionListener {
 
 		public AnimationPanel animationPanel;
-		private BankPanel bankPanel;
+		public BankPanel bankPanel;
 		public Bank bank;
 		public BankGui(Bank bank) {
 			this.bank = bank;
