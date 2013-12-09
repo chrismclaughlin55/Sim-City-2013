@@ -280,8 +280,7 @@ public class PersonAgent extends Agent
 		if(anyActive) {
 			return false;
 		}
-		switch(bigState)
-		{
+		switch(bigState) {
 
 		case atHome: {
 			if (homeState == HomeState.sleeping) {
@@ -380,8 +379,7 @@ public class PersonAgent extends Agent
 
 		case doingNothing: {
 			//Decide what the next BigState will be based on current parameters
-			if(goToWork && jobBuilding != null)
-			{
+			if(goToWork && jobBuilding != null) {
 				destinationBuilding = jobBuilding;
 				desiredRole = job;
 
