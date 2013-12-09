@@ -288,7 +288,7 @@ public class PersonAgent extends Agent
 					return true;
 				}
 
-				else if (cityData.hour>=2 && isEmployee()) {
+				else if (cityData.hour>=3 && isEmployee()) {
 
 					//print(getJob());
 					WakeUp();

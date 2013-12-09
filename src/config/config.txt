@@ -1,6 +1,6 @@
 NewPerson
 name Landy0
-cash 500
+cash 1500
 bankMoney 500
 job Landlord
 hunger 10
@@ -9,7 +9,7 @@ inventory 10
 NewPerson
 name Landy1
 cash 500
-bankMoney 500
+bankMoney 1500
 job Landlord
 hunger 10
 inventory 10
@@ -17,7 +17,7 @@ inventory 10
 NewPerson
 name Landy2
 cash 500
-bankMoney 500
+bankMoney 2500
 job Landlord
 hunger 10
 inventory 10
@@ -25,7 +25,7 @@ inventory 10
 NewPerson
 name Landy3
 cash 500
-bankMoney 500
+bankMoney 3500
 job Landlord
 hunger 10
 inventory 7
@@ -33,7 +33,7 @@ inventory 7
 NewPerson
 name Landy4
 cash 500
-bankMoney 500
+bankMoney 4500
 job Landlord
 hunger 10
 inventory 6
@@ -41,13 +41,13 @@ inventory 6
 NewPerson
 name Landy5
 cash 500
-bankMoney 500
+bankMoney 5500
 job Landlord
 hunger 10
 inventory 4
 
 NewPerson
-name myName0
+name Waiter0
 cash 100
 bankMoney 500
 job Waiter
@@ -55,7 +55,7 @@ hunger 10
 inventory 5
 
 NewPerson
-name myName1
+name Cashier0
 cash 100
 bankMoney 500
 job Cashier
@@ -63,7 +63,7 @@ hunger 10
 inventory 3
 
 NewPerson
-name myName2
+name Cook0
 cash 100
 bankMoney 500
 job Cook
@@ -71,7 +71,7 @@ hunger 0
 inventory 7
 
 NewPerson
-name myName3
+name Host0
 cash 100
 bankMoney 500
 job Host
@@ -79,7 +79,7 @@ hunger 10
 inventory 2
 
 NewPerson
-name myName4
+name Moneybag0
 cash 1000
 bankMoney 500
 job Unemployed
@@ -87,7 +87,7 @@ hunger 5
 inventory 20
 
 NewPerson
-name myName5
+name Waiter1
 cash 100
 bankMoney 500
 job Waiter
@@ -95,7 +95,7 @@ hunger 10
 inventory 10
 
 NewPerson
-name bankManager
+name bankManager0
 cash 100
 bankMoney 500
 job BankManager
@@ -103,7 +103,15 @@ hunger 0
 inventory 10
 
 NewPerson
-name Teller
+name Teller0
+cash 100
+bankMoney 500
+job BankTeller
+hunger 0
+inventory 10
+
+NewPerson
+name Teller1
 cash 100
 bankMoney 500
 job BankTeller
@@ -127,7 +135,7 @@ hunger 10
 inventory 10
 
 NewPerson
-name MarketManager
+name MarketManager0
 cash 100
 bankMoney 500
 job MarketManager
@@ -135,7 +143,7 @@ hunger 10
 inventory 10
 
 NewPerson
-name MarketEmployee
+name MarketEmployee0
 cash 100
 bankMoney 500
 job MarketEmployee
@@ -143,7 +151,7 @@ hunger 4
 inventory 10
 
 NewPerson
-name Rupert
+name Moneybag1
 cash 1000
 bankMoney 500
 job Unemployed
@@ -151,7 +159,7 @@ hunger 7
 inventory 9
 
 NewPerson
-name myName
+name Moneybag2
 cash 1000
 bankMoney 500
 job Unemployed

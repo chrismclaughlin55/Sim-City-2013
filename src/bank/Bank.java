@@ -25,8 +25,8 @@ public class Bank extends Building {
 	Map<PersonAgent, CustomerRole> existingCustRoles;
 	Map<PersonAgent, BankManagerRole> existingManagerRoles;
 	Map<PersonAgent, TellerRole> existingTellerRoles;
-	private static Map<PersonAgent, CustInfo> CustAccounts = new HashMap<PersonAgent, CustInfo>();
-	private static Map<Building, java.lang.Double> BusinessAccounts = new HashMap<Building, java.lang.Double>();
+	public static Map<PersonAgent, CustInfo> CustAccounts = new HashMap<PersonAgent, CustInfo>();
+	public static Map<Building, java.lang.Double> BusinessAccounts = new HashMap<Building, java.lang.Double>();
 
 	public Bank(int xPos, int yPos, int width, int height, String name, BuildingType bank, MainGui mainGui, CityData cd) {
 		super(xPos, yPos, width, height, name, bank, mainGui);
@@ -82,7 +82,7 @@ public class Bank extends Building {
 
 		if(roleRequest.equals("Customer")){
 			if(isOpen() && this.currentManager != null){
-				if(this.currentManager.getTellers().size() != 0 ){
+				if(currentManager.tellerPresent()){
 					if(existingCustRoles.get(p) != null){
 						CustomerRole role = existingCustRoles.get(p);
 						BankCustomerGui custGui = new BankCustomerGui(role);
@@ -110,7 +110,7 @@ public class Bank extends Building {
 			if(isOpen()){
 				if(existingTellerRoles.get(p) != null){
 					TellerRole role = existingTellerRoles.get(p);
-					TellerGui tellerGui = new TellerGui(existingTellerRoles.get(p));
+					TellerGui tellerGui = new TellerGui(existingTellerRoles.get(p), currentManager.tellers.size()+5);
 					role.msgAddGui(tellerGui);
 					p.msgAssignRole(role);
 					role.msgAddGui(tellerGui);
@@ -122,7 +122,7 @@ public class Bank extends Building {
 				else{
 					TellerRole newRole = new TellerRole(p);
 					existingTellerRoles.put(p, newRole);
-					TellerGui tellerGui = new TellerGui(newRole);
+					TellerGui tellerGui = new TellerGui(newRole, currentManager.tellers.size()+5);
 					p.msgAssignRole(newRole);
 					newRole.msgAddGui(tellerGui);
 					bankGui.animationPanel.addGui(tellerGui);
