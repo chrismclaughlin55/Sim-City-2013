@@ -269,7 +269,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(19).setType(BuildingType.market);
 		cd.buildings.get(19).setName("market");
 		cd.buildings.get(19).setBuildingNumber(19);
-		cd.market = (Market) cd.buildings.get(19);
+		//cd.market = (Market) cd.buildings.get(19);
 		//setBackground(Color.WHITE);
 		cd.globalTimer = new Timer(GLOBALINTERVAL,(ActionListener) this);
 
