@@ -102,7 +102,9 @@ public class Bank extends Building {
 						bankGui.animationPanel.addGui(custGui);
 						currentManager.msgINeedService(newRole);
 					}
-				} else{ p.exitBuilding();
+				} else{
+					System.out.println("teller present? " + currentManager.tellerPresent());
+					p.exitBuilding();
 				}
 			}
 		}

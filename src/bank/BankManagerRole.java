@@ -201,17 +201,11 @@ public class BankManagerRole extends Role implements BankManager {
 		updatedb(fakeTeller);
 		person.bankInfo.depositAmount = 0;
 		for(CustInfo info : bank.CustAccounts.values()){
-			try {
-				print(info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
-				writer.write(info.custName+" "+info.accountNumber+" "+info.moneyInAccount+'\n');
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			print(info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
 		}
 		print("bank closed. Leaving");
 		leave = false;
+		bank.setClosed(person);
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();
@@ -237,7 +231,7 @@ public class BankManagerRole extends Role implements BankManager {
 		print("updating db for "+t.custInfo.custName);
 		bank.CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
 		t.state = tellerState.available;
-		//	bank.bankGui.bankPanel.updateLabels();
+			bank.bankGui.updatebankPanel();
 
 	}
 	public List<CustomerRole> getLine() {
@@ -255,7 +249,7 @@ public class BankManagerRole extends Role implements BankManager {
 		for( myTeller t : tellers){
 			if(t.state != tellerState.offDuty)
 				allGone = false;
-			
+
 		}
 		return allGone;
 	}
