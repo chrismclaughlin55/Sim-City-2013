@@ -4,6 +4,7 @@ import agent.Agent;
 //import restaurant.gui.WaiterGui;
 
 
+
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -16,6 +17,8 @@ import restaurantBK.gui.WaiterGui;
 import restaurantBK.interfaces.Cook;
 import restaurantBK.interfaces.Market;
 import restaurantBK.interfaces.Waiter;
+import trace.AlertLog;
+import trace.AlertTag;
 
 
 /**
@@ -249,6 +252,7 @@ public class BKCookRole extends Role implements Cook {
 		if(foods.get(o.name).inventory==0) {
 			//KEEP TRACK OF ALL INVENTORY, NOT JUST FOODS WHEN INVENTORY = 01
 			print("We're out of " +o.name);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_COOK, this.getName(), "We're out of " +o.name);
 			o.w.msgOutOfOrder(o.name, o.tablenumber);
 			orders.remove(o);
 			//WE HAVE TO ORDER FROM MARKET NOW
@@ -263,6 +267,7 @@ public class BKCookRole extends Role implements Cook {
 				e.printStackTrace();
 			}
 			print("Cooking "+o.name);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_COOK, this.getName(), "Cooking " +o.name);
 			timer.schedule(new TimerTask() {
 				public void run() {		
 					o.os = OrderState.plated;
@@ -285,6 +290,7 @@ public class BKCookRole extends Role implements Cook {
 	
 	private void OrderFromMarket(HashMap<String,Integer> order) {
 		print("Ordering from market");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_COOK, this.getName(), "Ordering from market");
 		for(myMarket mark : markets) {
 			if(mark.outoffood==false) {
 				mark.m.msgFoodRequest(order,this);

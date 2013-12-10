@@ -65,9 +65,9 @@ public class PersonAgent extends Agent
 	public BusStopAgent destinationBusStop;
 	String desiredRole;
 	private String job;
-	Market market;
+	List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
 	Timer timer = new Timer();
-	Bank bank;
+	List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
 	public HashMap<String, Integer> inventory = new HashMap<String, Integer>();
 	int rent = 50;
 	public boolean car;
@@ -139,8 +139,8 @@ public class PersonAgent extends Agent
 		inventory.put("Chicken", 3);
         
 		personGui = new PersonGui(this, gui);
-		bank = cd.bank;
-		market = cd.market;
+		banks = cd.banks;
+		markets = cd.markets;
 	}
     
 	public void setName(String name) {
@@ -296,189 +296,199 @@ public class PersonAgent extends Agent
 		}
 		switch(bigState) {
 
-		case atHome: {
-			if (homeState == HomeState.sleeping) {
-				if (!isWeekend()) {
-					if(cityData.hour >= 0 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
-						//delete the && false when the actual rule is implemented
-						WakeUp();
-						return true;
-					}
+                
+            case atHome: {
+                if (homeState == HomeState.sleeping) {
+                    if (!isWeekend()) {
+                        if(cityData.hour >= 0 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
+                            //delete the && false when the actual rule is implemented
+                            WakeUp();
+                            return true;
+                        }
+                        
+                        else if (cityData.hour>=3 && isEmployee()) {
+                            
+                            //print(getJob());
+                            WakeUp();
+                            return true;
+                        }
+                        else if (cityData.hour>=6) {
+                            WakeUp();
+                            return true;
+                        }
+                        return false; //put the agent thread back to sleep
+                    }
+                    else {
+                        if(cityData.hour >= 2 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
+                            //delete the && false when the actual rule is implemented
+                            WakeUp();
+                            return true;
+                        }
+                        
+                        else if (cityData.hour>=5 && isEmployee()) {
+                            
+                            //print(getJob());
+                            WakeUp();
+                            return true;
+                        }
+                        else if (cityData.hour>=8) {
+                            WakeUp();
+                            return true;
+                        }
+                        return false; //put the agent thread back to sleep
+                    }
+                }
+                
+                if (tiredLevel >= TIRED) {
+                    goToSleep();
+                    return false; //intentional because the thread is being out to sleep
+                }
+                
+                if (home instanceof Apartment && rentDue && !home.manager.equals(this)) {
+                    payRent(0);
+                    return true;
+                }
+                
+                if (hungerLevel >= HUNGRY) {
+                    int num = (int) (Math.random() * 2);
+                    if (num == 0) {
+                        makeFood();
+                        return true;
+                    }
+                    if (num == 1) {
+                        leaveHome();
+                        return true;
+                    }
+                }
+                
+                if (goToWork && jobBuilding != null && (!home.manager.equals(this) && home instanceof Apartment)) {
+                    leaveHome();
+                    return true;
+                }
+                
+                if (home instanceof Apartment && rentDue && !home.manager.equals(this)) {
+                    // TODO
+                	if (banks.get(0).isOpen) {
+                		payRent(0);
+                	}
+                	else if (banks.get(1).isOpen) {
+                		payRent(1);
+                	}
+                    return true;
+                }
+                
+                if (homeState == HomeState.onCouch) {
+                    goToCouch();
+                    return true;
+                }
+                if (homeState == HomeState.none) {
+                    if (home instanceof Apartment && home.manager.equals(this) && lowInventory()) {
+                        leaveHome();
+                        return true;
+                    }
+                    else if (home instanceof Apartment && home.manager.equals(this)) {
+                        goToCouch();
+                        return true;
+                    }
+                    else if (cash <= LOWMONEY || cash >= HIGHMONEY) {
+                    	System.err.println("money problems");
+                        leaveHome();
+                        return true;
+                    }
+                }
+            }
+            case leaveHome: {
+                //personGui.DoGoToEntrance();
+                leaveHome();
+                return true;
+            }
+            case goToRestaurant: {
+                goToRestaurant();
+                return true;
+            }
+            case goHome: {
+                goHome();
+                return true;
+            }
+            case goToBank: {
+                goToBank();
+                return true;
+            }
+            case goToMarket: {
+                goToMarket();
+                return true;
+            }
+                
+            case doingNothing: {
+                //Decide what the next BigState will be based on current parameters
+            	
+                if(goToWork && jobBuilding != null) {
+                    destinationBuilding = jobBuilding;
+                    desiredRole = job;
+                    
+                    if(destinationBuilding.type == BuildingType.market) {
+                        bigState = BigState.goToMarket;
+                        return true;
+                    }
+                    else if(destinationBuilding.type == BuildingType.bank) {
+                        bigState = BigState.goToBank;
+                        return true;
+                    }
+                    else if(destinationBuilding.type == BuildingType.restaurant) {
+                        bigState = BigState.goToRestaurant;
+                        return true;
+                    }
+                }
+                
+                if (hungerLevel >= STARVING) {
+                    bigState = BigState.goToRestaurant;
+                    desiredRole = "Customer";
+                    if(!goToWork)
+                        System.out.println(name + " " + job + " " + desiredRole);
+                    return true;
+                }
+                
+                if (cash <= LOWMONEY) {
+                    bigState = BigState.goToBank;
+                    desiredRole = "Customer";
+                    double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100;
+                    bankInfo.depositAmount = - withdrawAmount;
+                    if(!goToWork)
+                        System.out.println(name + " " + job + " " + desiredRole);
+                    return true;
+                }
+                
+                if (cash >= HIGHMONEY){
+                    bigState = BigState.goToBank;
+                    desiredRole = "Customer";
+                    bankInfo.depositAmount = cash - HIGHMONEY;
+                    return true;
+                }
+                // Inventory of food stuff
+                if (lowInventory()) {
+                    bigState = BigState.goToMarket;
+                    desiredRole = "MarketCustomer";
+                    if(!goToWork)
+                        System.out.println(name + ": " + job + " " + desiredRole);
+                    return true;
+                }
+                
+                if (hungerLevel >= HUNGRY) {
+                    bigState = BigState.goToRestaurant;
+                    desiredRole = "Customer";
+                    if(!goToWork)
+                        System.out.println(name + ": " + job + " " + desiredRole);
+                    return true;
+                }
+                
+                bigState = BigState.goHome;
+                homeState = HomeState.onCouch;
+                if(!goToWork)
+                    System.out.println(name + ": " + " " + job + " " + bigState);
+                return true;
+            }
+                
 
-					else if (cityData.hour>=3 && isEmployee()) {
-
-						//print(getJob());
-						WakeUp();
-						return true;
-					}
-					else if (cityData.hour>=6) {
-						WakeUp();
-						return true;
-					}
-					return false; //put the agent thread back to sleep
-				}
-				else {
-					if(cityData.hour >= 2 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
-						//delete the && false when the actual rule is implemented
-						WakeUp();
-						return true;
-					}
-
-					else if (cityData.hour>=5 && isEmployee()) {
-
-						//print(getJob());
-						WakeUp();
-						return true;
-					}
-					else if (cityData.hour>=8) {
-						WakeUp();
-						return true;
-					}
-					return false; //put the agent thread back to sleep
-				}
-			}		
-
-			if (tiredLevel >= TIRED) {
-				goToSleep();
-				return false; //intentional because the thread is being out to sleep
-			}
-			
-			if (home instanceof Apartment && rentDue && !home.manager.equals(this)) {
-				payRent();
-				return true;
-			}
-
-			if (hungerLevel >= HUNGRY) {
-				int num = (int) (Math.random() * 2);
-				if (num == 0) {
-					makeFood();
-					return true;
-				}
-				if (num == 1) {
-					leaveHome();
-					return true;
-				}
-			}
-
-			if (goToWork && jobBuilding != null && (!home.manager.equals(this) && home instanceof Apartment)) {
-				leaveHome();
-				return true;
-			}
-
-			if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
-				// TODO
-				payRent();
-				return true;
-			}
-
-			if (homeState == HomeState.onCouch) {
-				goToCouch();
-				return true;
-			}
-			if (homeState == HomeState.none) {
-				if (home instanceof Apartment && home.manager.equals(this) && lowInventory()) {
-					leaveHome();
-					return true;
-				}
-				else if (home instanceof Apartment && home.manager.equals(this)) {
-					goToCouch();
-					return true;
-				}
-				else {
-					leaveHome();
-					return true;
-				}
-			}
-		}
-		case leaveHome: {
-			//personGui.DoGoToEntrance();
-			leaveHome();
-			return true;
-		}
-		case goToRestaurant: {
-			goToRestaurant();
-			return true;
-		}
-		case goHome: {
-			goHome();
-			return true;
-		}
-		case goToBank: {
-			goToBank();
-			return true;
-		}
-		case goToMarket: {
-			goToMarket();
-			return true;
-		}
-
-		case doingNothing: {
-			//Decide what the next BigState will be based on current parameters
-						
-			if(goToWork && jobBuilding != null) {
-				destinationBuilding = jobBuilding;
-				desiredRole = job;
-
-				if(destinationBuilding.type == BuildingType.market) {
-					bigState = BigState.goToMarket;
-					return true;
-				}
-				else if(destinationBuilding.type == BuildingType.bank) {
-					bigState = BigState.goToBank;
-					return true;
-				}
-				else if(destinationBuilding.type == BuildingType.restaurant) {
-					bigState = BigState.goToRestaurant;
-					return true;
-				}
-			}
-
-			if(hungerLevel >= STARVING) {
-				bigState = BigState.goToRestaurant;
-				desiredRole = "Customer";
-				if(!goToWork)
-					System.out.println(name + " " + job + " " + desiredRole);
-				return true;
-			}
-			if(cash <= LOWMONEY) {
-				bigState = BigState.goToBank;
-				desiredRole = "Customer";
-				double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100; 
-				bankInfo.depositAmount = - withdrawAmount;
-				if(!goToWork)
-					System.out.println(name + " " + job + " " + desiredRole);
-				return true;
-			}
-
-			if(cash >= HIGHMONEY){
-				bigState = BigState.goToBank;
-				desiredRole = "Customer";
-				bankInfo.depositAmount = cash - HIGHMONEY;
-				return true;
-			}
-			// Inventory of food stuff
-			if(lowInventory()) {
-				bigState = BigState.goToMarket;
-				desiredRole = "MarketCustomer";
-				if(!goToWork)
-					System.out.println(name + ": " + job + " " + desiredRole);
-				return true;
-			}
-
-			if(hungerLevel >= HUNGRY) {
-				bigState = BigState.goToRestaurant;
-				desiredRole = "Customer";
-				if(!goToWork)
-					System.out.println(name + ": " + job + " " + desiredRole);
-				return true;
-			}
-
-			bigState = BigState.goHome;
-			homeState = HomeState.onCouch;
-			if(!goToWork)
-				System.out.println(name + ": " + " " + job + " " + bigState);
-			return true;
-		}
 
 		}
 
@@ -500,9 +510,9 @@ public class PersonAgent extends Agent
 		}
 	}
     //TODO
-	private void payRent() {
+	private void payRent(int bankNumber) {
 		Apartment a = (Apartment) home;
-		bank.directDeposit(this, a.manager, rent);
+		banks.get(bankNumber).directDeposit(this, a.manager, rent);
 		rentDue = false;
 	}
     
@@ -786,8 +796,8 @@ public class PersonAgent extends Agent
 	}
     
 	protected void goToBank() {
-        
-		destinationBuilding = cityData.bank;
+        int bankNumber = 0;
+		destinationBuilding = cityData.banks.get(bankNumber);
 		GoToDestination();
         
 		personGui.DoGoToBuilding(18);
@@ -806,7 +816,8 @@ public class PersonAgent extends Agent
 	}
     
 	protected void goToMarket() {
-		destinationBuilding = cityData.market;
+		int marketNumber = 0;
+		destinationBuilding = cityData.markets.get(0);
         
 		GoToDestination();
         

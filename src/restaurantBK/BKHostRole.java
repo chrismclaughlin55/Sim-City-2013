@@ -11,6 +11,8 @@ import restaurantBK.gui.RestaurantPanel;
 import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Host;
 import restaurantBK.interfaces.Waiter;
+import trace.AlertLog;
+import trace.AlertTag;
 
 /**
  * Restaurant Host Agent
@@ -136,6 +138,7 @@ public class BKHostRole extends Role implements Host {
 				if(wait.w==w)
 				{
 					print("Can't let you go on break");
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_HOST, this.getName(), "Can't let you go on break");
 					wait.ws=WaiterState.cantBreak;	
 				}
 			}
@@ -155,6 +158,7 @@ public class BKHostRole extends Role implements Host {
 			for(myWaiter wait: myWaiters) {
 				if(wait.w==w) {
 					print("Have a nice break?");
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_HOST, this.getName(), "Have a nice break?");
 					wait.ws=WaiterState.working;
 					breakers--;
 					stateChanged();
@@ -187,6 +191,7 @@ public class BKHostRole extends Role implements Host {
 	@Override
 	public void msgNoTablesImLeaving(Customer c) {
 		print("Sorry, come back another time!");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_HOST, this.getName(), "Sorry, come back another time!");
 		waitingCustomers.remove(c);
 	}
 /*	public void msgAtTable() {//from animation
@@ -239,6 +244,7 @@ public class BKHostRole extends Role implements Host {
 		}
 		if(ot==opentables.full) {
 			print("Sorry, you're going to have to wait");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_HOST, this.getName(), "Sorry, you're going to have to wait");
 			ot=opentables.waitingToOpen;
 			waitingCustomers.get(waitingCustomers.size()-1).msgWouldYouLikeToWait(waitingCustomers.size());
 			

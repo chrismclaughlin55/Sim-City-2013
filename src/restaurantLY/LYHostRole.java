@@ -3,6 +3,8 @@ package restaurantLY;
 import agent.Agent;
 import restaurantLY.gui.RestaurantPanel;
 import restaurantLY.interfaces.*;
+import trace.AlertLog;
+import trace.AlertTag;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -87,12 +89,14 @@ public class LYHostRole extends Role implements Host {
 
 	public void msgTableIsFree(int tableNumber) {
 		print("Customer leaving table " + (tableNumber+1));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_HOST, this.getName(), "Customer leaving table " + (tableNumber+1));
 		tables[tableNumber].isOccupied = false;
 		stateChanged();
 	}
 
 	public void msgAskForBreak(Waiter waiter) {
 		print(waiter.getName() + " asking for break");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_HOST, this.getName(), waiter.getName() + " asked for break");
 		synchronized (myWaiters) {
 			for (myWaiter mw : myWaiters) {
 				if (mw.waiter.equals(waiter)) {
@@ -282,6 +286,7 @@ public class LYHostRole extends Role implements Host {
 
 	private void callWaiterToSeatCustomer(myWaiter waiter, myCustomer customer, int tableNumber, int custNumber) {
 		print("Calling " + waiter.waiter + " to seat " + customer.customer + " at table " + (tableNumber+1));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_HOST, this.getName(), "Calling " + waiter.waiter + " to seat " + customer.customer + " at table " + (tableNumber+1));
 		waiter.waiter.msgSitAtTable(customer.customer, tableNumber, custNumber);
 		tables[tableNumber].isOccupied = true;
 		try {
@@ -307,11 +312,13 @@ public class LYHostRole extends Role implements Host {
 		}
 		if (workingWaiter > 1) {
 			print(waiter.waiter.getName() + " on break");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_HOST, this.getName(), "Allow "+waiter.waiter.getName()+" to break");
 			waiter.waiter.msgDecisionOnBreak(true);
 			waiter.working = false;
 		}
 		else {
 			print(waiter.waiter.getName() + " cannot go on break");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_HOST, this.getName(), "Deny "+waiter.waiter.getName()+" to break");
 			waiter.waiter.msgDecisionOnBreak(false);
 			waiter.working = true;
 		}

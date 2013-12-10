@@ -153,14 +153,20 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		
 		Bank b1 = new Bank(200, 420, WIDTH, HEIGHT,"bank", BuildingType.bank, mainGui, cd);
 		cd.buildings.add(b1);
-		cd.bank = b1;
+		cd.banks.add(b1);
 		//cd.bank.test();
 
 		Market m = new Market(340, 420, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
 		cd.buildings.add(m);
-		cd.market =  m;
+		cd.markets.add(m);
 		
+		Bank b2 = new Bank(20, 680, WIDTH, HEIGHT, "bank2", BuildingType.bank, mainGui, cd);
+		cd.buildings.add(b2);
+		cd.banks.add(b2);
 		
+		Market m2 = new Market(520, 680, WIDTH, HEIGHT, "market2", BuildingType.market, mainGui, cd);
+		cd.buildings.add(m2);
+		cd.markets.add(m2);
         
         //create bus stop for restaurants/market/bank
 		BusStopAgent bs12 = new BusStopAgent(200-20-20, 140+40+20, cd);
@@ -216,6 +222,9 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(17).setBusStop(cd.busStops.get(6), 1);
 		cd.buildings.get(18).setBusStop(cd.busStops.get(2), 1);
 		cd.buildings.get(19).setBusStop(cd.busStops.get(7), 1);
+		
+		cd.buildings.get(20).setBusStop(cd.busStops.get(3), 1);
+		cd.buildings.get(21).setBusStop(cd.busStops.get(5), 1);
 
 		//set bus stop for route 2
 		/*cd.buildings.get(0).setBusStop(cd.busStops.get(12), 2);
@@ -242,6 +251,32 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		
 		//cd.setBusStopRoute(1);
 		//cd.setBusStopRoute(2);
+		
+		
+		//Set closest RGrid (to take car) for each building
+		cd.buildings.get(0).setClosestRGrid((RGrid) cd.cityGrid[7][11]);
+		cd.buildings.get(1).setClosestRGrid((RGrid) cd.cityGrid[7][17]);
+		cd.buildings.get(2).setClosestRGrid((RGrid) cd.cityGrid[7][25]);
+		cd.buildings.get(3).setClosestRGrid((RGrid) cd.cityGrid[7][31]);
+		cd.buildings.get(4).setClosestRGrid((RGrid) cd.cityGrid[10][33]);
+		cd.buildings.get(5).setClosestRGrid((RGrid) cd.cityGrid[17][33]);
+		cd.buildings.get(6).setClosestRGrid((RGrid) cd.cityGrid[24][31]);
+		cd.buildings.get(7).setClosestRGrid((RGrid) cd.cityGrid[24][25]);
+		cd.buildings.get(8).setClosestRGrid((RGrid) cd.cityGrid[24][17]);
+		cd.buildings.get(9).setClosestRGrid((RGrid) cd.cityGrid[24][11]);
+		cd.buildings.get(10).setClosestRGrid((RGrid) cd.cityGrid[17][5]);
+		cd.buildings.get(11).setClosestRGrid((RGrid) cd.cityGrid[10][5]);
+		cd.buildings.get(12).setClosestRGrid((RGrid) cd.cityGrid[8][11]);
+		cd.buildings.get(13).setClosestRGrid((RGrid) cd.cityGrid[23][11]);
+		cd.buildings.get(14).setClosestRGrid((RGrid) cd.cityGrid[8][17]);
+		cd.buildings.get(15).setClosestRGrid((RGrid) cd.cityGrid[23][17]);
+		cd.buildings.get(16).setClosestRGrid((RGrid) cd.cityGrid[8][31]);
+		cd.buildings.get(17).setClosestRGrid((RGrid) cd.cityGrid[23][31]);
+		cd.buildings.get(18).setClosestRGrid((RGrid) cd.cityGrid[8][25]);
+		cd.buildings.get(19).setClosestRGrid((RGrid) cd.cityGrid[23][25]);
+		cd.buildings.get(20).setClosestRGrid((RGrid) cd.cityGrid[7][33]);
+		cd.buildings.get(21).setClosestRGrid((RGrid) cd.cityGrid[24][33]);
+		
 
 		//Set apartment parameters
 		for (int i = 0; i < 4; i++) {
@@ -258,21 +293,37 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.buildings.get(i).setType(BuildingType.restaurant);
 			cd.buildings.get(i).setName("restaurant"+(i-11));
 			cd.buildings.get(i).setBuildingNumber(i);
-			cd.bank.addBusinessAccount(cd.buildings.get(i), 5000.0);
+			cd.banks.get(0).addBusinessAccount(cd.buildings.get(i), 5000.0);
+			cd.banks.get(1).addBusinessAccount(cd.buildings.get(i), cd.banks.get(0).BusinessAccounts.get(cd.buildings.get(i)));
 		}
 
 		//Set bank parameters
 		cd.buildings.get(18).setType(BuildingType.bank);
 		cd.buildings.get(18).setName("bank");
 		cd.buildings.get(18).setBuildingNumber(18);
-		cd.bank.addBusinessAccount(cd.buildings.get(18), 15000.0);
+		cd.banks.get(0).addBusinessAccount(cd.buildings.get(18), 15000.0);
+		cd.banks.get(1).addBusinessAccount(cd.buildings.get(18), cd.banks.get(0).BusinessAccounts.get(cd.buildings.get(18)));
+		cd.buildings.get(20).setType(BuildingType.bank);
+		cd.buildings.get(20).setName("bank2");
+		cd.buildings.get(20).setBuildingNumber(20);
+		cd.banks.get(0).addBusinessAccount(cd.buildings.get(20), 15000.0);
+		cd.banks.get(1).addBusinessAccount(cd.buildings.get(20), cd.banks.get(0).BusinessAccounts.get(cd.buildings.get(20)));
 		//Set market parameters
 		cd.buildings.get(19).setType(BuildingType.market);
 		cd.buildings.get(19).setName("market");
 		cd.buildings.get(19).setBuildingNumber(19);
 
-		cd.market = (Market) cd.buildings.get(19);
-		cd.bank.addBusinessAccount(cd.buildings.get(19), 5000.0);
+		cd.markets.add((Market) cd.buildings.get(19));
+		cd.banks.get(0).addBusinessAccount(cd.buildings.get(19), 5000.0);
+		cd.banks.get(1).addBusinessAccount(cd.buildings.get(19), cd.banks.get(0).BusinessAccounts.get(cd.buildings.get(19)));
+		
+		cd.buildings.get(21).setType(BuildingType.market);
+		cd.buildings.get(21).setName("market2");
+		cd.buildings.get(21).setBuildingNumber(21);
+
+		cd.markets.add((Market) cd.buildings.get(21));
+		cd.banks.get(0).addBusinessAccount(cd.buildings.get(21), 5000.0);
+		cd.banks.get(1).addBusinessAccount(cd.buildings.get(21), cd.banks.get(0).BusinessAccounts.get(cd.buildings.get(21)));
 
 		//setBackground(Color.WHITE);
 		cd.globalTimer = new Timer(GLOBALINTERVAL,(ActionListener) this);
@@ -351,11 +402,15 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		ImageIcon bank = new ImageIcon("res/bank.png");
 		g2.drawImage(bank.getImage(), (int) cd.buildings.get(18).x, (int) cd.buildings.get(18).y, null);
 		g2.drawString(cd.buildings.get(18).name, (int) cd.buildings.get(18).x, (int) cd.buildings.get(18).y+10);
+		g2.drawImage(bank.getImage(), (int) cd.buildings.get(20).x, (int) cd.buildings.get(20).y, null);
+		g2.drawString(cd.buildings.get(20).name, (int) cd.buildings.get(20).x, (int) cd.buildings.get(20).y+10);
 
 		//Draw market
 		ImageIcon market = new ImageIcon("res/market.png");
 		g2.drawImage(market.getImage(), (int) cd.buildings.get(19).x, (int) cd.buildings.get(19).y, null);
 		g2.drawString(cd.buildings.get(19).name, (int) cd.buildings.get(19).x, (int) cd.buildings.get(19).y+10);
+		g2.drawImage(market.getImage(), (int) cd.buildings.get(21).x, (int) cd.buildings.get(21).y, null);
+		g2.drawString(cd.buildings.get(21).name, (int) cd.buildings.get(21).x, (int) cd.buildings.get(21).y+10);
 
 		//Draw road
 		ImageIcon road1 = new ImageIcon("res/road1.png");

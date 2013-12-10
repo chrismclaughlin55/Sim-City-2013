@@ -19,16 +19,16 @@ public class TellerRole extends Role implements Teller{
 	BankManagerRole bm;
 	CustInfo currentCustInfo;
 	enum State {available, waitingForInfo, waitingForResponse, doneWithCustomer, customerDecidingLoan}
-	enum Event {none, recievedHello, recievedInfo, recievedDeposit,updatedBank,loanReq, iTakeIt}
+	enum Event {none, recievedHello, recievedInfo, recievedDeposit,updatedBank,loanReq, iTakeIt, gotFired}
 	State state;
 	Event event;
 	boolean wantToLeave = false;
 	private TellerGui gui;
 	private boolean bankRobbery = false;
 	private BankRobber bankRobber;
+	private boolean fired = false;
 
 	private Semaphore atDest = new Semaphore(0 ,true);
-
 	private Semaphore atHome = new Semaphore(0, true);
 
 
@@ -64,6 +64,12 @@ public class TellerRole extends Role implements Teller{
 		this.bm = bm;
 		stateChanged();
 	}
+	
+	public void msgYoureFired() {
+		event = Event.gotFired;
+		stateChanged();
+	}
+	
 	@Override
 	public void msgHello(CustInfo c) {
 		currentCustInfo = c;
@@ -115,6 +121,11 @@ public class TellerRole extends Role implements Teller{
 			return true;
 		}
 		
+		if (event == Event.gotFired) {
+			leaveJob();
+			return true;
+		}
+		
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;
@@ -155,12 +166,10 @@ public class TellerRole extends Role implements Teller{
 	private void ask() {
 		currentCustInfo.customer.msgWhatWouldYouLike();
 		state = State.waitingForResponse;
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Serving "+currentCustInfo.custName);
 		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Serving "+currentCustInfo.custName);
 	}
 
 	private void getInfo() {
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Getting info for "+currentCustInfo.custName);
 		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Getting info for "+currentCustInfo.custName);
 		bm.msgGiveMeInfo(currentCustInfo.customer, this);
 		state = State.waitingForInfo;
@@ -173,15 +182,12 @@ public class TellerRole extends Role implements Teller{
 	}
 
 	private void payTheMan() {
-		System.err.println("IM BEING ROBBED");
-		AlertLog.getInstance().logError(AlertTag.BANK, this.name, "IM BEING ROBBED");
+		bankRobbery = false;
 		AlertLog.getInstance().logError(AlertTag.BANK_TELLER, this.name, "IM BEING ROBBED");
 		bankRobber.msgPleaseDontShoot(400);
-		bankRobbery = false;
 	}
 	
 	private void processLoan() {
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Processing loan for "+currentCustInfo.custName);
 		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Processing loan for "+currentCustInfo.custName);
 		if(currentCustInfo.loanRequestAmount>currentCustInfo.loanApproveAmount)
 			currentCustInfo.customer.msgCanDoThisAmount(currentCustInfo.loanApproveAmount);
@@ -193,7 +199,6 @@ public class TellerRole extends Role implements Teller{
 	private void processOrder() {
 		//
 		print("processing order for "+currentCustInfo.custName);
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Processing order for "+currentCustInfo.custName);
 		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Processing order for "+currentCustInfo.custName);
 		bm.msgUpdateInfo(currentCustInfo, this);
 		currentCustInfo.customer.msgHaveANiceDay(currentCustInfo.depositAmount);
@@ -202,7 +207,22 @@ public class TellerRole extends Role implements Teller{
 	}
 	public void msgGuiIsAtDest() {
 		atDest.release();
-
+	}
+	
+	private void leaveJob() {
+		event = Event.none;
+		bm.msgLeavingNow(this);
+		gui.goTo(9);
+		try {
+			atDest.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//gui.setPresent(false);
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();
 	}
 
 	private void guiGoHere(int place) {

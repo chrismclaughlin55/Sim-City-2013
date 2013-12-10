@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import market.MyOrder.OrderState;
 import market.gui.CustomerGui;
 import market.interfaces.MarketCustomer;
@@ -123,6 +125,7 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	}
 
 	private void Order(){
+		AlertLog.getInstance().logMessage(AlertTag.MARKET_CUSTOMER, this.getName(), "Making order of "+orders);
 		gui.DoGoToEmployee(employee);
 		try {
 			atDesk.acquire();
@@ -135,6 +138,7 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 
 
 	private void PayBill() {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET_CUSTOMER, this.getName(), "Paying the bill of "+amountDue);
 		state = customerState.donePaying;
 		//person.cash -= amountDue;
 		employee.msgHereIsPayment(amountDue);
@@ -144,6 +148,7 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 	}
 
 	private void LeaveMarket() {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET_CUSTOMER, this.getName(), "Leaving the market");
 		state = customerState.left;
 		gui.DoLeaveMarket();
 		try {

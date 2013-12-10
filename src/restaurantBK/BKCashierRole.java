@@ -12,6 +12,7 @@ import agent.Agent;
 
 
 
+
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -23,6 +24,8 @@ import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Market;
 import restaurantBK.interfaces.Waiter;
 import restaurantBK.test.mock.EventLog;
+import trace.AlertLog;
+import trace.AlertTag;
 import city.PersonAgent;
 
 /**
@@ -219,17 +222,20 @@ public class BKCashierRole extends Role implements Cashier {
 	private void PayForShipment(Shipment s) {
 		if(capital>=s.bill) {
 			print("Paying the market bill");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CASHIER, this.getName(), "Paying the market bill");
 			capital-=s.bill;
 			s.m.msgPayingMarketBill(this, s.bill);
 		}
 		else {
 			print("Can't pay the market right now");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CASHIER, this.getName(), "Can't pay the market right now");
 			s.ss=ShipmentState.cantpay;
 		}
 	}
 	private void Transaction(Check ch) {
 		if(ch.moneyGiven<ch.price) {
 			print("PUNK, YOU OWE ME MONEY NEXT TIME YOU COME BACK");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CASHIER, this.getName(), "PUNK, YOU OWE ME MONEY NEXT TIME YOU COME BACK");
 			oweme.put(ch.c,ch.price-ch.moneyGiven);
 			ch.c.msgAllPaidPlusChange(0);
 			ch.chs=CheckState.paid;
@@ -239,6 +245,7 @@ public class BKCashierRole extends Role implements Cashier {
 			ch.c.msgAllPaidPlusChange(ch.price-ch.moneyGiven);
 			capital+=ch.price;
 			print("You're all set");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CASHIER, this.getName(), "You're all set");
 			if(oweme.containsKey(ch.c)) {
 				oweme.remove(ch.c);
 			}

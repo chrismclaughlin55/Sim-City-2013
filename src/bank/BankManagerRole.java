@@ -130,6 +130,14 @@ public class BankManagerRole extends Role implements BankManager {
 		//			// TODO Auto-generated catch block
 		//			e.printStackTrace();
 		//		}
+		
+		if (person.cityData.hour == 15 && person.cityData.increment == 0) {
+			if (tellers.size() > 1) {
+				fireTeller(tellers.get(tellers.size() - 1));
+				return true;
+			}
+		}
+		
 		for( myTeller t: tellers){
 			if(t.state == tellerState.available && getLine().size()>0){
 				helpCustomer(getLine().remove(0), t);
@@ -209,13 +217,16 @@ public class BankManagerRole extends Role implements BankManager {
 		leave = false;
 		bank.payPerson(bank, me, 300);
 		print("I get paid 300 for today");
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Leaving. I get paid 300 for today");
 		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Leaving. I get paid 300 for today");
 		AlertLog.getInstance().logInfo(AlertTag.BANK, bank.name, "Bank is closed");
 		bank.setClosed(person);
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();
+	}
+	
+	private void fireTeller(myTeller t) {
+		t.t.msgYoureFired();
 	}
 
 	private void helpCustomer(CustomerRole c, myTeller t) {
@@ -227,7 +238,6 @@ public class BankManagerRole extends Role implements BankManager {
 
 	private void sendInfo(myTeller t) {
 		print("sending info to "+t.t.getName());
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Sending info to "+t.t.getName());
 		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Sending info to "+t.t.getName());
 		if(bank.CustAccounts.get(t.c.getPerson()) != null )
 			t.custInfo = bank.CustAccounts.get(t.c.getPerson());
@@ -238,7 +248,6 @@ public class BankManagerRole extends Role implements BankManager {
 
 	private void updatedb(myTeller t) {
 		print("updating db for "+t.custInfo.custName);
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Updating db for "+t.custInfo.custName);
 		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Updating db for "+t.custInfo.custName);
 		bank.CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
 		t.state = tellerState.available;
