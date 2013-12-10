@@ -18,24 +18,24 @@ public class CMCookRole extends Role{
 	private enum MarketState { notHave, have};
 	private enum mstate {needspayment, good};
 	private enum OrderState {badOrder, pending, cooking,ready, done };
-
+	private boolean leave = false;
 	private Timer timer= new Timer();
 	private Map<String , Food> foodInventory = new HashMap<String , Food >();
-	
+
 	private Menu pricelookup = new Menu();
 	private CMCashierRole cashier;
 	private class myMarket{
 		public mstate state;
 		public double bill;
-//		public MarketAgent m;
-//		public HashMap<String, MarketState> inventory = new HashMap<String, MarketState>();
-//		public myMarket(MarketAgent m){
-//			this.state = mstate.good;
-//			this.m = m;
-//			for(String s : foodInventory.keySet()){
-//				this.inventory.put(s, MarketState.have);
-//			}
-//		}
+		//		public MarketAgent m;
+		//		public HashMap<String, MarketState> inventory = new HashMap<String, MarketState>();
+		//		public myMarket(MarketAgent m){
+		//			this.state = mstate.good;
+		//			this.m = m;
+		//			for(String s : foodInventory.keySet()){
+		//				this.inventory.put(s, MarketState.have);
+		//			}
+		//		}
 	}
 	private class Order{
 		public CMWaiterRole w;
@@ -74,13 +74,13 @@ public class CMCookRole extends Role{
 	public CMCookRole(PersonAgent person){
 		super(person);
 		this.name = name;
-
+		print("cook created");
 		foodInventory.put("chicken", new Food("chicken", 15));
 		foodInventory.put("steak", new Food("steak", 20));
 		foodInventory.put("pasta", new Food("pasta", 35));
 		foodInventory.put("pizza", new Food("pizza", 30));
 		foodInventory.put("donuts", new Food("donuts", 20));
-		
+
 	}
 	private void cookIt(Order o){
 		//DoCooking(0); TODO
@@ -109,26 +109,26 @@ public class CMCookRole extends Role{
 	}
 
 
-//	private myMarket findMarket(MarketAgent m){
-//		for(myMarket mm : Markets){
-//			if(mm.m.equals(m)){
-//				return mm;
-//				
-//			}
-//		}
-//		return null;
-//	}
-//	private void orderFromMarket(String s) {
-//		for( myMarket m : Markets){
-//			if(m.inventory.get(s) == MarketState.have){
-//				m.m.fillOrder(this, new ArrayList<String>(Arrays.asList(s)));
-//				
-//				stateChanged();
-//				return;
-//			}
-//		}
-//
-//	}
+	//	private myMarket findMarket(MarketAgent m){
+	//		for(myMarket mm : Markets){
+	//			if(mm.m.equals(m)){
+	//				return mm;
+	//				
+	//			}
+	//		}
+	//		return null;
+	//	}
+	//	private void orderFromMarket(String s) {
+	//		for( myMarket m : Markets){
+	//			if(m.inventory.get(s) == MarketState.have){
+	//				m.m.fillOrder(this, new ArrayList<String>(Arrays.asList(s)));
+	//				
+	//				stateChanged();
+	//				return;
+	//			}
+	//		}
+	//
+	//	}
 	private void badOrder(Order o) {
 		o.w.msgBadOrder(o.c);
 		Orders.remove(o);
@@ -150,7 +150,7 @@ public class CMCookRole extends Role{
 			foodInventory.get(choice).inventory--;
 			if(foodInventory.get(choice).inventory <=2)
 
-			print(choice + " left: " + foodInventory.get(choice).inventory);
+				print(choice + " left: " + foodInventory.get(choice).inventory);
 		}
 		else{ 
 			print(choice + " inventory empty");
@@ -158,7 +158,7 @@ public class CMCookRole extends Role{
 			Orders.add(new Order(w, choice, tablenum, c, OrderState.badOrder));
 			if(foodInventory.get(choice).inventory <=2)
 
-			print(choice + " " + foodInventory.get(choice).inventory);
+				print(choice + " " + foodInventory.get(choice).inventory);
 		}
 		stateChanged();
 	}
@@ -166,32 +166,32 @@ public class CMCookRole extends Role{
 		o.state = OrderState.ready;
 		stateChanged();
 	}
-//	public void msgIDontHave(MarketAgent marketAgent, String choice) {
-//		myMarket m = findMarket(marketAgent);
-//		m.inventory.put(choice, MarketState.notHave);
-//		stateChanged();
-//	}
-//	public void msgHereIsOrder(String choice, Integer i, MarketAgent m) {
-//		this.foodInventory.get(choice).inventory+=i;
-//		print("recieved "+i+" more "+choice);
-//		if(i >= 5){
-//
-//		}
-//		else{ 
-//
-//			myMarket mm = findMarket(m);
-//			mm.inventory.put(choice, MarketState.notHave);
-//		}
-//		myMarket mm = findMarket(m);
-//		mm.state = mstate.needspayment;
-//		mm.bill = pricelookup.Menu.get(choice) * i / 2;
-//		print("cashier owes "+mm.m.getName()+" "+mm.bill+ " dollars");
-//		stateChanged();
-//	}
-//	public void msgAddMarket(MarketAgent m){
-//		Markets.add(new myMarket(m));
-//		stateChanged();
-//	}
+	//	public void msgIDontHave(MarketAgent marketAgent, String choice) {
+	//		myMarket m = findMarket(marketAgent);
+	//		m.inventory.put(choice, MarketState.notHave);
+	//		stateChanged();
+	//	}
+	//	public void msgHereIsOrder(String choice, Integer i, MarketAgent m) {
+	//		this.foodInventory.get(choice).inventory+=i;
+	//		print("recieved "+i+" more "+choice);
+	//		if(i >= 5){
+	//
+	//		}
+	//		else{ 
+	//
+	//			myMarket mm = findMarket(m);
+	//			mm.inventory.put(choice, MarketState.notHave);
+	//		}
+	//		myMarket mm = findMarket(m);
+	//		mm.state = mstate.needspayment;
+	//		mm.bill = pricelookup.Menu.get(choice) * i / 2;
+	//		print("cashier owes "+mm.m.getName()+" "+mm.bill+ " dollars");
+	//		stateChanged();
+	//	}
+	//	public void msgAddMarket(MarketAgent m){
+	//		Markets.add(new myMarket(m));
+	//		stateChanged();
+	//	}
 	public String getName() {
 		return name;
 	}
@@ -224,20 +224,34 @@ public class CMCookRole extends Role{
 				return true;
 			}
 		}
-
+		if(leave){
+			leave();
+			return true;
+		}
 		return false;
 	}
-//	private void tellCashier(myMarket mm) {
-//		cashier.msgPayThisMarket(mm.m, mm.bill);
-//		print("telling cashier to pay");
-//		mm.bill = 0;
-//		mm.state = mstate.good;
-//	}
+	//	private void tellCashier(myMarket mm) {
+	//		cashier.msgPayThisMarket(mm.m, mm.bill);
+	//		print("telling cashier to pay");
+	//		mm.bill = 0;
+	//		mm.state = mstate.good;
+	//	}
 	public Map<String, Food> getFoodInventory() {
 		return foodInventory;
 	}
 	public void setFoodInventory(Map<String, Food> foodInventory) {
 		this.foodInventory = foodInventory;
+	}
+	private void leave() {
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
+		leave = false;
+	}
+	public void msgLeave() {
+		leave = true;
+		stateChanged();
+
 	}
 
 

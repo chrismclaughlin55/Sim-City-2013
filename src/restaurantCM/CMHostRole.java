@@ -2,13 +2,12 @@ package restaurantCM;
 
 import agent.Agent;
 import restaurantCM.gui.CMHostGui;
+import restaurantCM.gui.CMRestaurantBuilding;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-import city.PersonAgent;
-import city.Role;
-
+import city.*;
 /** 
  * Restaurant Host Agent
  */
@@ -24,18 +23,21 @@ public class CMHostRole extends Role  {
 	public List<CMCustomerRole> waitingCustomers	= new ArrayList<CMCustomerRole>();
 	public Collection<Table> tables;
 	public List<myWait> Waiters = new ArrayList<myWait>();
-	enum waiterState { noCusts,someCusts, tablesFull, onBreak, noBreak, wantsBreak};
+	enum waiterState { noCusts,someCusts, tablesFull, onBreak, noBreak, wantsBreak, leave};
+
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
-
 	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
 	private Semaphore atLobby = new Semaphore(0,true);
-	public CMHostGui hostGui = null;
-
-	public CMHostRole(PersonAgent person) {
+	public CMHostGui hostGui;
+	public CMCookRole cook;
+	public CMCashierRole cashier;
+	public CMRestaurantBuilding building;
+	public CMHostRole(PersonAgent person, CMRestaurantBuilding b) {
 		super(person);
 		print("host created");
+		this.building = b;
 		this.name = name;
 		// make some tables
 		tables = new ArrayList<Table>(NTABLES);
@@ -74,8 +76,12 @@ public class CMHostRole extends Role  {
 	// Messages
 
 	public void msgIWantFood(CMCustomerRole cust) {
+		if(waitingCustomers.size()>2){
 		waitingCustomers.add(cust);
 		print("waiting customer "+ cust.getCustomerName());
+		}
+		else
+			cust.msgLeave();
 		stateChanged();
 	}
 
@@ -145,6 +151,34 @@ public class CMHostRole extends Role  {
 
 
 		}
+		if(person.cityData.hour > CMRestaurantBuilding.CLOSINGTIME){
+			for( myWait w: Waiters){
+				boolean leave = true;
+				for(myCust c: w.w.Customers){
+					if(c.state!= myCust.AgentState.left )
+						leave = false;
+					break;
+				}
+				if(leave){
+					w.w.msgLeave();
+					w.state = waiterState.leave;
+				}
+			}
+			boolean leave = true;
+			for( myWait w: Waiters){
+				if(w.state != waiterState.leave){
+					leave = false;
+					break;
+				}
+			}
+			
+			if(leave){
+				if(cook != null){  cook.msgLeave(); cook = null;}
+				if(cashier != null){ cashier.msgLeave(); cashier = null;}
+			}
+			if(cashier == null && cook == null && leave)
+				leave();
+		}
 		return false;
 		//we have tried all our rules and found
 		//nothing to do. So return false to main loop of abstract agent
@@ -152,7 +186,6 @@ public class CMHostRole extends Role  {
 	}
 
 	// Actions
-
 	private void seatCustomer(CMCustomerRole customer, Table table) {
 		boolean satCust = false;
 		while(!satCust){
@@ -179,6 +212,14 @@ public class CMHostRole extends Role  {
 
 
 	//utilities
+	private void leave() {
+		hostGui.setPresent(false);
+		print("leave now");
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
+		building.setClosed(person);
+	}
 	private myWait findWaiter(CMWaiterRole W){
 		for(myWait w: Waiters){
 			if(w.w.equals(W))

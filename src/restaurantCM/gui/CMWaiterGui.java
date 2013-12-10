@@ -44,7 +44,7 @@ public class CMWaiterGui implements Gui{
 	public static final int yTable11 = 340;
 	public static final int xTable12 = 160;
 	public static final int yTable12 = 400;
-
+	public boolean atDest = false;
 	public CMWaiterGui(CMWaiterRole agent, int x, int y) {
 		this.agent = agent;
 		this.xPos = x;
@@ -63,47 +63,71 @@ public class CMWaiterGui implements Gui{
 			yPos++;
 		else if (yPos > yDestination)
 			yPos--;
-		if(xPos == xTable1+20 && yPos == yTable1-20){
-			agent.msgDoneAtTable();
+		//		if(xPos == xTable1+20 && yPos == yTable1-20){
+		//			agent.msgDoneAtTable();
+		//		}
+		//		if(xPos == xTable2+20 && yPos == yTable2-20){
+		//			agent.msgDoneAtTable();
+		//		}
+		//		if(xPos == xTable3+20 && yPos == yTable3-20){
+		//			agent.msgDoneAtTable();
+		//		}
+		//		if(xPos == xTable4+20 && yPos == yTable4-20){
+		//			agent.msgDoneAtTable();
+		//		}
+		//		if(xPos == xTable5+20 && yPos == yTable5-20){
+		//			agent.msgDoneAtTable();
+		//		}
+		//		if(xPos == xTable6+20 && yPos == yTable6-20){
+		//			agent.msgDoneAtTable();
+		//		}
+		//		if(xPos == xTable7+20 && yPos == yTable7-20){
+		//			agent.msgDoneAtTable();
+		//		}
+		//		if(xPos == xTable8+20 && yPos == yTable8-20){
+		//			agent.msgDoneAtTable();
+		//		}
+		//		if(xPos == xTable9+20 && yPos == yTable9-20){
+		//			agent.msgDoneAtTable();
+		//		}
+		//		if(xPos == xTable10+20 && yPos == yTable10-20){
+		//			agent.msgDoneAtTable();
+		//		}
+		//		if(xPos == xTable11+20 && yPos == yTable11-20){
+		//			agent.msgDoneAtTable();
+		//		}	
+		//		if(xPos == xTable12+20 && yPos == yTable12-20){
+		//			agent.msgDoneAtTable();
+		//		}	        
+		//		if(xPos == xLobby && yPos == yLobby){
+		//			agent.msgAtLobby();
+		//		}
+		//		if(xPos == xHome && yPos == yHome){
+
+
+		if(xPos == xCook && yPos == yCook){
+			if(!atDest){
+				atDest = true;
+				agent.msgAtCook();
+			}
 		}
-		if(xPos == xTable2+20 && yPos == yTable2-20){
-			agent.msgDoneAtTable();
+		else if(xPos == xLobby && yPos == yLobby){
+			if(!atDest){
+				atDest = true;
+				agent.msgAtLobby();
+			}
 		}
-		if(xPos == xTable3+20 && yPos == yTable3-20){
-			agent.msgDoneAtTable();
+		else if(xPos == xHome && yPos == yHome){
+			if(!atDest){
+				atDest = true;
+				agent.msgAtHome();
+			}
 		}
-		if(xPos == xTable4+20 && yPos == yTable4-20){
-			agent.msgDoneAtTable();
-		}
-		if(xPos == xTable5+20 && yPos == yTable5-20){
-			agent.msgDoneAtTable();
-		}
-		if(xPos == xTable6+20 && yPos == yTable6-20){
-			agent.msgDoneAtTable();
-		}
-		if(xPos == xTable7+20 && yPos == yTable7-20){
-			agent.msgDoneAtTable();
-		}
-		if(xPos == xTable8+20 && yPos == yTable8-20){
-			agent.msgDoneAtTable();
-		}
-		if(xPos == xTable9+20 && yPos == yTable9-20){
-			agent.msgDoneAtTable();
-		}
-		if(xPos == xTable10+20 && yPos == yTable10-20){
-			agent.msgDoneAtTable();
-		}
-		if(xPos == xTable11+20 && yPos == yTable11-20){
-			agent.msgDoneAtTable();
-		}	
-		if(xPos == xTable12+20 && yPos == yTable12-20){
-			agent.msgDoneAtTable();
-		}	        
-		if(xPos == xLobby && yPos == yLobby){
-			agent.msgAtLobby();
-		}
-		if(xPos == xHome && yPos == yHome){
-			agent.msgAtHome();
+		else if(xPos == xDestination && yPos == yDestination){
+			if(!atDest){
+				atDest = true;
+				agent.msgDoneAtTable();
+			}
 		}
 	}
 
@@ -129,95 +153,109 @@ public class CMWaiterGui implements Gui{
 	    			xDestination = xCook;
 	    			yDestination = yCook;
 		 */
-	    		case 1:
-	    			xDestination = xTable1 + 20;
-	    			yDestination = yTable1 - 20;
-	    			yTable = yTable1;
-	    			xTable = xTable1;
-
-	    			break;
-	    		case 2:
-	    			xDestination = xTable2 + 20;
-	    			yDestination = yTable2 - 20;
-	    			yTable = yTable2;
-	    			xTable = xTable2;
-	    			break;
-	    		case 3:
-	    			xDestination = xTable3 + 20;
-	    			yDestination = yTable3 - 20;
-	    			yTable = yTable3;
-	    			xTable = xTable3;
-	    			break;
-	    		case 4:
-	    			xDestination = xTable4 + 20;
-	    			yDestination = yTable4 - 20;
-	    			yTable = yTable4;
-	    			xTable = xTable4;
-	    			break;
-	    		case 5:
-	    			xDestination = xTable5 + 20;
-	    			yDestination = yTable5 - 20;
-	    			yTable = yTable5;
-	    			xTable = xTable5;
-	    			break;
-	    		case 6:
-	    			xDestination = xTable6 + 20;
-	    			yDestination = yTable6 - 20;
-	    			yTable = yTable6;
-	    			xTable = xTable6;
-	    			break;
-	    		case 7:
-	    			xDestination = xTable7 + 20;
-	    			yDestination = yTable7 - 20;
-	    			yTable = yTable7;
-	    			xTable = xTable7;
-	    			break;
-	    		case 8:
-	    			xDestination = xTable8 + 20;
-	    			yDestination = yTable8 - 20;
-	    			yTable = yTable8;
-	    			xTable = xTable8;
-	    			break;
-	    		case 9:
-	    			xDestination = xTable9 + 20;
-	    			yDestination = yTable9 - 20;
-	    			yTable = yTable9;
-	    			xTable = xTable9;
-	    			break;
-	    		case 10:
-	    			xDestination = xTable10 + 20;
-	    			yDestination = yTable10 - 20;
-	    			yTable = yTable10;
-	    			xTable = xTable10;
-	    			break;
-	    		case 11:
-	    			xDestination = xTable11 + 20;
-	    			yDestination = yTable11 - 20;
-	    			yTable = yTable11;
-	    			xTable = xTable11;
-	    			break;
-	    		case 12:
-	    			xDestination = xTable12 + 20;
-	    			yDestination = yTable12 - 20;
-	    			yTable = yTable12;
-	    			xTable = xTable12;
-	    			break;
+		case 1:
+			xDestination = xTable1 + 20;
+			yDestination = yTable1 - 20;
+			yTable = yTable1;
+			xTable = xTable1;
+			atDest = false;
+			break;
+		case 2:
+			xDestination = xTable2 + 20;
+			yDestination = yTable2 - 20;
+			yTable = yTable2;
+			xTable = xTable2;
+			atDest = false;
+			break;
+		case 3:
+			xDestination = xTable3 + 20;
+			yDestination = yTable3 - 20;
+			yTable = yTable3;
+			xTable = xTable3;
+			atDest = false;
+			break;
+		case 4:
+			xDestination = xTable4 + 20;
+			yDestination = yTable4 - 20;
+			yTable = yTable4;
+			xTable = xTable4;
+			atDest = false;
+			break;
+		case 5:
+			xDestination = xTable5 + 20;
+			yDestination = yTable5 - 20;
+			yTable = yTable5;
+			xTable = xTable5;
+			atDest = false;
+			break;
+		case 6:
+			xDestination = xTable6 + 20;
+			yDestination = yTable6 - 20;
+			yTable = yTable6;
+			xTable = xTable6;
+			atDest = false;
+			break;
+		case 7:
+			xDestination = xTable7 + 20;
+			yDestination = yTable7 - 20;
+			yTable = yTable7;
+			xTable = xTable7;
+			atDest = false;
+			break;
+		case 8:
+			xDestination = xTable8 + 20;
+			yDestination = yTable8 - 20;
+			yTable = yTable8;
+			xTable = xTable8;
+			atDest = false;
+			break;
+		case 9:
+			xDestination = xTable9 + 20;
+			yDestination = yTable9 - 20;
+			yTable = yTable9;
+			xTable = xTable9;
+			atDest = false;
+			break;
+		case 10:
+			xDestination = xTable10 + 20;
+			yDestination = yTable10 - 20;
+			yTable = yTable10;
+			xTable = xTable10;
+			atDest = false;
+			break;
+		case 11:
+			xDestination = xTable11 + 20;
+			yDestination = yTable11 - 20;
+			yTable = yTable11;
+			xTable = xTable11;
+			atDest = false;
+			break;
+		case 12:
+			xDestination = xTable12 + 20;
+			yDestination = yTable12 - 20;
+			yTable = yTable12;
+			xTable = xTable12;
+			atDest = false;
+			break;
 		}
 	}
 
 	public void DoGoToLobby() {
 		xDestination = xLobby;
 		yDestination = yLobby;
+		atDest = false;
 		//  sentMsg = false;
 	}
 	public void DoGoToHome(){
 		xDestination = xHome;
 		yDestination = yHome;
+		atDest = false;
 	}
 	public void DoGoToCook() {
 		xDestination = xCook;
 		yDestination = yCook;
-		agent.msgAtCook();
+		atDest = false;
+
 	}
 	public int getXPos() {
 		return xPos;

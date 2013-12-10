@@ -16,6 +16,7 @@ public class CMCashierRole extends Role{
 	private enum marketState{ needsPay, notPaid, Paid, setBill}
 	private Menu menu = new Menu();
 	private CMCookRole cook;
+	private boolean leave = false;
 	//private class
 //	private class marketOrder{
 //		public double bill;
@@ -44,7 +45,9 @@ public class CMCashierRole extends Role{
 	//Actions
 	//Constructor
 	public CMCashierRole(PersonAgent person){
+		
 		super(person);
+		print("cashier created");
 		this.name = name;
 		this.totalMoney = 10.0;
 	}
@@ -83,12 +86,15 @@ public class CMCashierRole extends Role{
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		print("I timed in");
 	for(custOrder order: Bills)
 		if(order.state == customerState.calculatedOrder){
 			sendBill(order);
 			return true;
 		}
+	if(leave){
+		leave();
+		return true;
+	}
 //	for(marketOrder m : Orders){
 //		if(m.state == marketState.notPaid && m.bill <= this.totalMoney){
 //			print(" total money = "+ totalMoney);
@@ -105,7 +111,6 @@ public class CMCashierRole extends Role{
 //		}
 //	}
 			
-	print("I timed out");
 		return false;
 	}
 //	private void payMarket(marketOrder m) {
@@ -130,6 +135,18 @@ public class CMCashierRole extends Role{
 	}
 	public void msgAddCook(CMCookRole cook) {
 		this.cook = cook;
+		
+	}
+	private void leave() {
+		
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
+		leave = false;
+	}
+	public void msgLeave() {
+		leave = true;
+		stateChanged();
 		
 	}
 	

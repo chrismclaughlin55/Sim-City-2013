@@ -69,7 +69,7 @@ public class CMListPanel extends JPanel implements ActionListener {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	/**
 	 * Method from the ActionListener interface.
 	 * Handles the event of the add button being pressed

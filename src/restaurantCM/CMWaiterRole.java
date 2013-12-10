@@ -15,7 +15,7 @@ import city.Role;
 
 public class CMWaiterRole extends Role{
 	//DATA
-	private List<myCust> Customers = new ArrayList<myCust>();
+	public List<myCust> Customers = new ArrayList<myCust>();
 	private CMWaiterGui myGui;
 	private String name;
 	private CMHostRole host;
@@ -28,6 +28,7 @@ public class CMWaiterRole extends Role{
 	private enum State {goToLobby, goToCook, None}
 	public Menu menu = new Menu();
 	private boolean onBreak = false;
+	private boolean leave = false;
 	private CMCashierRole cashier;
 	//Messages
 	public void msgSitAtTable(CMCustomerRole c, int tablenum, CMHostRole host){
@@ -115,6 +116,7 @@ public class CMWaiterRole extends Role{
 	//Actions
 	public CMWaiterRole(PersonAgent person){
 		super(person);
+		print("waiter created");
 		this.name = person.getName();
 		atLobby.drainPermits();
 	}
@@ -251,7 +253,6 @@ public class CMWaiterRole extends Role{
 	//Scheduler
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		print("I timed in");
 		boolean shouldGoOnBreak = true;
 		for(myCust C : Customers)
 			if(C.state != AgentState.left )
@@ -315,12 +316,24 @@ public class CMWaiterRole extends Role{
 			goOnBreak();
 			return true;
 		}
+		if(leave){
+			print("time to leave");
+			leave();
+		}
+		
 		animationGoToHome();
-		print("I timed out");
 		return false;
 	}
 
 	
+	private void leave() {
+		this.myGui.DoGoToLobby();
+		myGui.setPresent(false);
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
+		leave = false;
+	}
 	private void cashierCalcOrder(myCust C) {
 		cashier.msgCalcOrder(this, C.getC(), C.getChoice());
 		print("calculate order for "+C.getC().getCustomerName());
@@ -372,6 +385,11 @@ public class CMWaiterRole extends Role{
 	}
 	public void setHost(CMHostRole host){
 		this.host = host;
+	}
+	public void msgLeave() {
+		leave = true;
+		stateChanged();
+		
 	}
 
 

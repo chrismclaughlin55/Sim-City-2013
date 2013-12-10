@@ -50,15 +50,6 @@ public class BankManagerRole extends Role implements BankManager {
 		this.name = person.getName();
 		this.me = person;
 		this.bank = bank;
-		File file = new File("tellerstate.txt");
-		try {
-			file.createNewFile();
-			writer = new FileWriter(file);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 
 	}
 	//MESSAGES
@@ -208,7 +199,6 @@ public class BankManagerRole extends Role implements BankManager {
 		print("bank closed. Leaving");
 		leave = false;
 		bank.payPerson(bank, me, 300);
-		print("I get paid 300 for today");
 		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Leaving. I get paid 300 for today");
 		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Leaving. I get paid 300 for today");
 		AlertLog.getInstance().logInfo(AlertTag.BANK, bank.name, "Bank is closed");

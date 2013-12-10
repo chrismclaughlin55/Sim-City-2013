@@ -118,13 +118,7 @@ private CMCookRole cook;
 		return false;
 	}
 
-	public int activeCustomers() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
 
-	public boolean fullyStaffed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 }

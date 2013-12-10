@@ -3,7 +3,7 @@ package restaurantCM;
 import restaurantCM.gui.CMCustomerGui;
 import restaurantCM.gui.CMRestaurantGui;
 import agent.Agent;
-
+import trace.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Random;
@@ -22,6 +22,7 @@ public class CMCustomerRole extends Role {
 	private int hungerLevel = 1000; // determines length of meal
 	private double money;
 	private double bill;
+	public boolean leave = false;
 	Timer timer = new Timer();
 	Menu menu;
 	private CMCustomerGui customerGui;
@@ -125,6 +126,8 @@ public class CMCustomerRole extends Role {
 	 */
 	public boolean pickAndExecuteAnAction() {
 		//	CustomerAgent is a finite state machine
+		if(leave)
+			leave();
 		if (state == AgentState.DoingNothing && event == AgentEvent.gotHungry ){
 			state = AgentState.WaitingInRestaurant;
 			goToRestaurant();
@@ -185,6 +188,16 @@ public class CMCustomerRole extends Role {
 		return false;
 	}
 
+
+	private void leave() {
+			this.customerGui.DoExitRestaurant();
+			customerGui.setPresent(false);
+			person.exitBuilding();
+			person.msgDoneWithJob();
+			doneWithRole();	
+			leave = false;
+		}
+	
 
 	private void payBill() {
 	print("paying bill for "+ bill+". I have "+ money+" left");
@@ -269,7 +282,9 @@ public class CMCustomerRole extends Role {
 		print("Leaving.");
 		w.msgDoneAndLeaving(this);
 		customerGui.DoExitRestaurant();
-		
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();	
 	}
 
 	// Accessors, etc.
@@ -298,6 +313,11 @@ public class CMCustomerRole extends Role {
 
 	public CMCustomerGui getGui() {
 		return customerGui;
+	}
+
+	public void msgLeave() {
+		leave = true;
+		stateChanged();
 	}
 }
 
