@@ -9,6 +9,7 @@ import java.util.concurrent.Semaphore;
 
 import city.PersonAgent;
 import city.Role;
+import city.PersonAgent.BigState;
 
 
 
@@ -30,6 +31,7 @@ public class CMWaiterRole extends Role{
 	private boolean onBreak = false;
 	private boolean leave = false;
 	private CMCashierRole cashier;
+	
 	//Messages
 	public void msgSitAtTable(CMCustomerRole c, int tablenum, CMHostRole host){
 		//DONE
@@ -329,11 +331,15 @@ public class CMWaiterRole extends Role{
 	private void leave() {
 		this.myGui.DoGoToLobby();
 		myGui.setPresent(false);
+		person.bigState = BigState.goHome;
+		host.building.restGui.animationPanel.removeGui(myGui);
+		person.setHunger(0);
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();	
 		person.setHunger(0);
 		leave = false;
+		print("leaving job");
 	}
 	private void cashierCalcOrder(myCust C) {
 		cashier.msgCalcOrder(this, C.getC(), C.getChoice());

@@ -28,7 +28,7 @@ public class CMRestaurantGui extends JFrame implements ActionListener {
 	 * and the animation frame, (in variable animationFrame within gui)
 	 */
 	//JFrame animationFrame = new JFrame("Restaurant Animation");
-	CMAnimationPanel animationPanel = new CMAnimationPanel();
+	public CMAnimationPanel animationPanel = new CMAnimationPanel();
 	ArrayList<Agent> myAgents = new ArrayList<Agent>();
 
 	/* restPanel holds 2 panels

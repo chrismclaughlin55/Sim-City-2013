@@ -4,6 +4,7 @@ import java.util.*;
 
 import city.PersonAgent;
 import city.Role;
+import city.PersonAgent.BigState;
 import restaurantCM.*;
 import agent.Agent;
 
@@ -243,11 +244,14 @@ public class CMCookRole extends Role{
 		this.foodInventory = foodInventory;
 	}
 	private void leave() {
+		person.bigState = BigState.goHome;
+		person.setHunger(0);
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();	
-		person.setHunger(0);
+		
 		leave = false;
+		print("leaving job");
 	}
 	public void msgLeave() {
 		leave = true;

@@ -21,7 +21,7 @@ public class CMRestaurantBuilding extends Building {
 	public static final int CLOSINGTIME = 19;
 	public static final int MAXCUSTOMERS = 8;
 	private Semaphore enter = new Semaphore(1, true);
-	CMRestaurantGui restGui;
+	public CMRestaurantGui restGui;
 	CMRestaurantPanel restPanel;
 	CMHostRole host;
 	CMCookRole cook;
@@ -147,7 +147,7 @@ enter.release();
 		return false;
 	}
 private void addCashier(PersonAgent person) {
-		CMCashierRole cashier = new CMCashierRole(person);
+		CMCashierRole cashier = new CMCashierRole(person, this);
 		this.cashier = cashier;
 		for(CMWaiterRole w : restPanel.waiters){
 			w.setCashier(this.cashier);

@@ -284,6 +284,7 @@ public class CMCustomerRole extends Role {
 		customerGui.DoExitRestaurant();
 		person.exitBuilding();
 		person.msgDoneWithJob();
+		host.building.restGui.animationPanel.removeGui(customerGui);
 		doneWithRole();	
 	}
 

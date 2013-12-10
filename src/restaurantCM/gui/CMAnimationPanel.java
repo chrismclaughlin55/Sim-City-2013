@@ -89,4 +89,14 @@ public class CMAnimationPanel extends JPanel implements ActionListener {
     public void addGui(CMHostGui gui){
     	guis.add(gui);
     }
+    public void removeGui(CMWaiterGui waiterGui1) {
+        guis.remove(waiterGui1);
+    }
+
+    public void removeGui(CMCustomerGui gui) {
+        guis.remove(gui);
+    }
+    public void removeGui(CMHostGui gui){
+    	guis.remove(gui);
+    }
 }

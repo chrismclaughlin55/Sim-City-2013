@@ -3,8 +3,10 @@ package restaurantCM;
 import java.util.*;
 
 import city.PersonAgent;
+import city.PersonAgent.BigState;
 import city.Role;
 import restaurantCM.*;
+import restaurantCM.gui.CMRestaurantBuilding;
 import agent.Agent;
 
 public class CMCashierRole extends Role{
@@ -42,11 +44,13 @@ public class CMCashierRole extends Role{
 			this.totalBill = bill;
 		}
 	}
+	CMRestaurantBuilding building;
 	//Actions
 	//Constructor
-	public CMCashierRole(PersonAgent person){
-		
+	public CMCashierRole(PersonAgent person, CMRestaurantBuilding b){
 		super(person);
+		
+		this.building = b;
 		print("cashier created");
 		this.name = name;
 		this.totalMoney = 10.0;
@@ -138,12 +142,13 @@ public class CMCashierRole extends Role{
 		
 	}
 	private void leave() {
-		
+		person.bigState = BigState.goHome;
+		person.setHunger(0);
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();	
 		leave = false;
-		person.setHunger(0);
+		
 	}
 	public void msgLeave() {
 		leave = true;

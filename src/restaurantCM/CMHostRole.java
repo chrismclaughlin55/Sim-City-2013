@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 
 import city.*;
+import city.PersonAgent.BigState;
 /** 
  * Restaurant Host Agent
  */
@@ -213,6 +214,7 @@ public class CMHostRole extends Role  {
 
 	//utilities
 	private void leave() {
+		person.bigState = BigState.goHome;
 		hostGui.setPresent(false);
 		print("leave now");
 		person.exitBuilding();
@@ -220,7 +222,9 @@ public class CMHostRole extends Role  {
 		doneWithRole();	
 		person.setHunger(0);
 		building.setClosed(person);
+		building.restGui.animationPanel.removeGui(hostGui);
 	}
+	
 	private myWait findWaiter(CMWaiterRole W){
 		for(myWait w: Waiters){
 			if(w.w.equals(W))
