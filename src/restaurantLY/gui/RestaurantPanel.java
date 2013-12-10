@@ -46,7 +46,7 @@ public class RestaurantPanel extends JPanel {
     
     private List<JCheckBox> breakBoxes = new ArrayList<JCheckBox>();
 	
-	private RestaurantGui gui;
+	public RestaurantGui gui;
 	
 	public static final int CLOSINGTIME = 20;
 	

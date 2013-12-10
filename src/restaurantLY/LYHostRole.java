@@ -277,6 +277,8 @@ public class LYHostRole extends Role implements Host {
     
     private void LeaveRestaurant() {
         restPanel.hostLeaving();
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_HOST, this.getName(), "Leaving the restaurant");
+		AlertLog.getInstance().logInfo(AlertTag.RESTAURANTLY, this.restPanel.gui.building.name, "Restaurant is closed");
         person.msgFull();
         person.msgDoneWithJob();
         person.exitBuilding();
