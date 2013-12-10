@@ -21,6 +21,7 @@ import bankgui.BankGui;
 import city.Apartment;
 import city.Building;
 import city.BusAgent;
+import city.CityData;
 import city.Home;
 import city.HomeGui;
 import city.PersonAgent;
@@ -52,6 +53,7 @@ public class MainGui extends JFrame implements MouseListener {
     private int cashier = 0;
     private int host = 0;
     private int landlord = 0;
+    private CityData cityData;
     //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
     //public BusStopGui busStopGui will have a list of these and add them all 
@@ -77,9 +79,10 @@ public class MainGui extends JFrame implements MouseListener {
     	
     	ArrayList<HashMap<String,String>> configPeople;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainAnimationPanel = new MainAnimationPanel(this);
+        cityData = new CityData();
+        mainAnimationPanel = new MainAnimationPanel(this, cityData);
         mainAnimationPanel.setVisible(true);
-        personPanel = new PersonCreationPanel(this);
+        personPanel = new PersonCreationPanel(this, cityData);
         personPanel.setVisible(true);
     	
     	setBounds(0, 0, WIDTH, HEIGHT);
@@ -313,7 +316,7 @@ public class MainGui extends JFrame implements MouseListener {
     
     public void addPerson(String name, String role, String destination) {
 		PersonAgent p = createPerson(name, role);
-		
+	
 		if(destination.equals("Restaurant"))
 		{
 			p.bigState = BigState.goToRestaurant;
@@ -334,6 +337,10 @@ public class MainGui extends JFrame implements MouseListener {
 			return;
 		}
 		assignJobBuilding(p, role);
+		p.setJob(role);
+		p.bus = true;
+		p.walk = false;
+		p.car = false;
 		p.homeState = HomeState.onCouch;
 		p.tiredLevel = 0;
 		p.startThread();
@@ -383,6 +390,7 @@ public class MainGui extends JFrame implements MouseListener {
     	if (role.equals("BankRobber")) {
     		if (mainAnimationPanel.cd.bank != null) {
     			p.setJobBuilding(mainAnimationPanel.cd.bank);
+    			p.setGoToWork(true);
     		}
     	}
     	if (role.equals("MarketManager")) {

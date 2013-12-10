@@ -52,10 +52,10 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	private MainGui mainGui;
 
 
-	public MainAnimationPanel(MainGui mainGui) {
+	public MainAnimationPanel(MainGui mainGui, CityData cityData) {
 		//Add buildings
 		this.mainGui = mainGui;
-		cd = new CityData();
+		cd = cityData;
 		for (int i = 0; i < 2; i++) {
 			Building b = new Apartment(20, 140+i*120, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);

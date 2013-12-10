@@ -286,24 +286,45 @@ public class PersonAgent extends Agent
 
 		case atHome: {
 			if (homeState == HomeState.sleeping) {
-				if(cityData.hour >= 0 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
-					//delete the && false when the actual rule is implemented
-					WakeUp();
-					return true;
-				}
+				if (!isWeekend()) {
+					if(cityData.hour >= 0 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
+						//delete the && false when the actual rule is implemented
+						WakeUp();
+						return true;
+					}
 
-				else if (cityData.hour>=3 && isEmployee()) {
+					else if (cityData.hour>=3 && isEmployee()) {
 
-					//print(getJob());
-					WakeUp();
-					return true;
+						//print(getJob());
+						WakeUp();
+						return true;
+					}
+					else if (cityData.hour>=6) {
+						WakeUp();
+						return true;
+					}
+					return false; //put the agent thread back to sleep
 				}
-				else if (cityData.hour>=6) {
-					WakeUp();
-					return true;
+				else {
+					if(cityData.hour >= 2 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
+						//delete the && false when the actual rule is implemented
+						WakeUp();
+						return true;
+					}
+
+					else if (cityData.hour>=5 && isEmployee()) {
+
+						//print(getJob());
+						WakeUp();
+						return true;
+					}
+					else if (cityData.hour>=8) {
+						WakeUp();
+						return true;
+					}
+					return false; //put the agent thread back to sleep
 				}
-				return false; //put the agent thread back to sleep
-			}
+			}		
 
 			if (tiredLevel >= TIRED) {
 				goToSleep();
@@ -381,6 +402,7 @@ public class PersonAgent extends Agent
 
 		case doingNothing: {
 			//Decide what the next BigState will be based on current parameters
+						
 			if(goToWork && jobBuilding != null) {
 				destinationBuilding = jobBuilding;
 				desiredRole = job;
@@ -466,7 +488,6 @@ public class PersonAgent extends Agent
 //TODO
 	private void payRent() {
 		Apartment a = (Apartment) home;
-		System.err.println(bank.getAccount(a.manager).moneyInAccount);
 		bank.directDeposit(this, a.manager, rent);
 		rentDue = false;
 	}
@@ -894,13 +915,14 @@ public class PersonAgent extends Agent
 		emergencyState = EmergencyState.none;
 	}
 
-	public void exitBuilding()
-	{
+	public void exitBuilding() {
 		cityData.addGui(personGui);
 		print("Exiting the building");
 		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "Exiting the building");
 		bigState = BigState.doingNothing;
+		super.stateChanged();
 	}
+	
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
 	protected void stateChanged() {
 		super.stateChanged();
@@ -918,9 +940,17 @@ public class PersonAgent extends Agent
 	public PersonGui getGui() {
 		return personGui;
 	}
+	
+	public void setGoToWork(boolean b) {
+		goToWork = b;
+	}
 
 	public String getJob() {
 		return job;
+	}
+	
+	public boolean isWeekend() {
+		return cityData.day > 4;
 	}
 
 	public boolean isEmployee() {

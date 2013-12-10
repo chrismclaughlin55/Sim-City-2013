@@ -55,7 +55,12 @@ public class BankRobber extends Role {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		bank.currentManager.tellers.get(0).t.msgStickEmUp(this);
+		if (!bank.currentManager.tellers.isEmpty()) {
+			bank.currentManager.tellers.get(0).t.msgStickEmUp(this);
+		}
+		else {
+			System.err.println("Aww, nobody to rob here.");
+		}
 	}
 	
 	private void leaveBank() {
@@ -67,9 +72,12 @@ public class BankRobber extends Role {
 			e.printStackTrace();
 		}
 		gui.DoLeaveBuilding();
-		bank.bankGui.animationPanel.addGui(gui);
+		bank.bankGui.animationPanel.removeGui(gui);
+		me.msgDoneWithJob();
+		me.msgDoneWithRole();
 		me.exitBuilding();
 		me.setJob("Unemployed");
+		doneWithRole();
 	}
 
 }
