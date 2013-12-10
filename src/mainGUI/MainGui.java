@@ -15,6 +15,7 @@ import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import trace.DemoLauncher;
 import Gui.Gui;
 import bankgui.BankGui;
 import city.Apartment;
@@ -265,7 +266,15 @@ public class MainGui extends JFrame implements MouseListener {
     }
     
   
-    public static void main(String[] args) { 
+    public static void main(String[] args) {
+        DemoLauncher dl = new DemoLauncher();
+    	dl.start();
+    	dl.setTitle("Trace Panel");
+		dl.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dl.setBounds(10, 0, 650, 500);
+		dl.setResizable(false);
+		dl.setVisible(true);
+        
         MainGui gui = new MainGui();
         gui.setTitle("Sim City - Team 15");
         gui.setVisible(true);
@@ -365,6 +374,11 @@ public class MainGui extends JFrame implements MouseListener {
     		}
     	}
     	if (role.equals("BankTeller")) {
+    		if (mainAnimationPanel.cd.bank != null) {
+    			p.setJobBuilding(mainAnimationPanel.cd.bank);
+    		}
+    	}
+    	if (role.equals("BankRobber")) {
     		if (mainAnimationPanel.cd.bank != null) {
     			p.setJobBuilding(mainAnimationPanel.cd.bank);
     		}

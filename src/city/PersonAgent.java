@@ -280,8 +280,7 @@ public class PersonAgent extends Agent
 		if(anyActive) {
 			return false;
 		}
-		switch(bigState)
-		{
+		switch(bigState) {
 
 		case atHome: {
 			if (homeState == HomeState.sleeping) {
@@ -380,8 +379,7 @@ public class PersonAgent extends Agent
 
 		case doingNothing: {
 			//Decide what the next BigState will be based on current parameters
-			if(goToWork && jobBuilding != null)
-			{
+			if(goToWork && jobBuilding != null) {
 				destinationBuilding = jobBuilding;
 				desiredRole = job;
 
@@ -411,7 +409,6 @@ public class PersonAgent extends Agent
 				desiredRole = "Customer";
 				double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100; 
 				bankInfo.depositAmount = - withdrawAmount;
-				print("want to withdraw $"+withdrawAmount);
 				if(!goToWork)
 					System.out.println(name + " " + job + " " + desiredRole);
 				return true;
@@ -421,8 +418,6 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToBank;
 				desiredRole = "Customer";
 				bankInfo.depositAmount = cash - HIGHMONEY;
-				print("want to deposit $"+bankInfo.depositAmount);
-
 			}
 			// Inventory of food stuff
 			if(lowInventory()) {
@@ -795,12 +790,41 @@ public class PersonAgent extends Agent
 	{
 		if(walk==true) {
 			//PersonGui.DoWalk(if you ever hit an RGrid, acquire it first, and then walk through, and don't walk through bgrids)
+			personGui.DoGoToBuilding(destinationBuilding.buildingNumber);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			
+			currentBuilding = destinationBuilding;
+			
+			
 		}
 		if(car==true) {
-			//personGui.DoGoToClosestRGrid(currentBuilding);
+			
+			//personGui.DoWalkToClosestRGrid(currentBuilding);
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			
+			personGui.getInOrOutCar();
+			//personGui.DriveToClosestRGrid(destinationBuilding); **** have similar mechanisms to busgridbehavior
+			//if person's rgrid is destination.closestRgrid, then, walk to building
+			
+			try
+			{
+				isMoving.acquire();
+			}
+			catch(Exception e){}
+			
+			//personGui
 			//have similar mechanisms to busgridbehavior
 			//if person's rgrid is destination.closestRgrid, then, walk to building
 			//YOU WILL TURN INTO A ROBOT
+			currentBuilding = destinationBuilding;
 		}
 		if(bus==true) {
 			destinationBusStop = currentBuilding.busStop;
@@ -847,8 +871,9 @@ public class PersonAgent extends Agent
 				isMoving.acquire();
 			}
 			catch(Exception e) {}
+			currentBuilding = destinationBuilding;
 		}
-		currentBuilding = destinationBuilding;
+		
 		
 	}
 

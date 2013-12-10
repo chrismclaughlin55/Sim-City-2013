@@ -348,7 +348,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		}
 		
 		else if (e.getSource() == robBank) {
-			//rob the bank
+			
 		}
 		
 		else if (e.getSource() == carCrash) {
