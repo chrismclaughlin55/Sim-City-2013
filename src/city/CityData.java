@@ -37,8 +37,8 @@ public class CityData implements ActionListener {
 	public static ArrayList<BusAgent> buses = new ArrayList<BusAgent>();
 	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
-	public Market market;
-	public Bank bank;
+	public List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
+	public List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
 	public List<Building> restaurants = Collections.synchronizedList(new ArrayList<Building>());
 	public Timer globalTimer;
 	public static int incrementLimit = 300;
@@ -170,6 +170,17 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
+		for (int i = 1; i < 6; i++) {
+			for (int j = 34; j < 39; j++) {
+				cityGrid[i][j] = new BGrid(i, j);
+			}
+		}
+		for (int i = 25; i < 30; i++) {
+			for (int j = 34; j < 39; j++) {
+				cityGrid[i][j] = new BGrid(i, j);
+			}
+		}
+		
 		
 		//construct road grid
 		/*for (int i = 0; i < 31; i++) {
