@@ -42,9 +42,9 @@ public class WaiterGui implements Gui {
 		public int y;
 	}
 
-	public static List<Location> locations = new ArrayList<Location>();
-	public static List<FoodGui> foodItems = new ArrayList<FoodGui>();
-	public static List<Location> plates = new ArrayList<Location>();
+	public  List<Location> locations = new ArrayList<Location>();
+	public  List<FoodGui> foodItems = new ArrayList<FoodGui>();
+	public  List<Location> plates = new ArrayList<Location>();
 
 	protected KCWaiterRole agent = null;
 	private FoodGui food = null;
@@ -167,10 +167,8 @@ public class WaiterGui implements Gui {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println ("left the customer, now time to take order");
 		}
 		tableNumber = tNum;
-		System.out.println(locations);
 		xDestination = locations.get(tableNumber-1).x + 20;
 		yDestination = locations.get(tableNumber-1).y - 20;
 		CustGui.setSuggestedDestination(xDestination, yDestination);

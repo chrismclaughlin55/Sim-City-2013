@@ -583,7 +583,7 @@ public class KCWaiterRole extends Role implements Waiter{
 	}
 
 	private void LeaveRestaurant() {
-		//host.msgLeavingNow(this);
+		host.msgLeavingNow(this);
 		waiterGui.DoLeaveRestaurant();
 		try{
 			leaving.acquire();
@@ -597,7 +597,7 @@ public class KCWaiterRole extends Role implements Waiter{
 	public void msgDoneLeaving() {
 		leaving.release();
 		stateChanged();
-		;	}
+	}
 
 
 }
