@@ -2,6 +2,8 @@ package restaurantSM.gui;
 
 import javax.swing.JFrame;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import mainGUI.MainGui;
 import city.Building;
 import city.CityData;
@@ -13,6 +15,8 @@ public class SMRestaurantBuilding extends Building
 	
 	RestaurantGui restGui;
 	RestaurantPanel restPanel;
+	
+	private boolean printed = false;
 	
 	public SMRestaurantBuilding(int xPos, int yPos, int width, int height,
 			String name, BuildingType type, MainGui mainGui, CityData cd) 
@@ -42,6 +46,7 @@ public class SMRestaurantBuilding extends Building
 		else if(roleRequest.equals("Host")) {
 			restPanel.addHost(person);
 			isOpen = true;
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTSM, this.name, "RestaurantSM is open for employees only");
 		}
 		
 	}
@@ -50,7 +55,12 @@ public class SMRestaurantBuilding extends Building
 		return restGui;
 	}
 	
-	public boolean isOpen() {	
+	public boolean isOpen() {
+		if(isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed() && !printed) {
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTLY, this.name, "RestaurantLY is fully employed");
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTLY, this.name, "RestaurantLY is open now");
+			printed = true;
+		}
 		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
 	}
 	

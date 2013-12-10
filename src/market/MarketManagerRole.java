@@ -15,6 +15,8 @@ import restaurantMQ.MarketOrder;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.test.mock.EventLog;
 import restaurantMQ.test.mock.LoggedEvent;
+import trace.AlertLog;
+import trace.AlertTag;
 import bank.BankManagerRole;
 import city.PersonAgent;
 import city.Role;
@@ -129,6 +131,8 @@ public class MarketManagerRole extends Role implements MarketManager{
 		if(person.cityData.hour >= market.CLOSINGTIME && market.isOpen())
 		{
 			print ("CLOSING THE MARKET");
+			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.getName(), "CLOSING THE MARKET");
+			AlertLog.getInstance().logMessage(AlertTag.MARKET_MANAGER, this.getName(), "CLOSING THE MARKET");
 			market.setClosed(person);
 			return true;
 		}
@@ -149,6 +153,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 			state = ManagerState.managing;
 			log.add (new LoggedEvent ("Market open for employees"));
 			print ("The market is now open for employees only");
+			AlertLog.getInstance().logInfo(AlertTag.MARKET, market.name, "Market is open for employees only");
 			return true;
 		}
 
@@ -157,6 +162,8 @@ public class MarketManagerRole extends Role implements MarketManager{
 			market.setOpen(person);
 			log.add (new LoggedEvent ("Market open"));
 			print ("The market is now open");
+			AlertLog.getInstance().logInfo(AlertTag.MARKET, market.name, "Market is fully employed");
+			AlertLog.getInstance().logInfo(AlertTag.MARKET, market.name, "Market is open now");
 			return true;
 		}
 

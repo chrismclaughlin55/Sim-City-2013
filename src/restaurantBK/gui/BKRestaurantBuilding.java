@@ -5,6 +5,8 @@ import java.io.IOException;
 import javax.swing.JFrame;
 
 import restaurantBK.gui.RestaurantGui;
+import trace.AlertLog;
+import trace.AlertTag;
 import mainGUI.MainGui;
 import city.Building;
 import city.CityData;
@@ -47,9 +49,12 @@ public class BKRestaurantBuilding extends Building {
 		{
 			restPanel.addHost(person);
 			isOpen = true;
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTBK, this.name, "RestaurantBK is open for employees only");
 		}
 		if(restPanel.hasHost()&&restPanel.hasCashier()&&restPanel.hasCook()&&restPanel.hasWaiters()) {
 			restPanel.fullyStaffed = true;
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTBK, this.name, "RestaurantBK is fully employed");
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTBK, this.name, "RestaurantBK is open now");
 		}
 		else {
 			restPanel.fullyStaffed = false;

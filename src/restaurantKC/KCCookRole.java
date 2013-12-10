@@ -458,7 +458,7 @@ public class KCCookRole extends Role implements Cook {
 
 
 	private void LeaveRestaurant() {
-		print("LEAVING THE RESTAURANT");
+		person.hungerLevel = 0;
 		cookGui.DoLeaveRestaurant();
 		person.exitBuilding();
 		person.msgDoneWithJob();
