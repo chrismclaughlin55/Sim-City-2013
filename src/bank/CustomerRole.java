@@ -2,6 +2,8 @@ package bank;
 
 import java.util.concurrent.Semaphore;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
@@ -43,6 +45,8 @@ public class CustomerRole extends Role implements BankCustomer{
 		event = CustEvent.GoToTeller;
 		position = pos;
 		print("going to teller");
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "going to teller");
+		AlertLog.getInstance().logMessage(AlertTag.BANK_CUSTOMER, this.name, "going to teller");
 		print("event: "+ event+" state: "+state);
 		stateChanged();
 	}
@@ -60,7 +64,11 @@ public class CustomerRole extends Role implements BankCustomer{
 	public void msgHaveANiceDay(double amount) {
 		person.cash+=amount;
 		print("total cash: "+ person.cash);
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "total cash: "+ person.cash);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_CUSTOMER, this.name, "total cash: "+ person.cash);
 		print("total money in bank "+ this.myInfo.moneyInAccount);
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "total money in bank "+ this.myInfo.moneyInAccount);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_CUSTOMER, this.name, "total money in bank "+ this.myInfo.moneyInAccount);
 		event = CustEvent.Done;
 		print("recieved have nice day");
 		print("event: "+ event+" state: "+state);
@@ -134,6 +142,8 @@ public class CustomerRole extends Role implements BankCustomer{
 			print("should be depositing $"+myInfo.depositAmount);
 			print("person wants to deposit "+this.person.bankInfo.depositAmount);*/
 		print("depositing $"+myInfo.depositAmount);
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "depositing $"+myInfo.depositAmount);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_CUSTOMER, this.name, "depositing $"+myInfo.depositAmount);
 		if(myInfo.depositAmount < 0){
 			if(myInfo.depositAmount + myInfo.moneyInAccount < 0){
 				this.cash += person.bankInfo.moneyInAccount;

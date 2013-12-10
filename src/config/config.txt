@@ -157,7 +157,7 @@ cash 100
 bankMoney 500
 job MarketManager
 hunger 10
-inventory 10
+inventory 100
 transportation bus
 
 NewPerson
@@ -185,13 +185,4 @@ bankMoney 500
 job Unemployed
 hunger 10
 inventory 20
-transportation bus
-
-NewPerson
-name robber
-cash 200
-bankMoney 300
-job BankRobber
-hunger 0
-inventory 13
 transportation bus

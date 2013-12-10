@@ -10,6 +10,7 @@ import java.util.concurrent.Semaphore;
 
 import trace.Alert;
 import trace.AlertLog;
+import trace.AlertTag;
 import trace.TracePanel;
 import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
@@ -280,6 +281,7 @@ public class PersonAgent extends Agent
 		//Reaching here means there is an active role, but it is "waiting" for a state to be updated
 		//Thus, the PersonAgent's scheduler should return FALSE
 		if(anyActive) {
+			System.err.println(name + " is active");
 			return false;
 		}
 		switch(bigState) {
@@ -381,6 +383,11 @@ public class PersonAgent extends Agent
 
 		case doingNothing: {
 			//Decide what the next BigState will be based on current parameters
+			System.err.println(name);
+			/*if (job.equals("Unemployed")) {
+				System.err.println(name);
+			}*/
+			
 			if(goToWork && jobBuilding != null) {
 				destinationBuilding = jobBuilding;
 				desiredRole = job;
@@ -403,6 +410,7 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToRestaurant;
 				desiredRole = "Customer";
 				if(!goToWork)
+					System.out.println(name + " " + job + " " + desiredRole);
 				return true;
 			}
 			if(cash <= LOWMONEY) {
@@ -411,6 +419,7 @@ public class PersonAgent extends Agent
 				double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100; 
 				bankInfo.depositAmount = - withdrawAmount;
 				if(!goToWork)
+					System.out.println(name + " " + job + " " + desiredRole);
 				return true;
 			}
 
@@ -425,6 +434,7 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToMarket;
 				desiredRole = "MarketCustomer";
 				if(!goToWork)
+					System.out.println(name + ": " + job + " " + desiredRole);
 				return true;
 			}
 
@@ -432,12 +442,14 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToRestaurant;
 				desiredRole = "Customer";
 				if(!goToWork)
+					System.out.println(name + ": " + job + " " + desiredRole);
 				return true;
 			}
 
 			bigState = BigState.goHome;
 			homeState = HomeState.onCouch;
 			if(!goToWork)
+				System.out.println(name + ": " + " " + job + " " + bigState);
 			return true;
 		}
 
@@ -468,7 +480,8 @@ public class PersonAgent extends Agent
 	}
 
 	private void WakeUp() {
-		print("is going to work");
+		print(" is going to work");
+		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "going to work");
 		goToWork = true;
 		tiredLevel = 0;
 		homeState = HomeState.idle;
@@ -588,7 +601,7 @@ public class PersonAgent extends Agent
 
 			while (true)
 			{
-				restNumber = 0;
+				restNumber = 2;
 				//restNumber = (int)(12+(int)(Math.random()*6));
 				if(restNumber >= 17)
 				{
@@ -596,7 +609,7 @@ public class PersonAgent extends Agent
 					return;
 				}
 
-				else if(((SMRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+				else if(((KCRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
 					break;
 			}
 			destinationBuilding = cityData.restaurants.get(restNumber);
@@ -604,7 +617,7 @@ public class PersonAgent extends Agent
 		else
 		{
 			//destinationBuilding = jobBuilding;
-			restNumber = 0;
+			restNumber = 2;
 			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
 
@@ -623,7 +636,7 @@ public class PersonAgent extends Agent
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
 
-		SMRestaurantBuilding restaurant = (SMRestaurantBuilding)destinationBuilding;
+		KCRestaurantBuilding restaurant = (KCRestaurantBuilding)destinationBuilding;
 
 		if(goToWork && !desiredRole.equals("Customer"))
 		{
@@ -885,15 +898,18 @@ public class PersonAgent extends Agent
 
 	protected void ReactToFire() {
 		System.out.println(name +": Stop, Drop, and Roll ");
+		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "Stop, Drop, and Roll");
 		emergencyState = EmergencyState.none;
 	}
 
-	public void exitBuilding()
-	{
+	public void exitBuilding() {
 		cityData.addGui(personGui);
 		print("Exiting the building");
+		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "Exiting the building");
 		bigState = BigState.doingNothing;
+		super.stateChanged();
 	}
+	
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
 	protected void stateChanged() {
 		super.stateChanged();
@@ -910,6 +926,10 @@ public class PersonAgent extends Agent
 
 	public PersonGui getGui() {
 		return personGui;
+	}
+	
+	public void setGoToWork(boolean b) {
+		goToWork = b;
 	}
 
 	public String getJob() {
