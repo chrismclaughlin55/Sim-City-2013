@@ -8,15 +8,15 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ArrayList;
 
-public class AnimationPanel extends JPanel implements ActionListener {
+public class CMAnimationPanel extends JPanel implements ActionListener {
     private final int WINDOWX = 450;
     private final int WINDOWY = 450;
     private Image bufferImage;
     private Dimension bufferSize;
     
-    private List<Gui> guis = new ArrayList<Gui>();
+    private List<CMGui> guis = new ArrayList<CMGui>();
 
-    public AnimationPanel() {
+    public CMAnimationPanel() {
     	setSize(WINDOWX, WINDOWY);
         setVisible(true);
         
@@ -64,13 +64,13 @@ public class AnimationPanel extends JPanel implements ActionListener {
 ////        g2.fillRect(HostGui.xTable12, HostGui.yTable12, 50, 50);
 ////        g2.setColor(Color.DARK_GRAY);
 //        
-        for(Gui gui : guis) {
+        for(CMGui gui : guis) {
             if (gui.isPresent()) {
                 gui.updatePosition();
             }
         }
 
-        for(Gui gui : guis) {
+        for(CMGui gui : guis) {
             if (gui.isPresent()) {
                 gui.draw(g2);
             }

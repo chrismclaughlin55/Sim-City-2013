@@ -21,7 +21,7 @@ public class CMRestaurantBuilding extends Building {
 			String name, BuildingType type, MainGui mainGui, CityData cd) 
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
-		restGui = new CMRestaurantGui();
+		restGui = new CMRestaurantGui(this);
 		restPanel = restGui.restPanel;
 	}
 
@@ -89,7 +89,10 @@ public class CMRestaurantBuilding extends Building {
 	}
 	public void test(){
 		PersonAgent p1 = new PersonAgent("CMhost");
-		p1.startThread();
+		
+		p1.setHunger(0);
+		p1.bigState = goT
+		//p1.startThread();
 		manager = p1;
 		EnterBuilding(p1, "Host");
 

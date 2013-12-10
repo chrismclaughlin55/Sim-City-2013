@@ -4,7 +4,7 @@ import restaurantCM.*;
 
 import java.awt.*;
 
-public class CMWaiterGui implements Gui{
+public class CMWaiterGui implements CMGui{
 	//	boolean sentMsg = true;
 	private CMWaiterRole agent = null;
 	public static final int xCook = 200;

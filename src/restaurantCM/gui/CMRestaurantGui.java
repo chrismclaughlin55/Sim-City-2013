@@ -14,8 +14,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import city.Building;
 import restaurantCM.CMCustomerRole;
 import restaurantCM.CMWaiterRole;
+import restaurantCM.gui.*;
 import agent.Agent;
 /**
  * Main GUI class.
@@ -26,7 +28,7 @@ public class CMRestaurantGui extends JFrame implements ActionListener {
 	 * and the animation frame, (in variable animationFrame within gui)
 	 */
 	//JFrame animationFrame = new JFrame("Restaurant Animation");
-	AnimationPanel animationPanel = new AnimationPanel();
+	CMAnimationPanel animationPanel = new CMAnimationPanel();
 	ArrayList<Agent> myAgents = new ArrayList<Agent>();
 
 	/* restPanel holds 2 panels
@@ -42,14 +44,21 @@ public class CMRestaurantGui extends JFrame implements ActionListener {
 	private JLabel infoLabel; //part of infoPanel
 	private JCheckBox stateCB;//part of infoLabel
 	private Object currentPerson;
-	private JButton pause;/* Holds the agent that the info is about.
-    								Seems like a hack */
+	
+    public	Building building;
 
 	/**
 	 * Constructor for RestaurantGui class.
 	 * Sets up all the gui components.
 	 */
-	public CMRestaurantGui() {
+	public CMRestaurantGui(Building b) {
+		building = b;
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+	
+		animationPanel.setVisible(true);
+		
+		setResizable(false);
+
 		int WINDOWX = 1000;
 		int WINDOWY = 550;
 		int notSureWhatThisIsFor = 50;
@@ -78,19 +87,19 @@ public class CMRestaurantGui extends JFrame implements ActionListener {
 		infoPanel.setMinimumSize(infoDim);
 		infoPanel.setMaximumSize(infoDim);
 		infoPanel.setBorder(BorderFactory.createTitledBorder("Information"));
-		pause = new JButton("pause");
+		
 		infoPanel.setLayout(new GridLayout());
 		stateCB = new JCheckBox();
 		stateCB.setVisible(false);
 		stateCB.addActionListener(this);
-		pause.addActionListener(this);
+	
 		//  infoPanel.setLayout(new GridLayout(1, 2, 30, 0));
 
 		infoLabel = new JLabel(); 
 		infoLabel.setText("<html><pre><i>Click Add to make customers</i></pre></html>");
 		infoPanel.add(infoLabel);
 		infoPanel.add(stateCB);
-		infoPanel.add(pause);
+
 		add(infoPanel, BorderLayout.SOUTH);
 		//   chrisPanel.setLayout(new BoxLayout(chrisPanel, BoxLayout.Y_AXIS));
 		// chrisPanel.add(chrisLabel);
@@ -134,11 +143,6 @@ public class CMRestaurantGui extends JFrame implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == stateCB) {
-			if (currentPerson instanceof CMCustomerRole) {
-				CMCustomerRole c = (CMCustomerRole) currentPerson;
-				c.getGui().setHungry();
-				stateCB.setEnabled(false);
-			}
 			if (currentPerson instanceof CMWaiterRole) {
 				CMWaiterRole w = (CMWaiterRole) currentPerson;
 				w.msgGoOnBreak();
@@ -167,11 +171,5 @@ public void setCustomerEnabled(CMCustomerRole c) {
 /**
  * Main routine to get gui started
  */
-public static void main(String[] args) {
-	CMRestaurantGui gui = new CMRestaurantGui();
-	gui.setTitle("csci201 Restaurant");
-	gui.setVisible(true);
-	gui.setResizable(false);
-	gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-}
+
 }

@@ -49,8 +49,8 @@ public class CMCustomerRole extends Role {
 	public CMCustomerRole(PersonAgent person){
 		super(person);
 		Random moneyGen = new Random(System.currentTimeMillis());
-		this.name = name;
-		this.money = .01 * Math.floor(moneyGen.nextDouble() * 40.0 * 100);
+		this.name = person.getName();
+		this.money = person.cash;
 		if(name.equals("broke"))
 			this.money = 0.0;
 		print("money: "+ money );

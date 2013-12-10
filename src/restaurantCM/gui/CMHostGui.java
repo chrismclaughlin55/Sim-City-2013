@@ -6,7 +6,7 @@ import restaurantCM.CMHostRole;
 
 import java.awt.*;
 
-public class CMHostGui implements Gui {
+public class CMHostGui implements CMGui {
 	public boolean customerline1 = false;
 	public boolean customerline2 = false;
 	public boolean customerline3 = false;

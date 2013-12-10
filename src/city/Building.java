@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
+import restaurantCM.gui.CMRestaurantBuilding;
 import mainGUI.BuildingPanel;
 import mainGUI.MainGui;
 
@@ -150,6 +151,9 @@ public abstract class Building extends Rectangle2D.Double {
 
 	public void display(Building building, int buildingNumber) {
 		buildingPanel.displayBuildingPanel(building, buildingNumber);
+		if(building instanceof CMRestaurantBuilding){
+			((CMRestaurantBuilding) building).test();
+		}
 	}
 	
 	public abstract JFrame getBuildingGui();

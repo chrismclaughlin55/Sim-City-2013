@@ -11,7 +11,7 @@ import java.awt.*;
  * 
  */
 
-public class CMCustomerGui implements Gui{
+public class CMCustomerGui implements CMGui{
 
 	private CMCustomerRole agent = null;
 	private boolean isPresent = false;

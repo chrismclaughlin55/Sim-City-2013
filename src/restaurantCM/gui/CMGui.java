@@ -2,7 +2,7 @@ package restaurantCM.gui;
 
 import java.awt.*;
 
-public interface Gui {
+public interface CMGui {
 
     public void updatePosition();
     public void draw(Graphics2D g);

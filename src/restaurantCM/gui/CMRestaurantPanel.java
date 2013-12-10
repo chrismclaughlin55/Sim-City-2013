@@ -1,6 +1,5 @@
 package restaurantCM.gui;
 
-import restaurantBK.interfaces.Cook;
 import restaurantCM.*;
 
 import javax.swing.*;
