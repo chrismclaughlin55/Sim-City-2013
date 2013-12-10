@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.lang.Double;
+
 import javax.swing.JFrame;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import bank.utilities.CustInfo;
 import bankgui.BankCustomerGui;
 import bankgui.BankGui;
@@ -73,6 +76,7 @@ public class Bank extends Building {
 					existingManagerRoles.put(p, bRole);
 					setOpen(p);
 					p.print("bank is open? "+ isOpen);
+					AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "bank is open? "+ isOpen);
 					p.msgAssignRole(bRole);
 					currentManager = bRole;
 					cityData.buildings.get(18).manager = currentManager.getPerson();
@@ -104,6 +108,7 @@ public class Bank extends Building {
 					}
 				} else{
 					System.out.println("teller present? " + currentManager.tellerPresent());
+					AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "teller present? "+ currentManager.tellerPresent());
 					p.exitBuilding();
 				}
 			}
@@ -189,6 +194,7 @@ public class Bank extends Building {
 	public void addBusinessAccount(Building b, java.lang.Double startMoney){
 		BusinessAccounts.put(b, startMoney);
 		System.out.println(b.type + " added account");
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, b.type + " added account");
 	}
 
 	public double payPerson(Building b, PersonAgent p, double amount){
@@ -197,6 +203,7 @@ public class Bank extends Building {
 		businessMoney = businessMoney - amount;
 		personAccount.moneyInAccount += amount;
 		System.out.println(b.type + "is paying " +p.getName()+" $"+amount+" for work");
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, b.type + "is paying " +p.getName()+" $"+amount+" for work");
 		CustAccounts.put(p, personAccount);
 		BusinessAccounts.put(b, businessMoney);
 		return businessMoney;
@@ -205,20 +212,24 @@ public class Bank extends Building {
 	public double depositMoney(Building b, double amount){
 		java.lang.Double account = BusinessAccounts.get(b);
 		System.out.println(b.type + " depositing amount = "+ amount);
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, b.type + " depositing amount = "+ amount);
 		System.out.println(b.type + " old balance: " +account);
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, b.type + " old balance: " +account);
 		account+= amount;
 		System.out.println(b.type + " new balance: "+ account);
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, b.type + " new balance: "+ account);
 		return account;
 	}
 	public double withdrawMoney(Building b, double amount){
 		double businessAccount = BusinessAccounts.get(b);
 		if(amount<businessAccount){
 			System.out.println(b.type+ " is withdrawing "+ amount + " with " + (businessAccount - amount) + " left");
-
+			AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, b.type+ " is withdrawing "+ amount + " with " + (businessAccount - amount) + " left");
 			BusinessAccounts.put(b, (java.lang.Double)(businessAccount - amount));
 		}
 		else{
-			System.out.println(b.type+ " is withdrawing "+ businessAccount + " with " + 0 + " left");			
+			System.out.println(b.type+ " is withdrawing "+ businessAccount + " with " + 0 + " left");
+			AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, b.type+ " is withdrawing "+ businessAccount + " with " + 0 + " left");
 			BusinessAccounts.put(b, (java.lang.Double)(0.0));
 		}
 		return BusinessAccounts.get(b);

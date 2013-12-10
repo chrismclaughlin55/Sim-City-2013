@@ -49,15 +49,21 @@ public class DemoLauncher extends JFrame {
 		//that says it is from a MARKET_EMPLOYEE).  Here we decide to hide debug messages and things
 		//tagged as AlertTag.BUS_STOP
 		tracePanel.showAlertsWithLevel(AlertLevel.ERROR);		//THESE PRINT RED, WARNINGS PRINT YELLOW on a black background... :/
-		tracePanel.showAlertsWithLevel(AlertLevel.INFO);		//THESE PRINT BLUE
+		//tracePanel.showAlertsWithLevel(AlertLevel.INFO);		//THESE PRINT BLUE
 		tracePanel.showAlertsWithLevel(AlertLevel.MESSAGE);		//THESE SHOULD BE THE MOST COMMON AND PRINT BLACK
+		//tracePanel.hideAlertsWithLevel(AlertLevel.DEBUG);
 		
-		tracePanel.hideAlertsWithLevel(AlertLevel.DEBUG);
-		
+		tracePanel.showAlertsWithTag(AlertTag.GENERAL_CITY);
 		tracePanel.showAlertsWithTag(AlertTag.PERSON);
-		tracePanel.showAlertsWithTag(AlertTag.BANK_CUSTOMER);
-		
-		tracePanel.hideAlertsWithTag(AlertTag.BUS_STOP);
+		tracePanel.showAlertsWithTag(AlertTag.BUILDING);
+		tracePanel.showAlertsWithTag(AlertTag.BANK);
+		tracePanel.showAlertsWithTag(AlertTag.MARKET);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM);
 		
 		//
 		//You will have to add your own AlertTag types to the AlertTag enum for your project.
@@ -166,7 +172,7 @@ public class DemoLauncher extends JFrame {
 			RestMQTagButton = new JToggleButton("Hide Tag: RESTAURANT_MQ");
 			RestSMTagButton = new JToggleButton("Hide Tag: RESTAURANT_SM");
 			RestCMTagButton = new JToggleButton("Hide Tag: RESTAURANT_CM");
-			CityTagButton = new JToggleButton("Hide Tag: CITY");
+			CityTagButton = new JToggleButton("Hide Tag: GENERAL CITY");
 			
 			messageButton.addActionListener(new ActionListener() {
 				@Override
@@ -308,10 +314,25 @@ public class DemoLauncher extends JFrame {
 				}
 			});
 			
+			CityTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(CityTagButton.isSelected()) {
+						CityTagButton.setText("Show Tag: GENERAL CITY");
+						tracePanel.hideAlertsWithTag(AlertTag.GENERAL_CITY);
+					}
+					else {
+						CityTagButton.setText("Hide Tag: GENERAL CITY");
+						tracePanel.showAlertsWithTag(AlertTag.GENERAL_CITY);
+					}
+				}
+			});
+			
 			
 			this.setLayout(new FlowLayout());
 			this.add(messageButton);
 			this.add(errorButton);
+			this.add(CityTagButton);
 			this.add(BankTagButton);
 			this.add(MarketTagButton);
 			this.add(RestBKTagButton);
