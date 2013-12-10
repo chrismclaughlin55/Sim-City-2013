@@ -10,6 +10,7 @@ import java.util.concurrent.Semaphore;
 
 import trace.Alert;
 import trace.AlertLog;
+import trace.AlertTag;
 import trace.TracePanel;
 import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
@@ -470,7 +471,8 @@ public class PersonAgent extends Agent
 	}
 
 	private void WakeUp() {
-		print("is going to work");
+		print(" is going to work");
+		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "going to work");
 		goToWork = true;
 		tiredLevel = 0;
 		homeState = HomeState.idle;
@@ -887,6 +889,7 @@ public class PersonAgent extends Agent
 
 	protected void ReactToFire() {
 		System.out.println(name +": Stop, Drop, and Roll ");
+		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "Stop, Drop, and Roll");
 		emergencyState = EmergencyState.none;
 	}
 
@@ -894,6 +897,7 @@ public class PersonAgent extends Agent
 	{
 		cityData.addGui(personGui);
 		print("Exiting the building");
+		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "Exiting the building");
 		bigState = BigState.doingNothing;
 	}
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
