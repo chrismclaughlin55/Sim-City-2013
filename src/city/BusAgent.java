@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import agent.Agent;
 import city.gui.BusGui;
 import city.interfaces.Bus;
@@ -183,6 +185,7 @@ public class BusAgent extends Agent implements Bus {
 	        	//person getting off bus
 	        	p.ps = PassengerState.beenOn;
 	            p.p.msgBusIsHere(this);
+	            AlertLog.getInstance().logMessage(AlertTag.BUS, "bus", "Boarding passengers");
 	            try {
 	            	atDestination.acquire();
 	            }
@@ -198,6 +201,7 @@ public class BusAgent extends Agent implements Bus {
 		
 		//have a wait time for loading and unloading
 		p.p.msgDoneMoving();
+		AlertLog.getInstance().logMessage(AlertTag.BUS, "bus", "Unloading passengers");
 		try {
         	atDestination.acquire();
         }
