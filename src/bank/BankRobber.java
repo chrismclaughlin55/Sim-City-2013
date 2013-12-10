@@ -2,6 +2,8 @@ package bank;
 
 import java.util.concurrent.Semaphore;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import bankgui.BankRobberGui;
 import city.PersonAgent;
 import city.Role;
@@ -57,9 +59,11 @@ public class BankRobber extends Role {
 		}
 		if (!bank.currentManager.tellers.isEmpty()) {
 			bank.currentManager.tellers.get(0).t.msgStickEmUp(this);
+			AlertLog.getInstance().logError(AlertTag.BANK, me.getName(), "Rob the bank!");
 		}
 		else {
 			System.err.println("Aww, nobody to rob here.");
+			AlertLog.getInstance().logError(AlertTag.BANK, me.getName(), "Aww, nobody to rob here.");
 		}
 	}
 	

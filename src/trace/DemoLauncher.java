@@ -148,7 +148,7 @@ public class DemoLauncher extends JFrame {
 		public ControlPanel(final TracePanel tracePanel) {
 			this.tp = tracePanel;
 			messageButton = new JToggleButton("Hide Level: MESSAGE");
-			errorButton = new JToggleButton("Hide Level: ERROR");
+			errorButton = new JToggleButton("Hide Level: NON-NORM");
 			infoButton = new JToggleButton("Hide Level: INFO");
 			/*warningButton = new JToggleButton("Hide Level: WARNING");
 			debugButton = new JButton("Hide Level: DEBUG");*/
@@ -210,14 +210,14 @@ public class DemoLauncher extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if(errorButton.isSelected()) {
-						errorButton.setText("Show Level: ERROR");
+						errorButton.setText("Show Level: NON-NORM");
 						//============================ TUTORIAL ==========================================
 						//This is how you make messages with a level of ERROR show up in the trace panel.
 						tracePanel.hideAlertsWithLevel(AlertLevel.ERROR);
 						//================================================================================
 					}
 					else {
-						errorButton.setText("Hide Level: ERROR");
+						errorButton.setText("Hide Level: NON-NORM");
 						tracePanel.showAlertsWithLevel(AlertLevel.ERROR);
 					}
 				}

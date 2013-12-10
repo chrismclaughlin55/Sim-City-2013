@@ -155,9 +155,13 @@ public class TellerRole extends Role implements Teller{
 	private void ask() {
 		currentCustInfo.customer.msgWhatWouldYouLike();
 		state = State.waitingForResponse;
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Serving "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Serving "+currentCustInfo.custName);
 	}
 
 	private void getInfo() {
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Getting info for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Getting info for "+currentCustInfo.custName);
 		bm.msgGiveMeInfo(currentCustInfo.customer, this);
 		state = State.waitingForInfo;
 	}
@@ -170,13 +174,15 @@ public class TellerRole extends Role implements Teller{
 
 	private void payTheMan() {
 		System.err.println("IM BEING ROBBED");
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "IM BEING ROBBED");
-		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "IM BEING ROBBED");
+		AlertLog.getInstance().logError(AlertTag.BANK, this.name, "IM BEING ROBBED");
+		AlertLog.getInstance().logError(AlertTag.BANK_TELLER, this.name, "IM BEING ROBBED");
 		bankRobber.msgPleaseDontShoot(400);
 		bankRobbery = false;
 	}
 	
 	private void processLoan() {
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Processing loan for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Processing loan for "+currentCustInfo.custName);
 		if(currentCustInfo.loanRequestAmount>currentCustInfo.loanApproveAmount)
 			currentCustInfo.customer.msgCanDoThisAmount(currentCustInfo.loanApproveAmount);
 		else 
@@ -187,8 +193,8 @@ public class TellerRole extends Role implements Teller{
 	private void processOrder() {
 		//
 		print("processing order for "+currentCustInfo.custName);
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "processing order for "+currentCustInfo.custName);
-		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "processing order for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Processing order for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Processing order for "+currentCustInfo.custName);
 		bm.msgUpdateInfo(currentCustInfo, this);
 		currentCustInfo.customer.msgHaveANiceDay(currentCustInfo.depositAmount);
 		state = State.doneWithCustomer;
