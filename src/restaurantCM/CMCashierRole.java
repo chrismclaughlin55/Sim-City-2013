@@ -7,7 +7,7 @@ import city.Role;
 import restaurantCM.*;
 import agent.Agent;
 
-public class CashierRole extends Role{
+public class CMCashierRole extends Role{
 	private String name;
 	private double totalMoney;
 	private enum customerState { notPaid, calculatedOrder, billIsReady, askedForBill, paid, sentBill};
@@ -15,7 +15,7 @@ public class CashierRole extends Role{
 //	private List<marketOrder> Orders = new ArrayList<marketOrder>();
 	private enum marketState{ needsPay, notPaid, Paid, setBill}
 	private Menu menu = new Menu();
-	private CookRole cook;
+	private CMCookRole cook;
 	//private class
 //	private class marketOrder{
 //		public double bill;
@@ -29,11 +29,11 @@ public class CashierRole extends Role{
 //	}
 	private class custOrder{
 		public String choice;
-		public CustomerRole c;
-		public WaiterAgent w;
+		public CMCustomerRole c;
+		public CMWaiterRole w;
 		public customerState state;
 		public double totalBill;
-		public custOrder(WaiterAgent w, CustomerRole c, String choice, double bill){
+		public custOrder(CMWaiterRole w, CMCustomerRole c, String choice, double bill){
 			this.choice = choice;
 			this.c = c;
 			this.w = w;
@@ -43,19 +43,19 @@ public class CashierRole extends Role{
 	}
 	//Actions
 	//Constructor
-	public CashierRole(PersonAgent person){
+	public CMCashierRole(PersonAgent person){
 		super(person);
 		this.name = name;
 		this.totalMoney = 10.0;
 	}
-	public custOrder findWaiter(WaiterAgent w){
+	public custOrder findWaiter(CMWaiterRole w){
 		for(custOrder c: Bills){
 			if(w.equals(c.w))
 				return c;
 		}
 		return null;
 	}
-	public custOrder findCust(CustomerRole c){
+	public custOrder findCust(CMCustomerRole c){
 		for(custOrder cust : Bills){
 			if(cust.c.equals(c))
 				return cust;
@@ -69,13 +69,13 @@ public class CashierRole extends Role{
 //		stateChanged();
 //	}
 	
-	public void msgCalcOrder(WaiterAgent w, CustomerRole c, String choice){
+	public void msgCalcOrder(CMWaiterRole w, CMCustomerRole c, String choice){
 		double bill = menu.Menu.get(choice);
 		print("calculating order for "+c.getCustomerName()+" and it is "+ bill);
 		Bills.add(new custOrder(w, c, choice, bill));
 		stateChanged();
 	}
-	public void msgGiveMeBill(WaiterAgent w, CustomerRole c , double totalPay){
+	public void msgGiveMeBill(CMWaiterRole w, CMCustomerRole c , double totalPay){
 		custOrder cc = findCust(c);
 		findCust(c).state = customerState.paid;
 		stateChanged();
@@ -128,7 +128,7 @@ public class CashierRole extends Role{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public void msgAddCook(CookRole cook) {
+	public void msgAddCook(CMCookRole cook) {
 		this.cook = cook;
 		
 	}

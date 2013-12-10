@@ -11,6 +11,7 @@ import java.util.concurrent.Semaphore;
 import trace.Alert;
 import trace.AlertLog;
 import trace.TracePanel;
+import restaurantCM.gui.CMRestaurantBuilding;
 import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
 import restaurantSM.gui.SMRestaurantBuilding;
@@ -590,7 +591,7 @@ public class PersonAgent extends Agent
 
 			while (true)
 			{
-				restNumber = 2;
+				restNumber = 4;
 				//restNumber = (int)(12+(int)(Math.random()*6));
 				if(restNumber >= 17)
 				{
@@ -598,7 +599,7 @@ public class PersonAgent extends Agent
 					return;
 				}
 
-				else if(((KCRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+				else if(((CMRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
 					break;
 			}
 			destinationBuilding = cityData.restaurants.get(restNumber);

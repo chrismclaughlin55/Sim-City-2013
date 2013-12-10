@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import restaurantBK.gui.BKRestaurantBuilding;
+import restaurantCM.gui.CMRestaurantBuilding;
 import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantLY.gui.LYRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
@@ -139,9 +140,9 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		}
 		
 		for (int i = 0; i < 1; i++) {
-			Building b = new SMRestaurantBuilding(200+i*140, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
+			Building b = new CMRestaurantBuilding(200+i*140, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
-			cd.restaurants.add((SMRestaurantBuilding) b);
+			cd.restaurants.add((CMRestaurantBuilding) b);
 		}
 		for (int i = 0; i < 1; i++) {
 			Building b = new LYRestaurantBuilding(200+140, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);

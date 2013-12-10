@@ -4,9 +4,9 @@ import restaurantCM.*;
 
 import java.awt.*;
 
-public class WaiterGui implements Gui{
+public class CMWaiterGui implements Gui{
 	//	boolean sentMsg = true;
-	private WaiterAgent agent = null;
+	private CMWaiterRole agent = null;
 	public static final int xCook = 200;
 	public static final int yCook = 150;
 	private int xLobby = 60 , yLobby = 60; //Lobby position
@@ -18,21 +18,21 @@ public class WaiterGui implements Gui{
 	public int xDestination = xHome, yDestination = yHome;//default start position
 	public int xTable, yTable;
 	public boolean carryOrder = false;
-	public static final int xTable1 = HostGui.xTable1;
-	public static final int yTable1 = HostGui.yTable1;
-	public static final int xTable2 = HostGui.xTable2;
-	public static final int yTable2 = HostGui.yTable2;
-	public static final int xTable3 = HostGui.xTable3;
-	public static final int yTable3 = HostGui.yTable3;
-	public static final int xTable4 = HostGui.xTable4;
-	public static final int yTable4 = HostGui.yTable4;
-	public static final int xTable5 = HostGui.xTable5;
-	public static final int yTable5 = HostGui.yTable5;
-	public static final int xTable6 = HostGui.xTable6;
-	public static final int yTable6 = HostGui.yTable6;
-	public static final int xTable7 = HostGui.xTable7;
-	public static final int yTable7 = HostGui.yTable7;
-	public static final int xTable8 = HostGui.xTable8;
+	public static final int xTable1 = CMHostGui.xTable1;
+	public static final int yTable1 = CMHostGui.yTable1;
+	public static final int xTable2 = CMHostGui.xTable2;
+	public static final int yTable2 = CMHostGui.yTable2;
+	public static final int xTable3 = CMHostGui.xTable3;
+	public static final int yTable3 = CMHostGui.yTable3;
+	public static final int xTable4 = CMHostGui.xTable4;
+	public static final int yTable4 = CMHostGui.yTable4;
+	public static final int xTable5 = CMHostGui.xTable5;
+	public static final int yTable5 = CMHostGui.yTable5;
+	public static final int xTable6 = CMHostGui.xTable6;
+	public static final int yTable6 = CMHostGui.yTable6;
+	public static final int xTable7 = CMHostGui.xTable7;
+	public static final int yTable7 = CMHostGui.yTable7;
+	public static final int xTable8 = CMHostGui.xTable8;
 	public static final int yTable8 = 160;
 	public static final int xTable9 = 160;
 	public static final int yTable9 = 220;
@@ -43,7 +43,7 @@ public class WaiterGui implements Gui{
 	public static final int xTable12 = 160;
 	public static final int yTable12 = 400;
 
-	public WaiterGui(WaiterAgent agent, int x, int y) {
+	public CMWaiterGui(CMWaiterRole agent, int x, int y) {
 		this.agent = agent;
 		this.xPos = x;
 		this.yPos = y;

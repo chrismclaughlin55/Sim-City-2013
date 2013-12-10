@@ -39,11 +39,11 @@ public class AnimationPanel extends JPanel implements ActionListener {
     
         //Here is the table//200 and 250 need to be table params
         g2.setColor(Color.DARK_GRAY);
-        g2.fillRect(HostGui.xTable1, HostGui.yTable1, 50, 50);
+        g2.fillRect(CMHostGui.xTable1, CMHostGui.yTable1, 50, 50);
         g2.setColor(Color.DARK_GRAY);
-        g2.fillRect(HostGui.xTable2, HostGui.yTable2, 50, 50);
+        g2.fillRect(CMHostGui.xTable2, CMHostGui.yTable2, 50, 50);
         g2.setColor(Color.DARK_GRAY);
-        g2.fillRect(HostGui.xTable3, HostGui.yTable3, 50, 50);
+        g2.fillRect(CMHostGui.xTable3, CMHostGui.yTable3, 50, 50);
         g2.setColor(Color.DARK_GRAY);
 //        g2.fillRect(HostGui.xTable4, HostGui.yTable4, 50, 50);
 //        g2.setColor(Color.DARK_GRAY);
@@ -77,14 +77,14 @@ public class AnimationPanel extends JPanel implements ActionListener {
         }
     }
 
-    public void addGui(WaiterGui waiterGui1) {
+    public void addGui(CMWaiterGui waiterGui1) {
         guis.add(waiterGui1);
     }
 
-    public void addGui(CustomerGui gui) {
+    public void addGui(CMCustomerGui gui) {
         guis.add(gui);
     }
-    public void addGui(HostGui gui){
+    public void addGui(CMHostGui gui){
     	guis.add(gui);
     }
 }

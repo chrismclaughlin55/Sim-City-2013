@@ -10,7 +10,7 @@ import agent.Agent;
 
 
 
-public class CookRole extends Role{
+public class CMCookRole extends Role{
 	//DATA
 	private List<myMarket> Markets = new ArrayList<myMarket>();
 	private String name;
@@ -23,7 +23,7 @@ public class CookRole extends Role{
 	private Map<String , Food> foodInventory = new HashMap<String , Food >();
 	
 	private Menu pricelookup = new Menu();
-	private CashierRole cashier;
+	private CMCashierRole cashier;
 	private class myMarket{
 		public mstate state;
 		public double bill;
@@ -38,12 +38,12 @@ public class CookRole extends Role{
 //		}
 	}
 	private class Order{
-		public WaiterAgent w;
+		public CMWaiterRole w;
 		public String choice;
 		public int tablenum;
-		public CustomerRole c;
+		public CMCustomerRole c;
 		public OrderState state;
-		public Order(WaiterAgent w, String choice, int tablenum, CustomerRole c){
+		public Order(CMWaiterRole w, String choice, int tablenum, CMCustomerRole c){
 			this.w = w;
 			this.c = c;
 			this.choice = choice;
@@ -51,7 +51,7 @@ public class CookRole extends Role{
 			this.state = OrderState.pending;
 
 		}
-		public Order(WaiterAgent w, String choice, int tablenum, CustomerRole c, OrderState state){
+		public Order(CMWaiterRole w, String choice, int tablenum, CMCustomerRole c, OrderState state){
 			this.w = w;
 			this.c = c;
 			this.choice = choice;
@@ -71,7 +71,7 @@ public class CookRole extends Role{
 		}
 	}
 	//Actions
-	public CookRole(PersonAgent person){
+	public CMCookRole(PersonAgent person){
 		super(person);
 		this.name = name;
 
@@ -139,11 +139,11 @@ public class CookRole extends Role{
 		print("I was thanked");
 		stateChanged();
 	}
-	public void msgAddCashier(CashierRole cashier) {
+	public void msgAddCashier(CMCashierRole cashier) {
 		this.cashier = cashier;
 		stateChanged();
 	}
-	public void msgCookOrder(WaiterAgent w, String choice, int tablenum, CustomerRole c){
+	public void msgCookOrder(CMWaiterRole w, String choice, int tablenum, CMCustomerRole c){
 		print("One order of "+choice);
 		if(foodInventory.get(choice).inventory>0){
 			Orders.add(new Order(w, choice, tablenum, c));

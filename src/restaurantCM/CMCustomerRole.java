@@ -1,7 +1,7 @@
 package restaurantCM;
 
-import restaurantCM.gui.CustomerGui;
-import restaurantCM.gui.RestaurantGui;
+import restaurantCM.gui.CMCustomerGui;
+import restaurantCM.gui.CMRestaurantGui;
 import agent.Agent;
 
 import java.util.Timer;
@@ -15,7 +15,7 @@ import city.Role;
 /**
  * Restaurant customer agent.
  */
-public class CustomerRole extends Role {
+public class CMCustomerRole extends Role {
 	private String name;
 	private String choice;
 	private int tablenumber;// CHANGED added tablenumber to allow for customer to store and forward tablenum to GUI
@@ -24,11 +24,11 @@ public class CustomerRole extends Role {
 	private double bill;
 	Timer timer = new Timer();
 	Menu menu;
-	private CustomerGui customerGui;
+	private CMCustomerGui customerGui;
 
 	// agent correspondents
-	private HostRole host;
-	private WaiterAgent w;
+	private CMHostRole host;
+	private CMWaiterRole w;
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
@@ -46,7 +46,7 @@ public class CustomerRole extends Role {
 	 * @param name name of the customer
 	 * @param gui  reference to the customergui so the customer can send it messages
 	 */
-	public CustomerRole(PersonAgent person){
+	public CMCustomerRole(PersonAgent person){
 		super(person);
 		Random moneyGen = new Random(System.currentTimeMillis());
 		this.name = name;
@@ -59,7 +59,7 @@ public class CustomerRole extends Role {
 	/**
 	 * hack to establish connection to Host agent.
 	 */
-	public void setHost(HostRole host) {
+	public void setHost(CMHostRole host) {
 		this.host = host;
 	}
 
@@ -79,7 +79,7 @@ public class CustomerRole extends Role {
 		this.tablenumber = tablenumber;
 		stateChanged();
 	}
-	public void msgFollowMeToTable(int tablenum, WaiterAgent w){
+	public void msgFollowMeToTable(int tablenum, CMWaiterRole w){
 		print("Following "+w.getName());
 		this.tablenumber = tablenum;
 		this.w = w;
@@ -292,11 +292,11 @@ public class CustomerRole extends Role {
 		return "customer " + getName();
 	}
 
-	public void setGui(CustomerGui g) {
+	public void setGui(CMCustomerGui g) {
 		customerGui = g;
 	}
 
-	public CustomerGui getGui() {
+	public CMCustomerGui getGui() {
 		return customerGui;
 	}
 }

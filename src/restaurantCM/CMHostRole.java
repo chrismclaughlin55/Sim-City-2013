@@ -1,7 +1,7 @@
 package restaurantCM;
 
 import agent.Agent;
-import restaurantCM.gui.HostGui;
+import restaurantCM.gui.CMHostGui;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -16,12 +16,12 @@ import city.Role;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class HostRole extends Role  {
+public class CMHostRole extends Role  {
 	static final int NTABLES = 3;//a global for the number of tables.
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	int waiterPointer = 0;
-	public List<CustomerRole> waitingCustomers	= new ArrayList<CustomerRole>();
+	public List<CMCustomerRole> waitingCustomers	= new ArrayList<CMCustomerRole>();
 	public Collection<Table> tables;
 	public List<myWait> Waiters = new ArrayList<myWait>();
 	enum waiterState { noCusts,someCusts, tablesFull, onBreak, noBreak, wantsBreak};
@@ -31,9 +31,9 @@ public class HostRole extends Role  {
 	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
 	private Semaphore atLobby = new Semaphore(0,true);
-	public HostGui hostGui = null;
+	public CMHostGui hostGui = null;
 
-	public HostRole(PersonAgent person) {
+	public CMHostRole(PersonAgent person) {
 		super(person);
 		print("host created");
 		this.name = name;
@@ -62,24 +62,24 @@ public class HostRole extends Role  {
 	private class myWait{
 		Vector <Table> tables= new Vector<Table>();
 		waiterState state = waiterState.noCusts;
-		WaiterAgent w;
-		myWait(WaiterAgent w){
+		CMWaiterRole w;
+		myWait(CMWaiterRole w){
 			this.w = w;
 		}
 	}
-	public void addWaiter(WaiterAgent w){
+	public void addWaiter(CMWaiterRole w){
 		Waiters.add(new myWait(w));
 		System.out.println("added a new waiter named "+ w.getName());
 	}
 	// Messages
 
-	public void msgIWantFood(CustomerRole cust) {
+	public void msgIWantFood(CMCustomerRole cust) {
 		waitingCustomers.add(cust);
 		print("waiting customer "+ cust.getCustomerName());
 		stateChanged();
 	}
 
-	public void msgLeavingTable(CustomerRole cust) {
+	public void msgLeavingTable(CMCustomerRole cust) {
 		for (Table table : tables) {
 			if (table.getOccupant() == cust) {
 				print(cust + " leaving " + table);
@@ -93,7 +93,7 @@ public class HostRole extends Role  {
 		atTable.release();// = true;
 		stateChanged();
 	}//CHANGED added a msg called by the GUI which releases atLobby permit once host is able to seat more customers
-	public void msgImOnBreak(WaiterAgent W){
+	public void msgImOnBreak(CMWaiterRole W){
 		boolean onlyWaiter = true;
 		print(W.getName()+" wants to go on break");
 		myWait myWait = findWaiter(W);
@@ -108,7 +108,7 @@ public class HostRole extends Role  {
 		}
 		stateChanged();
 	}
-	public void msgImOffBreak(WaiterAgent W){
+	public void msgImOffBreak(CMWaiterRole W){
 		myWait myWait = findWaiter(W);
 		myWait.state = waiterState.noCusts;
 		print(myWait.w.getName()+" is back from break");
@@ -153,7 +153,7 @@ public class HostRole extends Role  {
 
 	// Actions
 
-	private void seatCustomer(CustomerRole customer, Table table) {
+	private void seatCustomer(CMCustomerRole customer, Table table) {
 		boolean satCust = false;
 		while(!satCust){
 			myWait W = Waiters.get(waiterPointer%Waiters.size());
@@ -179,30 +179,30 @@ public class HostRole extends Role  {
 
 
 	//utilities
-	private myWait findWaiter(WaiterAgent W){
+	private myWait findWaiter(CMWaiterRole W){
 		for(myWait w: Waiters){
 			if(w.w.equals(W))
 				return w;
 		}
 		return null;
 	}
-	public void setGui(HostGui gui) {
+	public void setGui(CMHostGui gui) {
 		hostGui = gui;
 	}
 
-	public HostGui getGui() {
+	public CMHostGui getGui() {
 		return hostGui;
 	}
 
 	private class Table {
-		CustomerRole occupiedBy;
+		CMCustomerRole occupiedBy;
 		int tableNumber;
 
 		Table(int tableNumber) {
 			this.tableNumber = tableNumber;
 		}
 
-		void setOccupant(CustomerRole cust) {
+		void setOccupant(CMCustomerRole cust) {
 			occupiedBy = cust;
 		}
 
@@ -210,7 +210,7 @@ public class HostRole extends Role  {
 			occupiedBy = null;
 		}
 
-		CustomerRole getOccupant() {
+		CMCustomerRole getOccupant() {
 			return occupiedBy;
 		}
 

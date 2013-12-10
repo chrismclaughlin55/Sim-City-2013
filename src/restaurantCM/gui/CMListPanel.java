@@ -20,7 +20,7 @@ import javax.swing.JTextField;
  * Subpanel of restaurantPanel.
  * This holds the scroll panes for the customers and, later, for waiters
  */
-public class ListPanel extends JPanel implements ActionListener {
+public class CMListPanel extends JPanel implements ActionListener {
 
 	public JScrollPane pane =
 			new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -30,7 +30,7 @@ public class ListPanel extends JPanel implements ActionListener {
 	private JButton addPersonB = new JButton("Add");
 	private JCheckBox Hungry = new JCheckBox("Hungry?");
 	private JTextField custName = new JTextField();
-	private RestaurantPanel restPanel;
+	private CMRestaurantPanel restPanel;
 	private String type;
 	private boolean addWaiter = false;
 	public boolean addHungry = false;
@@ -41,7 +41,7 @@ public class ListPanel extends JPanel implements ActionListener {
 	 * @param rp   reference to the restaurant panel
 	 * @param type indicates if this is for customers or waiters
 	 */
-	public ListPanel(RestaurantPanel rp, String type) {
+	public CMListPanel(CMRestaurantPanel rp, String type) {
 		restPanel = rp;
 		this.type = type;
 
@@ -51,7 +51,7 @@ public class ListPanel extends JPanel implements ActionListener {
 		Hungry.addActionListener(this);
 		add(addPersonB);
 		if(type.equals("Customers"))
-		add(Hungry);
+			add(Hungry);
 		int custNameTextFieldHeight = 20, custNameTextFieldWidth = 400;
 		Dimension textInputPreferredSize = new Dimension(custNameTextFieldWidth, custNameTextFieldHeight);
 		custName.setPreferredSize(textInputPreferredSize);
@@ -64,63 +64,44 @@ public class ListPanel extends JPanel implements ActionListener {
 		add(pane);
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * Method from the ActionListener interface.
 	 * Handles the event of the add button being pressed
 	 */
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == addPersonB) {
-			// Chapter 2.19 describes showInputDialog()
-			addPerson(custName.getText());
+	//	public void actionPerformed(ActionEvent e) {
+	//		if (e.getSource() == addPersonB) {
+	//			// Chapter 2.19 describes showInputDialog()
+	//			addPerson(custName.getText());
+	//
+	//		}
+	//		else {
+	//			// Isn't the second for loop more beautiful?
+	//			/*for (int i = 0; i < list.size(); i++) {
+	//                JButton temp = list.get(i);*/
+	//			for (JButton temp:list){
+	//				if (e.getSource() == temp)
+	//					restPanel.showInfo(type, temp.getText());
+	//			}
+	//
+	//			if(e.getSource() == Hungry){
+	//				addHungry = !addHungry;
+	//			}
+	//		}
 
-		}
-		else {
-			// Isn't the second for loop more beautiful?
-			/*for (int i = 0; i < list.size(); i++) {
-                JButton temp = list.get(i);*/
-			for (JButton temp:list){
-				if (e.getSource() == temp)
-					restPanel.showInfo(type, temp.getText());
-			}
 
-			if(e.getSource() == Hungry){
-				addHungry = !addHungry;
-			}
-		}
-	}
+/**
+ * If the add button is pressed, this function creates
+ * a spot for it in the scroll pane, and tells the restaurant panel
+ * to add a new person.
+ *
+ * @param name name of new person
+ */
 
-	/**
-	 * If the add button is pressed, this function creates
-	 * a spot for it in the scroll pane, and tells the restaurant panel
-	 * to add a new person.
-	 *
-	 * @param name name of new person
-	 */
-	public void addPerson(String name) {
-//		if(addWaiter){
-//			restPanel.addWaiter(name);
-//			return;
-//		}
-		//restPanel.updateRestLabel();
-		if (name != null) {
-
-			JButton button = new JButton(name);
-			button.setBackground(Color.white);
-
-			Dimension paneSize = pane.getSize();
-			Dimension buttonSize = new Dimension(paneSize.width - 20,
-					(int) (paneSize.height / 7));
-			button.setPreferredSize(buttonSize);
-			button.setMinimumSize(buttonSize);
-			button.setMaximumSize(buttonSize);
-			button.addActionListener(this);
-			list.add(button);
-			view.add(button);
-			restPanel.showInfo(type, name);//puts hungry button on panel
-		}
-			restPanel.addPerson(type, name);//puts customer on list
-    		//restPanel.updateRestLabel();
-			validate();
-		}
-	}
+}
 

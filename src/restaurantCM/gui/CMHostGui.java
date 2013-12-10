@@ -1,16 +1,16 @@
 package restaurantCM.gui;
 
 
-import restaurantCM.CustomerRole;
-import restaurantCM.HostRole;
+import restaurantCM.CMCustomerRole;
+import restaurantCM.CMHostRole;
 
 import java.awt.*;
 
-public class HostGui implements Gui {
+public class CMHostGui implements Gui {
 	public boolean customerline1 = false;
 	public boolean customerline2 = false;
 	public boolean customerline3 = false;
-	private HostRole agent = null;
+	private CMHostRole agent = null;
 	private int xLobby = 80, yLobby = 40; //Lobby position
 	private int xPos = xLobby, yPos = yLobby;//default waiter position
 	public int xDestination = xLobby, yDestination = yLobby;//default start position
@@ -39,7 +39,7 @@ public class HostGui implements Gui {
 	public static final int yTable11 = 340;
 	public static final int xTable12 = 160;
 	public static final int yTable12 = 400;
-	public HostGui(HostRole agent) {
+	public CMHostGui(CMHostRole agent) {
 		this.agent = agent;
 	}
 
@@ -79,7 +79,7 @@ public class HostGui implements Gui {
 		return true;
 	}
 
-	public void DoBringToTable(CustomerRole customer, int table) {
+	public void DoBringToTable(CMCustomerRole customer, int table) {
 		switch(table){
 		case 1:
 			xDestination = xTable1 + 20;

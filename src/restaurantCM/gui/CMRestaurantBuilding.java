@@ -2,9 +2,10 @@ package restaurantCM.gui;
 
 import javax.swing.JFrame;
 
+import bank.utilities.CustInfo;
 import mainGUI.MainGui;
-import restaurantCM.gui.RestaurantGui;
-import restaurantCM.gui.RestaurantPanel;
+import restaurantCM.gui.CMRestaurantGui;
+import restaurantCM.gui.CMRestaurantPanel;
 import city.Building;
 import city.CityData;
 import city.PersonAgent;
@@ -13,14 +14,14 @@ import city.Building.BuildingType;
 public class CMRestaurantBuilding extends Building {
 	public static final int MAXCUSTOMERS = 8;
 
-	RestaurantGui restGui;
-	RestaurantPanel restPanel;
+	CMRestaurantGui restGui;
+	CMRestaurantPanel restPanel;
 
 	public CMRestaurantBuilding(int xPos, int yPos, int width, int height,
 			String name, BuildingType type, MainGui mainGui, CityData cd) 
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
-		restGui = new RestaurantGui();
+		restGui = new CMRestaurantGui();
 		restPanel = restGui.restPanel;
 	}
 
@@ -73,7 +74,7 @@ public class CMRestaurantBuilding extends Building {
 		return restPanel.hasCashier();
 	}
 
-	public RestaurantGui getRestaurantGui()
+	public CMRestaurantGui getRestaurantGui()
 	{
 		return restGui;
 	}
@@ -85,6 +86,25 @@ public class CMRestaurantBuilding extends Building {
 
 	public JFrame getBuildingGui() {
 		return restGui;
+	}
+	public void test(){
+		PersonAgent p1 = new PersonAgent("CMhost");
+		p1.startThread();
+		manager = p1;
+		EnterBuilding(p1, "Host");
+
+		PersonAgent p2 = new PersonAgent("CMCook");
+		p2.startThread();
+		EnterBuilding(p2, "Cook");
+
+
+		PersonAgent p3 = new PersonAgent("CMCashier");
+		p3.startThread();
+		EnterBuilding(p3, "Cashier");
+		
+		PersonAgent p4 = new PersonAgent("CMCustomer");
+		p3.startThread();
+		EnterBuilding(p3, "Customer");
 	}
 }
 

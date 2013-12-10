@@ -2,7 +2,7 @@ package restaurantCM;
 
 import agent.Agent;
 import restaurantCM.myCust.*;
-import restaurantCM.gui.WaiterGui;
+import restaurantCM.gui.CMWaiterGui;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -13,13 +13,13 @@ import city.Role;
 
 
 
-public class WaiterAgent extends Role{
+public class CMWaiterRole extends Role{
 	//DATA
 	private List<myCust> Customers = new ArrayList<myCust>();
-	private WaiterGui myGui;
+	private CMWaiterGui myGui;
 	private String name;
-	private HostRole host;
-	private CookRole cook;
+	private CMHostRole host;
+	private CMCookRole cook;
 	private Semaphore atTable = new Semaphore(0,true);
 	private Semaphore atLobby = new Semaphore(0,true);
 	private Semaphore atCook = new Semaphore(0,true);
@@ -28,41 +28,41 @@ public class WaiterAgent extends Role{
 	private enum State {goToLobby, goToCook, None}
 	public Menu menu = new Menu();
 	private boolean onBreak = false;
-	private CashierRole cashier;
+	private CMCashierRole cashier;
 	//Messages
-	public void msgSitAtTable(CustomerRole c, int tablenum, HostRole host){
+	public void msgSitAtTable(CMCustomerRole c, int tablenum, CMHostRole host){
 		//DONE
 		this.host = host;
 		seatCustomer(c, tablenum);
 		stateChanged();
 	}
-	public void msgImReadyToOrder(CustomerRole c){
+	public void msgImReadyToOrder(CMCustomerRole c){
 		//DONE
 		int index = findCustomer(c);
 		Customers.get(index).state = AgentState.readyToOrder;
 		stateChanged();
 	}
 
-	public void msgHeresMyChoice(String choice, CustomerRole c){
+	public void msgHeresMyChoice(String choice, CMCustomerRole c){
 		int index = findCustomer(c);
 		Customers.get(index).state = AgentState.sendOrderToCook;
 		Customers.get(index).setChoice(choice);
 		stateChanged();
 	}
 
-	public void msgOrderIsReady(String choice, CustomerRole c){
+	public void msgOrderIsReady(String choice, CMCustomerRole c){
 		int index = findCustomer(c);
 		Customers.get(index).state = AgentState.orderReady;
 		stateChanged();
 	}
 
-	public void msgDoneAndLeaving(CustomerRole c){
+	public void msgDoneAndLeaving(CMCustomerRole c){
 		print("recieved msgDoneAndLeaving from "+ c.getCustomerName());
 		int index = findCustomer(c);
 		Customers.get(index).state = AgentState.done;
 		stateChanged();
 	}
-	public void msgBadOrder(CustomerRole c){
+	public void msgBadOrder(CMCustomerRole c){
 		int index =findCustomer(c);
 		myCust C = Customers.get(index);
 		C.state = AgentState.badOrder;
@@ -79,12 +79,12 @@ public class WaiterAgent extends Role{
 		onBreak = true;
 		stateChanged();
 	}
-	public void msgAskForBill(CustomerRole c) {
+	public void msgAskForBill(CMCustomerRole c) {
 		print(c.getCustomerName()+" asked for bill");
 		Customers.get(findCustomer(c)).state = AgentState.askedForBill;
 		stateChanged();
 	}
-	public void msgPayBill(CustomerRole c, double total){
+	public void msgPayBill(CMCustomerRole c, double total){
 		int i = findCustomer(c);
 		Customers.get(i).setTotalBill(total);
 		Customers.get(i).state = AgentState.needsToPay;
@@ -113,13 +113,13 @@ public class WaiterAgent extends Role{
 	}
 	
 	//Actions
-	public WaiterAgent(PersonAgent person){
+	public CMWaiterRole(PersonAgent person){
 		super(person);
 		this.name = person.getName();
 		atLobby.drainPermits();
 	}
 
-	private int findCustomer(CustomerRole c){
+	private int findCustomer(CMCustomerRole c){
 		for( myCust C : Customers){
 			if(C.getC().equals(c)){
 				return Customers.indexOf(C);
@@ -174,7 +174,7 @@ public class WaiterAgent extends Role{
 		}
 	}
 
-	private void seatCustomer(CustomerRole c, int tablenum) {
+	private void seatCustomer(CMCustomerRole c, int tablenum) {
 
 		Customers.add(new myCust(tablenum, null, c));
 	}
@@ -189,12 +189,12 @@ public class WaiterAgent extends Role{
 		C.state = AgentState.waitingForOrder;
 		animationGoToTable(C.getTablenum());
 	}
-	public void msgHereIsBill(CustomerRole c, double totalBill) {
+	public void msgHereIsBill(CMCustomerRole c, double totalBill) {
 		Customers.get(findCustomer(c)).setTotalBill(totalBill);
 		Customers.get(findCustomer(c)).state =AgentState.haveBill;
 		stateChanged();
 	}
-	private void orderToCook(String choice, CustomerRole c) {
+	private void orderToCook(String choice, CMCustomerRole c) {
 		int index = findCustomer(c);
 		myCust C = Customers.get(index);
 		C.state = AgentState.foodCooking;
@@ -204,7 +204,7 @@ public class WaiterAgent extends Role{
 	}
 
 
-	private void deliverOrder(String choice, CustomerRole c) {
+	private void deliverOrder(String choice, CMCustomerRole c) {
 		int index = findCustomer(c);
 		int tablenum = Customers.get(index).getTablenum();
 		animationGoToTable(tablenum);
@@ -219,7 +219,7 @@ public class WaiterAgent extends Role{
 
 	}
 
-	private void clearTable(CustomerRole c) {
+	private void clearTable(CMCustomerRole c) {
 		int tablenum = Customers.get(findCustomer(c)).getTablenum();
 		animationGoToTable(tablenum);
 		host.msgLeavingTable(c);
@@ -334,7 +334,7 @@ public class WaiterAgent extends Role{
 		print("total bill for "+c.getC().getCustomerName()+" is "+c.getTotalBill());
 
 	}
-	private void badOrder(CustomerRole C) {
+	private void badOrder(CMCustomerRole C) {
 		int index = findCustomer(C);
 		myCust c= Customers.get(index);
 		animationGoToTable(c.getTablenum());
@@ -348,16 +348,16 @@ public class WaiterAgent extends Role{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public CookRole getCook() {
+	public CMCookRole getCook() {
 		return cook;
 	}
-	public void setCook(CookRole cook) {
+	public void setCook(CMCookRole cook) {
 		this.cook = cook;
 	}
-	public WaiterGui getMyGui() {
+	public CMWaiterGui getMyGui() {
 		return myGui;
 	}
-	public void setMyGui(WaiterGui myGui) {
+	public void setMyGui(CMWaiterGui myGui) {
 		this.myGui = myGui;
 	}
 	public boolean isOnBreak() {
@@ -366,11 +366,11 @@ public class WaiterAgent extends Role{
 	public void setOnBreak(boolean onBreak) {
 		this.onBreak = onBreak;
 	}
-	public void setCashier(CashierRole cashier) {
+	public void setCashier(CMCashierRole cashier) {
 		this.cashier = cashier;
 
 	}
-	public void setHost(HostRole host){
+	public void setHost(CMHostRole host){
 		this.host = host;
 	}
 

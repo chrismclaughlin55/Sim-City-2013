@@ -4,14 +4,14 @@ public class myCust {
 //DATA
 	private int tablenum;
 	private String choice;
-	private CustomerRole c;
+	private CMCustomerRole c;
 	private double totalBill;
 	
 	public enum AgentState {waiting, seated, readyToOrder,waitingForOrder, sendOrderToCook, foodCooking, orderReady, eating,done, left, badOrder,askedForBill,sentBill, haveBill , billPaid, needsToPay,  }
 	public AgentState state = null;
 	
 	
-	public myCust(int tablenum, String choice, CustomerRole c) {
+	public myCust(int tablenum, String choice, CMCustomerRole c) {
 		super();
 		this.tablenum = tablenum;
 		this.choice = choice;
@@ -30,10 +30,10 @@ public class myCust {
 	public void setChoice(String choice) {
 		this.choice = choice;
 	}
-	public CustomerRole getC() {
+	public CMCustomerRole getC() {
 		return c;
 	}
-	public void setC(CustomerRole c) {
+	public void setC(CMCustomerRole c) {
 		this.c = c;
 	};
 	

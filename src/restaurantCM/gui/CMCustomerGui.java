@@ -1,7 +1,7 @@
 package restaurantCM.gui;
 
-import restaurantCM.CustomerRole;
-import restaurantCM.HostRole;
+import restaurantCM.CMCustomerRole;
+import restaurantCM.CMHostRole;
 
 import java.awt.*;
 
@@ -11,32 +11,32 @@ import java.awt.*;
  * 
  */
 
-public class CustomerGui implements Gui{
+public class CMCustomerGui implements Gui{
 
-	private CustomerRole agent = null;
+	private CMCustomerRole agent = null;
 	private boolean isPresent = false;
 	private boolean isHungry = false;
 
 	//private HostAgent host;
-	RestaurantGui gui;
+	CMRestaurantGui gui;
 
 	private int xPos, yPos;
 	private int xDestination, yDestination;
 	private enum Command {noCommand, GoToSeat, LeaveRestaurant};
 	private Command command=Command.noCommand;
 		public int xTable, yTable;
-		public static final int xTable1 = HostGui.xTable1;
-		public static final int yTable1 = HostGui.yTable1;
-		public static final int xTable2 = HostGui.xTable2;
-		public static final int yTable2 = HostGui.yTable2;
-		public static final int xTable3 = HostGui.xTable3;
-		public static final int yTable3 = HostGui.yTable3;
-		public static final int xTable4 = HostGui.xTable4;
-		public static final int yTable4 = HostGui.yTable4;
-		public static final int xTable5 = HostGui.xTable5;
-		public static final int yTable5 = HostGui.yTable5;
-		public static final int xTable6 = HostGui.xTable6;
-		public static final int yTable6 = HostGui.yTable6;
+		public static final int xTable1 = CMHostGui.xTable1;
+		public static final int yTable1 = CMHostGui.yTable1;
+		public static final int xTable2 = CMHostGui.xTable2;
+		public static final int yTable2 = CMHostGui.yTable2;
+		public static final int xTable3 = CMHostGui.xTable3;
+		public static final int yTable3 = CMHostGui.yTable3;
+		public static final int xTable4 = CMHostGui.xTable4;
+		public static final int yTable4 = CMHostGui.yTable4;
+		public static final int xTable5 = CMHostGui.xTable5;
+		public static final int yTable5 = CMHostGui.yTable5;
+		public static final int xTable6 = CMHostGui.xTable6;
+		public static final int yTable6 = CMHostGui.yTable6;
 	    public static final int xTable7 = 160;
 	    public static final int yTable7 = 100;
 	    public static final int xTable8 = 160;
@@ -50,7 +50,7 @@ public class CustomerGui implements Gui{
 	    public static final int xTable12 = 160;
 	    public static final int yTable12 = 400;
 
-	public CustomerGui(CustomerRole c, RestaurantGui gui){ //HostAgent m) {
+	public CMCustomerGui(CMCustomerRole c, CMRestaurantGui gui){ //HostAgent m) {
 		agent = c;
 		xPos = 60;
 		yPos = 40;
