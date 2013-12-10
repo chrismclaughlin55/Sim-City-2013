@@ -12,6 +12,8 @@ import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
+import trace.AlertLog;
+import trace.AlertTag;
 import city.PersonAgent;
 import city.Role;
 
@@ -299,12 +301,14 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 	private void LeaveNow()
 	{
 		System.out.println(name + " Leaving then.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CUSTOMER, this.getName(), "Leaving then");
 		host.msgLeaving(this);
 		customerGui.DoExitRestaurant();
 	}
 	
 	private void goToRestaurant() {
 		System.out.println(name + "Going to restaurant");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CUSTOMER, this.getName(), "Going to restaurant");
 		host.msgIWantFood(this);//send our instance, so he can respond to us
 	}
 
@@ -315,6 +319,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 	
 	private void SitDown(int tableNum) {
 		System.out.println(name + ": Being seated. Going to table " + tableNum);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CUSTOMER, this.getName(), "Being seated. Going to table " + tableNum);
 		
 		//animation
 		customerGui.DoGoToSeat(tableNum);
@@ -328,6 +333,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 	private void ChooseOrder()
 	{
 		System.out.println(name + " Ready to order now.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CUSTOMER, this.getName(), "Ready to order now");
 		msgReadyToOrder();
 		waiter.msgReadyToOrder(this);
 	}
@@ -341,6 +347,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 		else if(name.equals("Broke"))
 		{
 			System.out.println("I can't afford anything. I'm leaving.");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CUSTOMER, this.getName(), "I can't afford anything. I'm leaving.");
 			waiter.msgLeaving(this);
 			state = AgentState.Paying;
 			event = AgentEvent.leave;
@@ -356,6 +363,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 			if(!menu.has(choice))
 			{
 				System.out.println("I can't afford anything. I'm leaving.");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CUSTOMER, this.getName(), "I can't afford anything. I'm leaving.");
 				waiter.msgLeaving(this);
 				state = AgentState.Paying;
 				event = AgentEvent.leave;
@@ -368,6 +376,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 		}
 		
 		System.out.println(name + ": I'll have the " + choice);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CUSTOMER, this.getName(), "I'll have the " + choice);
 		waiter.msgHereIsChoice(choice, this);
 		customerGui.setWaitingOrder(choice);
 		state = AgentState.WaitingForFood;
@@ -400,6 +409,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 	private void leaveTable() {
 		event = AgentEvent.NeedToPay;
 		System.out.println(name + "Leaving.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CUSTOMER, this.getName(), "Leaving");
 		waiter.msgDoneEating(this);
 	}
 	
@@ -424,6 +434,7 @@ private Semaphore actionDone = new Semaphore(0, true); //used to pause agent dur
 		money -= payment;
 		
 		System.out.println("Here is my payment of $" + payment);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CUSTOMER, this.getName(), "Here is my payment of $" + payment);
 		cashier.msgHereIsMoney(this, payment);
 	}
 	
