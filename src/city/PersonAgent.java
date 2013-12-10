@@ -279,7 +279,6 @@ public class PersonAgent extends Agent
 		//Reaching here means there is an active role, but it is "waiting" for a state to be updated
 		//Thus, the PersonAgent's scheduler should return FALSE
 		if(anyActive) {
-			System.err.println(name + " is active");
 			return false;
 		}
 		switch(bigState) {
@@ -381,11 +380,7 @@ public class PersonAgent extends Agent
 
 		case doingNothing: {
 			//Decide what the next BigState will be based on current parameters
-			System.err.println(name);
-			/*if (job.equals("Unemployed")) {
-				System.err.println(name);
-			}*/
-			
+						
 			if(goToWork && jobBuilding != null) {
 				destinationBuilding = jobBuilding;
 				desiredRole = job;
@@ -471,7 +466,6 @@ public class PersonAgent extends Agent
 //TODO
 	private void payRent() {
 		Apartment a = (Apartment) home;
-		System.err.println(bank.getAccount(a.manager).moneyInAccount);
 		bank.directDeposit(this, a.manager, rent);
 		rentDue = false;
 	}
