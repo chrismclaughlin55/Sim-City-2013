@@ -15,6 +15,8 @@ import market.interfaces.MarketManager;
 import restaurantMQ.MQCashierRole;
 import restaurantMQ.test.mock.EventLog;
 import restaurantMQ.test.mock.LoggedEvent;
+import trace.AlertLog;
+import trace.AlertTag;
 import city.PersonAgent;
 import city.Role;
 import city.TestPerson;
@@ -209,6 +211,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 
 	public void FulfillOrder() {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "Fulfilling customer's order");
 		amountDue = 0;
 		log.add((new LoggedEvent("Fufilling order")));
 		
@@ -247,6 +250,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 
 	public void FulfillCookOrder(MyCookCustomer c) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "Fulfilling restaurant's order");
 		amountDue = 0;
 		for (final restaurantMQ.MarketOrder o : c.order) {
 			if(o.amount <= inventory.inventory.get(o.name).amount) {
@@ -276,12 +280,14 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	public void ProcessPayment() {
 		gui.GiveItems();
 		print ("Received: " + payments.get(0).doubleValue() + " Amount Due: " + amountDue);
+		AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "Received: " + payments.get(0).doubleValue() + " Amount Due: " + amountDue);
 		if (payments.get(0).doubleValue() == amountDue) {
 			manager.msgHereIsMoney(payments.get(0), this);
 			currentCustomer.msgYouCanLeave();
 		}
 		else {
 			print ("You will face the wrath of Rami");
+			AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "You will face the wrath of Rami");
 		}
 		currentMarketOrders.clear();
 		invoice.clear();
@@ -292,11 +298,13 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	public void ProcessRestPayment() {
 
 		print ("Received: " + restPayments.get(0).doubleValue() + " Amount Due: " + amountDue);
+		AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "Received: " + restPayments.get(0).doubleValue() + " Amount Due: " + amountDue);
 		if (restPayments.get(0).doubleValue() == amountDue) {
 			manager.msgHereIsMoney(restPayments.get(0), this);
 		}
 		else {
 			print ("Your restaurant will face the wrath of Rami");
+			AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "Your restaurant will face the wrath of Rami");
 		}
 		restPayments.remove(0);
 	}

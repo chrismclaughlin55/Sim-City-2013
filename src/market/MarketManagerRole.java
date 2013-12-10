@@ -131,7 +131,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 		if(person.cityData.hour >= market.CLOSINGTIME && market.isOpen())
 		{
 			print ("CLOSING THE MARKET");
-			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.getName(), "CLOSING THE MARKET");
+			AlertLog.getInstance().logInfo(AlertTag.MARKET, this.getName(), "Market is closed");
 			AlertLog.getInstance().logMessage(AlertTag.MARKET_MANAGER, this.getName(), "CLOSING THE MARKET");
 			market.setClosed(person);
 			return true;
@@ -225,6 +225,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 
 	private void LeaveRestaurant() {
 		System.out.println("manager leaving");
+		AlertLog.getInstance().logMessage(AlertTag.MARKET_MANAGER, this.getName(), "Leaving the market");
 		gui.DoLeaveMarket();
 		try{
 			leaving.acquire();
