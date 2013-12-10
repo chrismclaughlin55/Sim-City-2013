@@ -3,11 +3,11 @@ package restaurantKC.gui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import restaurantKC.CustomerAgent;
+import restaurantKC.interfaces.Customer;
 
 public class CustomerGui implements Gui{
 
-	private CustomerAgent agent = null;
+	private Customer agent = null;
 	private boolean isPresent = false;
 	private boolean isHungry = false;
 	private FoodGui food = null;
@@ -26,9 +26,9 @@ public class CustomerGui implements Gui{
 
 	private static int tableNumber = 0;
 
-	public CustomerGui(CustomerAgent c, RestaurantGui gui, int custnum){ //HostAgent m) {
+	public CustomerGui(Customer c, RestaurantGui gui){ //HostAgent m) {
 		agent = c;
-		xPos = home+(custnum*30);
+		xPos = home;
 		yPos = home;
 		xDestination = xPos;
 		yDestination = home;

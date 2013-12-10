@@ -12,14 +12,19 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import restaurantKC.WaiterAgent;
+import restaurantKC.KCWaiterRole;
+import restaurantKC.interfaces.Waiter;
 
 public class WaiterGui implements Gui {
 
 	public static class Location {
 		public Location (int x, int y) {
-			this.setX(x);
+			this.x = x;
 			this.y = y;
+		}
+		public Location () {
+			x=-1;
+			y=-1;
 		}
 		public int getX() {
 			return x;
@@ -33,42 +38,49 @@ public class WaiterGui implements Gui {
 		public void setY(int y) {
 			this.y = y;
 		}
-		private int x;
-		private int y;
+		public int x;
+		public int y;
 	}
 
 	public static List<Location> locations = new ArrayList<Location>();
 	public static List<FoodGui> foodItems = new ArrayList<FoodGui>();
 	public static List<Location> plates = new ArrayList<Location>();
 
-	protected WaiterAgent agent = null;
+	protected KCWaiterRole agent = null;
 	private FoodGui food = null;
 	private int CookX = 270;
 	private int CookY = 180;
-	private int plateNum = 0;
+	private int plateNum = -1;
 
-	private int home = 30;
+	private int homeX = 30;
+	private int homeY = 30;
 
-	private int xPos = home, yPos = home;//default waiter position
-	int xDestination = home;//default start position
+	private int xPos = homeX, yPos = homeY;//default waiter position
+	
+	int xDestination = homeX;
+	int yDestination = homeY;
 
-	int yDestination = home;
-
-	private int tableNumber = 0;
+	private int tableNumber = -1;
 	public boolean headingBack = false;
+	public boolean leaving = false;
 	private AnimationPanel animationPanel = null;
 	Timer breakTimer = new Timer();
 	private RestaurantPanel restPanel;
 
-	public WaiterGui(WaiterAgent agent, RestaurantPanel rp) {
+	public WaiterGui(Waiter agent, RestaurantPanel rp, int num) {
+		if (num > 3) 
+			num = num%4;
+		homeX = homeX+num*35;
+		xPos = homeX;
+		xDestination = homeX; 
 		restPanel = rp;
-		this.agent = agent;
+		this.agent = (KCWaiterRole) agent;
 		int n = 50;
 		for (int i = 0; i < 3; i++) {
 			locations.add(new Location(n, 400));
 			n += 150;
 		}
-		
+
 		n = 340;
 		for (int i = 0; i < 3; i++) {
 			plates.add(new Location(n, 200));
@@ -92,18 +104,24 @@ public class WaiterGui implements Gui {
 			if (xPos == xDestination && yPos == yDestination
 					& (xDestination == (locations.get(tableNumber - 1).getX() + 20)) & (yDestination == (locations.get(tableNumber - 1).y - 20))) {
 				agent.msgAtTable();
-			}		
+			}                
 		}
-
 		if (tableNumber > 0) {
 			if (xPos == xDestination && yPos == yDestination
 					& (xDestination == (locations.get(tableNumber - 1).getX() + 20)) & (yDestination == (locations.get(tableNumber - 1).y - 70))) {
 				agent.msgAtTable();
-			}		
+			}                
+		}
+
+		if ((xDestination == -30) && (yDestination ==-30) && (xPos == -30) && (yPos == -30) && leaving) {
+			leaving = false;
+			agent.msgDoneLeaving();
 		}
 
 
-		if ((xPos == home) && (yPos == home))
+
+
+		if ((xPos == homeX) && (yPos == homeY))
 		{
 			if (headingBack)
 			{
@@ -113,14 +131,18 @@ public class WaiterGui implements Gui {
 		}    
 
 		if (plateNum == -1) {
-			if ((xPos == CookX) && (yPos == CookY) && (xDestination == CookX) && (yDestination == CookY)){ //hack
-				agent.msgAtCook();
+			if ((xPos == xDestination) && (yPos == yDestination)) {
+				if ((xPos == CookX) && (yPos == CookY) && (xDestination == CookX) && (yDestination == CookY)){ //hack
+					agent.msgAtCook();
+				}
 			}
 		}
 
 		if ((plateNum >= 0) && (plateNum < 3)){
-			if ((xPos == plates.get(plateNum).getX()+9) && (yPos == plates.get(plateNum).getY()+40) && (xDestination == plates.get(plateNum).getX()+9) && (yDestination == plates.get(plateNum).getY()+40)){ 
-				agent.msgAtPlate();
+			if ((xPos == xDestination) && (yPos == yDestination)) {
+				if ((xPos == plates.get(plateNum).getX()+9) && (yPos == plates.get(plateNum).getY()+40)){ 
+					agent.msgAtPlate();
+				}
 			}
 		}
 
@@ -137,7 +159,7 @@ public class WaiterGui implements Gui {
 	}
 
 	public void DoBringToTable(CustomerGui CustGui, int tNum) {
-		if ((xPos != home) && (yPos != home)) {
+		if ((xPos != homeX) && (yPos != homeY)) {
 			DoLeaveCustomer();
 			try {
 				agent.leftCustomer.acquire();
@@ -148,7 +170,8 @@ public class WaiterGui implements Gui {
 			System.out.println ("left the customer, now time to take order");
 		}
 		tableNumber = tNum;
-		xDestination = locations.get(tableNumber-1).getX() + 20;
+		System.out.println(locations);
+		xDestination = locations.get(tableNumber-1).x + 20;
 		yDestination = locations.get(tableNumber-1).y - 20;
 		CustGui.setSuggestedDestination(xDestination, yDestination);
 	}
@@ -175,8 +198,8 @@ public class WaiterGui implements Gui {
 
 	public void DoLeaveCustomer() {
 		headingBack = true;
-		xDestination = home;
-		yDestination = home;
+		xDestination = homeX;
+		yDestination = homeY;
 	}
 
 	public void procureFood(String choice, int t) {
@@ -227,11 +250,22 @@ public class WaiterGui implements Gui {
 		}
 	}
 	public boolean isHome() {
-		if ((xPos == home) && (yPos == home)) {
+		if ((xPos == homeX) && (yPos == homeY)) {
 			return true;
 		}
 		return false;
 	}
 
+	public void DefaultAction() {
+		xDestination = homeX;
+		yDestination = homeY;
+	}
+
+	public void DoLeaveRestaurant()
+	{	
+		leaving = true;
+		xDestination = -30;
+		yDestination = -30;
+	}
 
 }

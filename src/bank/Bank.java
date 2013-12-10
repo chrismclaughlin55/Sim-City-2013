@@ -2,9 +2,13 @@ package bank;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
+import java.lang.Double;
 
 import javax.swing.JFrame;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import bank.utilities.CustInfo;
 import bankgui.BankCustomerGui;
 import bankgui.BankGui;
@@ -14,20 +18,25 @@ import city.Building;
 import city.CityData;
 import city.PersonAgent;
 import city.Building.BuildingType;
+import city.interfaces.Bus;
 
 public class Bank extends Building {
+	public Semaphore enter = new Semaphore(1, true);
 	public final static int CLOSINGTIME = 22;
 	public BankGui bankGui;
-	BankManagerRole currentManager = null;
+	public BankManagerRole currentManager = null;
 	Map<PersonAgent, CustomerRole> existingCustRoles;
 	Map<PersonAgent, BankManagerRole> existingManagerRoles;
 	Map<PersonAgent, TellerRole> existingTellerRoles;
-	private Map<PersonAgent, CustInfo> CustAccounts;
-	private Map<String, CustInfo> BusinessAccounts;
+	public static Map<PersonAgent, CustInfo> CustAccounts = new HashMap<PersonAgent, CustInfo>();
+	public static Map<Building, java.lang.Double> BusinessAccounts = new HashMap<Building, java.lang.Double>();
+	
+	private boolean printed = false;
+
 	public Bank(int xPos, int yPos, int width, int height, String name, BuildingType bank, MainGui mainGui, CityData cd) {
 		super(xPos, yPos, width, height, name, bank, mainGui);
 		cityData = cd;
-		this.bankGui = new BankGui();
+		this.bankGui = new BankGui(this);
 		mainGui.bankGui = this.bankGui;
 		mainGui.bankGui.bank = this;
 		super.type = BuildingType.bank;
@@ -36,12 +45,17 @@ public class Bank extends Building {
 		existingTellerRoles = new HashMap<PersonAgent, TellerRole>();
 
 		//accounts
-		CustAccounts = new HashMap<PersonAgent, CustInfo>();
-		BusinessAccounts = new HashMap<String, CustInfo>();
-
+		
 	}
+	
 	@Override
 	public void EnterBuilding(PersonAgent p, String roleRequest){
+		try {
+			enter.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(roleRequest.equals("BankManager")){
 			if(manager == null){
 				manager = p;
@@ -51,27 +65,29 @@ public class Bank extends Building {
 					setOpen(p);
 					p.msgAssignRole(existingManagerRoles.get(p));
 					currentManager = existingManagerRoles.get(p);
-
+					AlertLog.getInstance().logInfo(AlertTag.BANK, this.name, "Bank is open for employees only");
 				}
 				else {
 
-					existingManagerRoles.put(p, new BankManagerRole(p));
+					existingManagerRoles.put(p, new BankManagerRole(p, this));
 					setOpen(p);
 					p.msgAssignRole(existingManagerRoles.get(p));
 					currentManager = existingManagerRoles.get(p);
-					BankManagerRole bRole = new BankManagerRole(p);
+					BankManagerRole bRole = new BankManagerRole(p, this);
 					existingManagerRoles.put(p, bRole);
 					setOpen(p);
 					p.print("bank is open? "+ isOpen);
 					p.msgAssignRole(bRole);
 					currentManager = bRole;
 					cityData.buildings.get(18).manager = currentManager.getPerson();
+					AlertLog.getInstance().logInfo(AlertTag.BANK, this.name, "Bank is open for employees only");
 				}
 			}
 		}
+
 		if(roleRequest.equals("Customer")){
 			if(isOpen() && this.currentManager != null){
-				if(this.currentManager.getTellers().size() != 0 ){
+				if(currentManager.tellerPresent()){
 					if(existingCustRoles.get(p) != null){
 						CustomerRole role = existingCustRoles.get(p);
 						BankCustomerGui custGui = new BankCustomerGui(role);
@@ -91,14 +107,17 @@ public class Bank extends Building {
 						bankGui.animationPanel.addGui(custGui);
 						currentManager.msgINeedService(newRole);
 					}
-				} else p.exitBuilding();
+				} else{
+					System.out.println("teller present? " + currentManager.tellerPresent());
+					p.exitBuilding();
+				}
 			}
 		}
 		if(roleRequest.equals("BankTeller")){
 			if(isOpen()){
 				if(existingTellerRoles.get(p) != null){
 					TellerRole role = existingTellerRoles.get(p);
-					TellerGui tellerGui = new TellerGui(existingTellerRoles.get(p));
+					TellerGui tellerGui = new TellerGui(existingTellerRoles.get(p), currentManager.tellers.size()+5);
 					role.msgAddGui(tellerGui);
 					p.msgAssignRole(role);
 					role.msgAddGui(tellerGui);
@@ -110,27 +129,36 @@ public class Bank extends Building {
 				else{
 					TellerRole newRole = new TellerRole(p);
 					existingTellerRoles.put(p, newRole);
-					TellerGui tellerGui = new TellerGui(newRole);
+					TellerGui tellerGui = new TellerGui(newRole, currentManager.tellers.size()+5);
 					p.msgAssignRole(newRole);
 					newRole.msgAddGui(tellerGui);
 					bankGui.animationPanel.addGui(tellerGui);
 					currentManager.msgAddTeller(newRole);
 					newRole.msgAddManager(currentManager);
 				}
+				if(!printed) {
+					AlertLog.getInstance().logInfo(AlertTag.BANK, this.name, "Bank is fully employed");
+					AlertLog.getInstance().logInfo(AlertTag.BANK, this.name, "Bank is open now");
+					printed = true;
+				}
 			}
 			else p.exitBuilding();
 		}
+		if (roleRequest.equals("BankRobber")) {
+			if (isOpen()) {
+				BankRobber robber = new BankRobber(p, this);
+				p.msgAssignRole(robber);
+			}
+		}
+		enter.release();
 	}
 	public void directDeposit(PersonAgent sender, PersonAgent reciever, double amount){
-		if(currentManager != null){
-			currentManager.msgDirectDeposit(sender, reciever, amount);
-		}
-		else{
-			CustInfo send = getAccount(sender);
-			CustInfo recieve = getAccount(reciever);
-			send.moneyInAccount-=amount;
-			recieve.moneyInAccount+=amount;
-		}
+		CustInfo send = getAccount(sender);
+		CustInfo recieve = getAccount(reciever);
+		send.moneyInAccount -= amount;
+		recieve.moneyInAccount += amount;
+		CustAccounts.put(sender, send);
+		CustAccounts.put(reciever, recieve);
 	}
 
 	public CustInfo getAccount(PersonAgent person){
@@ -164,5 +192,44 @@ public class Bank extends Building {
 
 	public JFrame getBuildingGui() {
 		return bankGui;
+	}
+
+
+	//BUSINESS BANK ACCOUNT METHODS
+	public void addBusinessAccount(Building b, java.lang.Double startMoney){
+		BusinessAccounts.put(b, startMoney);
+		System.out.println(b.type + " added account");
+	}
+
+	public double payPerson(Building b, PersonAgent p, double amount){
+		java.lang.Double businessMoney = BusinessAccounts.get(b);
+		CustInfo personAccount = CustAccounts.get(p);
+		businessMoney = businessMoney - amount;
+		personAccount.moneyInAccount += amount;
+		System.out.println(b.type + "is paying " +p.getName()+" $"+amount+" for work");
+		CustAccounts.put(p, personAccount);
+		BusinessAccounts.put(b, businessMoney);
+		return businessMoney;
+
+	}
+	public double depositMoney(Building b, double amount){
+		java.lang.Double account = BusinessAccounts.get(b);
+		System.out.println(b.type + " depositing amount = "+ amount);
+		System.out.println(b.type + " old balance: " +account);
+		account+= amount;
+		System.out.println(b.type + " new balance: "+ account);
+		return account;
+	}
+	public double withdrawMoney(Building b, double amount){
+		double businessAccount = BusinessAccounts.get(b);
+		if(amount<businessAccount){
+			System.out.println(b.type+ " is withdrawing "+ amount + " with " + (businessAccount - amount) + " left");
+			BusinessAccounts.put(b, (java.lang.Double)(businessAccount - amount));
+		}
+		else{
+			System.out.println(b.type+ " is withdrawing "+ businessAccount + " with " + 0 + " left");
+			BusinessAccounts.put(b, (java.lang.Double)(0.0));
+		}
+		return BusinessAccounts.get(b);
 	}
 }

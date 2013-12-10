@@ -15,11 +15,13 @@ import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import trace.DemoLauncher;
 import Gui.Gui;
 import bankgui.BankGui;
 import city.Apartment;
 import city.Building;
 import city.BusAgent;
+import city.CityData;
 import city.Home;
 import city.HomeGui;
 import city.PersonAgent;
@@ -51,9 +53,13 @@ public class MainGui extends JFrame implements MouseListener {
     private int cashier = 0;
     private int host = 0;
     private int landlord = 0;
+    private CityData cityData;
     //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
     //public BusStopGui busStopGui will have a list of these and add them all 
+    
+    static DemoLauncher dl = new DemoLauncher();
+    
     /**
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
@@ -73,9 +79,10 @@ public class MainGui extends JFrame implements MouseListener {
     	
     	ArrayList<HashMap<String,String>> configPeople;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainAnimationPanel = new MainAnimationPanel(this);
+        cityData = new CityData();
+        mainAnimationPanel = new MainAnimationPanel(this, cityData);
         mainAnimationPanel.setVisible(true);
-        personPanel = new PersonCreationPanel(this);
+        personPanel = new PersonCreationPanel(this, cityData);
         personPanel.setVisible(true);
     	
     	setBounds(0, 0, WIDTH, HEIGHT);
@@ -126,7 +133,7 @@ public class MainGui extends JFrame implements MouseListener {
 					n = scan.next();
 					PersonAgent p = new PersonAgent(n, this, mainAnimationPanel.cd);
 					if(newPerson.equals("NewPerson")) {
-						for(int i=0; i<5; i++) {
+						for(int i=0; i<6; i++) {
 							String property = scan.next();
 							String temp = scan.next();
 							if(property.equals("name")) {
@@ -147,6 +154,23 @@ public class MainGui extends JFrame implements MouseListener {
 							}
 							if(property.equals("hunger")) { 
 								p.setHunger(Integer.parseInt(temp));
+							}
+							if(property.equals("transportation")) {
+								if(temp.equals("car")) {
+									p.car = true;
+									p.bus = false;
+									p.walk = false;
+								}
+								if(temp.equals("bus")) {
+									p.car = false;
+									p.bus = true;
+									p.walk = false;
+								}
+								if(temp.equals("walk")) {
+									p.car = false;
+									p.bus = false;
+									p.walk = false;
+								}
 							}
 						}
 					}
@@ -175,7 +199,7 @@ public class MainGui extends JFrame implements MouseListener {
 						String n = scan.next();
 						n = scan.next();
 						PersonAgent p = createPerson(n,null);
-						for(int i=0; i<5; i++) {
+						for(int i=0; i<6; i++) {
 							String property = scan.next();
 							String temp = scan.next();
 							if(property.equals("name")) {
@@ -200,6 +224,23 @@ public class MainGui extends JFrame implements MouseListener {
 							}
 							if(property.equals("hunger")) { 
 								p.setHunger(Integer.parseInt(temp));
+							}
+							if(property.equals("transportation")) {
+								if(temp.equals("car")) {
+									p.car = true;
+									p.bus = false;
+									p.walk = false;
+								}
+								if(temp.equals("bus")) {
+									p.car = false;
+									p.bus = true;
+									p.walk = false;
+								}
+								if(temp.equals("walk")) {
+									p.car = false;
+									p.bus = false;
+									p.walk = false;
+								}
 							}
 						}
 						assignJobBuilding(p,p.getJob());
@@ -231,7 +272,14 @@ public class MainGui extends JFrame implements MouseListener {
     }
     
   
-    public static void main(String[] args) { 
+    public static void main(String[] args) {
+    	dl.start();
+    	dl.setTitle("Trace Panel");
+		dl.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dl.setBounds(10, 0, 650, 500);
+		dl.setResizable(false);
+		dl.setVisible(false);
+        
         MainGui gui = new MainGui();
         gui.setTitle("Sim City - Team 15");
         gui.setVisible(true);
@@ -268,7 +316,7 @@ public class MainGui extends JFrame implements MouseListener {
     
     public void addPerson(String name, String role, String destination) {
 		PersonAgent p = createPerson(name, role);
-		
+	
 		if(destination.equals("Restaurant"))
 		{
 			p.bigState = BigState.goToRestaurant;
@@ -289,6 +337,10 @@ public class MainGui extends JFrame implements MouseListener {
 			return;
 		}
 		assignJobBuilding(p, role);
+		p.setJob(role);
+		p.bus = true;
+		p.walk = false;
+		p.car = false;
 		p.homeState = HomeState.onCouch;
 		p.tiredLevel = 0;
 		p.startThread();
@@ -333,6 +385,12 @@ public class MainGui extends JFrame implements MouseListener {
     	if (role.equals("BankTeller")) {
     		if (mainAnimationPanel.cd.bank != null) {
     			p.setJobBuilding(mainAnimationPanel.cd.bank);
+    		}
+    	}
+    	if (role.equals("BankRobber")) {
+    		if (mainAnimationPanel.cd.bank != null) {
+    			p.setJobBuilding(mainAnimationPanel.cd.bank);
+    			p.setGoToWork(true);
     		}
     	}
     	if (role.equals("MarketManager")) {

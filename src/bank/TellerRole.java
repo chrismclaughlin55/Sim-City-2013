@@ -2,6 +2,8 @@ package bank;
 
 import java.util.concurrent.Semaphore;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
@@ -22,6 +24,8 @@ public class TellerRole extends Role implements Teller{
 	Event event;
 	boolean wantToLeave = false;
 	private TellerGui gui;
+	private boolean bankRobbery = false;
+	private BankRobber bankRobber;
 
 	private Semaphore atDest = new Semaphore(0 ,true);
 
@@ -44,9 +48,15 @@ public class TellerRole extends Role implements Teller{
 		try {
 			atHome.acquire();
 		} catch (InterruptedException e) {
-			
+
 			e.printStackTrace();
 		}
+	}
+	
+	public void msgStickEmUp(BankRobber br) {
+		bankRobbery = true;
+		bankRobber = br;
+		stateChanged();
 	}
 
 	//MESSAGES
@@ -64,12 +74,10 @@ public class TellerRole extends Role implements Teller{
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
 		event = Event.recievedInfo;
-
-//TODO Problem here
-		if(info != null)
-			this.currentCustInfo = info;
-		else{ 
-			this.currentCustInfo = person.bankInfo;
+		if(info != null){
+			this.currentCustInfo.moneyInAccount = info.moneyInAccount;
+			this.currentCustInfo.loanApproveAmount = info.loanApproveAmount;
+			this.currentCustInfo.loanAmount = info.loanAmount;
 		}
 
 		stateChanged();
@@ -102,7 +110,11 @@ public class TellerRole extends Role implements Teller{
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		print(state+ " " + event + " stateChange= " + this.person.stateChange.availablePermits() + " " +((currentCustInfo != null)?currentCustInfo.custName: " "));
+		if (bankRobbery) {
+			payTheMan();
+			return true;
+		}
+		
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;
@@ -114,7 +126,7 @@ public class TellerRole extends Role implements Teller{
 		if(state == State.waitingForResponse && event == Event.recievedDeposit){
 			print("made it to sched procOrd");
 			processOrder();
-			
+
 			return true;
 		}
 		if(state == State.doneWithCustomer && event == Event.updatedBank){
@@ -134,18 +146,22 @@ public class TellerRole extends Role implements Teller{
 			wantToLeave = true;
 		}
 		if(wantToLeave && bm.getLine().size() == 0){
-			this.leaveBank();
+			this.guiGoHere(9);
 		}
-			
+
 		return false;
 	}
 	//ACTIONS
 	private void ask() {
 		currentCustInfo.customer.msgWhatWouldYouLike();
 		state = State.waitingForResponse;
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Serving "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Serving "+currentCustInfo.custName);
 	}
 
 	private void getInfo() {
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Getting info for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Getting info for "+currentCustInfo.custName);
 		bm.msgGiveMeInfo(currentCustInfo.customer, this);
 		state = State.waitingForInfo;
 	}
@@ -156,7 +172,17 @@ public class TellerRole extends Role implements Teller{
 
 	}
 
+	private void payTheMan() {
+		System.err.println("IM BEING ROBBED");
+		AlertLog.getInstance().logError(AlertTag.BANK, this.name, "IM BEING ROBBED");
+		AlertLog.getInstance().logError(AlertTag.BANK_TELLER, this.name, "IM BEING ROBBED");
+		bankRobber.msgPleaseDontShoot(400);
+		bankRobbery = false;
+	}
+	
 	private void processLoan() {
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Processing loan for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Processing loan for "+currentCustInfo.custName);
 		if(currentCustInfo.loanRequestAmount>currentCustInfo.loanApproveAmount)
 			currentCustInfo.customer.msgCanDoThisAmount(currentCustInfo.loanApproveAmount);
 		else 
@@ -167,6 +193,8 @@ public class TellerRole extends Role implements Teller{
 	private void processOrder() {
 		//
 		print("processing order for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Processing order for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Processing order for "+currentCustInfo.custName);
 		bm.msgUpdateInfo(currentCustInfo, this);
 		currentCustInfo.customer.msgHaveANiceDay(currentCustInfo.depositAmount);
 		state = State.doneWithCustomer;
@@ -177,18 +205,21 @@ public class TellerRole extends Role implements Teller{
 
 	}
 
-	private void leaveBank() {
-		bm.msgLeavingNow(this);
-		gui.DoLeaveBank();
+	private void guiGoHere(int place) {
+		if(place == 9)
+			bm.msgLeavingNow(this);
+		gui.goTo(place);
 		try
 		{
 			atDest.acquire();
 		}
 		catch(Exception e){}
-		gui.setPresent(false);
-		person.exitBuilding();
-		person.msgDoneWithJob();
-		doneWithRole();	
+		if(place == 9){
+			gui.setPresent(false);
+			person.exitBuilding();
+			person.msgDoneWithJob();
+			doneWithRole();
+		}
 	}
 
 

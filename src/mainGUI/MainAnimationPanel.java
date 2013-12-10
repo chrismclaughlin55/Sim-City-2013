@@ -38,7 +38,7 @@ import city.RGrid;
 
 public class MainAnimationPanel extends JPanel implements ActionListener {
 
-	private int frameDisplay = 2;
+	private int frameDisplay = 5;
 
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	//public List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
@@ -51,10 +51,10 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 	private MainGui mainGui;
 
 
-	public MainAnimationPanel(MainGui mainGui) {
+	public MainAnimationPanel(MainGui mainGui, CityData cityData) {
 		//Add buildings
 		this.mainGui = mainGui;
-		cd = new CityData();
+		cd = cityData;
 		for (int i = 0; i < 2; i++) {
 			Building b = new Apartment(20, 140+i*120, WIDTH, HEIGHT, "apartment", BuildingType.apartment, mainGui, cd);
 			cd.buildings.add(b);
@@ -112,8 +112,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 
 		//create restaurants
-
 		for (int i = 0; i < 2; i++) {
+
 			Building b = new SMRestaurantBuilding(200+i*140, 140, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
 			cd.restaurants.add((SMRestaurantBuilding) b);
@@ -124,6 +124,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.buildings.add(b);
 			cd.restaurants.add((KCRestaurantBuilding) b);
 		}
+
 		for(int i=0; i<1; i++) {
 			Building b;
 			try {
@@ -158,7 +159,8 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		Market m = new Market(340, 420, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
 		cd.buildings.add(m);
 		cd.market =  m;
-
+		
+		
         
         //create bus stop for restaurants/market/bank
 		BusStopAgent bs12 = new BusStopAgent(200-20-20, 140+40+20, cd);
@@ -256,17 +258,21 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 			cd.buildings.get(i).setType(BuildingType.restaurant);
 			cd.buildings.get(i).setName("restaurant"+(i-11));
 			cd.buildings.get(i).setBuildingNumber(i);
+			cd.bank.addBusinessAccount(cd.buildings.get(i), 5000.0);
 		}
 
 		//Set bank parameters
 		cd.buildings.get(18).setType(BuildingType.bank);
 		cd.buildings.get(18).setName("bank");
 		cd.buildings.get(18).setBuildingNumber(18);
-
+		cd.bank.addBusinessAccount(cd.buildings.get(18), 15000.0);
 		//Set market parameters
 		cd.buildings.get(19).setType(BuildingType.market);
 		cd.buildings.get(19).setName("market");
 		cd.buildings.get(19).setBuildingNumber(19);
+
+		cd.market = (Market) cd.buildings.get(19);
+		cd.bank.addBusinessAccount(cd.buildings.get(19), 5000.0);
 
 		//setBackground(Color.WHITE);
 		cd.globalTimer = new Timer(GLOBALINTERVAL,(ActionListener) this);

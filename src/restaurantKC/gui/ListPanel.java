@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import city.PersonAgent;
+
 /**
  * Subpanel of restaurantPanel.
  * This holds the scroll panes for the customers and, later, for waiters
@@ -134,7 +136,9 @@ public class ListPanel extends JPanel implements ActionListener, KeyListener{
             button.addActionListener(this);
             list.add(button);
             view.add(button);
-            restPanel.addPerson(type, name);//puts customer on list
+            
+            PersonAgent p = new PersonAgent(name);
+            restPanel.addCustomer(p);//puts customer on list
             validate();
         }
     }

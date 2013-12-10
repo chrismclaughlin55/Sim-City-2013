@@ -6,13 +6,17 @@ import java.util.List;
 import java.util.Map;
 
 import restaurantKC.Check.CheckState;
+import restaurantKC.gui.RestaurantPanel;
+import restaurantKC.interfaces.Cashier;
 import restaurantKC.interfaces.Customer;
 import restaurantKC.interfaces.Market;
 import restaurantKC.interfaces.Waiter;
 import restaurantKC.test.mock.EventLog;
-import agent.Agent;
+import city.PersonAgent;
+import city.Role;
 
-public class CashierAgent extends Agent {
+public class KCCashierRole extends Role implements Cashier {
+	public RestaurantPanel restPanel;
 
 	public List<MyCheck> computedChecks = Collections.synchronizedList(new ArrayList<MyCheck>());
 	public List<Check> uncomputedChecks = Collections.synchronizedList(new ArrayList<Check>());
@@ -21,10 +25,11 @@ public class CashierAgent extends Agent {
 	private String name;
 	public Double money;
 
-	public CashierAgent(String name) {
-		super();
-		this.name = name;
+	public KCCashierRole(PersonAgent p, RestaurantPanel restPanel) {
+		super(p);
+		this.name = p.getName();
 		money = 0.0;
+		this.restPanel = restPanel;
 	}
 
 	public class MyCheck {
@@ -58,8 +63,8 @@ public class CashierAgent extends Agent {
 	public EventLog log = new EventLog();
 
 
-	public void msgGiveOrderToCashier(String c, int tNum, Customer c2, Waiter waiterAgent) {
-		uncomputedChecks.add(new Check(c, tNum, c2, waiterAgent));
+	public void msgGiveOrderToCashier(String c, int tNum, Customer cust, Waiter waiterAgent) {
+		uncomputedChecks.add(new Check(c, tNum, cust, waiterAgent));
 		print ("Received msgGiveOrderToCashier");
 		stateChanged();
 	}
@@ -78,10 +83,12 @@ public class CashierAgent extends Agent {
 		stateChanged();
 	}
 
-	public void msgHereIsMarketBill(double price, Market m) {
+	public void msgHereIsMarketBill(Double price, Market m) {
 		marketbills.add(new MyMarketBill(price, m));
 		stateChanged();
 	}
+	
+	
 
 	public boolean pickAndExecuteAnAction() {
 		
@@ -112,6 +119,13 @@ public class CashierAgent extends Agent {
 				}
 			}
 		}
+		
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && !restPanel.isOpen() 
+				&& restPanel.justCashier()) {
+			LeaveRestaurant();
+			return true;
+		}
+		
 		return false;
 
 	}
@@ -178,5 +192,14 @@ public class CashierAgent extends Agent {
 
 	public String getName() {
 		return name;
-	}    
+	}
+	
+	private void LeaveRestaurant() {
+		person.hungerLevel = 0;
+		restPanel.cashierLeaving();
+		person.msgDoneWithJob();
+		person.exitBuilding();
+		doneWithRole();
+	}
+
 }

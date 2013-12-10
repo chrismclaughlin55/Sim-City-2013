@@ -14,7 +14,7 @@ public class BankCustomerGui implements GuiPositions, Gui {
 	boolean atDest = false;
 	CustomerRole c;
 	private int xPos = doorx, yPos = doory;
-	private int xDestination = linex, yDestination = liney;
+	private int xDestination = lineSx, yDestination = liney;
 	public BankCustomerGui(CustomerRole c) {
 		this.c = c;
 	}
@@ -58,20 +58,44 @@ public class BankCustomerGui implements GuiPositions, Gui {
 	}
 
 	public void goTo(int place){
+		System.out.println("going to place #"+place);
 		if(place == 0){
-			xDestination = linex;
+			xDestination = lineSx;
 			yDestination = liney;
-	
 		}
 		if(place == 1){
-			xDestination = linex + 200;
+			xDestination = line1x;
 			yDestination = liney;
 		}
 		if(place == 2){
+			xDestination = line2x;
+			yDestination = liney;
+		}
+		if(place == 3){
+			xDestination = line3x;
+			yDestination = liney;
+		}
+		if(place == 4){
+			xDestination = line4x;
+			yDestination = liney;
+		}
+		if(place == 5){
 			xDestination = tellerx;
 			yDestination = teller1y;
 		}
-		if(place == 3){
+		if(place == 6){
+			xDestination = tellerx;
+			yDestination = teller2y;
+		}
+		if(place == 7){
+			xDestination = tellerx;
+			yDestination = teller3y;
+		}
+		if(place == 8){
+			xDestination = tellerx;
+			yDestination = teller4y;
+		}	
+		if(place == 9){
 			xDestination = doorx;
 			yDestination = doory;
 			

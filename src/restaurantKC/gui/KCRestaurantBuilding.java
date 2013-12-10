@@ -2,9 +2,12 @@ package restaurantKC.gui;
 
 import javax.swing.JFrame;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import mainGUI.MainGui;
 import city.Building;
 import city.CityData;
+import city.PersonAgent;
 
 public class KCRestaurantBuilding extends Building
 {
@@ -13,17 +16,19 @@ public class KCRestaurantBuilding extends Building
 	RestaurantGui restGui;
 	RestaurantPanel restPanel;
 	
+	private boolean printed = false;
+	
 	public KCRestaurantBuilding(int xPos, int yPos, int width, int height,
 			String name, BuildingType type, MainGui mainGui, CityData cd) 
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
-		restGui = new RestaurantGui();
+		restGui = new RestaurantGui(this);
 		restPanel = restGui.restPanel;
 	}
 	
-	/*public void EnterBuilding(PersonAgent person, String roleRequest)
+	public void EnterBuilding(PersonAgent person, String roleRequest)
 	{
-		System.out.println(person.getName() + ": Entering RestaurantMQ as " + roleRequest);
+		System.out.println(person.getName() + ": Entering RestaurantKC as " + roleRequest);
 		if(roleRequest.equals("Customer"))
 		{
 			restPanel.addCustomer(person);
@@ -44,12 +49,18 @@ public class KCRestaurantBuilding extends Building
 		{
 			restPanel.addHost(person);
 			isOpen = true;
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTKC, this.name, "RestaurantKC is open for employees only");
 		}
 		
 	}
 	
 	public boolean isOpen()
-	{	
+	{
+		if(isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed() && !printed) {
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTKC, this.name, "RestaurantKC is fully employed");
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTKC, this.name, "RestaurantKC is open now");
+			printed = true;
+		}
 		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
 	}
 	
@@ -76,7 +87,7 @@ public class KCRestaurantBuilding extends Building
 	public void setOpen(Boolean b) {
 		isOpen = b;
 		
-	}*/
+	}
 
 	public JFrame getBuildingGui() {
 		return restGui;

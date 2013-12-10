@@ -3,6 +3,7 @@ package restaurantKC;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -10,19 +11,24 @@ import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 import restaurantKC.gui.CookGui;
+import restaurantKC.gui.RestaurantPanel;
+import restaurantKC.interfaces.Cook;
 import restaurantKC.interfaces.Waiter;
-import agent.Agent;
+import city.PersonAgent;
+import city.Role;
 
 /**
  * Restaurant Host Agent
  */
 
-public class CookAgent extends Agent {
+public class KCCookRole extends Role implements Cook {
+
+	public RestaurantPanel restPanel;
 
 	private List<pcCookOrder> cookOrders;
 	private Map<String, Food> foodMap = Collections.synchronizedMap(new HashMap<String, Food>());
 	private List<MarketOrder> incompleteOrders = Collections.synchronizedList(new ArrayList<MarketOrder>());
-	enum State {pending, cooking, done, plated, sent};
+	enum State {pending, cooking, done, plated, sent, discard};
 	String name;
 	public CookGui cookGui = null;
 	Timer timer = new Timer();
@@ -91,18 +97,19 @@ public class CookAgent extends Agent {
 	private List<CookOrder> orders = Collections.synchronizedList(new ArrayList<CookOrder>());
 	private List<MarketAgent> markets = Collections.synchronizedList(new ArrayList<MarketAgent>()); 
 
-	public CookAgent(String name, List<pcCookOrder> cookOrders) {
-		super();
+	public KCCookRole(List<pcCookOrder> cookOrders, PersonAgent p, RestaurantPanel restPanel) {
+		super(p);
 		this.cookOrders = cookOrders;
-		Food steak = new Food(1, 5);
-		Food salad = new Food(1, 2);
-		Food pizza = new Food(1, 4);
-		Food chicken = new Food(1, 3);
-		this.name = name;
+		Food steak = new Food(100, 5);
+		Food salad = new Food(100, 2);
+		Food pizza = new Food(100, 4);
+		Food chicken = new Food(100, 3);
+		this.name = person.getName();
 		foodMap.put("Steak", steak); 
 		foodMap.put("Salad", salad);  
 		foodMap.put("Pizza", pizza);  
 		foodMap.put("Chicken", chicken);
+		this.restPanel = restPanel;
 	}
 
 	public void setGui(CookGui gui) {
@@ -111,7 +118,7 @@ public class CookAgent extends Agent {
 
 
 	@Override
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 
 
 		synchronized (incompleteOrders) {
@@ -210,6 +217,19 @@ public class CookAgent extends Agent {
 				cookOrders.remove(o);
 				return true;
 			}
+		}
+
+		for(Iterator<CookOrder> iter = orders.iterator(); iter.hasNext(); ) {
+			CookOrder o = iter.next();
+			if(o.state == State.discard) {
+				iter.remove();
+			}
+		}
+
+
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && orders.isEmpty() && cookOrders.isEmpty() /*&& restPanel.activeWaiters() == 0*/) {
+			LeaveRestaurant();
+			return true;
 		}
 
 		return false;
@@ -357,7 +377,7 @@ public class CookAgent extends Agent {
 
 	private void orderFromMarket(String type) {
 		print ("Attempting to order " + type);
-		markets.get(marketNum).msgHereIsMarketOrder(type, 5);
+		//markets.get(marketNum).msgHereIsMarketOrder(type, 5);
 	}
 
 
@@ -425,14 +445,25 @@ public class CookAgent extends Agent {
 	}
 
 	public void msgImTakingTheFood(String choice, int t) {
-		for (CookOrder o : orders) {
-			if (o.state == State.sent)  {
-				cookGui.removeFood(o.orderNum);
+		synchronized (orders) {
+			for (CookOrder o : orders) {
+				if (o.state == State.sent)  {
+					o.state = State.discard;
+					cookGui.removeFood(o.orderNum);
+				}
 			}
 		}
 		stateChanged();
 	}
 
+
+	private void LeaveRestaurant() {
+		person.hungerLevel = 0;
+		cookGui.DoLeaveRestaurant();
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();
+	}
 
 }
 

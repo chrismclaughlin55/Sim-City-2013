@@ -2,6 +2,7 @@ package market;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -14,6 +15,8 @@ import restaurantMQ.MarketOrder;
 import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.test.mock.EventLog;
 import restaurantMQ.test.mock.LoggedEvent;
+import trace.AlertLog;
+import trace.AlertTag;
 import bank.BankManagerRole;
 import city.PersonAgent;
 import city.Role;
@@ -29,7 +32,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 	Inventory inventory;
 	Market market = null;
 	private ManagerGui gui = null;
-	
+
 	public EventLog log = new EventLog();
 
 	public List<MarketCustomer> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomer>());
@@ -38,6 +41,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 	private List<MyCookCustomer> waitingCookCustomers = Collections.synchronizedList(new ArrayList<MyCookCustomer>());
 
 	private Semaphore atHome = new Semaphore(0, true);
+	private Semaphore leaving = new Semaphore(0, true);
 
 
 	private class MyEmployee {
@@ -49,7 +53,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 			isBusy = false;
 		}
 	}
-	
+
 	public class MyCookCustomer {
 		public MQCookRole cook;
 		public Cashier cashier;
@@ -69,7 +73,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 		this.market = market;
 		state = ManagerState.nothing;
 	}
-	
+
 	/*public MarketManagerRole(TestPerson person, Inventory inventory, Market market) {
 		super(person);
 		this.inventory = inventory;
@@ -88,15 +92,23 @@ public class MarketManagerRole extends Role implements MarketManager{
 		waitingCustomers.add(cust);
 		stateChanged();
 	}
-	
+
 	public void msgNeedToOrder(MQCookRole cook, List<MarketOrder> marketOrders, Cashier cashier) {
 		print("Received msgNeedToOrder from cook");
 		waitingCookCustomers.add(new MyCookCustomer(cook, marketOrders, cashier));
 		stateChanged();
 	}
 
-	public void msgLeavingWork(MarketEmployee employee) {
+	public void msgLeavingWork(MarketEmployee employee) {	
+
+		for(Iterator<MyEmployee> iter = workingEmployees.iterator(); iter.hasNext(); ) {
+			MyEmployee m = iter.next();
+			if(employee.equals(employee)) {
+				iter.remove();
+			}
+		}
 		workingEmployees.remove(employee);
+		print ("NUMBER OF WORKING EMPLOYEES" + workingEmployees.size());
 		stateChanged();
 	}
 
@@ -115,12 +127,33 @@ public class MarketManagerRole extends Role implements MarketManager{
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-		
+
+		if(person.cityData.hour >= market.CLOSINGTIME && market.isOpen())
+		{
+			print ("CLOSING THE MARKET");
+			AlertLog.getInstance().logMessage(AlertTag.MARKET, this.getName(), "CLOSING THE MARKET");
+			AlertLog.getInstance().logMessage(AlertTag.MARKET_MANAGER, this.getName(), "CLOSING THE MARKET");
+			market.setClosed(person);
+			return true;
+		}
+
+		/*if(person.cityData.hour >= market.CLOSINGTIME && !market.isOpen()) {
+			print ("NUMBER OF EMPLOYEES " + workingEmployees.size());
+			return true;
+		}*/
+
+		if(person.cityData.hour >= market.CLOSINGTIME && !market.isOpen() && workingEmployees.isEmpty())
+		{
+			LeaveRestaurant();
+			return true;
+		}
+
 		if ((!market.isOpenForEmployees) && (state == ManagerState.setting))  {
 			market.isOpenForEmployees = true;
 			state = ManagerState.managing;
 			log.add (new LoggedEvent ("Market open for employees"));
 			print ("The market is now open for employees only");
+			AlertLog.getInstance().logInfo(AlertTag.MARKET, market.name, "Market is open for employees only");
 			return true;
 		}
 
@@ -129,6 +162,8 @@ public class MarketManagerRole extends Role implements MarketManager{
 			market.setOpen(person);
 			log.add (new LoggedEvent ("Market open"));
 			print ("The market is now open");
+			AlertLog.getInstance().logInfo(AlertTag.MARKET, market.name, "Market is fully employed");
+			AlertLog.getInstance().logInfo(AlertTag.MARKET, market.name, "Market is open now");
 			return true;
 		}
 
@@ -188,6 +223,19 @@ public class MarketManagerRole extends Role implements MarketManager{
 		return false;
 	}
 
+	private void LeaveRestaurant() {
+		System.out.println("manager leaving");
+		gui.DoLeaveMarket();
+		try{
+			leaving.acquire();
+		}
+		catch(Exception e){}
+		person.msgDoneWithJob();
+		person.exitBuilding();
+		doneWithRole();
+
+	}
+
 	private void DepositMoney() {
 		//bankManager.msgDepositMoney(bankAccountNum, undepositedMoney);
 		endOfDay = false;
@@ -201,6 +249,11 @@ public class MarketManagerRole extends Role implements MarketManager{
 	public void msgEntered() {
 		atHome.release();
 		state = ManagerState.setting;
+		stateChanged();
+	}
+
+	public void msgLeft() {
+		leaving.release();
 		stateChanged();
 	}
 

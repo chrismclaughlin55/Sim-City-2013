@@ -24,7 +24,7 @@ import Gui.*;
 public class AnimationPanel extends JPanel implements GuiPositions, ActionListener{
     private static final int WINDOWX = 400;
     private static final int WINDOWY = 500;
-    private static final int TIMEINTERVAL = 5;
+    private static final int TIMEINTERVAL = 10;
     
 	private List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
 	private Image bufferImage;
@@ -63,8 +63,8 @@ public class AnimationPanel extends JPanel implements GuiPositions, ActionListen
 		g2.fill3DRect(250 ,0, 10, WINDOWY-30, true);
 		g2.setColor(Color.BLACK);
 
-		g2.draw3DRect(linex, liney, 200, 1, true);
-		g2.draw3DRect(linex, liney + 30, 200, 1, true);
+		g2.draw3DRect(lineSx, liney, 200, 1, true);
+		g2.draw3DRect(lineSx, liney + 30, 200, 1, true);
 		g2.setColor(Color.BLUE);
 		g2.fill3DRect(doorx, doory, 20, 50, true);
 	
@@ -80,7 +80,10 @@ public class AnimationPanel extends JPanel implements GuiPositions, ActionListen
 	public void addGui(BankCustomerGui gui) {
 		guis.add(gui);
 	}
-
+	
+	public void addGui(BankRobberGui gui) {
+		guis.add(gui);
+	}
 	
 	public void addGui(BankManagerGui gui) {
 		guis.add(gui); 
@@ -90,12 +93,17 @@ public class AnimationPanel extends JPanel implements GuiPositions, ActionListen
 		
 	}
 	public void removeGui(TellerGui gui) {
-		
 		guis.remove(gui);
 	}
+	
+	public void removeGui(BankRobberGui gui) {
+		guis.remove(gui);
+	}
+	
 	public void removeGui(CustomerGui gui) {
 		guis.remove(gui);
 	}
+	
 	public void removeGui(BankManagerGui gui) {
 		guis.remove(gui);
 	}

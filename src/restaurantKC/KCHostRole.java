@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import restaurantKC.gui.HostGui;
+import restaurantKC.gui.RestaurantPanel;
 import restaurantKC.interfaces.Customer;
-import agent.Agent;
+import restaurantKC.interfaces.Host;
+import restaurantKC.interfaces.Waiter;
+import city.PersonAgent;
+import city.Role;
 
 /**
  * Restaurant Host Agent
@@ -17,29 +21,31 @@ import agent.Agent;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class HostAgent extends Agent {
+public class KCHostRole extends Role implements Host {
 	static final int NTABLES = 3;//a global for the number of tables.
 
 
-	public List<CustomerAgent> waitingCustomers = Collections.synchronizedList(new ArrayList<CustomerAgent>());
+	public List<Customer> waitingCustomers = Collections.synchronizedList(new ArrayList<Customer>());
 	private List<MyWaiter> waiters = Collections.synchronizedList(new ArrayList<MyWaiter>());
 	public Collection<Table> tables;
+
+	private RestaurantPanel restPanel;
 
 
 	private String name;
 	private boolean alreadySeated = false;
- 
+
 	public HostGui hostGui = null;
 
 	private Semaphore seatCustomer = new Semaphore(0, true);
 
 	private class MyWaiter {
-		public MyWaiter(WaiterAgent w, int nTables) {
+		public MyWaiter(Waiter w, int nTables) {
 			waiter = w;
 			numTables = nTables; 
 			onBreak = false;
 		}
-		WaiterAgent waiter;
+		Waiter waiter;
 		int numTables;
 		boolean onBreak;
 		public boolean breakApproved = false;
@@ -48,20 +54,21 @@ public class HostAgent extends Agent {
 	}
 
 
-	public HostAgent(String name) {
-		super();
-		this.name = name;
+	public KCHostRole(PersonAgent p, RestaurantPanel restPanel) {
+		super(p);
+		this.name = p.getName();
 		tables = new ArrayList<Table>(NTABLES);
 		for (int ix = 1; ix <= NTABLES; ix++) {
 			tables.add(new Table(ix));//how you add to a collections
 		}
+		this.restPanel = restPanel;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public List<CustomerAgent> getWaitingCustomers() {
+	public List<Customer> getWaitingCustomers() {
 		return waitingCustomers;
 	}
 
@@ -71,12 +78,12 @@ public class HostAgent extends Agent {
 
 	// Messages
 
-	public void msgIWantFood(CustomerAgent cust) {
+	public void msgIWantFood(Customer cust) {
 		waitingCustomers.add(cust);
 		stateChanged();
 	}
 
-	public void msgWaiterReporting(WaiterAgent w) {
+	public void msgWaiterReporting(Waiter w) {
 		waiters.add((new MyWaiter(w, 0)));
 		stateChanged();
 	}
@@ -90,7 +97,7 @@ public class HostAgent extends Agent {
 		}
 	}
 
-	public void msgIWantABreak(WaiterAgent w)
+	public void msgIWantABreak(Waiter w)
 	{
 		if (waiters.size() > 1) {
 			for (MyWaiter mw : waiters) {
@@ -112,7 +119,7 @@ public class HostAgent extends Agent {
 		}
 	}
 
-	public void msgImOffBreak(WaiterAgent w) {
+	public void msgImOffBreak(Waiter w) {
 		for (MyWaiter mw : waiters) {
 			if (mw.waiter.equals(w)){
 				mw.breakApproved = false;
@@ -121,6 +128,17 @@ public class HostAgent extends Agent {
 			}
 		}
 
+	}
+
+	public void msgLeavingNow(Waiter waiter) {
+		synchronized(waiters) {
+			for(MyWaiter w : waiters) {
+				if(w.waiter == waiter) {
+					waiters.remove(w);
+					return;
+				}
+			}
+		}
 	}
 
 	// removes customer when customer chooses to leave early
@@ -139,8 +157,18 @@ public class HostAgent extends Agent {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		alreadySeated = false;
+
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && restPanel.isOpen()) {
+			restPanel.setOpen(false);
+			return true;
+		}
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && !restPanel.isOpen() 
+				&& restPanel.justHost()) {
+			LeaveRestaurant();
+			return true;
+		}
 
 		synchronized(waitingCustomers) {
 			synchronized(waiters) {
@@ -208,7 +236,7 @@ public class HostAgent extends Agent {
 
 	// Actions
 
-	private void tellWaiterToSeatCustomer(CustomerAgent customer, Table table, WaiterAgent waiter) {
+	private void tellWaiterToSeatCustomer(Customer customer, Table table, Waiter waiter) {
 		waiter.msgSitAtTable(customer, table.tableNumber);
 		customer.setWaiter(waiter);
 		table.setOccupant(customer);
@@ -225,16 +253,15 @@ public class HostAgent extends Agent {
 		return hostGui;
 	}
 
-
 	private class Table {
-		CustomerAgent occupiedBy;
+		Customer occupiedBy;
 		int tableNumber;
 
 		Table(int tableNumber) {
 			this.tableNumber = tableNumber;
 		}
 
-		void setOccupant(CustomerAgent cust) {
+		void setOccupant(Customer cust) {
 			occupiedBy = cust;
 		}
 
@@ -242,7 +269,7 @@ public class HostAgent extends Agent {
 			occupiedBy = null;
 		}
 
-		CustomerAgent getOccupant() {
+		Customer getOccupant() {
 			return occupiedBy;
 		}
 
@@ -253,6 +280,16 @@ public class HostAgent extends Agent {
 		public String toString() {
 			return "table " + tableNumber;
 		}
+	}
+
+	private void LeaveRestaurant() {
+		person.hungerLevel = 0;
+		hostGui.DoLeaveRestaurant();
+		restPanel.hostLeaving();
+		person.exitBuilding();
+		person.msgFull();
+		person.msgDoneWithJob();
+		doneWithRole();
 	}
 
 
