@@ -80,6 +80,8 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	JRadioButton bankManager;
 	JRadioButton bankTeller;
 	JRadioButton bankCustomer;
+	
+	private JButton trace = new JButton("Trace Panel");
 
 	public PersonCreationPanel(MainGui mainGui) {
 		this.mainGui = mainGui;
@@ -178,8 +180,11 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		personPane.add(nameField);
 		personPane.add(addPerson);
 		personPane.setBounds(0, 120, 625, 305);
-		pane.setBounds(0, 430, 625, 343);
+		pane.setBounds(0, 430, 625, 250);
 
+		trace.setBounds(0, 685, 625, 90);
+		trace.addActionListener(this);
+		
 		add(fire);
 		add(robBank);
 		add(carCrash);
@@ -187,6 +192,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		add(timePane);
 		add(personPane);
 		add(pane);
+		add(trace);
 
 		addPerson.setEnabled(false);
 	}
@@ -357,6 +363,10 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		
 		else if (e.getSource() == runOver) {
 			//run a pedestrian over
+		}
+		
+		if (e.getSource() == trace) {
+			mainGui.dl.setVisible(true);
 		}
 	}
 
