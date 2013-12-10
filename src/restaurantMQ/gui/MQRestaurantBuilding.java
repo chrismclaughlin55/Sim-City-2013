@@ -23,7 +23,7 @@ public class MQRestaurantBuilding extends Building
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
 
-		restGui = new RestaurantGui(cd.market, this);
+		//restGui = new RestaurantGui(cd.market, this);
 
 		restPanel = restGui.getRestaurantPanel();
 	}

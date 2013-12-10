@@ -58,8 +58,8 @@ public class KCHostRole extends Role implements Host {
 		super(p);
 		this.name = p.getName();
 		tables = new ArrayList<Table>(NTABLES);
-		for (int ix = 1; ix <= NTABLES; ix++) {
-			tables.add(new Table(ix));//how you add to a collections
+		for (int ix = 1; ix < NTABLES; ix++) {
+			tables.add(new Table(ix));
 		}
 		this.restPanel = restPanel;
 	}
@@ -88,7 +88,6 @@ public class KCHostRole extends Role implements Host {
 		stateChanged();
 	}
 	public void msgTableIsFree(int table) {
-		print ("Received msgTableIsFree");
 		for (Table tbl : tables) {
 			if (tbl.tableNumber == table) {
 				tbl.setUnoccupied();
@@ -102,8 +101,6 @@ public class KCHostRole extends Role implements Host {
 		if (waiters.size() > 1) {
 			for (MyWaiter mw : waiters) {
 				if (mw.waiter.equals(w)){
-					//mw.onBreak = true;
-					//mw.waiter.msgBreakApproved();
 					mw.breakApproved  = true;
 					stateChanged();
 					break;
@@ -141,7 +138,6 @@ public class KCHostRole extends Role implements Host {
 		}
 	}
 
-	// removes customer when customer chooses to leave early
 	public void msgLeaving(Customer c) {
 		if (!alreadySeated) {
 			waitingCustomers.remove(c);
@@ -149,7 +145,6 @@ public class KCHostRole extends Role implements Host {
 		}
 	}
 
-	//message from Gui once customer has been seated
 	public void msgCustomerSeated() {
 		seatCustomer.release();
 	}
@@ -218,7 +213,6 @@ public class KCHostRole extends Role implements Host {
 										try {
 											seatCustomer.acquire();
 										} catch (InterruptedException e) {
-											// TODO Auto-generated catch block
 											e.printStackTrace();
 										}
 										return true;

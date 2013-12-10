@@ -14,6 +14,8 @@ import java.util.concurrent.Semaphore;
 import city.PersonAgent;
 import city.Role;
 import restaurantSM.*;
+import trace.AlertLog;
+import trace.AlertTag;
 /**
  * Restaurant customer agent.
  */
@@ -211,6 +213,7 @@ public class SMCustomerRole extends Role implements Customer {
 	// Actions
 
 	private void goToRestaurant() {
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_CUSTOMER, this.getName(), "Going to restaurant");
 		customerGui.DoGoToLine();
 		try {
 			isMoving.acquire();
@@ -222,12 +225,13 @@ public class SMCustomerRole extends Role implements Customer {
 	}
 	
 	private void WillingToWait() {
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_CUSTOMER, this.getName(), "Willing to wait");
 		host.msgIWillWait(this);
 	}
 	
 	private void UnwillingToWait() {
 		customerGui.DoExitRestaurant();
-		
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_CUSTOMER, this.getName(), "Unwilling to wait");
 	}
 	
 	private void ReadyToOrder() {
@@ -247,6 +251,7 @@ public class SMCustomerRole extends Role implements Customer {
 				choice = menu.chooseItem();
 				customerGui.setStatusText(choice + "?");
 				waiter.msgHeresMyChoice(this, choice);
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_CUSTOMER, this.getName(), "Ordering "+choice);
 			}
 			else {
 			leaveTable();
@@ -260,6 +265,7 @@ public class SMCustomerRole extends Role implements Customer {
 			choice = possibleChoices.get(randomIndex);
 			customerGui.setStatusText(choice + "?");
 			waiter.msgHeresMyChoice(this, choice);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_CUSTOMER, this.getName(), "Ordering "+choice);
 		}
 		possibleChoices.clear();
 	}
@@ -271,6 +277,7 @@ public class SMCustomerRole extends Role implements Customer {
 	private void GiveBillToCashier(){
 		cashier.msgHeresMyBill(bankRoll, bill);
 		bankRoll -= bankRoll;
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_CUSTOMER, this.getName(), "Paying the bill of $"+bill.total);
 	}
 	
 	private void SitDown(int tableNumber) {
@@ -302,6 +309,7 @@ public class SMCustomerRole extends Role implements Customer {
 		customerGui.setStatusText("");
 		waiter.msgDoneEating(this);
 		customerGui.DoExitRestaurant();
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_CUSTOMER, this.getName(), "Leaving restaurant");
 		person.exitBuilding();
 		person.msgFull();
 		doneWithRole();

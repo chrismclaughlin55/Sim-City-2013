@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 
 import market.MarketCustomerRole;
 import market.MarketEmployeeRole;
-import market.MarketOrder;
 import market.MyOrder;
 import Gui.Gui;
 

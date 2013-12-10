@@ -12,6 +12,7 @@ import trace.Alert;
 import trace.AlertLog;
 import trace.AlertTag;
 import trace.TracePanel;
+import restaurantCM.gui.CMRestaurantBuilding;
 import restaurantBK.gui.BKRestaurantBuilding;
 import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
@@ -73,11 +74,13 @@ public class PersonAgent extends Agent
 	public boolean car;
 	public boolean bus;
 	public boolean walk;
+
 	public Grid currGrid;
 	public RGrid currRGrid;
 	public RGrid nextRGrid;
 	
 	public boolean walking = false;
+
 
 
 	boolean goToWork = false;
@@ -638,15 +641,17 @@ public class PersonAgent extends Agent
             
 			while (true)
 			{
-				restNumber = 2;
+				restNumber = 4;
 				//restNumber = (int)(12+(int)(Math.random()*6));
 				if(restNumber >= 17)
 				{
 					bigState = BigState.goHome;
 					return;
 				}
-                
-				else if(((KCRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+
+
+				else if(((CMRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+
 					break;
 			}
 			destinationBuilding = cityData.restaurants.get(restNumber);
@@ -654,7 +659,7 @@ public class PersonAgent extends Agent
 		else
 		{
 			//destinationBuilding = jobBuilding;
-			restNumber = 2;
+			restNumber = 4;
 			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
         
@@ -672,9 +677,10 @@ public class PersonAgent extends Agent
 			}
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
-        
-		KCRestaurantBuilding restaurant = (KCRestaurantBuilding)destinationBuilding;
-        
+
+		CMRestaurantBuilding restaurant = (CMRestaurantBuilding)destinationBuilding;
+
+
 		if(goToWork && !desiredRole.equals("Customer"))
 		{
 			if(desiredRole.equals("Host") && !restaurant.hasHost()) {

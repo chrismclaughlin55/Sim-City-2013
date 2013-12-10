@@ -20,6 +20,7 @@ public class TellerGui implements GuiPositions, Gui {
 
 
 	public TellerGui(TellerRole tellerRole, int place) {
+		isPresent = true;
 		this.teller = tellerRole;
 		xPos = doorx;
 		yPos = doory;

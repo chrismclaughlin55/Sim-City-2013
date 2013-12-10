@@ -1,8 +1,10 @@
 package restaurantKC.interfaces;
 
+import java.util.List;
+
+import market.Invoice;
+import market.MarketManagerRole;
 import restaurantKC.Check;
-import restaurantKC.KCWaiterRole;
-import restaurantKC.MarketAgent;
 
 public interface Cashier {
 
@@ -11,6 +13,6 @@ public interface Cashier {
 	void msgGiveOrderToCashier(String choice, int t, Customer c,
 			Waiter waiter);
 
-	void msgHereIsMarketBill(Double price, Market m);
+	void msgHereIsMarketBill(double price, List<Invoice> invoice, MarketManagerRole m);
 	
 }

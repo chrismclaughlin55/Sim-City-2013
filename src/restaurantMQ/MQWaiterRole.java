@@ -16,6 +16,8 @@ import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
+import trace.AlertLog;
+import trace.AlertTag;
 
 public class MQWaiterRole extends Role implements Waiter
 {
@@ -427,6 +429,7 @@ public class MQWaiterRole extends Role implements Waiter
 	private void LeaveRestaurant() {
 		host.msgLeavingNow(this);
 		System.out.println("Waiter leaving");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_WAITER, this.getName(), "Leaving the restaurant");
 		gui.DoLeaveRestaurant();
 		try
 		{
@@ -450,6 +453,7 @@ public class MQWaiterRole extends Role implements Waiter
 		catch(Exception e){}
 		
 		System.out.println(name + ": Follow me to table " + customer.table);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_WAITER, this.getName(), "Follow me to table " + customer.table);
 		customer.customer.msgFollowMe(this, customer.table, new Menu(menu));
 		host.msgFreeSpot(customer.waitingSpot);
 		
@@ -471,13 +475,15 @@ public class MQWaiterRole extends Role implements Waiter
 		catch(Exception e){}
 		
 		System.out.println(name + ": What would you like?");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_WAITER, this.getName(), "What would you like?");
 		customer.customer.msgWhatDoYouWant();
 	}
 	
 	private void GiveOrderToCook(Order order)
 	{
 		System.out.println(name + ": Giving order to chef");
-		
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_WAITER, this.getName(), "Giving order to chef");
+
 		gui.DoGoToCook();
 		try
 		{
@@ -507,6 +513,7 @@ public class MQWaiterRole extends Role implements Waiter
 		catch(Exception e){}
 		
 		System.out.println(name + ": Please choose something else");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_WAITER, this.getName(), "Please choose something else");
 		orders.remove(order);
 		order.customer.msgPleaseChooseSomethingElse(new Menu(menu));
 	}
@@ -532,11 +539,13 @@ public class MQWaiterRole extends Role implements Waiter
 		catch(Exception e){}
 		
 		System.out.println(name + ": Here is your food");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_WAITER, this.getName(), "Here is your food");
 		order.customer.msgHereIsFood();
 		orders.remove(order);
 		gui.clearOrder(order.choice, order.customer);
 		
 		System.out.println(name + ": Getting check from cashier");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_WAITER, this.getName(), "Getting check from cashier");
 		cashier.msgProduceCheck(this, order.customer, order.choice);
 	}
 	
@@ -554,6 +563,7 @@ public class MQWaiterRole extends Role implements Waiter
 				checks.remove(check);
 				c.customer.msgHereIsCheck(check.balance);
 				System.out.println(name + ": Here is your check");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_WAITER, this.getName(), "Here is your check");
 				ClearTable(c);
 				return;
 			}
@@ -565,6 +575,7 @@ public class MQWaiterRole extends Role implements Waiter
 		customers.remove(c);
 		host.msgTableEmpty(c.table);
 		System.out.println(name + ": Table number " + c.table + " is empty.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_WAITER, this.getName(), "Table number " + c.table + " is empty");
 	}
 	
 	private void GoOnBreak()
@@ -573,6 +584,7 @@ public class MQWaiterRole extends Role implements Waiter
 		breakBox.setSelected(false);
 		breakBox.setText("Back to Work");
 		System.out.println(name + ": Going on break.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_WAITER, this.getName(), "Going on break");
 	}
 	
 	private void GoBackToWork()
