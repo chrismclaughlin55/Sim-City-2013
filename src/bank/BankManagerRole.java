@@ -266,13 +266,7 @@ public class BankManagerRole extends Role implements BankManager {
 		return personInfo;
 	}
 	public boolean tellerPresent() {
-		allGone = true;
-		for( myTeller t : tellers){
-			if(t.state != tellerState.offDuty)
-				allGone = false;
-
-		}
-		return allGone;
+		return !tellers.isEmpty();
 	}
 
 }

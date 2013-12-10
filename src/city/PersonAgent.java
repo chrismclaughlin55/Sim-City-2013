@@ -285,24 +285,45 @@ public class PersonAgent extends Agent
 
 		case atHome: {
 			if (homeState == HomeState.sleeping) {
-				if(cityData.hour >= 0 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
-					//delete the && false when the actual rule is implemented
-					WakeUp();
-					return true;
-				}
+				if (!isWeekend()) {
+					if(cityData.hour >= 0 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
+						//delete the && false when the actual rule is implemented
+						WakeUp();
+						return true;
+					}
 
-				else if (cityData.hour>=3 && isEmployee()) {
+					else if (cityData.hour>=3 && isEmployee()) {
 
-					//print(getJob());
-					WakeUp();
-					return true;
+						//print(getJob());
+						WakeUp();
+						return true;
+					}
+					else if (cityData.hour>=6) {
+						WakeUp();
+						return true;
+					}
+					return false; //put the agent thread back to sleep
 				}
-				else if (cityData.hour>=6) {
-					WakeUp();
-					return true;
+				else {
+					if(cityData.hour >= 2 && (job.equals("Host") || job.equals("MarketManager") || job.equals("BankManager"))){
+						//delete the && false when the actual rule is implemented
+						WakeUp();
+						return true;
+					}
+
+					else if (cityData.hour>=5 && isEmployee()) {
+
+						//print(getJob());
+						WakeUp();
+						return true;
+					}
+					else if (cityData.hour>=8) {
+						WakeUp();
+						return true;
+					}
+					return false; //put the agent thread back to sleep
 				}
-				return false; //put the agent thread back to sleep
-			}
+			}		
 
 			if (tiredLevel >= TIRED) {
 				goToSleep();
@@ -925,6 +946,10 @@ public class PersonAgent extends Agent
 
 	public String getJob() {
 		return job;
+	}
+	
+	public boolean isWeekend() {
+		return cityData.day > 4;
 	}
 
 	public boolean isEmployee() {
