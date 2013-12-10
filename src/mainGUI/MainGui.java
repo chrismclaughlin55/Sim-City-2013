@@ -58,7 +58,7 @@ public class MainGui extends JFrame implements MouseListener {
     public BankGui bankGui;
     //public BusStopGui busStopGui will have a list of these and add them all 
     
-    static DemoLauncher dl = new DemoLauncher();
+    public static DemoLauncher dl = new DemoLauncher();
     
     /**
      * Constructor for RestaurantGui class.
@@ -239,7 +239,7 @@ public class MainGui extends JFrame implements MouseListener {
 								if(temp.equals("walk")) {
 									p.car = false;
 									p.bus = false;
-									p.walk = false;
+									p.walk = true;
 								}
 							}
 						}
@@ -276,7 +276,7 @@ public class MainGui extends JFrame implements MouseListener {
     	dl.start();
     	dl.setTitle("Trace Panel");
 		dl.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		dl.setBounds(10, 0, 650, 500);
+		dl.setBounds(10, 0, 600, 800);
 		dl.setResizable(false);
 		dl.setVisible(false);
         
@@ -376,32 +376,34 @@ public class MainGui extends JFrame implements MouseListener {
     }
     
     public void assignJobBuilding(PersonAgent p, String role) {
+    	int bankNumber = 0;
+    	int marketNumber = 0;
     	if (role.equals("BankManager")) {
-    		if (mainAnimationPanel.cd.bank != null) {
-    			p.setJobBuilding(mainAnimationPanel.cd.bank);
-    			mainAnimationPanel.cd.bank.setManager(p);
+    		if (mainAnimationPanel.cd.banks.get(bankNumber) != null) {
+    			p.setJobBuilding(mainAnimationPanel.cd.banks.get(bankNumber));
+    			mainAnimationPanel.cd.banks.get(bankNumber).setManager(p);
     		}
     	}
     	if (role.equals("BankTeller")) {
-    		if (mainAnimationPanel.cd.bank != null) {
-    			p.setJobBuilding(mainAnimationPanel.cd.bank);
+    		if (mainAnimationPanel.cd.banks.get(bankNumber) != null) {
+    			p.setJobBuilding(mainAnimationPanel.cd.banks.get(bankNumber));
     		}
     	}
     	if (role.equals("BankRobber")) {
-    		if (mainAnimationPanel.cd.bank != null) {
-    			p.setJobBuilding(mainAnimationPanel.cd.bank);
+    		if (mainAnimationPanel.cd.banks.get(bankNumber) != null) {
+    			p.setJobBuilding(mainAnimationPanel.cd.banks.get(bankNumber));
     			p.setGoToWork(true);
     		}
     	}
     	if (role.equals("MarketManager")) {
-    		if (mainAnimationPanel.cd.market != null) {
-				p.setJobBuilding(mainAnimationPanel.cd.market);
-				mainAnimationPanel.cd.market.setManager(p);
+    		if (mainAnimationPanel.cd.markets.get(marketNumber) != null) {
+				p.setJobBuilding(mainAnimationPanel.cd.markets.get(marketNumber));
+				mainAnimationPanel.cd.markets.get(marketNumber).setManager(p);
 			}
     	}
     	if (role.equals("MarketEmployee")) {
-    		if (mainAnimationPanel.cd.market != null) {
-    			p.setJobBuilding(mainAnimationPanel.cd.market);
+    		if (mainAnimationPanel.cd.markets.get(marketNumber) != null) {
+    			p.setJobBuilding(mainAnimationPanel.cd.markets.get(marketNumber));
     		}
     	}
     	if (role.equals("Host")) {

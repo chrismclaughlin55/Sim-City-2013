@@ -79,7 +79,7 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 						if (o.type.equals(i.type)) {
 							if (o.amount == i.amount) {
 								o.orderState = OrderState.fulfilled;
-								//person.inventory.put(o.type, person.inventory.get(o.type) + i.amount);
+								person.inventory.put(o.type, person.inventory.get(o.type) + i.amount);
 							}
 						}
 					}

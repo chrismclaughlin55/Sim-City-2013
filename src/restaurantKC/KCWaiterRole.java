@@ -105,9 +105,7 @@ public class KCWaiterRole extends Role implements Waiter{
 
 
 	public void msgSitAtTable(Customer cust, int table) {
-		print("Received message sit at table");
 		customers.add(new MyCustomer(cust, table, CustomerState.waiting));
-		//WantBreak = true;
 		stateChanged();
 	}
 
@@ -123,7 +121,6 @@ public class KCWaiterRole extends Role implements Waiter{
 	}
 
 	public void msgHereIsMyChoice(String choice, Customer c) {
-		print ("Received choice of " + choice + " from " + c.getName());
 		orderGiven.release();
 		for (MyCustomer mc : customers)
 		{
@@ -201,13 +198,11 @@ public class KCWaiterRole extends Role implements Waiter{
 	}
 
 	public void msgBreakApproved() { 
-		print ("Break Accepted");
 		onBreak = true;
 		stateChanged();
 	}
 
 	public void msgBreakDenied() {
-		print ("Break Denied");
 		onBreak = false;
 		stateChanged();
 	}
@@ -218,7 +213,6 @@ public class KCWaiterRole extends Role implements Waiter{
 	}
 
 	public void msgHereIsComputedCheck(Check c) {
-		print ("Received computed check");
 		checks.add(c);
 		stateChanged();
 	}
@@ -379,7 +373,6 @@ public class KCWaiterRole extends Role implements Waiter{
 			try {
 				takingBreak.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			onBreak = false;
@@ -406,7 +399,6 @@ public class KCWaiterRole extends Role implements Waiter{
 		try {
 			atTable.acquire(); 
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		mc.c.msgFoodUnavailable();
@@ -421,7 +413,6 @@ public class KCWaiterRole extends Role implements Waiter{
 			try {
 				leftCustomer.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -431,7 +422,6 @@ public class KCWaiterRole extends Role implements Waiter{
 		try {
 			atTable.acquire(); 
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		c.s = CustomerState.seated; 
@@ -452,20 +442,17 @@ public class KCWaiterRole extends Role implements Waiter{
 			try {
 				leftCustomer.acquire();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
 	private void TakeOrder(MyCustomer c){
-		print("Taking the order of " + c.c + " at " + c.t);
 		waiterGui.DoGoToTable(c.t); 
 		atTable.drainPermits();
 		try {
 			atTable.acquire(); 
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		c.c.msgWhatWouldYouLike();
@@ -485,7 +472,6 @@ public class KCWaiterRole extends Role implements Waiter{
 		}
 		cookOrders.add(new pcCookOrder(this, c.choice, c.t));
 		cook.msgOrdersUpdated();
-		//cook.msgHereIsAnOrder(this, c.choice, c.t);
 	}
 
 
@@ -505,7 +491,6 @@ public class KCWaiterRole extends Role implements Waiter{
 								try {
 									atPlate.acquire();
 								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 								cook.msgImTakingTheFood(mc.choice, mc.t);
@@ -515,7 +500,6 @@ public class KCWaiterRole extends Role implements Waiter{
 								try {
 									atTable.acquire(); 
 								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 								serveFood.drainPermits();
@@ -539,14 +523,10 @@ public class KCWaiterRole extends Role implements Waiter{
 	}
 
 	private void DoSeatCustomer(Customer c, int tableNumber) {
-		//Notice how we print "customer" directly. It's toString method will do it.
-		//Same with "table"
-		print("Seating " + c + " at " + tableNumber);
 		waiterGui.DoBringToTable(c.getGui(), tableNumber); 
 	}
 
 	private void prepareCheck(MyCustomer customer) {
-		print("Preparing bill for Customer");
 		customer.s = CustomerState.done;
 		waiterGui.DoClearTable(customer.t);
 		cashier.msgGiveOrderToCashier(customer.choice, customer.t, customer.c, this); 
@@ -558,7 +538,6 @@ public class KCWaiterRole extends Role implements Waiter{
 		try {
 			atTable.acquire(); 
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		c.c.msgHereIsCheck(c);

@@ -12,6 +12,8 @@ import trace.Alert;
 import trace.AlertLog;
 import trace.AlertTag;
 import trace.TracePanel;
+import restaurantCM.gui.CMRestaurantBuilding;
+import restaurantBK.gui.BKRestaurantBuilding;
 import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
 import restaurantSM.gui.SMRestaurantBuilding;
@@ -25,6 +27,7 @@ import agent.Agent;
 import city.Building.BuildingType;
 import city.gui.PersonGui;
 import city.interfaces.BusStop;
+
 
 public class PersonAgent extends Agent
 {
@@ -48,6 +51,7 @@ public class PersonAgent extends Agent
 	public int criminalImpulse = 0;
 	public int hungerLevel = 0;
 	boolean ranonce = false;
+	public boolean crossingRoad = false;
 	PersonGui personGui;
 	MainGui gui;
 	public CityData cityData;
@@ -62,15 +66,23 @@ public class PersonAgent extends Agent
 	public BusStopAgent destinationBusStop;
 	String desiredRole;
 	private String job;
-	Market market;
+	List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
 	Timer timer = new Timer();
-	Bank bank;
+	List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
 	public HashMap<String, Integer> inventory = new HashMap<String, Integer>();
 	int rent = 50;
 	public boolean car;
 	public boolean bus;
 	public boolean walk;
-    
+
+	public Grid currGrid;
+	public RGrid currRGrid;
+	public RGrid nextRGrid;
+	
+	public boolean walking = false;
+
+
+
 	boolean goToWork = false;
     
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
@@ -89,6 +101,7 @@ public class PersonAgent extends Agent
 	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());
 	private Semaphore atBed = new Semaphore(0, true);
 	private Semaphore atEntrance = new Semaphore(0, true);
+	private Semaphore gridding = new Semaphore(0, true);
     
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
@@ -129,8 +142,8 @@ public class PersonAgent extends Agent
 		inventory.put("Chicken", 3);
         
 		personGui = new PersonGui(this, gui);
-		bank = cd.bank;
-		market = cd.market;
+		banks = cd.banks;
+		markets = cd.markets;
 	}
     
 	public void setName(String name) {
@@ -188,6 +201,9 @@ public class PersonAgent extends Agent
 		goToWork = false;
 	}
     
+	public void msgDoneGridding() {
+		this.gridding.release();
+	}
 	public void refresh() {
 		super.refresh();
 		if(cityData.hour == 5)
@@ -282,6 +298,7 @@ public class PersonAgent extends Agent
 			return false;
 		}
 		switch(bigState) {
+
                 
             case atHome: {
                 if (homeState == HomeState.sleeping) {
@@ -331,7 +348,7 @@ public class PersonAgent extends Agent
                 }
                 
                 if (home instanceof Apartment && rentDue && !home.manager.equals(this)) {
-                    payRent();
+                    payRent(0);
                     return true;
                 }
                 
@@ -352,9 +369,14 @@ public class PersonAgent extends Agent
                     return true;
                 }
                 
-                if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
+                if (home instanceof Apartment && rentDue && !home.manager.equals(this)) {
                     // TODO
-                    payRent();
+                	if (banks.get(0).isOpen) {
+                		payRent(0);
+                	}
+                	else if (banks.get(1).isOpen) {
+                		payRent(1);
+                	}
                     return true;
                 }
                 
@@ -371,7 +393,8 @@ public class PersonAgent extends Agent
                         goToCouch();
                         return true;
                     }
-                    else {
+                    else if (cash <= LOWMONEY || cash >= HIGHMONEY) {
+                    	System.err.println("money problems");
                         leaveHome();
                         return true;
                     }
@@ -401,7 +424,7 @@ public class PersonAgent extends Agent
                 
             case doingNothing: {
                 //Decide what the next BigState will be based on current parameters
-                
+            	
                 if(goToWork && jobBuilding != null) {
                     destinationBuilding = jobBuilding;
                     desiredRole = job;
@@ -420,14 +443,15 @@ public class PersonAgent extends Agent
                     }
                 }
                 
-                if(hungerLevel >= STARVING) {
+                if (hungerLevel >= STARVING) {
                     bigState = BigState.goToRestaurant;
                     desiredRole = "Customer";
                     if(!goToWork)
                         System.out.println(name + " " + job + " " + desiredRole);
                     return true;
                 }
-                if(cash <= LOWMONEY) {
+                
+                if (cash <= LOWMONEY) {
                     bigState = BigState.goToBank;
                     desiredRole = "Customer";
                     double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100;
@@ -437,13 +461,14 @@ public class PersonAgent extends Agent
                     return true;
                 }
                 
-                if(cash >= HIGHMONEY){
+                if (cash >= HIGHMONEY){
                     bigState = BigState.goToBank;
                     desiredRole = "Customer";
                     bankInfo.depositAmount = cash - HIGHMONEY;
+                    return true;
                 }
                 // Inventory of food stuff
-                if(lowInventory()) {
+                if (lowInventory()) {
                     bigState = BigState.goToMarket;
                     desiredRole = "MarketCustomer";
                     if(!goToWork)
@@ -451,7 +476,7 @@ public class PersonAgent extends Agent
                     return true;
                 }
                 
-                if(hungerLevel >= HUNGRY) {
+                if (hungerLevel >= HUNGRY) {
                     bigState = BigState.goToRestaurant;
                     desiredRole = "Customer";
                     if(!goToWork)
@@ -466,8 +491,11 @@ public class PersonAgent extends Agent
                 return true;
             }
                 
+
+
 		}
-        
+
+
 		return false;
 	}
     
@@ -485,9 +513,9 @@ public class PersonAgent extends Agent
 		}
 	}
     //TODO
-	private void payRent() {
+	private void payRent(int bankNumber) {
 		Apartment a = (Apartment) home;
-		bank.directDeposit(this, a.manager, rent);
+		banks.get(bankNumber).directDeposit(this, a.manager, rent);
 		rentDue = false;
 	}
     
@@ -613,15 +641,17 @@ public class PersonAgent extends Agent
             
 			while (true)
 			{
-				restNumber = 2;
+				restNumber = 4;
 				//restNumber = (int)(12+(int)(Math.random()*6));
 				if(restNumber >= 17)
 				{
 					bigState = BigState.goHome;
 					return;
 				}
-                
-				else if(((KCRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+
+
+				else if(((CMRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+
 					break;
 			}
 			destinationBuilding = cityData.restaurants.get(restNumber);
@@ -629,7 +659,7 @@ public class PersonAgent extends Agent
 		else
 		{
 			//destinationBuilding = jobBuilding;
-			restNumber = 2;
+			restNumber = 4;
 			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
         
@@ -647,9 +677,10 @@ public class PersonAgent extends Agent
 			}
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
-        
-		KCRestaurantBuilding restaurant = (KCRestaurantBuilding)destinationBuilding;
-        
+
+		CMRestaurantBuilding restaurant = (CMRestaurantBuilding)destinationBuilding;
+
+
 		if(goToWork && !desiredRole.equals("Customer"))
 		{
 			if(desiredRole.equals("Host") && !restaurant.hasHost()) {
@@ -771,8 +802,8 @@ public class PersonAgent extends Agent
 	}
     
 	protected void goToBank() {
-        
-		destinationBuilding = cityData.bank;
+        int bankNumber = 0;
+		destinationBuilding = cityData.banks.get(bankNumber);
 		GoToDestination();
         
 		personGui.DoGoToBuilding(18);
@@ -791,7 +822,8 @@ public class PersonAgent extends Agent
 	}
     
 	protected void goToMarket() {
-		destinationBuilding = cityData.market;
+		int marketNumber = 0;
+		destinationBuilding = cityData.markets.get(0);
         
 		GoToDestination();
         
@@ -811,14 +843,65 @@ public class PersonAgent extends Agent
     
 	public void GoToDestination()
 	{
+		currGrid = cityData.cityGrid[personGui.getX()/20][personGui.getY()/20];
 		if(walk==true) {
-			//PersonGui.DoWalk(if you ever hit an RGrid, acquire it first, and then walk through, and don't walk through bgrids)
 			personGui.DoGoToBuilding(destinationBuilding.buildingNumber);
-			try
-			{
-				isMoving.acquire();
+			
+			//PersonGui.DoWalk(if you ever hit an RGrid, acquire it first, and then walk through, and don't walk through bgrids)
+			walking = true;
+			while(walking) {
+				
+				if(crossingRoad) {
+					print("blah");
+					try {
+						currRGrid.occupied.acquire();
+						//System.out.println("1");
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						nextRGrid.occupied.acquire();
+						//System.out.println("2");
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					personGui.crossRoad();
+					try {
+						gridding.acquire();
+					}
+					catch(Exception e) {}
+					currRGrid.occupied.release();
+					//System.out.println("1");
+					nextRGrid.occupied.release();
+					//System.out.println("0");
+					//ACQUIRE CURRENT AND NEXT
+				}
+				else {
+	//				// go from grid to grid
+	//				currGrid = nextGrid
+	////				if undo
+	////				if(curr instanceof RGrid) {
+	////					person.acquire those next two semaphores in that direction
+	////					personGui.crossRoad(direction);
+	////					move to next
+	////					release roads
+	////				}
+	//				else {
+	//				//personGui.MoveToNextGrid;
+	//				}
+					//print("hello");
+					//CURRGRID IS NOT BEING UPDATED PROPERLY
+					personGui.MoveToNextGrid(currGrid);
+					try
+					{
+						gridding.acquire();
+					}
+					catch(Exception e){}
+				}
 			}
-			catch(Exception e){}
+
 			
 			currentBuilding = destinationBuilding;
 			
@@ -827,6 +910,9 @@ public class PersonAgent extends Agent
 		if(car==true) {
 			
 			//personGui.DoWalkToClosestRGrid(currentBuilding);
+			//personGui.//acquire the semaphore of the road(currentBuilding.closest.index1(),currentBuilding.closest.index2())
+				//then he moves like a bus until he gets to his destinatoin's rgrid, gets off road
+				//then he releases last road semaphore
 			try
 			{
 				isMoving.acquire();
@@ -888,7 +974,8 @@ public class PersonAgent extends Agent
 			personGui.setXPos(currentBus.getX());
 			personGui.setYPos(currentBus.getY());
 			currentBus.msgOnBus();
-			personGui.DoGoToBusStop(destinationBusStop);
+			personGui.DoGoToBusStop(destinationBusStop); // THIS SHOULD ACQUIRE ROAD SEMAPHORE
+			//if it needs to
 			try
 			{
 				isMoving.acquire();
@@ -937,6 +1024,18 @@ public class PersonAgent extends Agent
     
 	public PersonGui getGui() {
 		return personGui;
+	}
+	
+	public void acquireGridSemaphore(RGrid r) {
+		try {
+			r.occupied.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void releaseGridSemaphore(RGrid r) {
+		r.occupied.release();
 	}
 	
 	public void setGoToWork(boolean b) {

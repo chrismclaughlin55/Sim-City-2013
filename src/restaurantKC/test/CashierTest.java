@@ -156,7 +156,7 @@ public class CashierTest extends TestCase
 		
 	}
 	
-	public void testMarket1()
+	/*public void testMarket1()
 	{
 		System.out.println("Test 3: Test Cashier/Market, one order fulfilled, bill paid in full");
 		((KCCashierRole)cashier).money = 100.0;
@@ -267,7 +267,7 @@ public class CashierTest extends TestCase
 		assertEquals("The unpaid bill should be 10.99 ", ((KCCashierRole)cashier).marketbills.get(0).price, 10.99);
 		
 		
-	}
+	}*/
 
 
 }

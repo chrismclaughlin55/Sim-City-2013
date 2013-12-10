@@ -10,6 +10,8 @@ import city.PersonAgent;
 import city.Role;
 import restaurantSM.utils.*;
 import restaurantSM.utils.Order.OrderStatus;
+import trace.AlertLog;
+import trace.AlertTag;
 
 public class SMCookRole extends Role {
 	String name;
@@ -141,6 +143,7 @@ public class SMCookRole extends Role {
 	}
 
 	public void CookOrder(Order o){
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_COOK, this.getName(), "Cooking order of "+o.getChoice());
 		cookGui.DoGoToPlating();
 		try {
 			isMoving.acquire();
@@ -187,12 +190,14 @@ public class SMCookRole extends Role {
 	public void OrderIsCooked(Order o){
 		o.getWaiter().msgOrderIsReady(o);
 		orders.remove(o);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_COOK, this.getName(), "Order of "+o.getChoice()+" is done");
 	}
 
 	public void OutOfStock(Order o) {
 		menu.removeItem(o.getChoice());
 		o.getWaiter().msgOutOfStock(menu, o);
 		orders.remove(o);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_COOK, this.getName(), "Running out of "+o.getChoice());
 	}
 
 	public void RequestStock(Request r){
@@ -200,6 +205,7 @@ public class SMCookRole extends Role {
 			if (!r.askedMarkets.contains(market)) {
 				r.askedMarkets.add(market);
 				market.msgRequestStock(r);
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_COOK, this.getName(), "Requesting "+market.name+" for stock");
 				return;
 			}
 		}

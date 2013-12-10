@@ -25,6 +25,7 @@ public class BKRestaurantBuilding extends Building {
 		this.restPanel = restGui.restPanel;
 		// TODO Auto-generated constructor stub
 	}
+	public static final int MAXCUSTOMERS = 5;
 
 	public void EnterBuilding(PersonAgent person, String roleRequest)
 	{
@@ -63,7 +64,7 @@ public class BKRestaurantBuilding extends Building {
 	
 	public boolean isOpen()
 	{	
-		return isOpen && restPanel.fullyStaffed;
+		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed;
 	}
 	
 	public boolean openToEmployee()

@@ -21,6 +21,7 @@ import bank.interfaces.BankManager;
 import bank.utilities.CustInfo;
 import city.PersonAgent;
 import city.Role;
+import city.PersonAgent.BigState;
 
 public class BankManagerRole extends Role implements BankManager {
 	Writer writer;
@@ -50,14 +51,7 @@ public class BankManagerRole extends Role implements BankManager {
 		this.name = person.getName();
 		this.me = person;
 		this.bank = bank;
-		File file = new File("tellerstate.txt");
-		try {
-			file.createNewFile();
-			writer = new FileWriter(file);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 
 
 	}
@@ -130,6 +124,14 @@ public class BankManagerRole extends Role implements BankManager {
 		//			// TODO Auto-generated catch block
 		//			e.printStackTrace();
 		//		}
+		
+		if (person.cityData.hour == 15 && person.cityData.increment == 0) {
+			if (tellers.size() > 1) {
+				fireTeller(tellers.get(tellers.size() - 1));
+				return true;
+			}
+		}
+		
 		for( myTeller t: tellers){
 			if(t.state == tellerState.available && getLine().size()>0){
 				helpCustomer(getLine().remove(0), t);
@@ -173,6 +175,7 @@ public class BankManagerRole extends Role implements BankManager {
 	//ACTIONS
 	private void leave() {
 		tellers.clear();
+		person.bigState = BigState.goHome;
 		myTeller fakeTeller = new myTeller(null);
 		if(person.bankInfo.depositAmount < 0){
 			if(person.bankInfo.depositAmount + person.bankInfo.moneyInAccount < 0){
@@ -215,6 +218,10 @@ public class BankManagerRole extends Role implements BankManager {
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();
+	}
+	
+	private void fireTeller(myTeller t) {
+		t.t.msgYoureFired();
 	}
 
 	private void helpCustomer(CustomerRole c, myTeller t) {

@@ -6,10 +6,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import market.CookMarketOrder;
+import market.CookMarketOrder.MarketOrderState;
+import market.MyOrder.OrderState;
+import market.Invoice;
+import market.Market;
 import restaurantKC.gui.CookGui;
 import restaurantKC.gui.RestaurantPanel;
 import restaurantKC.interfaces.Cook;
@@ -27,7 +33,7 @@ public class KCCookRole extends Role implements Cook {
 
 	private List<pcCookOrder> cookOrders;
 	private Map<String, Food> foodMap = Collections.synchronizedMap(new HashMap<String, Food>());
-	private List<MarketOrder> incompleteOrders = Collections.synchronizedList(new ArrayList<MarketOrder>());
+	private List<CookMarketOrder> marketOrders = Collections.synchronizedList(new ArrayList<CookMarketOrder>());
 	enum State {pending, cooking, done, plated, sent, discard};
 	String name;
 	public CookGui cookGui = null;
@@ -42,10 +48,6 @@ public class KCCookRole extends Role implements Cook {
 	private Semaphore platingFood = new Semaphore(0, true);
 	private Semaphore atHome = new Semaphore(0,true);
 	private Semaphore askWaiter = new Semaphore(0,true);
-
-
-
-
 
 	class CookOrder {
 		Waiter waiter;
@@ -69,20 +71,8 @@ public class KCCookRole extends Role implements Cook {
 		}
 	}
 
-	enum MarketOrderState {pending, ordering, done};
 
-	class MarketOrder {
-		String type;
-		int amount;
 
-		public MarketOrderState state;
-
-		public MarketOrder(String t, int a) {
-			type = t;
-			amount = a;
-			state = MarketOrderState.pending;
-		}
-	}
 
 	class Food {
 		int amount;
@@ -95,12 +85,13 @@ public class KCCookRole extends Role implements Cook {
 	}
 
 	private List<CookOrder> orders = Collections.synchronizedList(new ArrayList<CookOrder>());
-	private List<MarketAgent> markets = Collections.synchronizedList(new ArrayList<MarketAgent>()); 
+	private List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
 
 	public KCCookRole(List<pcCookOrder> cookOrders, PersonAgent p, RestaurantPanel restPanel) {
 		super(p);
+		markets = person.cityData.markets;
 		this.cookOrders = cookOrders;
-		Food steak = new Food(100, 5);
+		Food steak = new Food(2, 5);
 		Food salad = new Food(100, 2);
 		Food pizza = new Food(100, 4);
 		Food chicken = new Food(100, 3);
@@ -117,123 +108,7 @@ public class KCCookRole extends Role implements Cook {
 	}
 
 
-	@Override
-	public boolean pickAndExecuteAnAction() {
 
-
-		synchronized (incompleteOrders) {
-			for (MarketOrder o : incompleteOrders) {
-				if (o.state == MarketOrderState.pending) {
-					print ("Ordering more of partially completed order");
-					o.state = MarketOrderState.ordering;
-					markets.get(marketNum).msgHereIsMarketOrder(o.type, o.amount);	
-				}
-			}
-		}
-
-
-		synchronized (orders) {
-			if (!orders.isEmpty())
-			{
-				for (CookOrder o : orders){
-					if (o.state == State.done) {
-						o.state = State.plated;
-						print ("Plating " + o.choice + " from " + o.grill + " to " + o.plate);
-						PlateIt(o);	
-						return true;
-
-					}
-				}
-			}
-		}
-
-		synchronized (orders) {
-			if (!orders.isEmpty()) {
-				for (CookOrder o : orders){
-					if (o.state == State.pending) {
-						print ("Cooking " + o.choice + " on " + o.grill);
-						CookIt(o);
-
-						o.state = State.cooking;
-						return true;
-					}
-				}
-			}
-		}
-
-		synchronized(foodMap) {
-
-			for (Map.Entry<String, Food> entry : foodMap.entrySet()) {
-				if ((entry.getValue().amount <= 0) && (!entry.getValue().orderPending)){
-					orderFromMarket(entry.getKey());
-					entry.getValue().orderPending = true;
-					return true;
-
-				}
-			}
-		}
-
-		/*synchronized (orders) {
-			if (!orders.isEmpty()) {
-				for (CookOrder o : orders){
-					if (o.state == State.pending) {
-						print ("Cooking " + o.choice + " on " + o.grill);
-						CookIt(o);
-
-						o.state = State.cooking;
-						return true;
-					}
-				}
-			}
-		}*/
-
-		//Cook pending orders
-		synchronized(orders)
-		{
-			if (!orders.isEmpty()) {
-				for(CookOrder o : orders)
-				{
-					if(o.state == State.pending)
-					{
-						print ("Cooking " + o.choice + " on " + o.grill);
-						CookIt(o);
-						o.state = State.cooking;
-						return true;
-					}
-				}
-			}
-		}
-
-
-		//Check for new orders
-		synchronized(cookOrders)
-		{
-			for(pcCookOrder o : cookOrders)
-			{
-				orders.add(new CookOrder(o.waiter, o.choice, o.table, State.pending));
-				orderNumber++;
-				System.out.println ("Cook: received order of " + o.choice + " " + orders.size());
-
-				cookOrders.remove(o);
-				return true;
-			}
-		}
-
-		for(Iterator<CookOrder> iter = orders.iterator(); iter.hasNext(); ) {
-			CookOrder o = iter.next();
-			if(o.state == State.discard) {
-				iter.remove();
-			}
-		}
-
-
-		if(person.cityData.hour >= restPanel.CLOSINGTIME && orders.isEmpty() && cookOrders.isEmpty() /*&& restPanel.activeWaiters() == 0*/) {
-			LeaveRestaurant();
-			return true;
-		}
-
-		return false;
-	}
 
 
 	/*public void msgHereIsAnOrder(WaiterAgent w, String choice, int table) {
@@ -252,14 +127,6 @@ public class KCCookRole extends Role implements Cook {
 		foodMap.get(type).amount += amount;
 		foodMap.get(type).orderPending = false;
 
-		synchronized(incompleteOrders) {
-			for (MarketOrder o : incompleteOrders) {
-				if ((o.type == type) && (o.state == MarketOrderState.ordering)) {
-					o.state = MarketOrderState.done;
-					foodMap.get(o.type).orderPending = true;
-				}
-			}
-		}
 		synchronized(foodMap){
 			for (Map.Entry<String, Food> entry : foodMap.entrySet()) {
 				System.out.println(entry.getKey() + " " + entry.getValue().amount);
@@ -268,33 +135,97 @@ public class KCCookRole extends Role implements Cook {
 		stateChanged();
 	}
 
-	public void msgOrderPartiallyFulfilled(String type, int amount, int amountunfulfilled) {
-		foodMap.get(type).amount += amount;
-		print ("Order of " + type + " partially fulfilled");
-		synchronized(foodMap){
-			for (Map.Entry<String, Food> entry : foodMap.entrySet()) {
-				System.out.println(entry.getKey() + " " + entry.getValue().amount);
-			}
+	public void msgOrdersFulfilled(List<Invoice> invoice) {
+		print ("Order fulfilled");
+		for (Invoice i : invoice) {
+			foodMap.get(i.type).orderPending = false;
+			foodMap.get(i.type).amount += i.amount;
 		}
-		incompleteOrders.add(new MarketOrder(type, amountunfulfilled));
-		marketNum++;
-		if (marketNum > 2)
-			marketNum = 0;
 		stateChanged();
 	}
 
-	public void msgOrderUnfulfilled(String type) {
-		synchronized (incompleteOrders) {
-			for (MarketOrder m : incompleteOrders) {
-				if ((m.type.equals(type)) && (m.state == MarketOrderState.ordering)) {
-					m.state = MarketOrderState.pending;
+
+
+	public void msgImTakingTheFood(String choice, int t) {
+		synchronized (orders) {
+			for (CookOrder o : orders) {
+				if (o.state == State.sent)  {
+					o.state = State.discard;
+					cookGui.removeFood(o.orderNum);
 				}
 			}
 		}
-		marketNum++;
-		if (marketNum > 2)
-			marketNum = 0;
 		stateChanged();
+	}
+
+
+	@Override
+	public boolean pickAndExecuteAnAction() {
+
+		synchronized(foodMap) {
+			for (Map.Entry<String, Food> entry : foodMap.entrySet()) {
+				if ((entry.getValue().amount <= 3) && (!entry.getValue().orderPending)){
+					marketOrders.add(new CookMarketOrder(entry.getKey(), 10));
+					entry.getValue().orderPending = true;
+				}
+			}
+			if ((!marketOrders.isEmpty()) && (restPanel.cashier != null)) {
+				orderFromMarket();
+				return true;
+			}
+		}
+
+		synchronized (orders) {
+			if (!orders.isEmpty())
+			{
+				for (CookOrder o : orders){
+					if (o.state == State.done) {
+						o.state = State.plated;
+						PlateIt(o);	
+						return true;
+
+					}
+				}
+			}
+		}
+
+		synchronized (orders) {
+			if (!orders.isEmpty()) {
+				for (CookOrder o : orders){
+					if (o.state == State.pending) {
+						CookIt(o);
+						o.state = State.cooking;
+						return true;
+					}
+				}
+			}
+		}
+
+
+		//Check for new orders
+		synchronized(cookOrders) {
+			for(pcCookOrder o : cookOrders) {
+				orders.add(new CookOrder(o.waiter, o.choice, o.table, State.pending));
+				orderNumber++;
+				cookOrders.remove(o);
+				return true;
+			}
+		}
+
+		for(Iterator<CookOrder> iter = orders.iterator(); iter.hasNext(); ) {
+			CookOrder o = iter.next();
+			if(o.state == State.discard) {
+				iter.remove();
+			}
+		}
+
+
+		if(person.cityData.hour >= restPanel.CLOSINGTIME && orders.isEmpty() && cookOrders.isEmpty() /*&& restPanel.activeWaiters() == 0*/) {
+			LeaveRestaurant();
+			return true;
+		}
+
+		return false; 
 	}
 
 
@@ -304,11 +235,7 @@ public class KCCookRole extends Role implements Cook {
 			CookFood(o);
 		}
 		else {
-			System.out.println("I'm out of food!");
 			o.waiter.msgImOutOfFood(o.table);
-			orders.remove(o);
-			orderFromMarket(o.choice);
-			foodMap.get(o.choice).orderPending = true;
 		}
 	}
 
@@ -368,16 +295,26 @@ public class KCCookRole extends Role implements Cook {
 
 		timer.schedule(new TimerTask() {
 			public void run() {
-				print("Done cooking " + o.choice );
 				markFoodDone(o);
 			}
 		},
 		foodMap.get(o.choice).cookingTime*1000);
 	}
 
-	private void orderFromMarket(String type) {
-		print ("Attempting to order " + type);
-		//markets.get(marketNum).msgHereIsMarketOrder(type, 5);
+	private void orderFromMarket() {
+		List<CookMarketOrder> ordersToSend = Collections.synchronizedList(new ArrayList<CookMarketOrder>());
+		Random rand = new Random();
+		int marketNum = rand.nextInt(1);
+
+		for (CookMarketOrder m : marketOrders) {
+			if (m.state == MarketOrderState.pending) {
+				m.state = MarketOrderState.ordered;
+				ordersToSend.add(m);
+			}
+		}
+		marketOrders.clear();
+
+		markets.get(marketNum).currentManager.msgHereIsMarketOrder(this, (KCCashierRole)restPanel.cashier, ordersToSend);
 	}
 
 
@@ -392,19 +329,14 @@ public class KCCookRole extends Role implements Cook {
 		stateChanged();
 	}
 
-	public void addMarkets(List<MarketAgent> markets) {
+	/*public void addMarkets(List<MarketAgent> markets) {
 		this.markets = markets;
-	}
+	}*/
 
 	public void drainInventory() {
 		synchronized(foodMap) {
 			for (Map.Entry<String, Food> entry : foodMap.entrySet()) {
 				entry.getValue().amount = 0;
-			}
-		}
-		synchronized(foodMap) {
-			for (Map.Entry<String, Food> entry : foodMap.entrySet()) {
-				System.out.println(entry.getKey() + " " + entry.getValue().amount);
 			}
 		}
 	}
@@ -444,18 +376,6 @@ public class KCCookRole extends Role implements Cook {
 		stateChanged();
 	}
 
-	public void msgImTakingTheFood(String choice, int t) {
-		synchronized (orders) {
-			for (CookOrder o : orders) {
-				if (o.state == State.sent)  {
-					o.state = State.discard;
-					cookGui.removeFood(o.orderNum);
-				}
-			}
-		}
-		stateChanged();
-	}
-
 
 	private void LeaveRestaurant() {
 		person.hungerLevel = 0;
@@ -464,6 +384,8 @@ public class KCCookRole extends Role implements Cook {
 		person.msgDoneWithJob();
 		doneWithRole();
 	}
+
+
 
 }
 

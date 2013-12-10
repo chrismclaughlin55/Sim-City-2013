@@ -6,6 +6,8 @@ import restaurantSM.interfaces.Customer;
 import restaurantSM.interfaces.Waiter;
 import restaurantSM.utils.*;
 import restaurantSM.utils.Order.OrderStatus;
+import trace.AlertLog;
+import trace.AlertTag;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -72,6 +74,7 @@ public class SMWaiterRole extends Role implements Waiter {
 	
 	public void askForBreak() {
 		host.msgAskForBreak(this);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_WAITER, this.getName(), "Asking for break");
 	}
 
 	// Messages
@@ -273,6 +276,7 @@ public class SMWaiterRole extends Role implements Waiter {
 		}
 		waiterGui.setStatusText("");
 		myCust.getCustomer().msgHeresYourOrder();
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_WAITER, this.getName(), "Serving "+myCust.getOrder().getChoice());
 	}
 	
 	private void GiveBillToCustomer(MyCustomer myCust) {
@@ -292,12 +296,14 @@ public class SMWaiterRole extends Role implements Waiter {
 			e.printStackTrace();
 		}
 		myCust.getCustomer().msgHeresYourBill(b);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_WAITER, this.getName(), "Giving bill to customer");
 		bills.remove(b);
 	}
 	
 	private void TakeChoiceToCashier(MyCustomer myCust){
 		myCust.CustomerStatus = MyCustomer.CustStatus.none;
 		cashier.msgComputeBill(this, myCust);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_WAITER, this.getName(), "Asking cashier to compute check");
 	}
 	
 	private void TakeOrder(MyCustomer myCust){
@@ -310,6 +316,7 @@ public class SMWaiterRole extends Role implements Waiter {
 		}
 		myCust.CustomerStatus = MyCustomer.CustStatus.none;
 		myCust.getCustomer().msgWhatWouldYouLike(menu);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_WAITER, this.getName(), "Taking order from customer");
 	}
 	
 	private void OrderToKitchen(MyCustomer myCust){
@@ -345,6 +352,7 @@ public class SMWaiterRole extends Role implements Waiter {
 			e1.printStackTrace();
 		}
 		customer.msgFollowMe(this, menu, table.tableNumber);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_WAITER, this.getName(), "Seating customer at table "+table.tableNumber);
 		waiterGui.DoBringToTable(table);
 		try {
 			isMoving.acquire();

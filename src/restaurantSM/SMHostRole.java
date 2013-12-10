@@ -8,6 +8,8 @@ import java.util.concurrent.Semaphore;
 import city.PersonAgent;
 import city.Role;
 import restaurantSM.utils.*;
+import trace.AlertLog;
+import trace.AlertTag;
 
 public class SMHostRole extends Role {
 	
@@ -66,6 +68,7 @@ public class SMHostRole extends Role {
 				return false;
 			}
 		}
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_HOST, this.getName(), "Restaurant is full");
 		return true;
 	}
 	
@@ -118,6 +121,7 @@ public class SMHostRole extends Role {
 				}
 			}
 			min.msgSeatAtTable(customer, table);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_HOST, this.getName(), "Calling "+min.getName()+" to seat "+customer.getName()+" at table "+table.tableNumber);
 			table.setOccupant(customer);
 			waitingCustomers.remove(customer);
 		}

@@ -15,6 +15,8 @@ import restaurantBK.gui.WaiterGui;
 import restaurantBK.interfaces.Cook;
 import restaurantBK.interfaces.Cashier;
 import restaurantBK.interfaces.Host;
+import restaurantSM.SMHostRole;
+import restaurantSM.SMWaiterRole;
 
 import javax.swing.*;
 
@@ -166,6 +168,9 @@ public class RestaurantPanel extends JPanel {
         }
     }
 
+    public int activeCustomers() {
+    	return customers.size();
+    }
     /**
      * Adds a customer or waiter to the appropriate list
      *
@@ -294,12 +299,18 @@ public class RestaurantPanel extends JPanel {
 	    			return;
 	    		}
 	    	}
-    	
+    	}
     	BKWaiterRole w = new BKWaiterRole(person, person.getName(), this);//, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu));
     	waiters.add(w);
     	if(host != null)
     		((BKHostRole)host).addWaiter(w);
-    	
+    	w.setHost(host);
+    	if(cook!=null) {
+    		w.setCook(cook);
+    	}
+    	if(cashier != null) {
+    		w.setCashier(cashier);
+    	}
     		//c.addWaiter(w);
     	
     	
@@ -309,12 +320,14 @@ public class RestaurantPanel extends JPanel {
 		
 		//Start the thread
 		person.msgAssignRole(w);
-    	}
+    	
     }
     
     public void addHost(PersonAgent person)
     {
-        host = new BKHostRole(person, person.getName(), this);
+    	if(host==null) {
+    		host = new BKHostRole(person, person.getName(), this);
+    	}
        // hosts.add(host);
         //((BKHostRole)host).setCook(cook);
         //((BKHostRole)host).setWaiters(waiters);
@@ -342,19 +355,25 @@ public class RestaurantPanel extends JPanel {
 		cook = c;
 		CookGui cg = new CookGui(cook,gui);
 		cook.setGui(cg);
+		//cook.setHost(host);
 		gui.animationPanel.addGui(cg);
 		person.msgAssignRole(c);
+		for (Waiter w : waiters) {
+    		w.setCook(cook);
+    	}
     }
     
     public void addCashier(PersonAgent person)
     {
-    	cashier = new BKCashierRole(person, person.getName(), this);
-    	person.msgAssignRole((BKCashierRole)cashier);
-    	synchronized(waiters)
-    	{
-	    	for(Waiter w : waiters)
+    	if(cashier == null) {
+	    	cashier = new BKCashierRole(person, person.getName(), this);
+	    	person.msgAssignRole((BKCashierRole)cashier);
+	    	synchronized(waiters)
 	    	{
-	    		((BKWaiterRole)w).setCashier(cashier);
+		    	for(Waiter w : waiters)
+		    	{
+		    		((BKWaiterRole)w).setCashier(cashier);
+		    	}
 	    	}
     	}
     }

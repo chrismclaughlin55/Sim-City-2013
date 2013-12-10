@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
+import restaurantCM.gui.CMRestaurantBuilding;
 import mainGUI.BuildingPanel;
 import mainGUI.MainGui;
 
@@ -34,6 +35,8 @@ public abstract class Building extends Rectangle2D.Double {
 
 	public BusStopAgent busStop;
 	public boolean hasManager=false;
+	
+	public RGrid closest;
 	
 	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
@@ -150,7 +153,14 @@ public abstract class Building extends Rectangle2D.Double {
 
 	public void display(Building building, int buildingNumber) {
 		buildingPanel.displayBuildingPanel(building, buildingNumber);
+		if(building instanceof CMRestaurantBuilding){
+		//	((CMRestaurantBuilding) building).test();
+		}
 	}
 	
 	public abstract JFrame getBuildingGui();
+	
+	public void setClosestRGrid(RGrid rg) {
+		closest = rg;
+	}
 }

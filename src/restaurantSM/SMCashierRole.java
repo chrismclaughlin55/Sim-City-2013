@@ -12,6 +12,8 @@ import restaurantSM.interfaces.Cashier;
 import restaurantSM.interfaces.Market;
 import restaurantSM.interfaces.Waiter;
 import restaurantSM.utils.*;
+import trace.AlertLog;
+import trace.AlertTag;
 import agent.Agent;
 
 public class SMCashierRole extends Role implements Cashier {
@@ -79,6 +81,7 @@ public class SMCashierRole extends Role implements Cashier {
 		double price = menu.prices.get(b.myCust.getOrder().getChoice());
 		b.setTotal(price);
 		b.waiter.msgHeresTheBill(b);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_CASHIER, this.getName(), "Calculating bill for customer");
 	}
 	
 	private void CalculateChange(Bill b) {
@@ -92,6 +95,7 @@ public class SMCashierRole extends Role implements Cashier {
 		}
 		b.calcChange();
 		b.myCust.getCustomer().msgHeresYourChange(b);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_CASHIER, this.getName(), "Calculating change for customer");
 	}
 	
 	private double min(double a, double b) {
@@ -112,7 +116,7 @@ public class SMCashierRole extends Role implements Cashier {
 			total = 0;
 			b.market.msgReceivePayment(b.total - tabAmt, tabAmt);
 		}
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTSM_CASHIER, this.getName(), "Paying market $"+b.total);
 	}
-	
 }
 

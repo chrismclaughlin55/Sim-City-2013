@@ -19,16 +19,16 @@ public class TellerRole extends Role implements Teller{
 	BankManagerRole bm;
 	CustInfo currentCustInfo;
 	enum State {available, waitingForInfo, waitingForResponse, doneWithCustomer, customerDecidingLoan}
-	enum Event {none, recievedHello, recievedInfo, recievedDeposit,updatedBank,loanReq, iTakeIt}
+	enum Event {none, recievedHello, recievedInfo, recievedDeposit,updatedBank,loanReq, iTakeIt, gotFired}
 	State state;
 	Event event;
 	boolean wantToLeave = false;
 	private TellerGui gui;
 	private boolean bankRobbery = false;
 	private BankRobber bankRobber;
+	private boolean fired = false;
 
 	private Semaphore atDest = new Semaphore(0 ,true);
-
 	private Semaphore atHome = new Semaphore(0, true);
 
 
@@ -64,6 +64,12 @@ public class TellerRole extends Role implements Teller{
 		this.bm = bm;
 		stateChanged();
 	}
+	
+	public void msgYoureFired() {
+		event = Event.gotFired;
+		stateChanged();
+	}
+	
 	@Override
 	public void msgHello(CustInfo c) {
 		currentCustInfo = c;
@@ -112,6 +118,11 @@ public class TellerRole extends Role implements Teller{
 	public boolean pickAndExecuteAnAction() {
 		if (bankRobbery) {
 			payTheMan();
+			return true;
+		}
+		
+		if (event == Event.gotFired) {
+			leaveJob();
 			return true;
 		}
 		
@@ -171,10 +182,9 @@ public class TellerRole extends Role implements Teller{
 	}
 
 	private void payTheMan() {
-		System.err.println("IM BEING ROBBED");
+		bankRobbery = false;
 		AlertLog.getInstance().logError(AlertTag.BANK_TELLER, this.name, "IM BEING ROBBED");
 		bankRobber.msgPleaseDontShoot(400);
-		bankRobbery = false;
 	}
 	
 	private void processLoan() {
@@ -197,7 +207,22 @@ public class TellerRole extends Role implements Teller{
 	}
 	public void msgGuiIsAtDest() {
 		atDest.release();
-
+	}
+	
+	private void leaveJob() {
+		event = Event.none;
+		bm.msgLeavingNow(this);
+		gui.goTo(9);
+		try {
+			atDest.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//gui.setPresent(false);
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();
 	}
 
 	private void guiGoHere(int place) {

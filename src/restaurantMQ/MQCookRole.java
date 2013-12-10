@@ -15,6 +15,8 @@ import restaurantMQ.interfaces.Cashier;
 import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
+import trace.AlertLog;
+import trace.AlertTag;
 import city.PersonAgent;
 import city.Role;
 
@@ -221,11 +223,13 @@ public class MQCookRole extends Role implements Cook
 			menu.remove(food.name);
 			order.orderState = OrderState.Reject;
 			System.out.println("Cook: Out of " + food.name);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_COOK, this.getName(), "Out of " + food.name);
 		}
 		else
 		{
 			order.orderState = OrderState.Cooking;
 			System.out.println("Cook: Cooking the " + order.choice);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_COOK, this.getName(), "Cooking the " + order.choice);
 			timer.schedule(new TimerTask() {
 				public void run()
 				{
@@ -240,6 +244,7 @@ public class MQCookRole extends Role implements Cook
 	private void PlateIt(CookOrder order)
 	{
 		System.out.println("Cook: Done cooking");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_COOK, this.getName(), "Done cooking, placing "+order.choice);
 		order.waiter.msgOrderDone(order.choice, order.table);
 	}
 		
@@ -252,9 +257,10 @@ public class MQCookRole extends Role implements Cook
 		}
 		System.out.println();
 		if (market.isOpen()) {
-			market.currentManager.msgNeedToOrder(this, marketOrders, cashier);
+			//market.currentManager.msgNeedToOrder(this, marketOrders, cashier);
 		}
 		marketOrders.clear();
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_COOK, this.getName(), "Order food from "+market.name);
 	}
 		
 	private void CheckInventory()
