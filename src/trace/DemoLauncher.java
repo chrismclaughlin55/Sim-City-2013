@@ -49,7 +49,7 @@ public class DemoLauncher extends JFrame {
 		//that says it is from a MARKET_EMPLOYEE).  Here we decide to hide debug messages and things
 		//tagged as AlertTag.BUS_STOP
 		tracePanel.showAlertsWithLevel(AlertLevel.ERROR);		//THESE PRINT RED, WARNINGS PRINT YELLOW on a black background... :/
-		//tracePanel.showAlertsWithLevel(AlertLevel.INFO);		//THESE PRINT BLUE
+		tracePanel.showAlertsWithLevel(AlertLevel.INFO);		//THESE PRINT BLUE
 		tracePanel.showAlertsWithLevel(AlertLevel.MESSAGE);		//THESE SHOULD BE THE MOST COMMON AND PRINT BLACK
 		//tracePanel.hideAlertsWithLevel(AlertLevel.DEBUG);
 		
@@ -88,9 +88,9 @@ public class DemoLauncher extends JFrame {
 		TracePanel tp;	//Hack so I can easily call showAlertsWithLevel for this demo.
 		
 		JToggleButton messageButton;
-		JToggleButton errorButton;			
-		/*JToggleButton warningButton;		
-		JToggleButton infoButton;		
+		JToggleButton errorButton;	
+		JToggleButton infoButton;	
+		/*JToggleButton warningButton;			
 		JToggleButton debugButton;*/
 		
 		JToggleButton PersonTagButton;
@@ -149,6 +149,7 @@ public class DemoLauncher extends JFrame {
 			this.tp = tracePanel;
 			messageButton = new JToggleButton("Hide Level: MESSAGE");
 			errorButton = new JToggleButton("Hide Level: ERROR");
+			infoButton = new JToggleButton("Hide Level: INFO");
 			/*warningButton = new JToggleButton("Hide Level: WARNING");
 			debugButton = new JButton("Hide Level: DEBUG");*/
 			
@@ -187,6 +188,20 @@ public class DemoLauncher extends JFrame {
 					else {
 						messageButton.setText("Hide Level: MESSAGE");
 						tracePanel.showAlertsWithLevel(AlertLevel.MESSAGE);
+					}
+				}
+			});
+			
+			infoButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(infoButton.isSelected()) {
+						infoButton.setText("Show Level: INFO");
+						tracePanel.hideAlertsWithLevel(AlertLevel.INFO);
+					}
+					else {
+						infoButton.setText("Hide Level: INFO");
+						tracePanel.showAlertsWithLevel(AlertLevel.INFO);
 					}
 				}
 			});
@@ -328,11 +343,27 @@ public class DemoLauncher extends JFrame {
 				}
 			});
 			
+			PersonTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(PersonTagButton.isSelected()) {
+						PersonTagButton.setText("Show Tag: PERSON");
+						tracePanel.hideAlertsWithTag(AlertTag.PERSON);
+					}
+					else {
+						PersonTagButton.setText("Hide Tag: PERSON");
+						tracePanel.showAlertsWithTag(AlertTag.PERSON);
+					}
+				}
+			});
+			
 			
 			this.setLayout(new FlowLayout());
 			this.add(messageButton);
+			this.add(infoButton);
 			this.add(errorButton);
 			this.add(CityTagButton);
+			this.add(PersonTagButton);
 			this.add(BankTagButton);
 			this.add(MarketTagButton);
 			this.add(RestBKTagButton);
