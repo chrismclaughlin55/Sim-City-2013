@@ -180,9 +180,9 @@ public class PersonGui implements Gui{
 		agent.currGrid = cd.getNextGrid(g, d );
 		xNextGrid = agent.currGrid.index1()*20;
 		yNextGrid = agent.currGrid.index2()*20;
-		System.out.println(xNextGrid);
-		System.out.println(yNextGrid);
-		System.out.println(d);
+		//System.out.println(xNextGrid);
+		//System.out.println(yNextGrid);
+		//System.out.println(d);
 		if(agent.currGrid instanceof RGrid) {
 			//SOMETHING'S AMISS HERE.... BECAUSE RGRID...
 			//

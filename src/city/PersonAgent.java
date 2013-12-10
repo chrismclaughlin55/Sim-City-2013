@@ -849,14 +849,14 @@ public class PersonAgent extends Agent
 					print("blah");
 					try {
 						currRGrid.occupied.acquire();
-						System.out.println("1");
+						//System.out.println("1");
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					try {
 						nextRGrid.occupied.acquire();
-						System.out.println("2");
+						//System.out.println("2");
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -867,9 +867,9 @@ public class PersonAgent extends Agent
 					}
 					catch(Exception e) {}
 					currRGrid.occupied.release();
-					System.out.println("1");
+					//System.out.println("1");
 					nextRGrid.occupied.release();
-					System.out.println("0");
+					//System.out.println("0");
 					//ACQUIRE CURRENT AND NEXT
 				}
 				else {
@@ -904,6 +904,9 @@ public class PersonAgent extends Agent
 		if(car==true) {
 			
 			//personGui.DoWalkToClosestRGrid(currentBuilding);
+			//personGui.//acquire the semaphore of the road(currentBuilding.closest.index1(),currentBuilding.closest.index2())
+				//then he moves like a bus until he gets to his destinatoin's rgrid, gets off road
+				//then he releases last road semaphore
 			try
 			{
 				isMoving.acquire();
@@ -965,7 +968,8 @@ public class PersonAgent extends Agent
 			personGui.setXPos(currentBus.getX());
 			personGui.setYPos(currentBus.getY());
 			currentBus.msgOnBus();
-			personGui.DoGoToBusStop(destinationBusStop);
+			personGui.DoGoToBusStop(destinationBusStop); // THIS SHOULD ACQUIRE ROAD SEMAPHORE
+			//if it needs to
 			try
 			{
 				isMoving.acquire();
