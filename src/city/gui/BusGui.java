@@ -8,12 +8,12 @@ import mainGUI.MainGui;
 import Gui.Gui;
 import city.CityData;
 import city.RGrid;
+import city.RGrid.Direction;
 import city.interfaces.Bus;
 import city.Grid;
 
 public class BusGui implements Gui {
 	CityData cd;
-	enum Direction {north, east, south, west};
 	Direction direction;
 	private Bus agent = null;
 	public int xPos;
@@ -22,12 +22,15 @@ public class BusGui implements Gui {
 	boolean xFirst = false;
 	boolean yFirst = false;
 	private int xDestination, yDestination;//default start position
-    boolean betweenStops = false;
+    boolean released = true;
     boolean moving = false;
+    boolean atStop = false;
+    boolean crossingIntersection = false;
     boolean isPresent = true;
     int stop;
     int gridding=0;
-    RGrid currGrid;
+    int route;
+    RGrid nextGrid, currGrid, prevGrid;
     MainGui m;
 
     public BusGui(Bus ba, MainGui main, CityData cd) {
@@ -41,12 +44,123 @@ public class BusGui implements Gui {
     		xPos = cd.busStops.get(12).getX();
     		yPos = cd.busStops.get(12).getY();
     	}
+    	route = agent.getRouteNumber();
+    	nextGrid = (RGrid)cd.cityGrid[xPos/20][yPos/20];
+    	direction = nextGrid.direction;
+    	agent.setCurrentGrid(nextGrid);
+    	currGrid = nextGrid;
+    	nextGrid = cd.getNextRGrid(nextGrid);
     	m = main;
     	//currGrid = ....;
     }
-	@Override
+    
 	public void updatePosition() {
 		
+		if(!moving)
+		{
+			return;
+		}
+		
+		if(!atStop && xPos == xDestination && yPos == yDestination) {
+	        	moving = false;
+	        	atStop = true;
+	            agent.msgAtDestination();
+	            return;
+	    }
+		
+		atStop = false;
+		
+		if(!crossingIntersection) {
+			if(!released && yPos % 20 == 0 && (currGrid.direction == Direction.north || currGrid.direction == Direction.south)) {
+				moving = false;
+				agent.msgAcquireGrid(nextGrid);
+				prevGrid = currGrid;
+				currGrid = nextGrid;
+				nextGrid = cd.getNextRGrid(nextGrid);
+				if(nextGrid == null) { //we are at an intersection
+					crossingIntersection = true;
+					if(xPos == xDestination) { //in line with target, no need to turn
+						if(prevGrid.direction == Direction.north) {
+							//select the space 3 spaces up
+							nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()][prevGrid.index2()-3];
+							currGrid = (RGrid)cd.cityGrid[prevGrid.index1()][prevGrid.index2()-2];
+						}
+						else { //prevGrid.direction == Direction.south
+							//select the space 3 spaces down
+							nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()][prevGrid.index2()+3];
+							currGrid = (RGrid)cd.cityGrid[prevGrid.index1()][prevGrid.index2()-2];
+						}
+					}
+					else {
+						if(route == 1) { //outer route, left turn
+							if(prevGrid.direction == Direction.north) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()-2][prevGrid.index2()-2];
+								currGrid = (RGrid)cd.cityGrid[prevGrid.index1()-1][prevGrid.index2()-2];
+							}
+							else { //prevGrid.direction == Direction.south
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()+2][prevGrid.index2()+2];
+								currGrid = (RGrid)cd.cityGrid[prevGrid.index1()+1][prevGrid.index2()+2];
+							}
+						}
+						else { //route == 2, inner route, right turn
+							if(prevGrid.direction == Direction.north) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()+1][prevGrid.index2()-1];
+								currGrid = cd.getNextRGrid(prevGrid);
+							}
+							else { //prevGrid.direction == Direction.south
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()-1][prevGrid.index2()+1];
+								currGrid = cd.getNextRGrid(prevGrid);
+							}
+						}
+					}
+				}
+				return;
+			}
+			else if(!released && xPos % 20 == 0 && (currGrid.direction == Direction.east || currGrid.direction == Direction.west)) {
+				moving = false;
+				agent.msgAcquireGrid(nextGrid);
+				prevGrid = currGrid;
+				currGrid = nextGrid;
+				nextGrid = cd.getNextRGrid(nextGrid);
+				if(nextGrid == null) {
+					crossingIntersection = true;
+					if(route == 1) { //outer route, left turn
+						if(prevGrid.direction == Direction.east){
+							nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()+2][prevGrid.index2()-2];
+							currGrid = (RGrid)cd.cityGrid[prevGrid.index1()+2][prevGrid.index2()-1];
+						}
+						else { //prevGrid.direction == Direction.west
+							nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()-2][prevGrid.index2()+2];
+							currGrid = (RGrid)cd.cityGrid[prevGrid.index1()-2][prevGrid.index2()+1];
+						}
+					}
+					else { //route == 2, inner route, right turn
+						if(prevGrid.direction == Direction.east) {
+							nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()+1][prevGrid.index2()+1];
+							currGrid = cd.getNextRGrid(prevGrid);
+						}
+						else {
+							nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()-1][prevGrid.index2()-1];
+							currGrid = cd.getNextRGrid(prevGrid);
+						}
+					}
+				}
+				
+				return;
+			}
+			else if(currGrid.direction == Direction.none && xPos == currGrid.index1()*20 && yPos == currGrid.index2()*20)
+			{
+				moving = false;
+				agent.msgAcquireGrid(nextGrid);
+				prevGrid = currGrid;
+				currGrid = nextGrid;
+				nextGrid = cd.getNextRGrid(nextGrid);
+				crossingIntersection = false;
+				return;
+			}
+			else if(released)
+				released = false;
+		}
 		/////DO ALL OF THE BELOW CALCULATIONS IF GRIDDING == 0
 		/*if(gridding==0) {
 			
@@ -57,7 +171,12 @@ public class BusGui implements Gui {
 			gridding++;
 			gridding%=4;
 		}*/
-		direction = CalculateDirection();
+		
+		//Check to see if we are crossing from one grid square to another
+		
+		
+		//At intersection
+		//direction = CalculateDirection();
 		//System.out.println(direction);
 		//String prevDir = currGrid.getDirection();
 		//currGrid = (RGrid) cd.getNextRGrid(currGrid);
@@ -92,7 +211,7 @@ public class BusGui implements Gui {
 		       xPos-=5;
 			if (xPos == xDestination) {
 				xFirst = false;
-			}			
+			}
 		}	
 		if(yFirst) {
 			if (yPos < yDestination)
@@ -104,26 +223,25 @@ public class BusGui implements Gui {
 			}
 		}
 		if(!(xFirst||yFirst)) {
-			if (xPos < xDestination)
-			   xPos+=5;
-			if (xPos > xDestination)
-			   xPos-=5;
+			if (xPos < xDestination) {
+				xPos+=5;
+			}
+			if (xPos > xDestination) {
+				xPos-=5;
+			}
 			if (xPos == xDestination) {
 				xFirst = false;
 			}	
-			if (yPos < yDestination)
+			if (yPos < yDestination) {
 				yPos+=5;
-			if (yPos > yDestination)
+			}
+			if (yPos > yDestination) {
 				yPos-=5;
+			}
 			if (yPos == yDestination) {
 				yFirst = false;
 			}
 		}
-        if (moving && xPos == xDestination && yPos == yDestination
-        		&& (xDestination >= 0) && (yDestination >= 0)) {
-        	moving = false;
-            agent.msgAtDestination();
-        }
 		
 	}
 	
@@ -181,10 +299,9 @@ public class BusGui implements Gui {
 		else if(stop==4||stop==10||stop==13||stop==18) {
 			yFirst=true;
 		}
-		moving = true;
 		xDestination = x;
 		yDestination = y;
-		
+		moving = true;
 	}
 
 
@@ -192,5 +309,10 @@ public class BusGui implements Gui {
 	public void setPresent(boolean b) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void moveOn() {
+		moving = true;
+		released = true;
 	}
 }

@@ -9,6 +9,8 @@ import restaurantBK.interfaces.Cook;
 import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Host;
 import restaurantBK.interfaces.Waiter;
+import trace.AlertLog;
+import trace.AlertTag;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -164,6 +166,7 @@ public class BKWaiterRole extends Role implements Waiter {
 	public void msgCantBreak() {
 		this.ws = WorkingState.working; //setting to working, sets checkbox to enabled
 		print("No break? I'll ask again later");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "No break? I'll ask again later");
 		stateChanged();
 	}
 	/* (non-Javadoc)
@@ -202,6 +205,7 @@ public class BKWaiterRole extends Role implements Waiter {
 	public void msgHereIsMyChoice(Customer c, String choice){
 		//TIME TO MESSAGE THE COOK BY CREATING AN ORDER!
 		print("Lovely selection.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Lovely selection");
 		//CHANGE TO CUSTOMER STATE ORDERED
 		for(myCustomer cust : customers) {
 			if(cust.c==c) {
@@ -220,6 +224,7 @@ public class BKWaiterRole extends Role implements Waiter {
 	@Override
 	public void msgOrderIsReady(int tn, String name){
 		print("Going to get order for table number " + tn);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Going to get order for table number " + tn);
 		synchronized(customers) {
 		for(myCustomer cust : customers) {
 			if(cust.selection==name) {
@@ -260,6 +265,7 @@ public class BKWaiterRole extends Role implements Waiter {
 	public void msgDoneEatingAndWantCheck(Customer c)
 	{
 		print("checking for check");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Checking for check");
 		for(myCustomer cust : customers)
 		{
 			if(cust.c==c)
@@ -267,6 +273,7 @@ public class BKWaiterRole extends Role implements Waiter {
 				//print("Thanks for eating with us.");
 				cust.cs=CustomerState.waitingForCheck;
 				print("Getting your check customer at table "+cust.tableNumber);
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Getting your check customer at table "+cust.tableNumber);
 				stateChanged();
 			}
 		}
@@ -292,6 +299,7 @@ public class BKWaiterRole extends Role implements Waiter {
 		for(myCustomer cust: customers) {
 			if(cust.c==c) {
 				print("Leaving early? Alright then...");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Leaving early? Alright then...");
 				cust.cs=CustomerState.leaving;
 				stateChanged();
 			}
@@ -310,6 +318,7 @@ public class BKWaiterRole extends Role implements Waiter {
 				//print("Thanks for eating with us. Go to the cashier.");
 				cust.cs=CustomerState.leaving;
 				print("Hey host, table " +cust.tableNumber+" is now clear.");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Hey host, table " +cust.tableNumber+" is now clear.");
 				stateChanged();
 			}
 			break;
@@ -330,6 +339,7 @@ public class BKWaiterRole extends Role implements Waiter {
 		}
 		if(ws==WorkingState.wantsBreak) {
 			print("Can I take a break?");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Can I take a break?");
 			TellHost();
 		}
 		if(ws==WorkingState.goingBackToWork) {
@@ -452,6 +462,7 @@ public class BKWaiterRole extends Role implements Waiter {
 	private void GetOutOfHere() {
 		ws=WorkingState.breaking;
 		print("Going on break");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Going on break");
 		waiterGui.DoGoRest(restX,restY);
 		try {
 			//System.out.println("Semaphore acquired");
@@ -471,6 +482,7 @@ public class BKWaiterRole extends Role implements Waiter {
 	private void GoBackToWork() {
 		ws=WorkingState.working;
 		print("Going back to work");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Going back to work");
 		host.msgComingBackFromBreak(this);
 	}
 	private void GetCheck(myCustomer c) {
@@ -484,6 +496,7 @@ public class BKWaiterRole extends Role implements Waiter {
 			e.printStackTrace();
 		}
 		print("Hey cashier, my customer from table " + c.tableNumber+ " wants his check");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Hey cashier, my customer from table " + c.tableNumber+ " wants his check");
 		cashier.msgMakeCheck(c.c,this,m.get(c.selection),c.tableNumber);
 		c.cs=CustomerState.checkOrdered;
 	}
@@ -500,6 +513,7 @@ public class BKWaiterRole extends Role implements Waiter {
 		c.c.msgHereIsTheCheck(c.check);
 		c.cs=CustomerState.checkGiven;
 		print("Here's you check, thanks for eating with us");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Here's you check, thanks for eating with us");
 		//c.c.msgHereIsTheCheck();
 	}
 	private void goToCustomerAndTakeOrder(myCustomer c) {
@@ -524,6 +538,7 @@ public class BKWaiterRole extends Role implements Waiter {
 		//TAKE A SEMAPHORE HERE SO THAT WAITER AGENT SLEEPS UNTIL HE GETS TO THE TABLE
 		//then when finished, print out
 		print("yo, what would you like?");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "yo, what would you like?");
 		c.c.msgWhatWouldYouLike();
 		
 		//ACTUALLY MAKE A TEXT BOX FOR THIS IN THE GUI
@@ -538,12 +553,14 @@ public class BKWaiterRole extends Role implements Waiter {
 			e.printStackTrace();
 		}
 		print("Sorry, we're out of the " +c.selection);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Sorry, we're out of the " +c.selection);
 		c.c.msgOrderSomethingElse();
 	}
 	private void placeOrder(myCustomer c, int tn, String choice) {
 		//DO ANIMATION, GO TO COOK'S COORDINATES
 		//SEMAPHORE TO MAKE WAITER GO TO SLEEP UNTIL IT GETS TO COOK
 		print("HEY COOK, THIS GUY AT TABLE "+tn +" WANTS A "+ choice);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "HEY COOK, THIS GUY AT TABLE "+tn +" WANTS A "+ choice);
 		c.cs=CustomerState.waitingForFood;
 		waiterGui.DoGoToCook();
 		try {
@@ -580,6 +597,7 @@ public class BKWaiterRole extends Role implements Waiter {
 		c.cs=CustomerState.foodOnItsWay;
 		waiterGui.flipOrder(c.selection);
 		print("Here's your food");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Here's your food");
 		c.c.msgHereIsYourFood();
 	}
 	private void GoGetCustomer(int pos) {
@@ -594,6 +612,7 @@ public class BKWaiterRole extends Role implements Waiter {
 	private void seatCustomer(myCustomer customer, int tn) {
 		GoGetCustomer(customer.waitPos);
 		print("Follow me to your table");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Follow me to your table");
 		customer.c.msgFollowMeToTable(this, tn, new ItalianMenu());
 		DoSeatCustomer(customer.c,tn); //ACQUIRE SEMAPHORE, UNTIL AT DEST
 		customer.cs=CustomerState.seated;
@@ -627,6 +646,7 @@ public class BKWaiterRole extends Role implements Waiter {
 		//atDestination.release();
 		//print("Semaphore released");
 		print("Seating " + customer + " at " + tn);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_WAITER, this.getName(), "Seating " + customer + " at " + tn);
 		//ACQUIRE THE SEMAPHORE HERE..., release when 
 		waiterGui.DoBringToTable(customer,tn); //change to c.c and tablenumber
 		try {

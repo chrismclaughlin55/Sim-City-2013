@@ -36,6 +36,9 @@ public class BusAgent extends Agent implements Bus {
 	public BusStopAgent next;
 	private Semaphore atDestination = new Semaphore(0,true);
     public int routeNumber;
+    public RGrid previousGrid = new RGrid();
+    public RGrid currGrid = null;
+    public RGrid gridToAcquire = null;
 	
 	public BusAgent(CityData cd, int routeNumber) {
 		this.cd = cd;
@@ -56,12 +59,23 @@ public class BusAgent extends Agent implements Bus {
 	public void setGui(BusGui bg) {
 		busgui = bg;
 	}
+	
+	public void setCurrentGrid(RGrid currGrid)
+	{
+		this.currGrid = currGrid;
+		currGrid.acquireGrid();
+	}
 	//MESSAGES
 	
 	//CALLED BY BUSGUI
 	/* (non-Javadoc)
 	 * @see city.Bus#msgAtDestination()
 	 */
+	public void msgAcquireGrid()
+	{
+		atDestination.release();
+	}
+	
 	public void msgAtDestination() {
 		
 		myState = BusState.atStop;
@@ -105,8 +119,8 @@ public class BusAgent extends Agent implements Bus {
 				}
 			}
 			curr.msgArrivedAtStop(this);
-			myState = BusState.unloading;   
-			return true;
+			myState = BusState.unloading;
+			return false;
 		}
 
 		if(myState==BusState.unloading) {
@@ -126,11 +140,31 @@ public class BusAgent extends Agent implements Bus {
 	        return true;
 	    }
 	    
+	    if(myState == BusState.moving && gridToAcquire != null)
+		{
+			MoveToGrid();
+			return true;
+		}
+	    
 	    return false;
+	}
+	
+	private void MoveToGrid()
+	{
+		previousGrid.releaseGrid();
+		gridToAcquire.acquireGrid();
+		previousGrid = currGrid;
+		currGrid = gridToAcquire;
+		busgui.moveOn();
+		try {
+	    	atDestination.acquire();
+	    }
+	    catch(Exception e) {}
 	}
 	
 	private void LeaveStop() {
 		BusStopAgent temp=next.nextStop;
+		myState = BusState.moving;
 		curr = next;
 		next = temp;
 		busgui.DoGoToNextStop(curr.getX(),curr.getY());
@@ -185,10 +219,15 @@ public class BusAgent extends Agent implements Bus {
 		
 	}
 
-	@Override
 	public int getRouteNumber() {
 		return routeNumber;
 	}
 
-	
+	public void msgAcquireGrid(RGrid nextRGrid) {
+		gridToAcquire = nextRGrid;
+		stateChanged();
+		atDestination.release();
+		
+	}
+
 }

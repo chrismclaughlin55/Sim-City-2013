@@ -65,109 +65,109 @@ public class CityData implements ActionListener {
 		
 		for (int i = 0; i < 31; i++) {
 			for (int j = 0; j < 40; j++) {
-				cityGrid[i][j] = new Grid();
+				cityGrid[i][j] = new Grid(i, j);
 			}
 		}
 		
 		//construct building grid
 		for (int i = 10; i < 15; i++) {
 			for (int j = 0; j < 5; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 17; i < 22; i++) {
 			for (int j = 0; j < 5; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 1; i < 6; i++) {
 			for (int j = 7; j < 12; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 10; i < 15; i++) {
 			for (int j = 7; j < 12; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 17; i < 22; i++) {
 			for (int j = 7; j < 12; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i ,j);
 			}
 		}
 		for (int i = 25; i < 30; i++) {
 			for (int j = 7; j < 12; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 1; i < 6; i++) {
 			for (int j = 13; j < 18; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 10; i < 15; i++) {
 			for (int j = 13; j < 18; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 17; i < 22; i++) {
 			for (int j = 13; j < 18; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 25; i < 30; i++) {
 			for (int j = 13; j < 18; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 1; i < 6; i++) {
 			for (int j = 21; j < 26; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 10; i < 15; i++) {
 			for (int j = 21; j < 26; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 17; i < 22; i++) {
 			for (int j = 21; j < 26; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 25; i < 30; i++) {
 			for (int j = 21; j < 26; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 1; i < 6; i++) {
 			for (int j = 27; j < 32; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 10; i < 15; i++) {
 			for (int j = 27; j < 32; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 17; i < 22; i++) {
 			for (int j = 27; j < 32; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 25; i < 30; i++) {
 			for (int j = 27; j < 32; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 10; i < 15; i++) {
 			for (int j = 34; j < 39; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		for (int i = 17; i < 22; i++) {
 			for (int j = 34; j < 39; j++) {
-				cityGrid[i][j] = new BGrid();
+				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
 		
@@ -177,92 +177,92 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new RGrid();
 		}*/
 		for (int i = 0; i < 31; i++) {
-			cityGrid[i][18] = new RGrid(Direction.west);
+			cityGrid[i][18] = new RGrid(Direction.west, i, 18);
 		}
 		for (int i = 0; i < 31; i++) {
-			cityGrid[i][19] = new RGrid(Direction.east);
+			cityGrid[i][19] = new RGrid(Direction.east, i, 19);
 		}
 		/*for (int i = 7; i < 24; i++) {
 			for (int j = 5; j < 7; j++)
 				cityGrid[i][j] = new RGrid();
 		}*/
 		for (int i = 7; i < 24; i++) {
-			cityGrid[i][5] = new RGrid(Direction.west);
+			cityGrid[i][5] = new RGrid(Direction.west, i, 5);
 		}
 		for (int i = 7; i < 24; i++) {
-			cityGrid[i][6] = new RGrid(Direction.east);
+			cityGrid[i][6] = new RGrid(Direction.east, i, 6);
 		}
 		/*for (int i = 7; i < 24; i++) {
 			for (int j = 32; j < 34; j++)
 				cityGrid[i][j] = new RGrid();
 		}*/
 		for (int i = 7; i < 24; i++) {
-			cityGrid[i][32] = new RGrid(Direction.west);
+			cityGrid[i][32] = new RGrid(Direction.west, i, 32);
 		}
 		for (int i = 7; i < 24; i++) {
-			cityGrid[i][33] = new RGrid(Direction.east);
+			cityGrid[i][33] = new RGrid(Direction.east, i, 33);
 		}
 		/*for (int i = 7; i < 9; i++) {
 			for (int j = 5; j < 33; j++)
 				cityGrid[i][j] = new RGrid();
 		}*/
 		for (int i = 5; i < 33; i++) {
-			cityGrid[7][i] = new RGrid(Direction.south);
+			cityGrid[7][i] = new RGrid(Direction.south, 7, i);
 		}
 		for (int i = 5; i < 33; i++) {
-			cityGrid[8][i] = new RGrid(Direction.north);
+			cityGrid[8][i] = new RGrid(Direction.north, 8, i);
 		}
 		/*for (int i = 23; i < 25; i++) {
 			for (int j = 5; j < 33; j++)
 				cityGrid[i][j] = new RGrid();
 		}*/
 		for (int i = 5; i < 33; i++) {
-			cityGrid[23][i] = new RGrid(Direction.south);
+			cityGrid[23][i] = new RGrid(Direction.south, 23, i);
 		}
 		for (int i = 5; i < 33; i++) {
-			cityGrid[24][i] = new RGrid(Direction.north);
+			cityGrid[24][i] = new RGrid(Direction.north, 24, i);
 		}
 		
 		//construct intersections
 		Semaphore occupied = new Semaphore(1, true);
 		for (int i = 7; i < 9; i++) {
 			for (int j = 18; j < 20; j++) {
-				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j] = new RGrid(Direction.none, i, j);
 				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
 		occupied = new Semaphore(1, true);
 		for (int i = 23; i < 25; i++) {
 			for (int j = 18; j < 20; j++) {
-				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j] = new RGrid(Direction.none, i, j);
 				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
 		occupied = new Semaphore(1, true);
 		for (int i = 7; i < 9; i++) {
 			for (int j = 5; j < 7; j++) {
-				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j] = new RGrid(Direction.none, i, j);
 				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
 		occupied = new Semaphore(1, true);
 		for (int i = 23; i < 25; i++) {
 			for (int j = 5; j < 7; j++) {
-				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j] = new RGrid(Direction.none, i, j);
 				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
 		occupied = new Semaphore(1, true);
 		for (int i = 7; i < 9; i++) {
 			for (int j = 32; j < 34; j++) {
-				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j] = new RGrid(Direction.none, i, j);
 				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
 		occupied = new Semaphore(1, true);
 		for (int i = 23; i < 25; i++) {
 			for (int j = 32; j < 34; j++) {
-				cityGrid[i][j] = new RGrid(Direction.none);
+				cityGrid[i][j] = new RGrid(Direction.none, i, j);
 				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
@@ -288,16 +288,16 @@ public class CityData implements ActionListener {
 		RGrid a = null;
 		String dir = curr.getDirection();
 		if(dir.equals("north")) {
-			//grids[i][j] i-1
+			return (RGrid)cityGrid[curr.index1()][curr.index2()-1];
 		}
 		if(dir.equals("south")) {
-			//i+1
+			return (RGrid)cityGrid[curr.index1()][curr.index2()+1];
 		}
 		if(dir.equals("east")) {
-			//j+1
+			return (RGrid)cityGrid[curr.index1()+1][curr.index2()];
 		}
 		if(dir.equals("west")) {
-			//j-1
+			return (RGrid)cityGrid[curr.index1()-1][curr.index2()];
 		}	
 		return a;
 	}

@@ -111,7 +111,6 @@ public class BusStopAgent extends Agent implements BusStop{
     {
         currentBus.msgPeopleAtStop(peopleWaiting);
         stopState = BusStopState.busLeaving;
-          
     }
     
     private void ClearPassengers() {

@@ -199,7 +199,9 @@ public class BankManagerRole extends Role implements BankManager {
 		print("bank closed. Leaving");
 		leave = false;
 		bank.payPerson(bank, me, 300);
+
 		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Leaving. I get paid 300 for today");
+
 		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Leaving. I get paid 300 for today");
 		AlertLog.getInstance().logInfo(AlertTag.BANK, bank.name, "Bank is closed");
 		bank.setClosed(person);
@@ -217,7 +219,6 @@ public class BankManagerRole extends Role implements BankManager {
 
 	private void sendInfo(myTeller t) {
 		print("sending info to "+t.t.getName());
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Sending info to "+t.t.getName());
 		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Sending info to "+t.t.getName());
 		if(bank.CustAccounts.get(t.c.getPerson()) != null )
 			t.custInfo = bank.CustAccounts.get(t.c.getPerson());
@@ -228,7 +229,6 @@ public class BankManagerRole extends Role implements BankManager {
 
 	private void updatedb(myTeller t) {
 		print("updating db for "+t.custInfo.custName);
-		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "Updating db for "+t.custInfo.custName);
 		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Updating db for "+t.custInfo.custName);
 		bank.CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
 		t.state = tellerState.available;
