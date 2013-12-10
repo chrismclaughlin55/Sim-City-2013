@@ -13,8 +13,8 @@ public class RGrid extends Grid {
 		
 	}
 	
-	public RGrid(Direction d) {
-		super();
+	public RGrid(Direction d, int i, int j) {
+		super(i, j);
 		direction = d;
 	}
 
@@ -41,5 +41,18 @@ public class RGrid extends Grid {
 	public void setSempahore(Semaphore s)
 	{
 		occupied = s;
+	}
+	
+	public void acquireGrid()
+	{
+		try {
+		occupied.acquire();
+		}
+		catch(Exception e) {}
+	}
+	
+	public void releaseGrid()
+	{
+		occupied.release();
 	}
 }

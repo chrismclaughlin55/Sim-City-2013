@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import city.BusStopAgent;
 import city.PersonAgent;
+import city.RGrid;
 
 public interface Bus {
 
@@ -16,4 +17,10 @@ public interface Bus {
 	public abstract void msgOnBus();
 
     public abstract int getRouteNumber();
+
+	public abstract void msgAcquireGrid(RGrid nextRGrid);
+
+	public abstract void setCurrentGrid(RGrid currGrid);
+
+	public abstract void msgAcquireGrid();
 }
