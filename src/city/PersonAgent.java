@@ -63,9 +63,9 @@ public class PersonAgent extends Agent
 	public BusStopAgent destinationBusStop;
 	String desiredRole;
 	private String job;
-	Market market;
+	List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
 	Timer timer = new Timer();
-	Bank bank;
+	List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
 	public HashMap<String, Integer> inventory = new HashMap<String, Integer>();
 	int rent = 50;
 	public boolean car;
@@ -130,8 +130,8 @@ public class PersonAgent extends Agent
 		inventory.put("Chicken", 3);
         
 		personGui = new PersonGui(this, gui);
-		bank = cd.bank;
-		market = cd.market;
+		banks = cd.banks;
+		markets = cd.markets;
 	}
     
 	public void setName(String name) {
@@ -332,7 +332,7 @@ public class PersonAgent extends Agent
                 }
                 
                 if (home instanceof Apartment && rentDue && !home.manager.equals(this)) {
-                    payRent();
+                    payRent(0);
                     return true;
                 }
                 
@@ -353,9 +353,14 @@ public class PersonAgent extends Agent
                     return true;
                 }
                 
-                if (home instanceof Apartment && rentDue && !home.manager.equals(this) && bank.isOpen) {
+                if (home instanceof Apartment && rentDue && !home.manager.equals(this)) {
                     // TODO
-                    payRent();
+                	if (banks.get(0).isOpen) {
+                		payRent(0);
+                	}
+                	else if (banks.get(1).isOpen) {
+                		payRent(1);
+                	}
                     return true;
                 }
                 
@@ -489,9 +494,9 @@ public class PersonAgent extends Agent
 		}
 	}
     //TODO
-	private void payRent() {
+	private void payRent(int bankNumber) {
 		Apartment a = (Apartment) home;
-		bank.directDeposit(this, a.manager, rent);
+		banks.get(bankNumber).directDeposit(this, a.manager, rent);
 		rentDue = false;
 	}
     
@@ -778,8 +783,8 @@ public class PersonAgent extends Agent
 	}
     
 	protected void goToBank() {
-        
-		destinationBuilding = cityData.bank;
+        int bankNumber = 0;
+		destinationBuilding = cityData.banks.get(bankNumber);
 		GoToDestination();
         
 		personGui.DoGoToBuilding(18);
@@ -798,7 +803,8 @@ public class PersonAgent extends Agent
 	}
     
 	protected void goToMarket() {
-		destinationBuilding = cityData.market;
+		int marketNumber = 0;
+		destinationBuilding = cityData.markets.get(0);
         
 		GoToDestination();
         
