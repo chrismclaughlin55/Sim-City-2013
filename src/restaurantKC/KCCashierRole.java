@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import market.Invoice;
+import market.MarketManagerRole;
 import restaurantKC.Check.CheckState;
 import restaurantKC.gui.RestaurantPanel;
 import restaurantKC.interfaces.Cashier;
@@ -23,12 +25,12 @@ public class KCCashierRole extends Role implements Cashier {
 	public List<MyMarketBill> marketbills = Collections.synchronizedList(new ArrayList<MyMarketBill>());
 
 	private String name;
-	public Double money;
+	public double money;
 
 	public KCCashierRole(PersonAgent p, RestaurantPanel restPanel) {
 		super(p);
 		this.name = p.getName();
-		money = 0.0;
+		money = 100.0;
 		this.restPanel = restPanel;
 	}
 
@@ -46,10 +48,13 @@ public class KCCashierRole extends Role implements Cashier {
 	public class MyMarketBill {
 		public Double price;
 		public mbState state; 
-		public Market market;
-		public MyMarketBill(Double p, Market m){
+		public MarketManagerRole marketManager;
+		public List<Invoice> invoice = Collections.synchronizedList(new ArrayList<Invoice>());
+
+		public MyMarketBill(double p, List<Invoice> i, MarketManagerRole m){
 			price = p;
-			market = m;
+			invoice = i;
+			marketManager = m;
 			state = mbState.unpaid;
 		}
 	}
@@ -65,7 +70,6 @@ public class KCCashierRole extends Role implements Cashier {
 
 	public void msgGiveOrderToCashier(String c, int tNum, Customer cust, Waiter waiterAgent) {
 		uncomputedChecks.add(new Check(c, tNum, cust, waiterAgent));
-		print ("Received msgGiveOrderToCashier");
 		stateChanged();
 	}
 
@@ -83,8 +87,8 @@ public class KCCashierRole extends Role implements Cashier {
 		stateChanged();
 	}
 
-	public void msgHereIsMarketBill(Double price, Market m) {
-		marketbills.add(new MyMarketBill(price, m));
+	public void msgHereIsMarketBill(double price, List<Invoice> invoice, MarketManagerRole m) {
+		marketbills.add(new MyMarketBill(price, invoice, m));
 		stateChanged();
 	}
 	
@@ -171,15 +175,13 @@ public class KCCashierRole extends Role implements Cashier {
 	
 	private void payMarketBill(MyMarketBill bill) {
 		
-		if (money.compareTo(bill.price) > 0) {
-			bill.market.msgHereIsBill(bill.price);
+		if (money > bill.price) {
+			bill.marketManager.msgHereIsPayment(bill.price);
 			money -= bill.price;
-			print ("Paid market. I now have " + money);
 			bill.state = mbState.paid;
 
 		}
 		else {
-			print ("Could not pay with " + money + ". Will fulfill when I have the money");
 			for (MyMarketBill mb : marketbills) {
 				if (mb.equals(bill)){
 					mb.state = mbState.unpaid;

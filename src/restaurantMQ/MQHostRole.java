@@ -14,6 +14,8 @@ import restaurantMQ.interfaces.Cook;
 import restaurantMQ.interfaces.Customer;
 import restaurantMQ.interfaces.Host;
 import restaurantMQ.interfaces.Waiter;
+import trace.AlertLog;
+import trace.AlertTag;
 
 public class MQHostRole extends Role implements Host
 {
@@ -301,6 +303,7 @@ public class MQHostRole extends Role implements Host
 	//LAST METHOD CALLED
 	private void LeaveRestaurant() {
 		System.out.println("host leaving");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_HOST, this.getName(), "Leaving the restaurant");
 		restPanel.hostLeaving();
 		person.msgDoneWithJob();
 		person.exitBuilding();
@@ -311,6 +314,7 @@ public class MQHostRole extends Role implements Host
 		w.state = WaiterState.OnBreak;
 		workingWaiters--;
 		System.out.println("Host: " + ((MQWaiterRole)w.waiter).getName() + " is cleared to go on break.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_HOST, this.getName(), ((MQWaiterRole)w.waiter).getName() + " is cleared to go on break.");
 		w.waiter.msgGoOnBreak();
 	}
 	
@@ -341,6 +345,7 @@ public class MQHostRole extends Role implements Host
 		
 		//DoSeatCustomer(customer, table);
 		System.out.println("Host: Seat " + customer.getName() + " at table " + table.tableNumber);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_HOST, this.getName(), "Seat " + customer.getName() + " at table " + table.tableNumber);
 		waitingCustomers.remove(customer);
 		/*
 		try {

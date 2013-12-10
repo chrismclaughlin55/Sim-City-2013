@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 import market.MarketManagerRole.MyCookCustomer;
@@ -12,14 +11,12 @@ import market.gui.EmployeeGui;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
 import market.interfaces.MarketManager;
-import restaurantMQ.MQCashierRole;
 import restaurantMQ.test.mock.EventLog;
 import restaurantMQ.test.mock.LoggedEvent;
 import trace.AlertLog;
 import trace.AlertTag;
 import city.PersonAgent;
 import city.Role;
-import city.TestPerson;
 
 
 public class MarketEmployeeRole extends Role implements MarketEmployee {
@@ -50,7 +47,6 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	private boolean isProcessed = false;
 	private MarketCustomer currentCustomer;
 	private MyCookCustomer currentCookCustomer;
-	private MQCashierRole cashier;
 	private Market market;
 
 	private Semaphore atDesk = new Semaphore(0, true);
@@ -160,24 +156,9 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		}
 
 
-
-		if (state == EmployeeState.doneProcessingCookOrder) {
-			for (final restaurantMQ.MarketOrder o : currentCookCustomer.order) {
-				currentCookCustomer.cook.msgFoodDelivered(o.name, o.amount);
-				currentCookCustomer.cashier.msgHereIsBill(this, o.amount*inventory.inventory.get(o.name).price);
-			}
-			return true;
-		}
-
 		if (state == EmployeeState.doneProcessing) {
 			currentMarketOrders.get(0).cust.msgOrderFulfullied(invoice, amountDue);
 			state = EmployeeState.waitingForPayment;
-			return true;
-		}
-
-		if (!waitingCookCustomers.isEmpty()) {
-			FulfillCookOrder(waitingCookCustomers.get(0));
-			waitingCustomers.remove(0);
 			return true;
 		}
 
@@ -249,7 +230,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}
 
 
-	public void FulfillCookOrder(MyCookCustomer c) {
+	/*public void FulfillCookOrder(MyCookCustomer c) {
 		AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "Fulfilling restaurant's order");
 		amountDue = 0;
 		for (final restaurantMQ.MarketOrder o : c.order) {
@@ -273,7 +254,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 				invoice.add(i);
 			}
 		}
-	}
+	}*/
 
 
 

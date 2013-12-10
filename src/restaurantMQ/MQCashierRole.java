@@ -16,6 +16,8 @@ import restaurantMQ.interfaces.Market;
 import restaurantMQ.interfaces.Waiter;
 import restaurantMQ.test.mock.EventLog;
 import restaurantMQ.test.mock.LoggedEvent;
+import trace.AlertLog;
+import trace.AlertTag;
 
 public class MQCashierRole extends Role implements Cashier
 {
@@ -169,6 +171,7 @@ public class MQCashierRole extends Role implements Cashier
 			checks.put(c.customer, price);
 		c.waiter.msgHereIsCheck(c.customer, price);
 		System.out.println("Cashier: Giving check to waiter");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CASHIER, this.getName(), "Giving check to waiter");
 	}
 	
 	private void processPayment(Payment p)
@@ -181,12 +184,14 @@ public class MQCashierRole extends Role implements Cashier
 		{
 			checks.remove(p.customer);
 			p.customer.msgGoodToGo();
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CASHIER, this.getName(), "Received payment of $"+p.payment);
 		}
 		else
 		{
 			double difference = round(checks.get(p.customer)- p.payment);
 			checks.put(p.customer, difference);
 			System.out.println("Cashier: Pay the other $" + difference + " next time!");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CASHIER, this.getName(), "Pay the other $" + difference + " next time!");
 			p.customer.msgNotEnough();
 		}
 	}
@@ -205,6 +210,7 @@ public class MQCashierRole extends Role implements Cashier
 		}
 		money = round(money - payment);
 		System.out.println("Cashier: Paying $" + payment + " to " + bill.marketEmployee.getName());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_CASHIER, this.getName(), "Paying $" + payment + " to " + bill.marketEmployee.getName());
 		bill.marketEmployee.msgHereIsPayment(payment);
 	}
 	/*END OF ACTIONS*/
