@@ -265,7 +265,15 @@ public class MainGui extends JFrame implements MouseListener {
     }
     
   
-    public static void main(String[] args) { 
+    public static void main(String[] args) {
+        DemoLauncher dl = new DemoLauncher();
+    	dl.start();
+    	dl.setTitle("Trace Panel");
+		dl.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dl.setBounds(10, 0, 650, 500);
+		dl.setResizable(false);
+		dl.setVisible(true);
+        
         MainGui gui = new MainGui();
         gui.setTitle("Sim City - Team 15");
         gui.setVisible(true);
