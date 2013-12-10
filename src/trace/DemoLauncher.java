@@ -22,8 +22,8 @@ import javax.swing.JToggleButton;
  */
 @SuppressWarnings("serial")
 public class DemoLauncher extends JFrame {
-	private static int W = 200;
-	private static int H = 40;
+	private int W = 200;
+	private int H = 40;
 	
 	ControlPanel controlPanel;
 	
