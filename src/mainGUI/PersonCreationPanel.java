@@ -64,6 +64,8 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	private String name;
 	private String job;
 	private MainGui mainGui;
+	private CityData cityData;
+	private boolean robberAdded = false;
 
 	JRadioButton unemployed;
 	JRadioButton landlord;
@@ -81,9 +83,10 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	JRadioButton bankTeller;
 	JRadioButton bankCustomer;
 
-	public PersonCreationPanel(MainGui mainGui) {
+	public PersonCreationPanel(MainGui mainGui, CityData cd) {
 		this.mainGui = mainGui;
 		this.type = "person";
+		cityData = cd;
 		setLayout(null);//new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		timePane.setLayout(new FlowLayout());
@@ -224,6 +227,12 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 			String role = "";
 			String destination;
 			
+			if (robberAdded) {
+				role = "BankRobber";
+				destination = "Bank";
+				robberAdded = false;
+			}
+			
 			if(getSelectedButtonText(jobs).contains("Bank")){
 				destination = "Bank";
 				if(getSelectedButtonText(jobs).contains("BankManager")){
@@ -348,7 +357,14 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		}
 		
 		else if (e.getSource() == robBank) {
-			
+			if (cityData.bank.isOpen()) {
+				robberAdded = true;
+				addPerson("DaBankRobba");
+			}
+			else {
+				JFrame frame = new JFrame();
+	    		JOptionPane.showMessageDialog(frame, "You can't rob the bank unless it's open, silly!");
+			}
 		}
 		
 		else if (e.getSource() == carCrash) {
