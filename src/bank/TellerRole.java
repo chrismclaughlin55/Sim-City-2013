@@ -211,6 +211,7 @@ public class TellerRole extends Role implements Teller{
 	
 	private void leaveJob() {
 		event = Event.none;
+		bm.msgLeavingNow(this);
 		gui.goTo(9);
 		try {
 			atDest.acquire();
@@ -218,8 +219,7 @@ public class TellerRole extends Role implements Teller{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		bm.msgLeavingNow(this);
-		gui.setPresent(false);
+		//gui.setPresent(false);
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();
