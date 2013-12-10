@@ -252,7 +252,7 @@ public class MQCookRole extends Role implements Cook
 		}
 		System.out.println();
 		if (market.isOpen()) {
-			market.currentManager.msgNeedToOrder(this, marketOrders, cashier);
+			//market.currentManager.msgNeedToOrder(this, marketOrders, cashier);
 		}
 		marketOrders.clear();
 	}

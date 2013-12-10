@@ -3,7 +3,7 @@ package market;
 public class Invoice {
 
 	public String type;
-	int amount;
+	public int amount;
 	double price;
 	public int marketNum;
 
