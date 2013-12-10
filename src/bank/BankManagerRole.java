@@ -121,6 +121,14 @@ public class BankManagerRole extends Role implements BankManager {
 		//			// TODO Auto-generated catch block
 		//			e.printStackTrace();
 		//		}
+		
+		if (person.cityData.hour == 15 && person.cityData.increment == 0) {
+			if (tellers.size() > 1) {
+				fireTeller(tellers.get(tellers.size() - 1));
+				return true;
+			}
+		}
+		
 		for( myTeller t: tellers){
 			if(t.state == tellerState.available && getLine().size()>0){
 				helpCustomer(getLine().remove(0), t);
@@ -208,6 +216,10 @@ public class BankManagerRole extends Role implements BankManager {
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();
+	}
+	
+	private void fireTeller(myTeller t) {
+		t.t.msgYoureFired();
 	}
 
 	private void helpCustomer(CustomerRole c, myTeller t) {
