@@ -6,6 +6,8 @@ import restaurantLY.interfaces.*;
 import restaurantLY.test.mock.EventLog;
 import restaurantLY.test.mock.LoggedEvent;
 import restaurantLY.interfaces.Host;
+import trace.AlertLog;
+import trace.AlertTag;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -197,11 +199,13 @@ public class LYWaiterRole extends Role implements Waiter {
 		onBreak = isOnBreak;
 		//gui.setstateCB(onBreak);
 		if (isOnBreak) {
-			print("Host allows me on break");
+			print("Host allows my break");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), "Host allows my break");
 			state = AgentState.onBreak;
 		}
 		else {
-			print("Host doesn't allow me on break");
+			print("Host denies my break");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), "Host denies my break");
 			state = AgentState.working;
 		}
 		stateChanged();
@@ -212,6 +216,7 @@ public class LYWaiterRole extends Role implements Waiter {
 			for (myCustomer mc : customers) {
 				if (mc.tableNumber == tableNumber) {
 					print("Running out of " + mc.customer.getName() + "'s order of " + mc.choice);
+					AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), "Running out of " + mc.customer.getName() + "'s order of " + mc.choice);
 					mc.state = customerState.CookPendingReorder;
 					for (Cook cook: cooks) {
 						cook.getGui().removeFood();
@@ -224,6 +229,7 @@ public class LYWaiterRole extends Role implements Waiter {
 	
 	public void msgAskForCheck(Customer customer, double check) {
 		log.add(new LoggedEvent("Asking cashier for " + customer.getName() + "'s check of $" + check));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), "Asking cashier for " + customer.getName() + "'s check of $" + check);
 		print("Asking cashier for check");
 		synchronized (customers) {
 			for (myCustomer mc : customers) {
@@ -242,6 +248,7 @@ public class LYWaiterRole extends Role implements Waiter {
 	public boolean pickAndExecuteAnAction() {
 		if (state == AgentState.waitingForBreak) {
 			print("Asking the host for break");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), "Asking the host for break");
 			host.msgAskForBreak(this);
 		}
 		if (state == AgentState.waitingForWork) {
@@ -384,6 +391,7 @@ public class LYWaiterRole extends Role implements Waiter {
 			e.printStackTrace();
 		}
 		print(customer.customer.getName() + " ordering the " + customer.choice);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), customer.customer.getName() + " ordering the " + customer.choice);
 		customer.customer.getGui().placeFood(customer.choice + "?");
 		stateChanged();
 	}
@@ -399,6 +407,7 @@ public class LYWaiterRole extends Role implements Waiter {
 	
 	private void takeReorderFromCustomer(myCustomer customer) {
 		print(customer.customer.getName() + " reordering");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), customer.customer.getName() + " reordering");
 		customer.menu.choices.remove(customer.choice);
 		customer.customer.msgReorder(customer.menu);
 		customer.state = customerState.CookGettingReorder;
@@ -407,6 +416,7 @@ public class LYWaiterRole extends Role implements Waiter {
 	
 	private void askForCheck(myCustomer c) {
 		print("Calling cashier to make check");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), "Calling cashier to make check");
 		cashier.msgCreateCheck(this, c.customer, c.choice);
 	}
 	
@@ -440,6 +450,7 @@ public class LYWaiterRole extends Role implements Waiter {
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
 		print("Seating " + customer.customer + " at table " + (customer.tableNumber+1));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), "Seating " + customer.customer + " at table " + (customer.tableNumber+1));
 		//waiterGui.DoGoToOrigin();
 		//atDoor.drainPermits();
 		waiterGui.DoGoToCust(customer.custNumber+1);
@@ -457,17 +468,20 @@ public class LYWaiterRole extends Role implements Waiter {
 	
 	private void DoTakeOrderFromCustomer(myCustomer customer) {
 		print("Taking order from " + customer.customer);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), "Taking order from " + customer.customer);
 		waiterGui.DoGoToTable(customer.tableNumber);
 	}
 	
 	private void DoGiveOrderToCook(myCustomer customer) {
 		print("Giving " + customer.customer + "'s order of " + customer.choice + " to cook");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), "Giving " + customer.customer + "'s order of " + customer.choice + " to cook");
 		//cook.getGui().placeFood(customer.choice, true);
 		waiterGui.DoGoToOrigin();
 	}
 	
 	private void DoServeFoodToCustomer(myCustomer customer) {
 		print("Serving " + customer.choice + " to " + customer.customer);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_WAITER, this.getName(), "Serving " + customer.choice + " to " + customer.customer);
 		for (Cook cook: cooks) {
 			cook.getGui().placeFood(customer.choice, false);
 		}

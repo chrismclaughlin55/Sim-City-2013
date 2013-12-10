@@ -5,6 +5,8 @@ import agent.Agent;
 import restaurantLY.interfaces.*;
 import restaurantLY.test.mock.EventLog;
 import restaurantLY.test.mock.LoggedEvent;
+import trace.AlertLog;
+import trace.AlertTag;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -119,6 +121,7 @@ public class LYCustomerRole extends Role implements Customer{
 	
 	public void gotHungry() {//from animation
 		print("I'm hungry");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "I'm hungry");
 		event = AgentEvent.gotHungry;
 		isHungry = true;
 		NonNormLeave = false;
@@ -163,6 +166,7 @@ public class LYCustomerRole extends Role implements Customer{
 	
 	public void msgLeaving() {
 		print("Leaving restaurant");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Leaving restaurant");
 		state = AgentState.DoingNothing;
 		isHungry = false;
 		stateChanged();
@@ -198,6 +202,7 @@ public class LYCustomerRole extends Role implements Customer{
 
 	public void msgRestaurantIsFull() {
 		print("Restaurant is full");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Restaurant is full");
 		event = AgentEvent.restaurantIsFull;
 		stateChanged();
 	}
@@ -287,6 +292,7 @@ public class LYCustomerRole extends Role implements Customer{
 	
 	private void goToRestaurant() {
 		print("Going to restaurant, having $" + this.money);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Going to restaurant, having $" + this.money);
 		//customerGui.DoGoToWaitingArea();
 		
 		host.msgIWantToEat(this);//send our instance, so he can respond to us
@@ -319,6 +325,7 @@ public class LYCustomerRole extends Role implements Customer{
 		if (isCheapestOrder) {
 			if (!menu.choices.containsKey("Salad")) {
 				print("Cheapest order running out");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Cheapest order running out");
 				NonNormLeave = true;
 				leaveTable();
 				return;
@@ -326,6 +333,7 @@ public class LYCustomerRole extends Role implements Customer{
 		}
 		if (menu.choices.isEmpty()) {
 			print("All food running out");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "All food running out");
 			NonNormLeave = true;
 			leaveTable();
 			return;
@@ -342,6 +350,7 @@ public class LYCustomerRole extends Role implements Customer{
 	
 	private void callWaiter(){
 		print("Ready to order");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Ready to reorder");
 		waiter.msgImReadyToOrder(this);
 		stateChanged();
 	}
@@ -359,6 +368,7 @@ public class LYCustomerRole extends Role implements Customer{
 		}
 		if (isCheapestOrder) {
 			print("Ordering the cheapest order of Salad");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Ordering the cheapest order of Salad");
 			isOrdered = true;
 			menu.choices.remove("Salad");
 			waiter.msgHereIsMyChoice(this, "Salad");
@@ -378,6 +388,7 @@ public class LYCustomerRole extends Role implements Customer{
 	private void EatFood() {
 		customerGui.placeFood(custOrder);
 		print("Eating Food");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Eating Food");
 		//This next complicated line creates and starts a timer thread.
 		//We schedule a deadline of getHungerLevel()*1000 milliseconds.
 		//When that time elapses, it will call back to the run routine
@@ -427,19 +438,23 @@ public class LYCustomerRole extends Role implements Customer{
 		if (this.name.equals("Waiting")) {
 			isWaiting = true;
 			print("Deciding for waiting");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Decided to wait");
 		}
 		else if (this.name.equals("Leaving")) {
 			isWaiting = false;
 			print("Deciding for leaving");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Decided to leave");
 		}
 		else {
 			if (decision > 1) {
 				isWaiting = true;
 				print("Deciding for waiting");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Decided to wait");
 			}
 			else {
 				isWaiting = false;
 				print("Deciding for leaving");
+				AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Decided to leave");
 			}
 		}
 		if (isWaiting) {
@@ -459,6 +474,7 @@ public class LYCustomerRole extends Role implements Customer{
 
 	private void payCheck() {
 		print("Paying $" + money + " to cashier");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Paying $" + money + " to cashier");
 		cashier.msgHereIsMoney(this, money);
 		stateChanged();
 	}
@@ -468,6 +484,7 @@ public class LYCustomerRole extends Role implements Customer{
 		moneyBD = moneyBD.setScale(2, BigDecimal.ROUND_HALF_UP);
 		log.add(new LoggedEvent("Getting change of $" + moneyBD));
 		print("Getting change of $" + moneyBD);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Getting change of $" + moneyBD);
 		money = change;
 		noDebt = true;
 		this.msgLeaving();
@@ -477,6 +494,7 @@ public class LYCustomerRole extends Role implements Customer{
 	public void checkCheapestOrder() {
 		if (this.money >= 5.99 && this.money < 8.99) {
 			print("Having only enough money to order the cheapest order");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CUSTOMER, this.getName(), "Having only enough money to order the cheapest order");
 			isCheapestOrder = true;
 		}
 		else {
