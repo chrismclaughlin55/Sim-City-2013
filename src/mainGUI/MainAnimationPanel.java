@@ -265,7 +265,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(18).setType(BuildingType.bank);
 		cd.buildings.get(18).setName("bank");
 		cd.buildings.get(18).setBuildingNumber(18);
-
+		cd.bank.addBusinessAccount(cd.buildings.get(18), 15000.0);
 		//Set market parameters
 		cd.buildings.get(19).setType(BuildingType.market);
 		cd.buildings.get(19).setName("market");

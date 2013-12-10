@@ -22,7 +22,7 @@ import city.Role;
  */
 
 public class KCCookRole extends Role implements Cook {
-	
+
 	public RestaurantPanel restPanel;
 
 	private List<pcCookOrder> cookOrders;
@@ -218,15 +218,15 @@ public class KCCookRole extends Role implements Cook {
 				return true;
 			}
 		}
-		
+
 		for(Iterator<CookOrder> iter = orders.iterator(); iter.hasNext(); ) {
-		    CookOrder o = iter.next();
-		    if(o.state == State.discard) {
-		        iter.remove();
-		    }
+			CookOrder o = iter.next();
+			if(o.state == State.discard) {
+				iter.remove();
+			}
 		}
-		
-		
+
+
 		if(person.cityData.hour >= restPanel.CLOSINGTIME && orders.isEmpty() && cookOrders.isEmpty() /*&& restPanel.activeWaiters() == 0*/) {
 			LeaveRestaurant();
 			return true;
@@ -445,16 +445,18 @@ public class KCCookRole extends Role implements Cook {
 	}
 
 	public void msgImTakingTheFood(String choice, int t) {
-		for (CookOrder o : orders) {
-			if (o.state == State.sent)  {
-				o.state = State.discard;
-				cookGui.removeFood(o.orderNum);
+		synchronized (orders) {
+			for (CookOrder o : orders) {
+				if (o.state == State.sent)  {
+					o.state = State.discard;
+					cookGui.removeFood(o.orderNum);
+				}
 			}
 		}
 		stateChanged();
 	}
 
-	
+
 	private void LeaveRestaurant() {
 		print("LEAVING THE RESTAURANT");
 		cookGui.DoLeaveRestaurant();

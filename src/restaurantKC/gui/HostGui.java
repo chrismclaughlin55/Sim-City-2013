@@ -14,7 +14,7 @@ public class HostGui implements Gui {
     private KCHostRole agent = null;
 
     private int xPos = 0, yPos = 0;//default waiter position
-    private int xDestination = 450, yDestination = 450;
+    private int xDestination = 450, yDestination = 475;
             
 
     public HostGui(Host agent) {
@@ -55,7 +55,7 @@ public class HostGui implements Gui {
 	
 	public void DoLeaveRestaurant()
     {
-    	xDestination = -30;
-        yDestination = -30;
+    	xDestination = -35;
+        yDestination = -35;
     }
 }

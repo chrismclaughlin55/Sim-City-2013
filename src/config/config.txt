@@ -157,7 +157,7 @@ cash 100
 bankMoney 500
 job MarketManager
 hunger 10
-inventory 10
+inventory 100
 transportation bus
 
 NewPerson
