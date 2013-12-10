@@ -25,6 +25,7 @@ import city.Building.BuildingType;
 import city.gui.PersonGui;
 import city.interfaces.BusStop;
 
+
 public class PersonAgent extends Agent
 {
 	/*CONSTANTS*/
@@ -417,6 +418,7 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToBank;
 				desiredRole = "Customer";
 				bankInfo.depositAmount = cash - HIGHMONEY;
+				return true;
 			}
 			// Inventory of food stuff
 			if(lowInventory()) {

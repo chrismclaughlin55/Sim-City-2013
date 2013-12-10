@@ -458,6 +458,9 @@ public class BKCustomerRole extends Role implements Customer {
 	private void leaveRestaurant() {
 		print("Leaving restaurant");
 		customerGui.DoExitRestaurant();
+		person.exitBuilding();
+		person.msgFull();
+		doneWithRole();
 	}
 
 	// Accessors, etc.
