@@ -37,8 +37,8 @@ public class CityData implements ActionListener {
 	public static ArrayList<BusAgent> buses = new ArrayList<BusAgent>();
 	public static List<Building> buildings = Collections.synchronizedList(new ArrayList<Building>());
 	public static List<Gui> guis = Collections.synchronizedList(new ArrayList<Gui>());
-	public Market market;
-	public Bank bank;
+	public List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
+	public List<Bank> banks = Collections.synchronizedList(new ArrayList<Bank>());
 	public List<Building> restaurants = Collections.synchronizedList(new ArrayList<Building>());
 	public Timer globalTimer;
 	public static int incrementLimit = 300;
@@ -95,7 +95,7 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i ,j);
 			}
 		}
-		for (int i = 25; i < 30; i++) {
+		for (int i = 26; i < 30; i++) {
 			for (int j = 7; j < 12; j++) {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
@@ -115,7 +115,7 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
-		for (int i = 25; i < 30; i++) {
+		for (int i = 26; i < 30; i++) {
 			for (int j = 13; j < 18; j++) {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
@@ -135,7 +135,7 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
-		for (int i = 25; i < 30; i++) {
+		for (int i = 26; i < 30; i++) {
 			for (int j = 21; j < 26; j++) {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
@@ -155,7 +155,7 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
-		for (int i = 25; i < 30; i++) {
+		for (int i = 26; i < 30; i++) {
 			for (int j = 27; j < 32; j++) {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
@@ -170,6 +170,17 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
+		for (int i = 1; i < 6; i++) {
+			for (int j = 34; j < 39; j++) {
+				cityGrid[i][j] = new BGrid(i, j);
+			}
+		}
+		for (int i = 26; i < 30; i++) {
+			for (int j = 34; j < 39; j++) {
+				cityGrid[i][j] = new BGrid(i, j);
+			}
+		}
+		
 		
 		//construct road grid
 		/*for (int i = 0; i < 31; i++) {
@@ -206,20 +217,20 @@ public class CityData implements ActionListener {
 			for (int j = 5; j < 33; j++)
 				cityGrid[i][j] = new RGrid();
 		}*/
-		for (int i = 5; i < 33; i++) {
+		for (int i = 5; i < 35; i++) {
 			cityGrid[7][i] = new RGrid(Direction.south, 7, i);
 		}
-		for (int i = 5; i < 33; i++) {
+		for (int i = 5; i < 35; i++) {
 			cityGrid[8][i] = new RGrid(Direction.north, 8, i);
 		}
 		/*for (int i = 23; i < 25; i++) {
 			for (int j = 5; j < 33; j++)
 				cityGrid[i][j] = new RGrid();
 		}*/
-		for (int i = 5; i < 33; i++) {
+		for (int i = 5; i < 35; i++) {
 			cityGrid[23][i] = new RGrid(Direction.south, 23, i);
 		}
-		for (int i = 5; i < 33; i++) {
+		for (int i = 5; i < 35; i++) {
 			cityGrid[24][i] = new RGrid(Direction.north, 24, i);
 		}
 		
@@ -266,6 +277,30 @@ public class CityData implements ActionListener {
 				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
+		
+		//Assign door for each building
+		/*cityGrid[3][10] = new Grid(3, 10);
+		cityGrid[3][16] = new Grid(3, 16);
+		cityGrid[3][24] = new Grid(3, 24);
+		cityGrid[3][30] = new Grid(3, 30);
+		cityGrid[12][37] = new Grid(12, 37);
+		cityGrid[19][37] = new Grid(19, 37);
+		cityGrid[28][30] = new Grid(28, 30);
+		cityGrid[28][24] = new Grid(28, 24);
+		cityGrid[28][16] = new Grid(28, 16);
+		cityGrid[28][10] = new Grid(28, 10);
+		cityGrid[19][3] = new Grid(19, 3);
+		cityGrid[12][3] = new Grid(12, 3);
+		cityGrid[13][10] = new Grid(13, 10);
+		cityGrid[20][10] = new Grid(20, 10);
+		cityGrid[13][16] = new Grid(13, 16);
+		cityGrid[20][16] = new Grid(20, 16);
+		cityGrid[13][30] = new Grid(13, 30);
+		cityGrid[20][30] = new Grid(20, 30);
+		cityGrid[12][24] = new Grid(12, 24);
+		cityGrid[19][24] = new Grid(19, 24);
+		cityGrid[3][37] = new Grid(3, 37);
+		cityGrid[28][37] = new Grid(28, 37);*/
 	}
 	
 	public void setBusStopRoute(BusAgent bus) {
@@ -298,6 +333,76 @@ public class CityData implements ActionListener {
 			return (RGrid)cityGrid[curr.index1()-1][curr.index2()];
 		}	
 		return null;
+	}
+	public RGrid getNextRGrid(RGrid g, Direction dir) {
+		RGrid x = null;
+		if(dir==Direction.north) {
+			if(cityGrid[g.index1()][g.index2()-1] instanceof RGrid) {
+				return (RGrid) cityGrid[g.index1()][g.index2()-1];
+			}
+			
+		}
+		if(dir==Direction.south) {
+			if(cityGrid[g.index1()][g.index2()+1] instanceof RGrid) {
+				return (RGrid) cityGrid[g.index1()][g.index2()+1];
+			}
+		}
+		
+		if(dir==Direction.east) {
+			if(cityGrid[g.index1()+1][g.index2()] instanceof RGrid) {
+				return (RGrid)cityGrid[g.index1()+1][g.index2()];
+			}
+		}
+		if(dir==Direction.west) {
+			if(cityGrid[g.index1()-1][g.index2()] instanceof RGrid) {
+				return (RGrid)cityGrid[g.index1()-1][g.index2()];
+			}
+		}
+		return x;
+		
+	}
+	public RGrid getNextRGrid(Grid g, Direction dir) {
+		RGrid x = null;
+
+		if(dir==Direction.north) {
+			if(cityGrid[g.index1()][g.index2()-1] instanceof RGrid) {
+				return (RGrid)cityGrid[g.index1()][g.index2()-1];
+			}
+		}
+		if(dir==Direction.south) {
+			if(cityGrid[g.index1()][g.index2()+1] instanceof RGrid) {
+				return (RGrid)cityGrid[g.index1()][g.index2()+1];
+			}
+		}
+		if(dir==Direction.east) {
+			if(cityGrid[g.index1()+1][g.index2()] instanceof RGrid) {
+				return (RGrid)cityGrid[g.index1()+1][g.index2()];
+			}
+		}
+		if(dir==Direction.west) {
+			if(cityGrid[g.index1()-1][g.index2()] instanceof RGrid) {
+				return (RGrid)cityGrid[g.index1()-1][g.index2()];
+			}
+		}
+		return x;
+		
+	}
+	public Grid getNextGrid(Grid g, Direction dir) {
+		Grid x = null;
+		System.out.println("final cross" + g.index1()+ " "+g.index2());
+		if(dir==Direction.north) {
+			x = cityGrid[g.index1()][g.index2()-1];
+		}
+		if(dir==Direction.south) {
+			x = cityGrid[g.index1()][g.index2()+1];
+		}
+		if(dir==Direction.east) {
+			x = cityGrid[g.index1()+1][g.index2()];
+		}
+		if(dir==Direction.west) {
+			x = cityGrid[g.index1()-1][g.index2()];
+		}
+		return x;
 	}
 	public void incrementTime() {
 		increment++;
