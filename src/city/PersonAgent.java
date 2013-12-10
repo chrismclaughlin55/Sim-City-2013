@@ -371,7 +371,8 @@ public class PersonAgent extends Agent
                         goToCouch();
                         return true;
                     }
-                    else {
+                    else if (cash <= LOWMONEY || cash >= HIGHMONEY) {
+                    	System.err.println("money problems");
                         leaveHome();
                         return true;
                     }
@@ -401,7 +402,7 @@ public class PersonAgent extends Agent
                 
             case doingNothing: {
                 //Decide what the next BigState will be based on current parameters
-                
+            	
                 if(goToWork && jobBuilding != null) {
                     destinationBuilding = jobBuilding;
                     desiredRole = job;
@@ -420,14 +421,15 @@ public class PersonAgent extends Agent
                     }
                 }
                 
-                if(hungerLevel >= STARVING) {
+                if (hungerLevel >= STARVING) {
                     bigState = BigState.goToRestaurant;
                     desiredRole = "Customer";
                     if(!goToWork)
                         System.out.println(name + " " + job + " " + desiredRole);
                     return true;
                 }
-                if(cash <= LOWMONEY) {
+                
+                if (cash <= LOWMONEY) {
                     bigState = BigState.goToBank;
                     desiredRole = "Customer";
                     double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100;
@@ -437,13 +439,14 @@ public class PersonAgent extends Agent
                     return true;
                 }
                 
-                if(cash >= HIGHMONEY){
+                if (cash >= HIGHMONEY){
                     bigState = BigState.goToBank;
                     desiredRole = "Customer";
                     bankInfo.depositAmount = cash - HIGHMONEY;
+                    return true;
                 }
                 // Inventory of food stuff
-                if(lowInventory()) {
+                if (lowInventory()) {
                     bigState = BigState.goToMarket;
                     desiredRole = "MarketCustomer";
                     if(!goToWork)
@@ -451,7 +454,7 @@ public class PersonAgent extends Agent
                     return true;
                 }
                 
-                if(hungerLevel >= HUNGRY) {
+                if (hungerLevel >= HUNGRY) {
                     bigState = BigState.goToRestaurant;
                     desiredRole = "Customer";
                     if(!goToWork)
