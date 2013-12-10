@@ -140,7 +140,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		}
 		
 		for (int i = 0; i < 1; i++) {
-			Building b = new CMRestaurantBuilding(200+i*140, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
+			Building b = new CMRestaurantBuilding(200, 540, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
 			cd.restaurants.add((CMRestaurantBuilding) b);
 		}
