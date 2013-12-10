@@ -332,6 +332,7 @@ public class CMWaiterRole extends Role{
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();	
+		person.setHunger(0);
 		leave = false;
 	}
 	private void cashierCalcOrder(myCust C) {

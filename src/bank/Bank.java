@@ -22,7 +22,7 @@ import city.interfaces.Bus;
 
 public class Bank extends Building {
 	public Semaphore enter = new Semaphore(1, true);
-	public final static int CLOSINGTIME = 22;
+	public final static int CLOSINGTIME = 19;
 	public BankGui bankGui;
 	public BankManagerRole currentManager = null;
 	Map<PersonAgent, CustomerRole> existingCustRoles;

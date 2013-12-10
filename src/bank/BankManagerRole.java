@@ -155,6 +155,7 @@ public class BankManagerRole extends Role implements BankManager {
 			}
 		}
 		if(person.cityData.hour > Bank.CLOSINGTIME){
+			bank.setClosed(me);
 			leave = true;
 			allGone = true;
 			for( myTeller t : tellers){

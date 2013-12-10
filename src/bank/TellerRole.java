@@ -157,7 +157,7 @@ public class TellerRole extends Role implements Teller{
 			wantToLeave = true;
 		}
 		if(wantToLeave && bm.getLine().size() == 0){
-			this.guiGoHere(9);
+			leaveJob();
 		}
 
 		return false;

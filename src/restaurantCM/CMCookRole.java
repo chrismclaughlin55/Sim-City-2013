@@ -246,6 +246,7 @@ public class CMCookRole extends Role{
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();	
+		person.setHunger(0);
 		leave = false;
 	}
 	public void msgLeave() {

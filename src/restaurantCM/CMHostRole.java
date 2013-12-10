@@ -218,6 +218,7 @@ public class CMHostRole extends Role  {
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();	
+		person.setHunger(0);
 		building.setClosed(person);
 	}
 	private myWait findWaiter(CMWaiterRole W){

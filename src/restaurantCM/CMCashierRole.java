@@ -143,6 +143,7 @@ public class CMCashierRole extends Role{
 		person.msgDoneWithJob();
 		doneWithRole();	
 		leave = false;
+		person.setHunger(0);
 	}
 	public void msgLeave() {
 		leave = true;
