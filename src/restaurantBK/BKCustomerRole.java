@@ -470,6 +470,9 @@ public class BKCustomerRole extends Role implements Customer {
 		print("Leaving restaurant");
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "Leaving restaurant");
 		customerGui.DoExitRestaurant();
+		person.exitBuilding();
+		person.msgFull();
+		doneWithRole();
 	}
 
 	// Accessors, etc.

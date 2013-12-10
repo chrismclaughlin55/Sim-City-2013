@@ -239,7 +239,7 @@ public class MainGui extends JFrame implements MouseListener {
 								if(temp.equals("walk")) {
 									p.car = false;
 									p.bus = false;
-									p.walk = false;
+									p.walk = true;
 								}
 							}
 						}

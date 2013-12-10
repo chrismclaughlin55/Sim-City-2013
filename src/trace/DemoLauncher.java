@@ -23,7 +23,7 @@ import javax.swing.JToggleButton;
 @SuppressWarnings("serial")
 public class DemoLauncher extends JFrame {
 	private int W = 200;
-	private int H = 40;
+	private int H = 35;
 	
 	ControlPanel controlPanel;
 	
@@ -37,7 +37,7 @@ public class DemoLauncher extends JFrame {
 	public DemoLauncher() {
 		this.tracePanel = new TracePanel();
 		this.controlPanel = new ControlPanel(tracePanel);
-		tracePanel.setPreferredSize(new Dimension(800, 380));
+		tracePanel.setPreferredSize(new Dimension(800, 445));
 		
 		this.setLayout(new BorderLayout());
 		this.add(controlPanel, BorderLayout.CENTER);
@@ -179,11 +179,12 @@ public class DemoLauncher extends JFrame {
 		JToggleButton SMWaiterTagButton;*/
 		JToggleButton SMRolesTagsButton;
 		JToggleButton RestCMTagButton;
-		JToggleButton CMCashierTagButton;
+		/*JToggleButton CMCashierTagButton;
 		JToggleButton CMCookTagButton;
 		JToggleButton CMCustTagButton;
 		JToggleButton CMHostTagButton;
-		JToggleButton CMWaiterTagButton;
+		JToggleButton CMWaiterTagButton;*/
+		JToggleButton CMRolesTagsButton;
 		JToggleButton CityTagButton;
 		
 		public ControlPanel(final TracePanel tracePanel) {
@@ -221,11 +222,7 @@ public class DemoLauncher extends JFrame {
 			LYRolesTagsButton = new JToggleButton("Hide Tags: REST_LY ROLES");
 			MQRolesTagsButton = new JToggleButton("Hide Tags: REST_MQ ROLES");
 			SMRolesTagsButton = new JToggleButton("Hide Tags: REST_SM ROLES");
-			CMCashierTagButton = new JToggleButton("Hide Tag: REST_CM CASHIER");
-			CMCookTagButton = new JToggleButton("Hide Tag: REST_CM COOK");
-			CMCustTagButton = new JToggleButton("Hide Tag: REST_CM CUST");
-			CMHostTagButton = new JToggleButton("Hide Tag: REST_CM HOST");
-			CMWaiterTagButton = new JToggleButton("Hide Tag: REST_CM WAITER");
+			CMRolesTagsButton = new JToggleButton("Hide Tags: REST_CM ROLES");
 			
 			messageButton.addActionListener(new ActionListener() {
 				@Override
@@ -376,6 +373,20 @@ public class DemoLauncher extends JFrame {
 					}
 					else {
 						RestSMTagButton.setText("Hide Tag: RESTAURANT_SM");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM);
+					}
+				}
+			});
+			
+			RestCMTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(RestCMTagButton.isSelected()) {
+						RestCMTagButton.setText("Show Tag: RESTAURANT_CM");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTSM);
+					}
+					else {
+						RestCMTagButton.setText("Hide Tag: RESTAURANT_CM");
 						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM);
 					}
 				}
@@ -679,6 +690,28 @@ public class DemoLauncher extends JFrame {
 				}
 			});
 			
+			CMRolesTagsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(CMRolesTagsButton.isSelected()) {
+						CMRolesTagsButton.setText("Show Tags: REST_CM ROLES");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTCM_CASHIER);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTCM_COOK);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTCM_CUSTOMER);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTCM_HOST);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTCM_WAITER);
+					}
+					else {
+						CMRolesTagsButton.setText("Hide Tags: REST_CM ROLES");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM_CASHIER);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM_COOK);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM_CUSTOMER);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM_HOST);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM_WAITER);
+					}
+				}
+			});
+			
 			this.setLayout(null);
 			messageButton.setBounds(0, 0, W, H);
 			this.add(messageButton);
@@ -686,57 +719,61 @@ public class DemoLauncher extends JFrame {
 			this.add(infoButton);
 			errorButton.setBounds(400, 0, W, H);
 			this.add(errorButton);
-			BankTagButton.setBounds(0, 40, W, H);
+			BankTagButton.setBounds(0, 30, W, H);
 			this.add(BankTagButton);
-			BankManagerTagButton.setBounds(200, 40, W, H);
+			BankManagerTagButton.setBounds(200, 30, W, H);
 			this.add(BankManagerTagButton);
-			BankTellerTagButton.setBounds(400, 40, W, H);
+			BankTellerTagButton.setBounds(400, 30, W, H);
 			this.add(BankTellerTagButton);
-			BankCustTagButton.setBounds(0, 80, W, H);
+			BankCustTagButton.setBounds(0, 60, W, H);
 			this.add(BankCustTagButton);
-			MarketTagButton.setBounds(200, 80, W, H);
+			MarketTagButton.setBounds(200, 60, W, H);
 			this.add(MarketTagButton);
-			MarketManagerTagButton.setBounds(400, 80, W, H);
+			MarketManagerTagButton.setBounds(400, 60, W, H);
 			this.add(MarketManagerTagButton);
-			MarketEmployeeTagButton.setBounds(0, 120, W, H);
+			MarketEmployeeTagButton.setBounds(0, 90, W, H);
 			this.add(MarketEmployeeTagButton);
-			MarketCustTagButton.setBounds(200, 120, W, H);
+			MarketCustTagButton.setBounds(200, 90, W, H);
 			this.add(MarketCustTagButton);
-			RestKCTagButton.setBounds(400, 120, W, H);
+			RestKCTagButton.setBounds(400, 90, W, H);
 			this.add(RestKCTagButton);
-			KCHostTagButton.setBounds(0, 160, W, H);
+			KCHostTagButton.setBounds(0, 120, W, H);
 			this.add(KCHostTagButton);
-			KCWaiterTagButton.setBounds(200, 160, W, H);
+			KCWaiterTagButton.setBounds(200, 120, W, H);
 			this.add(KCWaiterTagButton);
-			KCCashierTagButton.setBounds(400, 160, W, H);
+			KCCashierTagButton.setBounds(400, 120, W, H);
 			this.add(KCCashierTagButton);
-			KCCookTagButton.setBounds(0, 200, W, H);
+			KCCookTagButton.setBounds(0, 150, W, H);
 			this.add(KCCookTagButton);
-			KCCustTagButton.setBounds(200, 200, W, H);
+			KCCustTagButton.setBounds(200, 150, W, H);
 			this.add(KCCustTagButton);
-			RestBKTagButton.setBounds(400, 200, W, H);
+			RestBKTagButton.setBounds(400, 150, W, H);
 			this.add(RestBKTagButton);
-			BKRolesTagsButton.setBounds(0, 240, W, H);
+			BKRolesTagsButton.setBounds(0, 180, W, H);
 			this.add(BKRolesTagsButton);
-			RestLYTagButton.setBounds(200, 240, W, H);
+			RestLYTagButton.setBounds(200, 180, W, H);
 			this.add(RestLYTagButton);
-			LYRolesTagsButton.setBounds(400, 240, W, H);
+			LYRolesTagsButton.setBounds(400, 180, W, H);
 			this.add(LYRolesTagsButton);
-			RestMQTagButton.setBounds(0, 280, W, H);
+			RestMQTagButton.setBounds(0, 210, W, H);
 			this.add(RestMQTagButton);
-			MQRolesTagsButton.setBounds(200, 280, W, H);
+			MQRolesTagsButton.setBounds(200, 210, W, H);
 			this.add(MQRolesTagsButton);
-			RestSMTagButton.setBounds(400, 280, W, H);
+			RestSMTagButton.setBounds(400, 210, W, H);
 			this.add(RestSMTagButton);
-			SMRolesTagsButton.setBounds(0, 320, W, H);
+			SMRolesTagsButton.setBounds(0, 240, W, H);
 			this.add(SMRolesTagsButton);
-			CityTagButton.setBounds(200, 320, W, H);
+			RestCMTagButton.setBounds(200, 240, W, H);
+			this.add(RestCMTagButton);
+			CMRolesTagsButton.setBounds(400, 240, W, H);
+			this.add(CMRolesTagsButton);
+			CityTagButton.setBounds(0, 270, W, H);
 			this.add(CityTagButton);
-			PersonTagButton.setBounds(400, 320, W, H);
+			PersonTagButton.setBounds(200, 270, W, H);
 			this.add(PersonTagButton);
-			BusTagButton.setBounds(0, 360, W, H);
+			BusTagButton.setBounds(400, 270, W, H);
 			this.add(BusTagButton);
-			BusStopTagButton.setBounds(200, 360, W, H);
+			BusStopTagButton.setBounds(0, 300, W, H);
 			this.add(BusStopTagButton);
 			this.setMinimumSize(new Dimension(50, 600));
 		}
