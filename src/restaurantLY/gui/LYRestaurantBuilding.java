@@ -24,7 +24,7 @@ public class LYRestaurantBuilding extends Building
 	{
 		super(xPos, yPos, width, height, name, type, mainGui);
 
-		restGui = new RestaurantGui(cd.markets.get(0), this);
+		restGui = new RestaurantGui(null, this);//assign market later
 
 		restPanel = restGui.getRestaurantPanel();
 	}
