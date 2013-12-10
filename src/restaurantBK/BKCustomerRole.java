@@ -8,6 +8,8 @@ import restaurantBK.interfaces.Cashier;
 import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Host;
 import restaurantBK.interfaces.Waiter;
+import trace.AlertLog;
+import trace.AlertTag;
 import agent.Agent;
 
 import java.util.ArrayList;
@@ -303,6 +305,7 @@ public class BKCustomerRole extends Role implements Customer {
 		//WAIT UNTIL WAITER COMES AND THEN GIVE HIM THE CHOICE
 		
 		print("I'll have the " +choice);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "I'll have the "+choice);
 		
 		//CREATE A  TEXT BOX FOR CHOICE
 		customerGui.flipChoice(choice);
@@ -319,8 +322,10 @@ public class BKCustomerRole extends Role implements Customer {
 	}
 	private void giveNewOrder() {
 		print("Dang it.");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "Dang it");
 		if(name.equals("cheap")) {
 			print("I can't afford anything else here... I'm out");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "I can't afford anything else here... I'm out");
 			state=AgentState.leavingEarly;
 			stateChanged();
 		}
@@ -333,6 +338,7 @@ public class BKCustomerRole extends Role implements Customer {
 			}
 			choice = check;
 			print("I'll have the " +choice);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "I'll have the "+choice);
 		
 			//CREATE A  TEXT BOX FOR CHOICE
 			customerGui.flipChoice(choice);
@@ -382,6 +388,7 @@ public class BKCustomerRole extends Role implements Customer {
 	private void pickOrder() {
 		if(name.equals("broke")) {
 			print("This place is too pricy for me, I'm leaving");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "This place is too pricy for me, I'm leaving");
 			state=AgentState.leavingEarly;
 			stateChanged();
 		}
@@ -408,6 +415,7 @@ public class BKCustomerRole extends Role implements Customer {
 				}
 			},
 			3500);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "I think I want the " + choice);
 		}
 	}
 	private void EatFood() {
@@ -434,10 +442,12 @@ public class BKCustomerRole extends Role implements Customer {
 		5000);//getHungerLevel() * 1000);//how long to wait before running task
 		//GUI.TAKEAWAYTEXTBOXATTHISTABLE
 		//THEN MAKE THE TEXTBOX ICON DISAPPEAR
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "Done eating " + choice);
 	}
 	
 	private void askForCheck() {
 		print("Waiter, check please");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "Waiter, check please");
 		waiter.msgDoneEatingAndWantCheck(this);
 	}
 
@@ -452,11 +462,13 @@ public class BKCustomerRole extends Role implements Customer {
 	}
 	private void payCashier() {
 		print("Cashier, take my money");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "Cashier, take my money");
 		cashier.msgTakeMyMoney(money,this);
 		money=0;
 	}
 	private void leaveRestaurant() {
 		print("Leaving restaurant");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTBK_CUSTOMER, this.getName(), "Leaving restaurant");
 		customerGui.DoExitRestaurant();
 	}
 

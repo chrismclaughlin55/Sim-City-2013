@@ -7,6 +7,8 @@ import restaurantLY.gui.RestaurantPanel;
 import restaurantLY.interfaces.*;
 import restaurantLY.test.mock.EventLog;
 import restaurantLY.test.mock.LoggedEvent;
+import trace.AlertLog;
+import trace.AlertTag;
 
 import java.util.*;
 import java.math.BigDecimal;
@@ -160,6 +162,7 @@ public class LYCashierRole extends Role implements Cashier {
 	}
     
     private void LeaveRestaurant() {
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CASHIER, this.getName(), "Leaving the restaurant");
         restPanel.cashierLeaving();
         person.msgDoneWithJob();
         person.exitBuilding();
@@ -170,6 +173,7 @@ public class LYCashierRole extends Role implements Cashier {
 	
 	private void createCheck(myCustomer mc) {
 		print("Creating check for " + mc.customer.getName());
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CASHIER, this.getName(), "Creating check for " + mc.customer.getName());
 		mc.waiter.msgAskForCheck(mc.customer, mc.check.price);
 		mc.check.state = checkState.finished;
 		stateChanged();
@@ -179,10 +183,12 @@ public class LYCashierRole extends Role implements Cashier {
 		log.add(new LoggedEvent("Receiving payment from " + mc.customer.getName() + " of $" + mc.money));
 		if (mc.debt == 0) {
 			print("Customer " + mc.customer.getName() + " paying $" + mc.money);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CASHIER, this.getName(), "Receiving payment from " + mc.customer.getName() + " of $" + mc.money);
 			mc.oweMoney = false;
 		}
 		else {
 			print("Customer " + mc.customer.getName() + " owed $" + mc.debt + " last time");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CASHIER, this.getName(), "Customer " + mc.customer.getName() + " owed $" + mc.debt + " last time");
 			mc.oweMoney = true;
 		}
 		if (mc.money - mc.check.price >= 0 && !mc.oweMoney) {
@@ -202,6 +208,7 @@ public class LYCashierRole extends Role implements Cashier {
 			debtBD = debtBD.setScale(2, BigDecimal.ROUND_HALF_UP);
 			log.add(new LoggedEvent(mc.customer.getName() + " doesn't have enough money, owe $" + debtBD + ", pay next time"));
 			print("Customer " + mc.customer.getName() + " doesn't have enough money, owe $" + debtBD + ", pay next time");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CASHIER, this.getName(), mc.customer.getName() + " owed $" + mc.debt + " last time");
 			mc.debt = debtBD.doubleValue();
 			mc.customer.msgOweMoney();
 			mc.oweMoney = true;
@@ -211,6 +218,7 @@ public class LYCashierRole extends Role implements Cashier {
 		BigDecimal moneyBD = new BigDecimal(this.money);
 		moneyBD = moneyBD.setScale(2, BigDecimal.ROUND_HALF_UP);
 		print("Now restaurant having $" + moneyBD);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CASHIER, this.getName(), "Now restaurant having $" + moneyBD);
 	}
 	
 	private void payToMarket(myMarket market) {//Bill bill) {
@@ -246,6 +254,7 @@ public class LYCashierRole extends Role implements Cashier {
 			BigDecimal moneyBD2 = new BigDecimal(market.money);
 			moneyBD2 = moneyBD2.setScale(2, BigDecimal.ROUND_HALF_UP);
 			print("Paying $" + moneyBD2 + " to " + market.market.name);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CASHIER, this.getName(), "Paying $" + moneyBD2 + " to " + market.market.name);
 			market.marketEmployee.msgHereIsPayment(market.money);
 			this.money -= market.money;
 		}
@@ -257,6 +266,7 @@ public class LYCashierRole extends Role implements Cashier {
 				this.debt += market.money;
 			}
 			print("No enough for market, paying $" + this.money + ", owe $" + (market.money - this.money) + ", pay next time");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CASHIER, this.getName(), "No enough for market, paying $" + this.money + ", owe $" + (market.money - this.money) + ", pay next time");
 			market.marketEmployee.msgHereIsPayment(this.money);
 		}
 		market.state = marketCheckState.done;
@@ -264,6 +274,7 @@ public class LYCashierRole extends Role implements Cashier {
 		BigDecimal moneyBD3 = new BigDecimal(this.money);
 		moneyBD3 = moneyBD3.setScale(2, BigDecimal.ROUND_HALF_UP);
 		print("Now restaurant having $" + moneyBD3);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CASHIER, this.getName(), "Now restaurant having $" + moneyBD3);
 	}
 	
 	//utilities

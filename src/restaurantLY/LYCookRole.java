@@ -3,6 +3,8 @@ package restaurantLY;
 import agent.Agent;
 import restaurantLY.gui.*;
 import restaurantLY.interfaces.*;
+import trace.AlertLog;
+import trace.AlertTag;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -193,6 +195,7 @@ public class LYCookRole extends Role implements Cook {
 		DoCookOrder(order);
 		inventory.get(order.choice).amount--;
 		print("Having " + inventory.get(order.choice).amount + " " + order.choice + " now");
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_COOK, this.getName(), "Having " + inventory.get(order.choice).amount + " " + order.choice + " now");
 		order.state = orderState.cooking;
 		stateChanged();
 	}
@@ -207,9 +210,11 @@ public class LYCookRole extends Role implements Cook {
 	private void orderFromMarket(Order order) {
 		int orderAmount = 10;
 		print("Asking " + market.name);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_COOK, this.getName(), "Asking " + market.name);
 		if (market.isOpen()) {
 			final MarketOrder mo = new MarketOrder(market, order.choice, orderAmount, marketOrderState.waiting);
 			print("Ordering " + mo.choice + " from " + mo.market.name);
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_COOK, this.getName(), "Ordering " + mo.choice + " from " + mo.market.name);
 			marketOrders.add(mo);
 			//*****implement later
 			//mo.market.currentManager.msgNeedToOrder(cook, marketOrders, cashier);//msgGetOrderFromCook(this, mo.choice, mo.amount);
@@ -231,6 +236,7 @@ public class LYCookRole extends Role implements Cook {
 		else {
 			inventory.get(mo.choice).amount = inventory.get(mo.choice).amount + mo.amount;
 			print("Adding " + mo.choice + " to inventory");
+			AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_COOK, this.getName(), "Adding " + mo.choice + " to inventory");
 			mo.state = marketOrderState.done;
 		}
 		stateChanged();
@@ -238,6 +244,7 @@ public class LYCookRole extends Role implements Cook {
 
 	private void runOutOfFood(Order o) {
 		print("Running out of " + o.choice);
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_COOK, this.getName(), "Running out of " + o.choice);
 		o.waiter.msgCookRunOutOfFood(o.tableNumber);
 		o.state = orderState.waiting;
 		stateChanged();
@@ -245,6 +252,7 @@ public class LYCookRole extends Role implements Cook {
 	
 	private void DoCookOrder(final Order order){
 		print("Cooking " + order.choice + " for table " + (order.tableNumber+1));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_COOK, this.getName(), "Cooking " + order.choice + " for table " + (order.tableNumber+1));
 		//cookGui.placeFood(order.choice, true);
 		cookGui.DoGoToRefrigerator();
 		atRefrigerator.drainPermits();
@@ -273,6 +281,7 @@ public class LYCookRole extends Role implements Cook {
 	
 	public void DoPlaceOrder(Order order){
 		print("Placing " + order.choice + " for table " + (order.tableNumber+1));
+		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_COOK, this.getName(), "Placing " + order.choice + " for table " + (order.tableNumber+1));
 		//cookGui.placeFood(order.choice, false);
 		cookGui.DoGoToPlacingArea();
 		atPlacingArea.drainPermits();
