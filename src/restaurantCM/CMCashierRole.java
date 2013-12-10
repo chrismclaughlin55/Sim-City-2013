@@ -3,10 +3,6 @@ package restaurantCM;
 import java.util.*;
 
 import city.PersonAgent;
-<<<<<<< HEAD
-import city.PersonAgent.BigState;
-=======
->>>>>>> 8d4fc1ee83f9c4f8061835382413c46a8e109eda
 import city.Role;
 import restaurantCM.*;
 import restaurantCM.gui.CMRestaurantBuilding;
