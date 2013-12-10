@@ -28,8 +28,8 @@ public class PersonGui implements Gui{
 	private int xPos, yPos;
 	private int xDestination, yDestination;
 	
-	public static final int xBuilding[] = {60, 60, 60, 60, 240, 380, 560, 560, 560, 560, 380, 240, 260, 400, 260, 400, 260, 400, 240, 380};
-	public static final int yBuilding[] = {200, 320, 480, 600, 740, 740, 600, 480, 320, 200, 60, 60, 200, 200, 320, 320, 600, 600, 480, 480};
+	public static final int xBuilding[] = {60, 60, 60, 60, 240, 380, 560, 560, 560, 560, 380, 240, 260, 400, 260, 400, 260, 400, 240, 380, 60, 560};
+	public static final int yBuilding[] = {200, 320, 480, 600, 740, 740, 600, 480, 320, 200, 60, 60, 200, 200, 320, 320, 600, 600, 480, 480, 740, 740};
 	public static final int xStop[] = {120, 120, 120, 120, 260, 400, 500, 500, 500, 500, 440, 300};
 	public static final int yStop[] = {200, 320, 480, 600, 680, 680, 600, 480, 320, 200, 60, 60};
 	

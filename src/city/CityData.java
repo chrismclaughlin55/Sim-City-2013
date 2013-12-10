@@ -95,7 +95,7 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i ,j);
 			}
 		}
-		for (int i = 25; i < 30; i++) {
+		for (int i = 26; i < 30; i++) {
 			for (int j = 7; j < 12; j++) {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
@@ -115,7 +115,7 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
-		for (int i = 25; i < 30; i++) {
+		for (int i = 26; i < 30; i++) {
 			for (int j = 13; j < 18; j++) {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
@@ -135,7 +135,7 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
-		for (int i = 25; i < 30; i++) {
+		for (int i = 26; i < 30; i++) {
 			for (int j = 21; j < 26; j++) {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
@@ -155,7 +155,7 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
-		for (int i = 25; i < 30; i++) {
+		for (int i = 26; i < 30; i++) {
 			for (int j = 27; j < 32; j++) {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
@@ -175,7 +175,7 @@ public class CityData implements ActionListener {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
 		}
-		for (int i = 25; i < 30; i++) {
+		for (int i = 26; i < 30; i++) {
 			for (int j = 34; j < 39; j++) {
 				cityGrid[i][j] = new BGrid(i, j);
 			}
@@ -277,6 +277,30 @@ public class CityData implements ActionListener {
 				cityGrid[i][j].setSemaphore(occupied); //intersection grid squares share a single semaphore
 			}
 		}
+		
+		//Assign door for each building
+		/*cityGrid[3][10] = new Grid(3, 10);
+		cityGrid[3][16] = new Grid(3, 16);
+		cityGrid[3][24] = new Grid(3, 24);
+		cityGrid[3][30] = new Grid(3, 30);
+		cityGrid[12][37] = new Grid(12, 37);
+		cityGrid[19][37] = new Grid(19, 37);
+		cityGrid[28][30] = new Grid(28, 30);
+		cityGrid[28][24] = new Grid(28, 24);
+		cityGrid[28][16] = new Grid(28, 16);
+		cityGrid[28][10] = new Grid(28, 10);
+		cityGrid[19][3] = new Grid(19, 3);
+		cityGrid[12][3] = new Grid(12, 3);
+		cityGrid[13][10] = new Grid(13, 10);
+		cityGrid[20][10] = new Grid(20, 10);
+		cityGrid[13][16] = new Grid(13, 16);
+		cityGrid[20][16] = new Grid(20, 16);
+		cityGrid[13][30] = new Grid(13, 30);
+		cityGrid[20][30] = new Grid(20, 30);
+		cityGrid[12][24] = new Grid(12, 24);
+		cityGrid[19][24] = new Grid(19, 24);
+		cityGrid[3][37] = new Grid(3, 37);
+		cityGrid[28][37] = new Grid(28, 37);*/
 	}
 	
 	public void setBusStopRoute(BusAgent bus) {
