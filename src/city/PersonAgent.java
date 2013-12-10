@@ -401,6 +401,7 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToRestaurant;
 				desiredRole = "Customer";
 				if(!goToWork)
+					System.out.println(name + " " + job + " " + desiredRole);
 				return true;
 			}
 			if(cash <= LOWMONEY) {
@@ -409,6 +410,7 @@ public class PersonAgent extends Agent
 				double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100; 
 				bankInfo.depositAmount = - withdrawAmount;
 				if(!goToWork)
+					System.out.println(name + " " + job + " " + desiredRole);
 				return true;
 			}
 
@@ -422,6 +424,7 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToMarket;
 				desiredRole = "MarketCustomer";
 				if(!goToWork)
+					System.out.println(name + ": " + job + " " + desiredRole);
 				return true;
 			}
 
@@ -429,12 +432,14 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToRestaurant;
 				desiredRole = "Customer";
 				if(!goToWork)
+					System.out.println(name + ": " + job + " " + desiredRole);
 				return true;
 			}
 
 			bigState = BigState.goHome;
 			homeState = HomeState.onCouch;
 			if(!goToWork)
+				System.out.println(name + ": " + " " + job + " " + bigState);
 			return true;
 		}
 
@@ -585,7 +590,7 @@ public class PersonAgent extends Agent
 
 			while (true)
 			{
-				restNumber = 0;
+				restNumber = 2;
 				//restNumber = (int)(12+(int)(Math.random()*6));
 				if(restNumber >= 17)
 				{
@@ -593,7 +598,7 @@ public class PersonAgent extends Agent
 					return;
 				}
 
-				else if(((SMRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+				else if(((KCRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
 					break;
 			}
 			destinationBuilding = cityData.restaurants.get(restNumber);
@@ -601,7 +606,7 @@ public class PersonAgent extends Agent
 		else
 		{
 			//destinationBuilding = jobBuilding;
-			restNumber = 0;
+			restNumber = 2;
 			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
 
@@ -620,7 +625,7 @@ public class PersonAgent extends Agent
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
 
-		SMRestaurantBuilding restaurant = (SMRestaurantBuilding)destinationBuilding;
+		KCRestaurantBuilding restaurant = (KCRestaurantBuilding)destinationBuilding;
 
 		if(goToWork && !desiredRole.equals("Customer"))
 		{

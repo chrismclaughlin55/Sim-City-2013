@@ -34,7 +34,7 @@ public class KCHostRole extends Role implements Host {
 
 	private String name;
 	private boolean alreadySeated = false;
- 
+
 	public HostGui hostGui = null;
 
 	private Semaphore seatCustomer = new Semaphore(0, true);
@@ -130,6 +130,17 @@ public class KCHostRole extends Role implements Host {
 
 	}
 
+	public void msgLeavingNow(Waiter waiter) {
+		synchronized(waiters) {
+			for(MyWaiter w : waiters) {
+				if(w.waiter == waiter) {
+					waiters.remove(w);
+					return;
+				}
+			}
+		}
+	}
+
 	// removes customer when customer chooses to leave early
 	public void msgLeaving(Customer c) {
 		if (!alreadySeated) {
@@ -148,7 +159,7 @@ public class KCHostRole extends Role implements Host {
 	 */
 	public boolean pickAndExecuteAnAction() {
 		alreadySeated = false;
-		
+
 		if(person.cityData.hour >= restPanel.CLOSINGTIME && restPanel.isOpen()) {
 			restPanel.setOpen(false);
 			return true;
@@ -241,7 +252,7 @@ public class KCHostRole extends Role implements Host {
 	public HostGui getGui() {
 		return hostGui;
 	}
-	
+
 	private class Table {
 		Customer occupiedBy;
 		int tableNumber;
@@ -270,7 +281,7 @@ public class KCHostRole extends Role implements Host {
 			return "table " + tableNumber;
 		}
 	}
-	
+
 	private void LeaveRestaurant() {
 		hostGui.DoLeaveRestaurant();
 		person.exitBuilding();

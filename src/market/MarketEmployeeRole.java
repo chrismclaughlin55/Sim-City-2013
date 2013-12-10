@@ -49,17 +49,20 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	private MarketCustomer currentCustomer;
 	private MyCookCustomer currentCookCustomer;
 	private MQCashierRole cashier;
-
+	private Market market;
 
 	private Semaphore atDesk = new Semaphore(0, true);
 	private Semaphore atStorage = new Semaphore(0, true);
+	private Semaphore leaving = new Semaphore(0, true);
 
 
-	public MarketEmployeeRole(PersonAgent person, MarketManager manager, Inventory inventory) {
+
+	public MarketEmployeeRole(PersonAgent person, MarketManager manager, Inventory inventory, Market market) {
 		super(person);
 		this.person = person;
 		this.manager = manager;
 		this.inventory = inventory;
+		this.market = market;
 		state = EmployeeState.nothing;
 	}
 
@@ -183,15 +186,21 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		}
 
 
-
 		if ((!currentMarketOrders.isEmpty() && (state == EmployeeState.working))) {
 			state = EmployeeState.processing;
 			FulfillOrder();
 			return true;
 		}
+		
+		if(person.cityData.hour >= market.CLOSINGTIME && waitingCustomers.isEmpty())
+		{
+			LeaveRestaurant();
+			return true;
+		}
 
 		return false;
 	}
+
 
 	private void CallCustomer(MarketCustomer customer) {
 		customer.msgWhatIsYourOrder(this);
@@ -309,7 +318,24 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		atStorage.release();
 		stateChanged();
 	}
+	
+	public void msgLeft() {
+		leaving.release();
+		stateChanged();
+	}
 
+	
+	private void LeaveRestaurant() {
+		manager.msgLeavingWork(this);
+		gui.DoLeaveMarket();
+		try{
+			leaving.acquire();
+		}
+		catch(Exception e){}
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();
+	}
 
 }
 

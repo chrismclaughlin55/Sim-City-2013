@@ -19,7 +19,7 @@ public class EmployeeGui implements Gui {
 	private String label = "";
 	private boolean itemsVisible = false;
 
-	private enum Command {noCommand, goToDesk, acquireItems, deliverItems};
+	private enum Command {noCommand, goToDesk, acquireItems, deliverItems, leave};
 	private Command command=Command.noCommand;
 
 	private MarketEmployeeRole role = null;
@@ -59,6 +59,12 @@ public class EmployeeGui implements Gui {
 			
 			else if (command == Command.deliverItems) {
 				role.msgAtStorage();
+				command = Command.noCommand;
+				return;
+			}
+			
+			else if (command == Command.leave) {
+				role.msgLeft();
 				command = Command.noCommand;
 				return;
 			}
@@ -144,6 +150,13 @@ public class EmployeeGui implements Gui {
 	private void DeliverItems() {
 		xDestination = 70+90*deskNum;
 		yDestination = 205;
+	}
+
+
+	public void DoLeaveMarket() {
+		command = Command.leave;
+		xDestination = -30;
+		yDestination = -30;
 	}
 
 

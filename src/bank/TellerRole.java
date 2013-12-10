@@ -2,6 +2,8 @@ package bank;
 
 import java.util.concurrent.Semaphore;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
@@ -168,6 +170,8 @@ public class TellerRole extends Role implements Teller{
 
 	private void payTheMan() {
 		System.err.println("IM BEING ROBBED");
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "IM BEING ROBBED");
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "IM BEING ROBBED");
 		bankRobber.msgPleaseDontShoot(400);
 		bankRobbery = false;
 	}
@@ -183,6 +187,8 @@ public class TellerRole extends Role implements Teller{
 	private void processOrder() {
 		//
 		print("processing order for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "processing order for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "processing order for "+currentCustInfo.custName);
 		bm.msgUpdateInfo(currentCustInfo, this);
 		currentCustInfo.customer.msgHaveANiceDay(currentCustInfo.depositAmount);
 		state = State.doneWithCustomer;

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import bank.TellerRole.State;
 import bank.interfaces.BankCustomer;
 import bank.interfaces.BankManager;
@@ -83,6 +85,8 @@ public class BankManagerRole extends Role implements BankManager {
 	@Override
 	public void msgGiveMeInfo(CustomerRole c, TellerRole t) {
 		print(t.getName()+" wants info");
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, t.getName()+" wants info");
+		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, t.getName()+" wants info");
 		for( myTeller mt: tellers){
 			if(mt.t.equals(t)){
 				mt.state = tellerState.needsInfo;
@@ -99,7 +103,8 @@ public class BankManagerRole extends Role implements BankManager {
 			if(mt.t.equals(t)){
 				mt.state = tellerState.updateInfo;
 				print("recieved update info for "+t.currentCustInfo.custName);
-
+				AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "recieved update info for "+t.currentCustInfo.custName);
+				AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "recieved update info for "+t.currentCustInfo.custName);
 			}
 		}
 
@@ -116,6 +121,8 @@ public class BankManagerRole extends Role implements BankManager {
 		}
 		bank.payPerson(bank, tellerRole.getPerson(), 150);
 		print(tellerRole.getName()+" gets paid 150 for today");
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, tellerRole.getName()+" gets paid 150 for today");
+		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, tellerRole.getName()+" gets paid 150 for today");
 		stateChanged();
 	}
 	//SCHEDULER
@@ -204,11 +211,17 @@ public class BankManagerRole extends Role implements BankManager {
 		person.bankInfo.depositAmount = 0;
 		for(CustInfo info : bank.CustAccounts.values()){
 			print(info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
+			AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
+			AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, info.custName+" "+info.accountNumber+" "+info.moneyInAccount);
 		}
 		print("bank closed. Leaving");
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "bank closed. Leaving");
+		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "bank closed. Leaving");
 		leave = false;
 		bank.payPerson(bank, me, 300);
 		print("I get paid 300 for today");
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "I get paid 300 for today");
+		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "I get paid 300 for today");
 		bank.setClosed(person);
 		person.exitBuilding();
 		person.msgDoneWithJob();
@@ -224,6 +237,8 @@ public class BankManagerRole extends Role implements BankManager {
 
 	private void sendInfo(myTeller t) {
 		print("sending info to "+t.t.getName());
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "sending info to "+t.t.getName());
+		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "sending info to "+t.t.getName());
 		if(bank.CustAccounts.get(t.c.getPerson()) != null )
 			t.custInfo = bank.CustAccounts.get(t.c.getPerson());
 		else t.custInfo = null;
@@ -233,6 +248,8 @@ public class BankManagerRole extends Role implements BankManager {
 
 	private void updatedb(myTeller t) {
 		print("updating db for "+t.custInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK, this.name, "updating db for "+t.custInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "updating db for "+t.custInfo.custName);
 		bank.CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
 		t.state = tellerState.available;
 			bank.bankGui.updatebankPanel();

@@ -23,7 +23,8 @@ public class Market extends Building {
 	MainGui mainGui;
 	public MarketGui marketGui;
 
-	private int testIteration = 0;
+	public final int CLOSINGTIME = 22;
+
 
 	public boolean isOpenForEmployees = false;
 
@@ -117,7 +118,7 @@ public class Market extends Building {
 					currentManager.msgReportingForWork(existingEmployeeRoles.get(person));
 				}
 				else {
-					MarketEmployeeRole employeeRole = new MarketEmployeeRole(person, currentManager, inventory);
+					MarketEmployeeRole employeeRole = new MarketEmployeeRole(person, currentManager, inventory, this);
 					existingEmployeeRoles.put(person,employeeRole);
 					EmployeeGui employeeGui = new EmployeeGui(employeeRole);
 					employeeRole.setGui(employeeGui);

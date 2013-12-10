@@ -151,6 +151,9 @@ public class MarketCustomerRole extends Role implements MarketCustomer {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();
 	}
 
 	public void setGui (CustomerGui gui) {

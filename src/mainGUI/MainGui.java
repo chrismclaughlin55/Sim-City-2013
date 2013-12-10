@@ -15,6 +15,7 @@ import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import trace.DemoLauncher;
 import Gui.Gui;
 import bankgui.BankGui;
 import city.Apartment;
@@ -54,6 +55,9 @@ public class MainGui extends JFrame implements MouseListener {
     //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
     public BankGui bankGui;
     //public BusStopGui busStopGui will have a list of these and add them all 
+    
+    static DemoLauncher dl = new DemoLauncher();
+    
     /**
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
@@ -265,7 +269,14 @@ public class MainGui extends JFrame implements MouseListener {
     }
     
   
-    public static void main(String[] args) { 
+    public static void main(String[] args) {
+    	dl.start();
+    	dl.setTitle("Trace Panel");
+		dl.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dl.setBounds(10, 0, 650, 500);
+		dl.setResizable(false);
+		dl.setVisible(false);
+        
         MainGui gui = new MainGui();
         gui.setTitle("Sim City - Team 15");
         gui.setVisible(true);

@@ -50,12 +50,22 @@ public class ManagerGui implements Gui{
 			yPos++;
 		else if (yPos > yDestination)
 			yPos--;
-
+		
+		
 		if (xPos == xDestination && yPos == yDestination) {
 			
 			if (command == Command.enter) {
 				role.msgEntered();
+				command = Command.noCommand;
+				return;
 			}
+			
+			else if (command == Command.leave) {
+				role.msgLeft();
+				command = Command.noCommand;
+				return;
+			}
+			
 			command = Command.noCommand;
 		}
 
@@ -71,6 +81,12 @@ public class ManagerGui implements Gui{
 		xDestination = 325;
 		yDestination = 410;
 		command = Command.enter;
+	}
+
+	public void DoLeaveMarket() {
+		xDestination = -35;
+		yDestination = -35;
+		command = Command.leave;
 	}
 
 }
