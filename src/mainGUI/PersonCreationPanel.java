@@ -363,7 +363,7 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		}
 		
 		else if (e.getSource() == robBank) {
-			if (cityData.bank.isOpen()) {
+			if (cityData.banks.get(0).isOpen()) {
 				robberAdded = true;
 				addPerson("DaBankRobba");
 			}
