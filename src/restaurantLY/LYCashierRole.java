@@ -164,6 +164,7 @@ public class LYCashierRole extends Role implements Cashier {
     private void LeaveRestaurant() {
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTLY_CASHIER, this.getName(), "Leaving the restaurant");
         restPanel.cashierLeaving();
+        person.msgFull();
         person.msgDoneWithJob();
         person.exitBuilding();
         doneWithRole();

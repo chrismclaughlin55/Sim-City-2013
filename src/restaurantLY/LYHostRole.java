@@ -277,6 +277,7 @@ public class LYHostRole extends Role implements Host {
     
     private void LeaveRestaurant() {
         restPanel.hostLeaving();
+        person.msgFull();
         person.msgDoneWithJob();
         person.exitBuilding();
         doneWithRole();
