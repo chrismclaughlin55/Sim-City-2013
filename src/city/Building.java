@@ -152,7 +152,7 @@ public abstract class Building extends Rectangle2D.Double {
 	public void display(Building building, int buildingNumber) {
 		buildingPanel.displayBuildingPanel(building, buildingNumber);
 		if(building instanceof CMRestaurantBuilding){
-			((CMRestaurantBuilding) building).test();
+		//	((CMRestaurantBuilding) building).test();
 		}
 	}
 	

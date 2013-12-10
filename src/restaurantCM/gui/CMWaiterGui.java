@@ -4,7 +4,9 @@ import restaurantCM.*;
 
 import java.awt.*;
 
-public class CMWaiterGui implements CMGui{
+import Gui.Gui;
+
+public class CMWaiterGui implements Gui{
 	//	boolean sentMsg = true;
 	private CMWaiterRole agent = null;
 	public static final int xCook = 200;
@@ -223,6 +225,12 @@ public class CMWaiterGui implements CMGui{
 
 	public int getYPos() {
 		return yPos;
+	}
+
+	@Override
+	public void setPresent(boolean b) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

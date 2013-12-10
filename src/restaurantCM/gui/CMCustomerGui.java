@@ -5,13 +5,15 @@ import restaurantCM.CMHostRole;
 
 import java.awt.*;
 
+import Gui.Gui;
+
 /*
  * TODO Pass table coordinates from host GUI to cust GUI
  * after seating look into sched
  * 
  */
 
-public class CMCustomerGui implements CMGui{
+public class CMCustomerGui implements Gui{
 
 	private CMCustomerRole agent = null;
 	private boolean isPresent = false;

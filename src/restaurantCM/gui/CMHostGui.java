@@ -6,7 +6,9 @@ import restaurantCM.CMHostRole;
 
 import java.awt.*;
 
-public class CMHostGui implements CMGui {
+import Gui.Gui;
+
+public class CMHostGui implements Gui {
 	public boolean customerline1 = false;
 	public boolean customerline2 = false;
 	public boolean customerline3 = false;
@@ -14,7 +16,8 @@ public class CMHostGui implements CMGui {
 	private int xLobby = 80, yLobby = 40; //Lobby position
 	private int xPos = xLobby, yPos = yLobby;//default waiter position
 	public int xDestination = xLobby, yDestination = yLobby;//default start position
-	public int xTable, yTable;	//CHANGED Hard coded tables --- TODO dynamic table positioning
+	public int xTable, yTable;	//CHANGED Hard coded tables --- 
+	private boolean isPresent ;
 	public static final int xTable1 = 400;
 	public static final int yTable1 = 100;
 	public static final int xTable2 = 400;
@@ -169,5 +172,11 @@ public class CMHostGui implements CMGui {
 
 	public int getYPos() {
 		return yPos;
+	}
+
+	@Override
+	public void setPresent(boolean b) {
+		isPresent = b;
+		
 	}
 }

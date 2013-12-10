@@ -2,6 +2,8 @@ package restaurantCM.gui;
 
 import javax.swing.*;
 
+import Gui.Gui;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +16,7 @@ public class CMAnimationPanel extends JPanel implements ActionListener {
     private Image bufferImage;
     private Dimension bufferSize;
     
-    private List<CMGui> guis = new ArrayList<CMGui>();
+    private List<Gui> guis = new ArrayList<Gui>();
 
     public CMAnimationPanel() {
     	setSize(WINDOWX, WINDOWY);
@@ -64,13 +66,13 @@ public class CMAnimationPanel extends JPanel implements ActionListener {
 ////        g2.fillRect(HostGui.xTable12, HostGui.yTable12, 50, 50);
 ////        g2.setColor(Color.DARK_GRAY);
 //        
-        for(CMGui gui : guis) {
+        for(Gui gui : guis) {
             if (gui.isPresent()) {
                 gui.updatePosition();
             }
         }
 
-        for(CMGui gui : guis) {
+        for(Gui gui : guis) {
             if (gui.isPresent()) {
                 gui.draw(g2);
             }

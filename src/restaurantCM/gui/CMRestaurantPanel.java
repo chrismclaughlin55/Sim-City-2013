@@ -24,7 +24,7 @@ public class CMRestaurantPanel extends JPanel {
 private CMCookRole cook;
 	private ArrayList<CMWaiterGui> WaiterGuis = new ArrayList<CMWaiterGui>();
 	private Vector<CMCustomerRole> customers = new Vector<CMCustomerRole>();
-	private Vector<CMWaiterRole> waiters = new Vector<CMWaiterRole>();
+	Vector<CMWaiterRole> waiters = new Vector<CMWaiterRole>();
 	private JPanel restLabel = new JPanel();
 
 	private CMListPanel waiterPanel = new CMListPanel(this, "Waiters");
@@ -55,42 +55,6 @@ private CMCookRole cook;
 		add(group);
 	}
 
-	/**
-	 * Sets up the restaurant label that includes the menu,
-	 * and host and cook information
-	 */
-//	private void initRestLabel() {
-//		//restLabel.remove(label);
-//		JLabel label = new JLabel();
-//		restLabel.setLayout(new BoxLayout((Container)restLabel, BoxLayout.Y_AXIS));
-//		restLabel.setLayout(new BorderLayout());
-//		StringBuilder labeltext = new StringBuilder();
-//		labeltext.append("<html><h3><u>Tonight's Menu</u></h3><table>");
-//		for(String a : cook.getFoodInventory().keySet()){
-//				labeltext.append("<tr><td>" + a + "</td></tr>");
-//		}
-//		labeltext.append("</table></html>");
-//		label.setText(labeltext.toString());
-//
-//		restLabel.setBorder(BorderFactory.createRaisedBevelBorder());
-//		restLabel.add(label,BorderLayout.NORTH);
-//		     //  restLabel.add(new JLabel("               "), BorderLayout.EAST);
-//		      // restLabel.add(new JLabel("               "), BorderLayout.WEST);
-//		//validate();
-//	}
-//	public void updateRestLabel(){
-//		initRestLabel();
-//		validate();
-//	}
-
-	/**
-	 * When a customer or waiter is clicked, this function calls
-	 * updatedInfoPanel() from the main gui so that person's information
-	 * will be shown
-	 *
-	 * @param type indicates whether the person is a customer or waiter
-	 * @param name name of person
-	 */
 	
 	public void showInfo(String type, String name) {
 		if (type.equals("Waiters")) {

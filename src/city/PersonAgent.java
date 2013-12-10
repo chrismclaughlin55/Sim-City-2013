@@ -72,7 +72,7 @@ public class PersonAgent extends Agent
 	public boolean bus;
 	public boolean walk;
 
-	boolean goToWork = false;
+	public boolean goToWork = false;
 
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
 
@@ -630,7 +630,7 @@ public class PersonAgent extends Agent
 		else
 		{
 			//destinationBuilding = jobBuilding;
-			restNumber = 2;
+			restNumber = 4;
 			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
 
@@ -649,7 +649,7 @@ public class PersonAgent extends Agent
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
 
-		KCRestaurantBuilding restaurant = (KCRestaurantBuilding)destinationBuilding;
+		CMRestaurantBuilding restaurant = (CMRestaurantBuilding)destinationBuilding;
 
 		if(goToWork && !desiredRole.equals("Customer"))
 		{
