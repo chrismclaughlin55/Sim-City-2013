@@ -195,6 +195,7 @@ public class KCCashierRole extends Role implements Cashier {
 	}
 	
 	private void LeaveRestaurant() {
+		person.hungerLevel = 0;
 		restPanel.cashierLeaving();
 		person.msgDoneWithJob();
 		person.exitBuilding();
