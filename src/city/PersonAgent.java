@@ -12,6 +12,7 @@ import trace.Alert;
 import trace.AlertLog;
 import trace.AlertTag;
 import trace.TracePanel;
+import restaurantBK.gui.BKRestaurantBuilding;
 import restaurantKC.gui.KCRestaurantBuilding;
 import restaurantMQ.gui.MQRestaurantBuilding;
 import restaurantSM.gui.SMRestaurantBuilding;
@@ -30,7 +31,7 @@ import city.interfaces.BusStop;
 public class PersonAgent extends Agent
 {
 	/*CONSTANTS*/
-
+    
 	public static final int HUNGRY = 7;
 	public static final int STARVING = 14;
 	public static final int LOWMONEY = 80;
@@ -39,7 +40,7 @@ public class PersonAgent extends Agent
 	public static final double RENT = 20;
 	public static final int THRESHOLD = 3;
 	/*END OF CONSTANTS*/
-
+    
 	/*DATA MEMBERS*/
 	String name;
 	public int tiredLevel = 16;
@@ -49,6 +50,7 @@ public class PersonAgent extends Agent
 	public int criminalImpulse = 0;
 	public int hungerLevel = 0;
 	boolean ranonce = false;
+	public boolean crossingRoad = false;
 	PersonGui personGui;
 	MainGui gui;
 	public CityData cityData;
@@ -72,39 +74,43 @@ public class PersonAgent extends Agent
 	public boolean bus;
 	public boolean walk;
 	public Grid currGrid;
+	public RGrid currRGrid;
+	public RGrid nextRGrid;
 	
-	public boolean moving = false;
+	public boolean walking = false;
+
 
 	boolean goToWork = false;
-
+    
 	private List<Role> roles = new ArrayList<Role>(); //hold all possible roles (even inactive roles)
-
+    
 	public enum BigState {doingNothing, goToRestaurant, goToBank, goToMarket, goHome, atHome, leaveHome, waiting};
 	public enum HomeState {sleeping, onCouch, hungry, none, idle};
 	public enum EmergencyState {fire, earthquake, none};
 	public BigState bigState = BigState.doingNothing;
 	public HomeState homeState;
 	public EmergencyState emergencyState = EmergencyState.none;
-
+    
 	public BusAgent currentBus;
-
+    
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
 	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());
 	private Semaphore atBed = new Semaphore(0, true);
 	private Semaphore atEntrance = new Semaphore(0, true);
-
+	private Semaphore gridding = new Semaphore(0, true);
+    
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
 		this.name = name;
 		/*MyOrder o1 = new MyOrder("Steak", 1);
-		MyOrder o2 = new MyOrder("Salad", 1);
-		MyOrder o3 = new MyOrder("Pizza", 1);
-		MyOrder o4 = new MyOrder("Chicken", 1);
-		thingsToOrder.add(o1);
-		thingsToOrder.add(o2);
-		thingsToOrder.add(o3);
-		thingsToOrder.add(o4);*/
+         MyOrder o2 = new MyOrder("Salad", 1);
+         MyOrder o3 = new MyOrder("Pizza", 1);
+         MyOrder o4 = new MyOrder("Chicken", 1);
+         thingsToOrder.add(o1);
+         thingsToOrder.add(o2);
+         thingsToOrder.add(o3);
+         thingsToOrder.add(o4);*/
 		inventory.put("Steak", 3);
 		inventory.put("Salad", 3);
 		inventory.put("Pizza", 3);
@@ -112,86 +118,89 @@ public class PersonAgent extends Agent
 		personGui = new PersonGui(this, gui);
 		bankInfo = new CustInfo(this.name, this, null);
 	}
-
+    
 	public PersonAgent(String name, MainGui gui, CityData cd) {
 		this.name = name;
 		this.gui = gui;
 		this.cityData = cd;
-
+        
 		bankInfo = new CustInfo(this.name, this, null);
 		/*MyOrder o1 = new MyOrder("Steak", 1);
-                MyOrder o2 = new MyOrder("Salad", 1);
-                MyOrder o3 = new MyOrder("Pizza", 1);
-                MyOrder o4 = new MyOrder("Chicken", 1);
-                thingsToOrder.add(o1);
-                thingsToOrder.add(o2);
-                thingsToOrder.add(o3);
-                thingsToOrder.add(o4);*/
+         MyOrder o2 = new MyOrder("Salad", 1);
+         MyOrder o3 = new MyOrder("Pizza", 1);
+         MyOrder o4 = new MyOrder("Chicken", 1);
+         thingsToOrder.add(o1);
+         thingsToOrder.add(o2);
+         thingsToOrder.add(o3);
+         thingsToOrder.add(o4);*/
 		inventory.put("Steak", 3);
 		inventory.put("Salad", 3);
 		inventory.put("Pizza", 3);
 		inventory.put("Chicken", 3);
-
+        
 		personGui = new PersonGui(this, gui);
 		bank = cd.bank;
 		market = cd.market;
 	}
-
+    
 	public void setName(String name) {
 		this.bankInfo.custName = name;
 		this.name = name;
 	}
-
+    
 	public void setJob(String job) {
 		this.job = job;
 	}
-
+    
 	public void setCash(double cash) {
 		this.cash = cash;
 	}
-
+    
 	public void setBankMoney(double moneyInDaBank) {
 		this.bankInfo.moneyInAccount = moneyInDaBank;
 	}
-
+    
 	public void setHunger(int hangry) {
 		this.hungerLevel = hangry;
 	}
-
+    
 	public void setJobBuilding(Building jobBuilding) {
 		this.jobBuilding = jobBuilding;
 	}
-
+    
 	public void setDesiredRole(String role) {
 		if(this.name == "myName6")
 			print("! "+role);
 		desiredRole = role;
 	}
-
+    
 	/*SETTERS*/
-
+    
 	public void assignHome(Building home)
 	{
 		this.home = home;
 		homeNumber = home.buildingNumber;
 	}
-
+    
 	public void setInventory(int num) {
 		for (String key : inventory.keySet()) {
 			inventory.put(key, num);
 		}
 	}
-
+    
 	public void assignJobBuilding(Building jobBuilding) {
 		this.jobBuilding = jobBuilding;
 	}
-
+    
 	/*MESSAGES*/
 	public void msgDoneWithJob()
 	{
 		goToWork = false;
 	}
-
+    
+	public void msgDoneGridding() {
+		this.gridding.release();
+	}
 	public void refresh() {
 		super.refresh();
 		if(cityData.hour == 5)
@@ -203,22 +212,22 @@ public class PersonAgent extends Agent
 		if(cityData.hour == 0 && this.home instanceof Apartment) {
 			rent+=20;
 		}
-
+        
 	}
-
+    
 	public void msgFull() {
 		hungerLevel = 0;
 	}
-
+    
 	public void msgDoneMoving() {
 		isMoving.release();
 	}
-
+    
 	public void msgFire() {
 		emergencyState = EmergencyState.fire;
 		stateChanged();
 	}
-
+    
 	public void msgAssignRole(Role role) {
 		for (Role r : roles) {
 			if (r == role) {
@@ -227,44 +236,44 @@ public class PersonAgent extends Agent
 				return;
 			}
 		}
-
+        
 		//If this part is reached, then 'role' is not in the list of roles
 		roles.add(role);
 		role.setActive();
 		super.stateChanged();
 	}
-
+    
 	public void msgDoneWithRole() {
 		bigState = BigState.doingNothing;
 		super.stateChanged();
 	}
-
+    
 	public void msgAtBuilding() {//from animation
 		//print("msgAtBuilding() called");
 		atBuilding.release();// = true;
 		stateChanged();
 	}
-
+    
 	public void msgAtBed() {//from animation
 		//print("msgAtBed() called");
 		atBed.release();// = true;
 		stateChanged();
 	}
-
+    
 	public void msgAtEntrance() {//from animation
 		//print("msgAtEntrance() called");
 		atEntrance.release();// = true;
 		stateChanged();
 	}
-
+    
 	public void msgBusIsHere(BusAgent bus) {
 		currentBus = bus;
 		isMoving.release();
 	}
-
+    
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
-
+        
 		/*Emergency scheduler rules go here (v2)*/
 		if(emergencyState == EmergencyState.fire) {
 			ReactToFire();
@@ -278,7 +287,7 @@ public class PersonAgent extends Agent
 				if(role.pickAndExecuteAnAction())
 					return true;
 			}
-
+            
 		}
 		//Reaching here means there is an active role, but it is "waiting" for a state to be updated
 		//Thus, the PersonAgent's scheduler should return FALSE
@@ -473,9 +482,10 @@ public class PersonAgent extends Agent
 
 		}
 
+
 		return false;
 	}
-
+    
 	public boolean lowInventory() {
 		for(String food : inventory.keySet()) {
 			if(inventory.get(food) < THRESHOLD) {
@@ -489,29 +499,29 @@ public class PersonAgent extends Agent
 			return false;
 		}
 	}
-//TODO
+    //TODO
 	private void payRent() {
 		Apartment a = (Apartment) home;
 		bank.directDeposit(this, a.manager, rent);
 		rentDue = false;
 	}
-
+    
 	private void WakeUp() {
 		print(" is going to work");
-		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "going to work");
+		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "Going to work");
 		goToWork = true;
 		tiredLevel = 0;
 		homeState = HomeState.idle;
 		hungerLevel += 5;
 	}
-
+    
 	private void makeFood() {
 		hungerLevel = 0;
 		for (String key : inventory.keySet()) {
 			if (inventory.get(key) > 0) {
 				inventory.put(key, inventory.get(key) - 1);
 				break;
-			} 
+			}
 		}
 		if (personGui.isInBedroom()) {
 			personGui.DoAlmostWall();
@@ -525,7 +535,7 @@ public class PersonAgent extends Agent
 			try {
 				isMoving.acquire();
 			} catch (InterruptedException e) {
-				// 
+				//
 				e.printStackTrace();
 			}
 		}
@@ -555,9 +565,9 @@ public class PersonAgent extends Agent
 			//   Auto-generated catch block
 			e.printStackTrace();
 		}
-
+        
 	}
-
+    
 	private void goToSleep() {
 		personGui.DoReverseWall();
 		try {
@@ -582,7 +592,7 @@ public class PersonAgent extends Agent
 		}
 		homeState = HomeState.sleeping;
 	}
-
+    
 	private void goToCouch() {
 		if (personGui.isInBedroom()) {
 			personGui.DoGoToWall();
@@ -606,16 +616,16 @@ public class PersonAgent extends Agent
 			}
 		}, 3000);
 	}
-
+    
 	protected void goToRandomPlace() {
 		//personGui.DoGoToRandomPlace();
 	}
-
+    
 	protected void goToRestaurant() {
 		int restNumber;
 		if(!goToWork || jobBuilding == null)
 		{
-
+            
 			while (true)
 			{
 				restNumber = 2;
@@ -625,7 +635,7 @@ public class PersonAgent extends Agent
 					bigState = BigState.goHome;
 					return;
 				}
-
+                
 				else if(((KCRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
 					break;
 			}
@@ -637,12 +647,12 @@ public class PersonAgent extends Agent
 			restNumber = 2;
 			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
-
+        
 		if(destinationBuilding != currentBuilding)
 		{
 			System.out.println("Going to restaurant as " + desiredRole);
 			GoToDestination();
-
+            
 			personGui.DoGoToBuilding(destinationBuilding.buildingNumber);
 			try {
 				atBuilding.acquire();
@@ -652,9 +662,9 @@ public class PersonAgent extends Agent
 			}
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
-
+        
 		KCRestaurantBuilding restaurant = (KCRestaurantBuilding)destinationBuilding;
-
+        
 		if(goToWork && !desiredRole.equals("Customer"))
 		{
 			if(desiredRole.equals("Host") && !restaurant.hasHost()) {
@@ -676,8 +686,8 @@ public class PersonAgent extends Agent
 				}
 			}
 		}
-
-
+        
+        
 		//This is only reached if the person is unemployed
 		if(desiredRole.equals("Customer") && restaurant.isOpen()) {
 			personGui.DoGoIntoBuilding();
@@ -688,7 +698,7 @@ public class PersonAgent extends Agent
 		bigState = BigState.goHome;
 		homeState = HomeState.onCouch;
 	}
-
+    
 	protected void goHome() {
 		//int homeNumber = (int)((int)(Math.random()*11));
 		destinationBuilding = cityData.buildings.get(this.home.buildingNumber);
@@ -700,7 +710,7 @@ public class PersonAgent extends Agent
 			e.printStackTrace();
 		}
 		currentBuilding = destinationBuilding;
-
+        
 		personGui.DoGoIntoBuilding();
 		if (home instanceof Home) {
 			currentBuilding.EnterBuilding(this, "");
@@ -721,7 +731,7 @@ public class PersonAgent extends Agent
 		homeState = HomeState.onCouch;
 		//hungerLevel = 10000000;
 	}
-
+    
 	protected void leaveHome() {
 		currentBuilding = cityData.buildings.get(home.buildingNumber);
 		if (personGui.isInBedroom()) {
@@ -774,12 +784,12 @@ public class PersonAgent extends Agent
 		}
 		bigState = BigState.doingNothing;
 	}
-
+    
 	protected void goToBank() {
-
+        
 		destinationBuilding = cityData.bank;
 		GoToDestination();
-
+        
 		personGui.DoGoToBuilding(18);
 		currentBuilding = cityData.buildings.get(18);
 		atBuilding.drainPermits();
@@ -792,14 +802,14 @@ public class PersonAgent extends Agent
 		personGui.DoGoIntoBuilding();
 		print("entering the building and desired role is "+desiredRole);
 		currentBuilding.EnterBuilding(this,desiredRole );
-
+        
 	}
-
+    
 	protected void goToMarket() {
 		destinationBuilding = cityData.market;
-
+        
 		GoToDestination();
-
+        
 		personGui.DoGoToBuilding(19);
 		currentBuilding = cityData.buildings.get(19);
 		atBuilding.drainPermits();
@@ -811,34 +821,70 @@ public class PersonAgent extends Agent
 		}
 		personGui.DoGoIntoBuilding();
 		currentBuilding.EnterBuilding(this,desiredRole );
-
+        
 	}
-
+    
 	public void GoToDestination()
 	{
+		currGrid = cityData.cityGrid[personGui.getX()/20][personGui.getY()/20];
 		if(walk==true) {
-			//PersonGui.DoWalk(if you ever hit an RGrid, acquire it first, and then walk through, and don't walk through bgrids)
-			moving = true;
 			personGui.DoGoToBuilding(destinationBuilding.buildingNumber);
-			while(moving) {
-//				// go from grid to grid
-//				currGrid = nextGrid
-////				acquire
-////				if(curr instanceof RGrid) {
-////					person.acquire those next two semaphores in that direction
-////					personGui.crossRoad(direction);
-////					move to next
-////					release roads
-////				}
-//				else {
-//				//personGui.MoveToNextGrid;
-//				}
+			
+			//PersonGui.DoWalk(if you ever hit an RGrid, acquire it first, and then walk through, and don't walk through bgrids)
+			walking = true;
+			while(walking) {
+				
+				if(crossingRoad) {
+					print("blah");
+					try {
+						currRGrid.occupied.acquire();
+						System.out.println("1");
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						nextRGrid.occupied.acquire();
+						System.out.println("2");
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					personGui.crossRoad();
+					try {
+						gridding.acquire();
+					}
+					catch(Exception e) {}
+					currRGrid.occupied.release();
+					System.out.println("1");
+					nextRGrid.occupied.release();
+					System.out.println("0");
+					//ACQUIRE CURRENT AND NEXT
+				}
+				else {
+	//				// go from grid to grid
+	//				currGrid = nextGrid
+	////				if undo
+	////				if(curr instanceof RGrid) {
+	////					person.acquire those next two semaphores in that direction
+	////					personGui.crossRoad(direction);
+	////					move to next
+	////					release roads
+	////				}
+	//				else {
+	//				//personGui.MoveToNextGrid;
+	//				}
+					//print("hello");
+					//CURRGRID IS NOT BEING UPDATED PROPERLY
+					personGui.MoveToNextGrid(currGrid);
+					try
+					{
+						gridding.acquire();
+					}
+					catch(Exception e){}
+				}
 			}
-			try
-			{
-				isMoving.acquire();
-			}
-			catch(Exception e){}
+
 			
 			currentBuilding = destinationBuilding;
 			
@@ -880,14 +926,14 @@ public class PersonAgent extends Agent
 			catch(Exception e){}
 			currentBusStop = destinationBusStop;
 			destinationBusStop = destinationBuilding.busStop;
-	
+            
 			currentBusStop.msgWaitingAtStop(this, destinationBusStop);
 			try
 			{
 				isMoving.acquire();
 			}
 			catch(Exception e) {}
-	
+            
 			currentBus = cityData.buses.get(0);
 			personGui.DoGoToBus(currentBus);
 			try
@@ -895,7 +941,7 @@ public class PersonAgent extends Agent
 				isMoving.acquire();
 			}
 			catch(Exception e) {}
-	
+            
 			cityData.guis.remove(personGui);
 			currentBus.msgOnBus();
 			try
@@ -903,7 +949,7 @@ public class PersonAgent extends Agent
 				isMoving.acquire();
 			}
 			catch(Exception e) {}
-	
+            
 			cityData.guis.add(personGui);
 			personGui.setXPos(currentBus.getX());
 			personGui.setYPos(currentBus.getY());
@@ -919,25 +965,24 @@ public class PersonAgent extends Agent
 		
 		
 	}
-
+    
 	public void setRoomNumber(int number) {
 		roomNumber = number;
 	}
-
+    
 	public int getRoomNumber() {
 		return roomNumber;
 	}
-
+    
 	protected void ReactToFire() {
 		System.out.println(name +": Stop, Drop, and Roll ");
 		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "Stop, Drop, and Roll");
 		emergencyState = EmergencyState.none;
 	}
-
+    
 	public void exitBuilding() {
 		cityData.addGui(personGui);
 		print("Exiting the building");
-		AlertLog.getInstance().logMessage(AlertTag.PERSON, this.name, "Exiting the building");
 		bigState = BigState.doingNothing;
 		super.stateChanged();
 	}
@@ -946,16 +991,16 @@ public class PersonAgent extends Agent
 	protected void stateChanged() {
 		super.stateChanged();
 	}
-
+    
 	/*GETTERS AND SETTERS*/
 	public String getName() {
 		return name;
 	}
-
+    
 	public void setGui(PersonGui g) {
 		personGui = g;
 	}
-
+    
 	public PersonGui getGui() {
 		return personGui;
 	}
@@ -975,7 +1020,7 @@ public class PersonAgent extends Agent
 	public void setGoToWork(boolean b) {
 		goToWork = b;
 	}
-
+    
 	public String getJob() {
 		return job;
 	}
@@ -983,11 +1028,11 @@ public class PersonAgent extends Agent
 	public boolean isWeekend() {
 		return cityData.day > 4;
 	}
-
+    
 	public boolean isEmployee() {
 		return job.equals("MarketEmployee") || job.equals("BankTeller") || job.equals("Cashier") || job.equals("Waiter") || job.equals("Cook");
 	}
-
+    
 	public int getHomeNumber() {
 		return homeNumber;
 	}

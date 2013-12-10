@@ -36,6 +36,9 @@ public class BusAgent extends Agent implements Bus {
 	public BusStopAgent next;
 	private Semaphore atDestination = new Semaphore(0,true);
     public int routeNumber;
+    public RGrid previousGrid = new RGrid();
+    public RGrid currGrid = null;
+    public RGrid gridToAcquire = null;
 	
 	public BusAgent(CityData cd, int routeNumber) {
 		this.cd = cd;
@@ -56,12 +59,24 @@ public class BusAgent extends Agent implements Bus {
 	public void setGui(BusGui bg) {
 		busgui = bg;
 	}
+	
+	public void setCurrentGrid(RGrid currGrid)
+	{
+		this.currGrid = currGrid;
+		currGrid.acquireGrid();
+	}
 	//MESSAGES
 	
 	//CALLED BY BUSGUI
 	/* (non-Javadoc)
 	 * @see city.Bus#msgAtDestination()
 	 */
+	public void msgAcquireGrid()
+	{
+		atDestination.release();
+		stateChanged();
+	}
+	
 	public void msgAtDestination() {
 		
 		myState = BusState.atStop;
@@ -96,6 +111,12 @@ public class BusAgent extends Agent implements Bus {
 	//SCHEDULER
 	protected boolean pickAndExecuteAnAction() {
 		
+		if(gridToAcquire != null)
+		{
+			MoveToGrid();
+			return true;
+		}
+		
 		if(myState==BusState.atStop) {
 			for(myPassenger p : passengers) {
 				if(p.dest == curr) {
@@ -127,6 +148,19 @@ public class BusAgent extends Agent implements Bus {
 	    }
 	    
 	    return false;
+	}
+	
+	private void MoveToGrid()
+	{
+		previousGrid.releaseGrid();
+		gridToAcquire.acquireGrid();
+		previousGrid = currGrid;
+		currGrid = gridToAcquire;
+		busgui.moveOn();
+		try {
+	    	atDestination.acquire();
+	    }
+	    catch(Exception e) {}
 	}
 	
 	private void LeaveStop() {
@@ -185,10 +219,15 @@ public class BusAgent extends Agent implements Bus {
 		
 	}
 
-	@Override
 	public int getRouteNumber() {
 		return routeNumber;
 	}
 
-	
+	public void msgAcquireGrid(RGrid nextRGrid) {
+		gridToAcquire = nextRGrid;
+		stateChanged();
+		atDestination.release();
+		
+	}
+
 }

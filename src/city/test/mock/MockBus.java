@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import city.BusStopAgent;
 import city.PersonAgent;
+import city.RGrid;
 import city.interfaces.Bus;
 
 public class MockBus implements Bus {
@@ -30,6 +31,24 @@ public class MockBus implements Bus {
 	public int getRouteNumber() {
 		// TODO Auto-generated method stub
 		return 1;
+	}
+
+	@Override
+	public void msgAcquireGrid(RGrid nextRGrid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCurrentGrid(RGrid currGrid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgAcquireGrid() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

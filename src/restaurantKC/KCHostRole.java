@@ -283,9 +283,12 @@ public class KCHostRole extends Role implements Host {
 	}
 
 	private void LeaveRestaurant() {
+		person.hungerLevel = 0;
 		hostGui.DoLeaveRestaurant();
+		restPanel.hostLeaving();
 		person.exitBuilding();
 		person.msgFull();
+		person.msgDoneWithJob();
 		doneWithRole();
 	}
 

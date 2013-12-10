@@ -3,6 +3,8 @@ package restaurantLY.gui;
 import javax.swing.JFrame;
 
 import restaurantLY.gui.RestaurantGui;
+import trace.AlertLog;
+import trace.AlertTag;
 import mainGUI.MainGui;
 import city.Building;
 import city.CityData;
@@ -14,6 +16,8 @@ public class LYRestaurantBuilding extends Building
 	
 	RestaurantGui restGui;
 	RestaurantPanel restPanel;
+	
+	private boolean printed = false;
 	
 	public LYRestaurantBuilding(int xPos, int yPos, int width, int height,
 			String name, BuildingType type, MainGui mainGui, CityData cd) 
@@ -48,11 +52,17 @@ public class LYRestaurantBuilding extends Building
 		{
 			restPanel.addHost(person);
 			isOpen = true;
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTLY, this.name, "RestaurantLY is open for employees only");
 		}
 		
 	}
 	
 	public boolean isOpen() {
+		if(isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed() && !printed) {
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTLY, this.name, "RestaurantLY is fully employed");
+			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTLY, this.name, "RestaurantLY is open now");
+			printed = true;
+		}
 		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
 	}
 	
