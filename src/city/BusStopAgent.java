@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import agent.Agent;
 import city.gui.BusStopGui;
 import city.interfaces.Bus;
@@ -80,6 +82,7 @@ public class BusStopAgent extends Agent implements BusStop{
 	@Override
 	public void msgWaitingAtStop(PersonAgent p, BusStopAgent destination) {
         peopleWaiting.put(p, destination);
+        AlertLog.getInstance().logMessage(AlertTag.BUS_STOP, "busStop", "Passengers are waiting for bus");
     }
 	
     /* (non-Javadoc)
