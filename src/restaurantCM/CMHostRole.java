@@ -223,6 +223,7 @@ public class CMHostRole extends Role  {
 		person.setHunger(0);
 		building.setClosed(person);
 		building.restGui.animationPanel.removeGui(hostGui);
+		building.manager = null;
 	}
 	
 	private myWait findWaiter(CMWaiterRole W){

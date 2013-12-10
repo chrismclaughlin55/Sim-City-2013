@@ -87,26 +87,26 @@ private CMCookRole cook;
 		//	gui.myAgents.add(c);
 		}
 		if(type.equals("Waiter")){
-			addWaiter(person);
+		//	addWaiter(person);
 		}
 
 	}
-	public void addWaiter(PersonAgent person){
-		
-		CMWaiterRole W = new CMWaiterRole(person);
-		CMWaiterGui g = new CMWaiterGui(W, 200 , 30*waiters.size());
-		W.setCook(cook);
-		W.setCashier(cashier);
-		W.setHost(host);
-		host.addWaiter(W);
-		W.setMyGui(g);
-		waiters.add(W);
-		gui.animationPanel.addGui(g);
-	//	gui.myAgents.add(W);
-	//	W.startThread();
-	//	updateRestLabel();
-
-	}
+//	public void addWaiter(PersonAgent person){
+//		
+//		CMWaiterRole W = new CMWaiterRole(person, );
+//		CMWaiterGui g = new CMWaiterGui(W, 200 , 30*waiters.size());
+//		W.setCook(cook);
+//		W.setCashier(cashier);
+//		W.setHost(host);
+//		host.addWaiter(W);
+//		W.setMyGui(g);
+//		waiters.add(W);
+//		gui.animationPanel.addGui(g);
+//	//	gui.myAgents.add(W);
+//	//	W.startThread();
+//	//	updateRestLabel();
+//
+//	}
 
 	public boolean hasHost() {
 		// TODO Auto-generated method stub
