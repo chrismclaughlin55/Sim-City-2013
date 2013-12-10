@@ -163,7 +163,7 @@ private void addCook(PersonAgent person) {
 		person.msgAssignRole(cook);
 	}
 public void addWaiter(PersonAgent person){
-		CMWaiterRole W = new CMWaiterRole(person);
+		CMWaiterRole W = new CMWaiterRole(person, this);
 		CMWaiterGui g = new CMWaiterGui(W, 200 , 30*host.Waiters.size());
 		W.setHost(host);
 		host.addWaiter(W);

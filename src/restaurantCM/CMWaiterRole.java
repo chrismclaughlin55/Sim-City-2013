@@ -1,11 +1,15 @@
 package restaurantCM;
 
 import agent.Agent;
+import bank.Bank;
 import restaurantCM.myCust.*;
+import restaurantCM.gui.CMRestaurantBuilding;
 import restaurantCM.gui.CMWaiterGui;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
+
+import com.sun.org.apache.xerces.internal.impl.xs.models.CMBuilder;
 
 import city.PersonAgent;
 import city.Role;
@@ -31,6 +35,7 @@ public class CMWaiterRole extends Role{
 	private boolean onBreak = false;
 	private boolean leave = false;
 	private CMCashierRole cashier;
+	public CMRestaurantBuilding building;
 	
 	//Messages
 	public void msgSitAtTable(CMCustomerRole c, int tablenum, CMHostRole host){
@@ -116,8 +121,9 @@ public class CMWaiterRole extends Role{
 	}
 	
 	//Actions
-	public CMWaiterRole(PersonAgent person){
+	public CMWaiterRole(PersonAgent person, CMRestaurantBuilding b){
 		super(person);
+		this.building = b;
 		print("waiter created");
 		this.name = person.getName();
 		atLobby.drainPermits();
@@ -348,6 +354,7 @@ public class CMWaiterRole extends Role{
 	private void payBill(myCust c) {
 	cashier.msgGiveMeBill(this, c.getC(),c.getTotalBill());
 	print(c.getC().getName()+" paid bill amount of "+ c.getTotalBill());
+	person.cityData.banks.get(0).depositMoney(building, c.getTotalBill());
 	}
 	private void giveBill(myCust c) {
 		c.getC().msgHereIsBill(c.getTotalBill());
