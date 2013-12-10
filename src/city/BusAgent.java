@@ -74,7 +74,6 @@ public class BusAgent extends Agent implements Bus {
 	public void msgAcquireGrid()
 	{
 		atDestination.release();
-		stateChanged();
 	}
 	
 	public void msgAtDestination() {
@@ -111,12 +110,6 @@ public class BusAgent extends Agent implements Bus {
 	//SCHEDULER
 	protected boolean pickAndExecuteAnAction() {
 		
-		if(gridToAcquire != null)
-		{
-			MoveToGrid();
-			return true;
-		}
-		
 		if(myState==BusState.atStop) {
 			for(myPassenger p : passengers) {
 				if(p.dest == curr) {
@@ -126,8 +119,8 @@ public class BusAgent extends Agent implements Bus {
 				}
 			}
 			curr.msgArrivedAtStop(this);
-			myState = BusState.unloading;   
-			return true;
+			myState = BusState.unloading;
+			return false;
 		}
 
 		if(myState==BusState.unloading) {
@@ -147,6 +140,12 @@ public class BusAgent extends Agent implements Bus {
 	        return true;
 	    }
 	    
+	    if(myState == BusState.moving && gridToAcquire != null)
+		{
+			MoveToGrid();
+			return true;
+		}
+	    
 	    return false;
 	}
 	
@@ -165,6 +164,7 @@ public class BusAgent extends Agent implements Bus {
 	
 	private void LeaveStop() {
 		BusStopAgent temp=next.nextStop;
+		myState = BusState.moving;
 		curr = next;
 		next = temp;
 		busgui.DoGoToNextStop(curr.getX(),curr.getY());

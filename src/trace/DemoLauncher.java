@@ -22,6 +22,9 @@ import javax.swing.JToggleButton;
  */
 @SuppressWarnings("serial")
 public class DemoLauncher extends JFrame {
+	private int W = 200;
+	private int H = 40;
+	
 	ControlPanel controlPanel;
 	
 	//============================ TUTORIAL ==========================================
@@ -34,7 +37,7 @@ public class DemoLauncher extends JFrame {
 	public DemoLauncher() {
 		this.tracePanel = new TracePanel();
 		this.controlPanel = new ControlPanel(tracePanel);
-		tracePanel.setPreferredSize(new Dimension(800, 300));
+		tracePanel.setPreferredSize(new Dimension(800, 380));
 		
 		this.setLayout(new BorderLayout());
 		this.add(controlPanel, BorderLayout.CENTER);
@@ -53,9 +56,8 @@ public class DemoLauncher extends JFrame {
 		tracePanel.showAlertsWithLevel(AlertLevel.MESSAGE);		//THESE SHOULD BE THE MOST COMMON AND PRINT BLACK
 		//tracePanel.hideAlertsWithLevel(AlertLevel.DEBUG);
 		
-		tracePanel.showAlertsWithTag(AlertTag.GENERAL_CITY);
-		tracePanel.showAlertsWithTag(AlertTag.PERSON);
-		tracePanel.showAlertsWithTag(AlertTag.BUILDING);
+		tracePanel.showAlertsWithTag(AlertTag.GENERAL_CITY);	//only show non-norm (eg. car collsion, robber)
+		tracePanel.hideAlertsWithTag(AlertTag.PERSON);
 		tracePanel.showAlertsWithTag(AlertTag.BANK);
 		tracePanel.showAlertsWithTag(AlertTag.MARKET);
 		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK);
@@ -64,6 +66,44 @@ public class DemoLauncher extends JFrame {
 		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY);
 		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ);
 		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM);
+		tracePanel.hideAlertsWithTag(AlertTag.BUS);
+		tracePanel.hideAlertsWithTag(AlertTag.BUS_STOP);
+		tracePanel.showAlertsWithTag(AlertTag.BANK_CUSTOMER);
+		tracePanel.showAlertsWithTag(AlertTag.BANK_MANAGER);
+		tracePanel.showAlertsWithTag(AlertTag.BANK_TELLER);
+		tracePanel.showAlertsWithTag(AlertTag.MARKET_CUSTOMER);
+		tracePanel.showAlertsWithTag(AlertTag.MARKET_EMPLOYEE);
+		tracePanel.showAlertsWithTag(AlertTag.MARKET_MANAGER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK_CASHIER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK_COOK);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK_CUSTOMER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK_HOST);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK_WAITER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM_CASHIER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM_COOK);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM_CUSTOMER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM_HOST);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTCM_WAITER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC_CASHIER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC_COOK);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC_CUSTOMER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC_HOST);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC_WAITER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY_CASHIER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY_COOK);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY_CUSTOMER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY_HOST);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY_WAITER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ_CASHIER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ_COOK);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ_CUSTOMER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ_HOST);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ_WAITER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM_CASHIER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM_COOK);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM_CUSTOMER);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM_HOST);
+		tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM_WAITER);
 		
 		//
 		//You will have to add your own AlertTag types to the AlertTag enum for your project.
@@ -94,25 +134,23 @@ public class DemoLauncher extends JFrame {
 		JToggleButton debugButton;*/
 		
 		JToggleButton PersonTagButton;
-		JToggleButton BuildingTagButton;
 		JToggleButton BankTagButton;
 		JToggleButton BankManagerTagButton;
 		JToggleButton BankTellerTagButton;
 		JToggleButton BankCustTagButton;
-		JToggleButton ApartmentTagButton;
 		JToggleButton BusTagButton;
 		JToggleButton BusStopTagButton;
-		JToggleButton HomeTagButton;
 		JToggleButton MarketTagButton;
 		JToggleButton MarketCustTagButton;
 		JToggleButton MarketEmployeeTagButton;
 		JToggleButton MarketManagerTagButton;
 		JToggleButton RestBKTagButton;
-		JToggleButton BKCashierTagButton;
+		/*JToggleButton BKCashierTagButton;
 		JToggleButton BKCookTagButton;
 		JToggleButton BKCustTagButton;
 		JToggleButton BKHostTagButton;
-		JToggleButton BKWaiterTagButton;
+		JToggleButton BKWaiterTagButton;*/
+		JToggleButton BKRolesTagsButton;
 		JToggleButton RestKCTagButton;
 		JToggleButton KCCashierTagButton;
 		JToggleButton KCCookTagButton;
@@ -120,23 +158,26 @@ public class DemoLauncher extends JFrame {
 		JToggleButton KCHostTagButton;
 		JToggleButton KCWaiterTagButton;
 		JToggleButton RestLYTagButton;
-		JToggleButton LYCashierTagButton;
+		/*JToggleButton LYCashierTagButton;
 		JToggleButton LYCookTagButton;
 		JToggleButton LYCustTagButton;
 		JToggleButton LYHostTagButton;
-		JToggleButton LYWaiterTagButton;
+		JToggleButton LYWaiterTagButton;*/
+		JToggleButton LYRolesTagsButton;
 		JToggleButton RestMQTagButton;
-		JToggleButton MQCashierTagButton;
+		/*JToggleButton MQCashierTagButton;
 		JToggleButton MQCookTagButton;
 		JToggleButton MQCustTagButton;
 		JToggleButton MQHostTagButton;
-		JToggleButton MQWaiterTagButton;
+		JToggleButton MQWaiterTagButton;*/
+		JToggleButton MQRolesTagsButton;
 		JToggleButton RestSMTagButton;
-		JToggleButton SMCashierTagButton;
+		/*JToggleButton SMCashierTagButton;
 		JToggleButton SMCookTagButton;
 		JToggleButton SMCustTagButton;
 		JToggleButton SMHostTagButton;
-		JToggleButton SMWaiterTagButton;
+		JToggleButton SMWaiterTagButton;*/
+		JToggleButton SMRolesTagsButton;
 		JToggleButton RestCMTagButton;
 		JToggleButton CMCashierTagButton;
 		JToggleButton CMCookTagButton;
@@ -153,16 +194,13 @@ public class DemoLauncher extends JFrame {
 			/*warningButton = new JToggleButton("Hide Level: WARNING");
 			debugButton = new JButton("Hide Level: DEBUG");*/
 			
-			PersonTagButton = new JToggleButton("Hide Tag: PERSON");
-			BuildingTagButton = new JToggleButton("Hide Tag: BUILDING");
+			PersonTagButton = new JToggleButton("Show Tag: PERSON");
 			BankTagButton = new JToggleButton("Hide Tag: BANK");
 			BankManagerTagButton = new JToggleButton("Hide Tag: BANK MANAGER");
 			BankTellerTagButton = new JToggleButton("Hide Tag: BANK TELLER");
 			BankCustTagButton = new JToggleButton("Hide Tag: BANK CUSTOMER");
-			ApartmentTagButton = new JToggleButton("Hide Tag: APARTMENT");
-			BusTagButton = new JToggleButton("Hide Tag: BUS");
-			BusStopTagButton = new JToggleButton("Hide Tag: BUS STOP");
-			HomeTagButton = new JToggleButton("Hide Tag: HOME");
+			BusTagButton = new JToggleButton("Show Tag: BUS");
+			BusStopTagButton = new JToggleButton("Show Tag: BUS STOP");
 			MarketTagButton = new JToggleButton("Hide Tag: MARKET");
 			MarketCustTagButton = new JToggleButton("Hide Tag: MARKET CUSTOMER");
 			MarketEmployeeTagButton = new JToggleButton("Hide Tag: MARKET EMPLOYEE");
@@ -174,6 +212,20 @@ public class DemoLauncher extends JFrame {
 			RestSMTagButton = new JToggleButton("Hide Tag: RESTAURANT_SM");
 			RestCMTagButton = new JToggleButton("Hide Tag: RESTAURANT_CM");
 			CityTagButton = new JToggleButton("Hide Tag: GENERAL CITY");
+			BKRolesTagsButton = new JToggleButton("Hide Tags: REST_BK ROLES");
+			KCCashierTagButton = new JToggleButton("Hide Tag: REST_KC CASHIER");
+			KCCookTagButton = new JToggleButton("Hide Tag: REST_KC COOK");
+			KCCustTagButton = new JToggleButton("Hide Tag: REST_KC CUST");
+			KCHostTagButton = new JToggleButton("Hide Tag: REST_KC HOST");
+			KCWaiterTagButton = new JToggleButton("Hide Tag: REST_KC WAITER");
+			LYRolesTagsButton = new JToggleButton("Hide Tags: REST_LY ROLES");
+			MQRolesTagsButton = new JToggleButton("Hide Tags: REST_MQ ROLES");
+			SMRolesTagsButton = new JToggleButton("Hide Tags: REST_SM ROLES");
+			CMCashierTagButton = new JToggleButton("Hide Tag: REST_CM CASHIER");
+			CMCookTagButton = new JToggleButton("Hide Tag: REST_CM COOK");
+			CMCustTagButton = new JToggleButton("Hide Tag: REST_CM CUST");
+			CMHostTagButton = new JToggleButton("Hide Tag: REST_CM HOST");
+			CMWaiterTagButton = new JToggleButton("Hide Tag: REST_CM WAITER");
 			
 			messageButton.addActionListener(new ActionListener() {
 				@Override
@@ -236,7 +288,7 @@ public class DemoLauncher extends JFrame {
 						//================================================================================
 					}
 					else {
-						BankTagButton.setText("Hide Level: BANK");
+						BankTagButton.setText("Hide Tag: BANK");
 						//============================ TUTORIAL ==========================================
 						//This works the same way as AlertLevels, only you're using tags instead.
 						tracePanel.showAlertsWithTag(AlertTag.BANK);
@@ -347,30 +399,345 @@ public class DemoLauncher extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if(PersonTagButton.isSelected()) {
-						PersonTagButton.setText("Show Tag: PERSON");
-						tracePanel.hideAlertsWithTag(AlertTag.PERSON);
-					}
-					else {
 						PersonTagButton.setText("Hide Tag: PERSON");
 						tracePanel.showAlertsWithTag(AlertTag.PERSON);
+					}
+					else {
+						PersonTagButton.setText("Show Tag: PERSON");
+						tracePanel.hideAlertsWithTag(AlertTag.PERSON);
 					}
 				}
 			});
 			
+			BusTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(BusTagButton.isSelected()) {
+						BusTagButton.setText("Hide Tag: BUS");
+						tracePanel.showAlertsWithTag(AlertTag.BUS);
+					}
+					else {
+						BusTagButton.setText("Show Tag: BUS");
+						tracePanel.hideAlertsWithTag(AlertTag.BUS);
+					}
+				}
+			});
 			
-			this.setLayout(new FlowLayout());
+			BusStopTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(BusStopTagButton.isSelected()) {
+						BusStopTagButton.setText("Hide Tag: BUS STOP");
+						tracePanel.showAlertsWithTag(AlertTag.BUS_STOP);
+					}
+					else {
+						BusStopTagButton.setText("Show Tag: BUS STOP");
+						tracePanel.hideAlertsWithTag(AlertTag.BUS_STOP);
+					}
+				}
+			});
+			
+			BankManagerTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(BankManagerTagButton.isSelected()) {
+						BankManagerTagButton.setText("Show Tag: BANK MANAGER");
+						tracePanel.hideAlertsWithTag(AlertTag.BANK_MANAGER);
+					}
+					else {
+						BankManagerTagButton.setText("Hide Tag: BANK MANAGER");
+						tracePanel.showAlertsWithTag(AlertTag.BANK_MANAGER);
+					}
+				}
+			});
+			
+			BankTellerTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(BankTellerTagButton.isSelected()) {
+						BankTellerTagButton.setText("Show Tag: BANK TELLER");
+						tracePanel.hideAlertsWithTag(AlertTag.BANK_TELLER);
+					}
+					else {
+						BankTellerTagButton.setText("Hide Tag: BANK TELLER");
+						tracePanel.showAlertsWithTag(AlertTag.BANK_TELLER);
+					}
+				}
+			});
+			
+			BankCustTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(BankCustTagButton.isSelected()) {
+						BankCustTagButton.setText("Show Tag: BANK CUSTOMER");
+						tracePanel.hideAlertsWithTag(AlertTag.BANK_CUSTOMER);
+					}
+					else {
+						BankCustTagButton.setText("Hide Tag: BANK CUSTOMER");
+						tracePanel.showAlertsWithTag(AlertTag.BANK_CUSTOMER);
+					}
+				}
+			});
+			
+			MarketManagerTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(MarketManagerTagButton.isSelected()) {
+						MarketManagerTagButton.setText("Show Tag: MARKET MANAGER");
+						tracePanel.hideAlertsWithTag(AlertTag.MARKET_MANAGER);
+					}
+					else {
+						MarketManagerTagButton.setText("Hide Tag: MARKET MANAGER");
+						tracePanel.showAlertsWithTag(AlertTag.MARKET_MANAGER);
+					}
+				}
+			});
+			
+			MarketEmployeeTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(MarketEmployeeTagButton.isSelected()) {
+						MarketEmployeeTagButton.setText("Show Tag: MARKET EMPLOYEE");
+						tracePanel.hideAlertsWithTag(AlertTag.MARKET_EMPLOYEE);
+					}
+					else {
+						MarketEmployeeTagButton.setText("Hide Tag: MARKET EMPLOYEE");
+						tracePanel.showAlertsWithTag(AlertTag.MARKET_EMPLOYEE);
+					}
+				}
+			});
+			
+			MarketCustTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(MarketCustTagButton.isSelected()) {
+						MarketCustTagButton.setText("Show Tag: MARKET CUSTOMER");
+						tracePanel.hideAlertsWithTag(AlertTag.MARKET_CUSTOMER);
+					}
+					else {
+						MarketCustTagButton.setText("Hide Tag: MARKET CUSTOMER");
+						tracePanel.showAlertsWithTag(AlertTag.MARKET_CUSTOMER);
+					}
+				}
+			});
+			
+			KCHostTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(KCHostTagButton.isSelected()) {
+						KCHostTagButton.setText("Show Tag: REST_KC HOST");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTKC_HOST);
+					}
+					else {
+						KCHostTagButton.setText("Hide Tag: REST_KC HOST");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC_HOST);
+					}
+				}
+			});
+			
+			KCWaiterTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(KCWaiterTagButton.isSelected()) {
+						KCWaiterTagButton.setText("Show Tag: REST_KC WAITER");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTKC_WAITER);
+					}
+					else {
+						KCWaiterTagButton.setText("Hide Tag: REST_KC WAITER");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC_WAITER);
+					}
+				}
+			});
+			
+			KCCashierTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(KCCashierTagButton.isSelected()) {
+						KCCashierTagButton.setText("Show Tag: REST_KC CASHIER");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTKC_CASHIER);
+					}
+					else {
+						KCCashierTagButton.setText("Hide Tag: REST_KC CASHIER");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC_CASHIER);
+					}
+				}
+			});
+			
+			KCCookTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(KCCookTagButton.isSelected()) {
+						KCCookTagButton.setText("Show Tag: REST_KC COOK");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTKC_COOK);
+					}
+					else {
+						KCCookTagButton.setText("Hide Tag: REST_KC COOK");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC_COOK);
+					}
+				}
+			});
+			
+			KCCustTagButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(KCCustTagButton.isSelected()) {
+						KCCustTagButton.setText("Show Tag: REST_KC CUST");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTKC_CUSTOMER);
+					}
+					else {
+						KCCustTagButton.setText("Hide Tag: REST_KC CUST");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTKC_CUSTOMER);
+					}
+				}
+			});
+			
+			BKRolesTagsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(BKRolesTagsButton.isSelected()) {
+						BKRolesTagsButton.setText("Show Tags: REST_BK ROLES");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTBK_CASHIER);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTBK_COOK);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTBK_CUSTOMER);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTBK_HOST);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTBK_WAITER);
+					}
+					else {
+						BKRolesTagsButton.setText("Hide Tags: REST_BK ROLES");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK_CASHIER);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK_COOK);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK_CUSTOMER);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK_HOST);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTBK_WAITER);
+					}
+				}
+			});
+			
+			LYRolesTagsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(LYRolesTagsButton.isSelected()) {
+						LYRolesTagsButton.setText("Show Tags: REST_LY ROLES");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTLY_CASHIER);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTLY_COOK);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTLY_CUSTOMER);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTLY_HOST);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTLY_WAITER);
+					}
+					else {
+						LYRolesTagsButton.setText("Hide Tags: REST_LY ROLES");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY_CASHIER);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY_COOK);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY_CUSTOMER);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY_HOST);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTLY_WAITER);
+					}
+				}
+			});
+			
+			MQRolesTagsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(MQRolesTagsButton.isSelected()) {
+						MQRolesTagsButton.setText("Show Tags: REST_MQ ROLES");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTMQ_CASHIER);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTMQ_COOK);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTMQ_CUSTOMER);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTMQ_HOST);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTMQ_WAITER);
+					}
+					else {
+						MQRolesTagsButton.setText("Hide Tags: REST_MQ ROLES");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ_CASHIER);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ_COOK);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ_CUSTOMER);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ_HOST);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTMQ_WAITER);
+					}
+				}
+			});
+			
+			SMRolesTagsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(SMRolesTagsButton.isSelected()) {
+						SMRolesTagsButton.setText("Show Tags: REST_SM ROLES");
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTSM_CASHIER);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTSM_COOK);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTSM_CUSTOMER);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTSM_HOST);
+						tracePanel.hideAlertsWithTag(AlertTag.RESTAURANTSM_WAITER);
+					}
+					else {
+						SMRolesTagsButton.setText("Hide Tags: REST_SM ROLES");
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM_CASHIER);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM_COOK);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM_CUSTOMER);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM_HOST);
+						tracePanel.showAlertsWithTag(AlertTag.RESTAURANTSM_WAITER);
+					}
+				}
+			});
+			
+			this.setLayout(null);
+			messageButton.setBounds(0, 0, W, H);
 			this.add(messageButton);
+			infoButton.setBounds(200, 0, W, H);
 			this.add(infoButton);
+			errorButton.setBounds(400, 0, W, H);
 			this.add(errorButton);
-			this.add(CityTagButton);
-			this.add(PersonTagButton);
+			BankTagButton.setBounds(0, 40, W, H);
 			this.add(BankTagButton);
+			BankManagerTagButton.setBounds(200, 40, W, H);
+			this.add(BankManagerTagButton);
+			BankTellerTagButton.setBounds(400, 40, W, H);
+			this.add(BankTellerTagButton);
+			BankCustTagButton.setBounds(0, 80, W, H);
+			this.add(BankCustTagButton);
+			MarketTagButton.setBounds(200, 80, W, H);
 			this.add(MarketTagButton);
-			this.add(RestBKTagButton);
+			MarketManagerTagButton.setBounds(400, 80, W, H);
+			this.add(MarketManagerTagButton);
+			MarketEmployeeTagButton.setBounds(0, 120, W, H);
+			this.add(MarketEmployeeTagButton);
+			MarketCustTagButton.setBounds(200, 120, W, H);
+			this.add(MarketCustTagButton);
+			RestKCTagButton.setBounds(400, 120, W, H);
 			this.add(RestKCTagButton);
+			KCHostTagButton.setBounds(0, 160, W, H);
+			this.add(KCHostTagButton);
+			KCWaiterTagButton.setBounds(200, 160, W, H);
+			this.add(KCWaiterTagButton);
+			KCCashierTagButton.setBounds(400, 160, W, H);
+			this.add(KCCashierTagButton);
+			KCCookTagButton.setBounds(0, 200, W, H);
+			this.add(KCCookTagButton);
+			KCCustTagButton.setBounds(200, 200, W, H);
+			this.add(KCCustTagButton);
+			RestBKTagButton.setBounds(400, 200, W, H);
+			this.add(RestBKTagButton);
+			BKRolesTagsButton.setBounds(0, 240, W, H);
+			this.add(BKRolesTagsButton);
+			RestLYTagButton.setBounds(200, 240, W, H);
 			this.add(RestLYTagButton);
+			LYRolesTagsButton.setBounds(400, 240, W, H);
+			this.add(LYRolesTagsButton);
+			RestMQTagButton.setBounds(0, 280, W, H);
 			this.add(RestMQTagButton);
+			MQRolesTagsButton.setBounds(200, 280, W, H);
+			this.add(MQRolesTagsButton);
+			RestSMTagButton.setBounds(400, 280, W, H);
 			this.add(RestSMTagButton);
+			SMRolesTagsButton.setBounds(0, 320, W, H);
+			this.add(SMRolesTagsButton);
+			CityTagButton.setBounds(200, 320, W, H);
+			this.add(CityTagButton);
+			PersonTagButton.setBounds(400, 320, W, H);
+			this.add(PersonTagButton);
+			BusTagButton.setBounds(0, 360, W, H);
+			this.add(BusTagButton);
+			BusStopTagButton.setBounds(200, 360, W, H);
+			this.add(BusStopTagButton);
 			this.setMinimumSize(new Dimension(50, 600));
 		}
 	}

@@ -276,7 +276,7 @@ public class MainGui extends JFrame implements MouseListener {
     	dl.start();
     	dl.setTitle("Trace Panel");
 		dl.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		dl.setBounds(10, 0, 650, 500);
+		dl.setBounds(10, 0, 600, 800);
 		dl.setResizable(false);
 		dl.setVisible(false);
         
