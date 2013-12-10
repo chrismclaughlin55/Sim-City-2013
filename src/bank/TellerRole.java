@@ -171,10 +171,9 @@ public class TellerRole extends Role implements Teller{
 	}
 
 	private void payTheMan() {
-		System.err.println("IM BEING ROBBED");
+		bankRobbery = false;
 		AlertLog.getInstance().logError(AlertTag.BANK_TELLER, this.name, "IM BEING ROBBED");
 		bankRobber.msgPleaseDontShoot(400);
-		bankRobbery = false;
 	}
 	
 	private void processLoan() {

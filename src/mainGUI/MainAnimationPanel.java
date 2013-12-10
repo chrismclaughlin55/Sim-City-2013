@@ -243,6 +243,30 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		
 		//cd.setBusStopRoute(1);
 		//cd.setBusStopRoute(2);
+		
+		
+		//Set closest RGrid (to take car) for each building
+		cd.buildings.get(0).setClosestRGrid((RGrid) cd.cityGrid[7][11]);
+		cd.buildings.get(1).setClosestRGrid((RGrid) cd.cityGrid[7][17]);
+		cd.buildings.get(2).setClosestRGrid((RGrid) cd.cityGrid[7][25]);
+		cd.buildings.get(3).setClosestRGrid((RGrid) cd.cityGrid[7][31]);
+		cd.buildings.get(4).setClosestRGrid((RGrid) cd.cityGrid[10][33]);
+		cd.buildings.get(5).setClosestRGrid((RGrid) cd.cityGrid[17][33]);
+		cd.buildings.get(6).setClosestRGrid((RGrid) cd.cityGrid[24][31]);
+		cd.buildings.get(7).setClosestRGrid((RGrid) cd.cityGrid[24][25]);
+		cd.buildings.get(8).setClosestRGrid((RGrid) cd.cityGrid[24][17]);
+		cd.buildings.get(9).setClosestRGrid((RGrid) cd.cityGrid[24][11]);
+		cd.buildings.get(10).setClosestRGrid((RGrid) cd.cityGrid[17][5]);
+		cd.buildings.get(11).setClosestRGrid((RGrid) cd.cityGrid[10][5]);
+		cd.buildings.get(12).setClosestRGrid((RGrid) cd.cityGrid[8][11]);
+		cd.buildings.get(13).setClosestRGrid((RGrid) cd.cityGrid[23][11]);
+		cd.buildings.get(14).setClosestRGrid((RGrid) cd.cityGrid[8][17]);
+		cd.buildings.get(15).setClosestRGrid((RGrid) cd.cityGrid[23][17]);
+		cd.buildings.get(16).setClosestRGrid((RGrid) cd.cityGrid[8][31]);
+		cd.buildings.get(17).setClosestRGrid((RGrid) cd.cityGrid[23][31]);
+		cd.buildings.get(18).setClosestRGrid((RGrid) cd.cityGrid[8][25]);
+		cd.buildings.get(19).setClosestRGrid((RGrid) cd.cityGrid[23][25]);
+		
 
 		//Set apartment parameters
 		for (int i = 0; i < 4; i++) {

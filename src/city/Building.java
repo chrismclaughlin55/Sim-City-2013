@@ -36,6 +36,8 @@ public abstract class Building extends Rectangle2D.Double {
 	public BusStopAgent busStop;
 	public boolean hasManager=false;
 	
+	public RGrid closest;
+	
 	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
 		this.mainGui = mainGui;
@@ -157,4 +159,8 @@ public abstract class Building extends Rectangle2D.Double {
 	}
 	
 	public abstract JFrame getBuildingGui();
+	
+	public void setClosestRGrid(RGrid rg) {
+		closest = rg;
+	}
 }

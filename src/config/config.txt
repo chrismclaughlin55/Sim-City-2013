@@ -174,7 +174,7 @@ name Moneybag1
 cash 10000
 bankMoney 500
 job Unemployed
-hunger 7
+hunger 0
 inventory 9
 transportation bus
 
@@ -183,6 +183,6 @@ name Moneybag2
 cash 10000
 bankMoney 500
 job Unemployed
-hunger 10
+hunger 0
 inventory 20
 transportation bus
