@@ -13,6 +13,8 @@ import city.BusAgent;
 import city.BusStopAgent;
 import city.PersonAgent;
 import city.Building;
+import city.RGrid.Direction;
+import city.CityData;
 
 public class PersonGui implements Gui{
 	
@@ -25,6 +27,7 @@ public class PersonGui implements Gui{
 	private static final int INITY = 40;
 	public static final int WIDTH = 20;
 
+	CityData cd=agent.cityData;
 	private int xPos, yPos;
 	private int xDestination, yDestination;
 	
@@ -69,9 +72,13 @@ public class PersonGui implements Gui{
 		}
 		
 		else {
-			
+			agent.currGrid = cd.getNextGrid(agent.currGrid,CalculateDirection());
 			/*if(nextGrid is !RGrid, keep going) {
 				
+				person
+					needs to acquire grid semaphores
+				persongui
+					needs to tell 
 			}
 			else {
 				find closest not bgrid walk towards it 
@@ -97,11 +104,13 @@ public class PersonGui implements Gui{
 	        	if (xPos == xDestination && yPos == yDestination
 	        			& (xDestination == xBuilding[i]) & (yDestination == yBuilding[i])) {
 	        		agent.msgAtBuilding();
+	        		agent.moving = false;
 	        	}
 	        }
 			if (xPos == xDestination && yPos == yDestination && moving == true) {
 	            moving = false;
 	            agent.msgDoneMoving();
+	            agent.moving = false;
 			}
 			if (xPos == xDestination && yPos == yDestination
 	        			& (xDestination == 360) & (yDestination == 20)) {
@@ -110,6 +119,7 @@ public class PersonGui implements Gui{
 			if (xPos == xDestination && yPos == yDestination
 	        			& (xDestination == 0) & (yDestination == 340)) {
 				agent.msgAtEntrance();
+				
 			}
 		}
 	}
@@ -216,8 +226,10 @@ public class PersonGui implements Gui{
 	}
 	
 	public void DoGoToBuilding(int buildingNumber) {
+		//WALK VS. CAR
 		xDestination = xBuilding[buildingNumber];
 		yDestination = yBuilding[buildingNumber];
+		//BUT IN HERE , WE MUST DO SOMETHING SPECIAL...
 	}
 
 	public void DoGoIntoBuilding() {
@@ -240,5 +252,29 @@ public class PersonGui implements Gui{
 		xDestination = bus.getX();
 		yDestination = bus.getY();
 		
+	}
+	public Direction CalculateDirection() {
+		if(xPos-xDestination>=0) {
+			if(xPos-xDestination>Math.abs(yPos-yDestination)) {
+				return Direction.west;
+			}
+			else if(yPos-yDestination>=0) {
+				return Direction.north;
+			}
+			else {
+				return Direction.south;
+			}
+		}
+		else {
+			if(Math.abs(xPos-xDestination)>Math.abs(yPos-yDestination)) {
+				return Direction.east;
+			}
+			else if(yPos - yDestination>0) {
+				return Direction.north;
+			}
+			else {
+				return Direction.south;
+			}
+		}
 	}
 }

@@ -301,6 +301,22 @@ public class CityData implements ActionListener {
 		}	
 		return a;
 	}
+	public Grid getNextGrid(Grid g, Direction dir) {
+		Grid x = null;
+		if(dir==Direction.north) {
+			
+		}
+		if(dir==Direction.south) {
+			
+		}
+		if(dir==Direction.east) {
+	
+		}
+		if(dir==Direction.west) {
+			
+		}
+
+	}
 	public void incrementTime() {
 		increment++;
 		if(increment==incrementLimit) {

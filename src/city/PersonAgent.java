@@ -71,6 +71,9 @@ public class PersonAgent extends Agent
 	public boolean car;
 	public boolean bus;
 	public boolean walk;
+	public Grid currGrid;
+	
+	public boolean moving = false;
 
 	boolean goToWork = false;
 
@@ -85,7 +88,6 @@ public class PersonAgent extends Agent
 
 	public BusAgent currentBus;
 
-	public Grid currGrid;
 	private Semaphore atBuilding = new Semaphore(0, true);
 	private Semaphore isMoving = new Semaphore(0, true);
 	public List<MyOrder> thingsToOrder = Collections.synchronizedList(new ArrayList<MyOrder>());
@@ -816,7 +818,22 @@ public class PersonAgent extends Agent
 	{
 		if(walk==true) {
 			//PersonGui.DoWalk(if you ever hit an RGrid, acquire it first, and then walk through, and don't walk through bgrids)
+			moving = true;
 			personGui.DoGoToBuilding(destinationBuilding.buildingNumber);
+			while(moving) {
+//				// go from grid to grid
+//				currGrid = nextGrid
+////				acquire
+////				if(curr instanceof RGrid) {
+////					person.acquire those next two semaphores in that direction
+////					personGui.crossRoad(direction);
+////					move to next
+////					release roads
+////				}
+//				else {
+//				//personGui.MoveToNextGrid;
+//				}
+			}
 			try
 			{
 				isMoving.acquire();
@@ -941,6 +958,18 @@ public class PersonAgent extends Agent
 
 	public PersonGui getGui() {
 		return personGui;
+	}
+	
+	public void acquireGridSemaphore(RGrid r) {
+		try {
+			r.occupied.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void releaseGridSemaphore(RGrid r) {
+		r.occupied.release();
 	}
 	
 	public void setGoToWork(boolean b) {
