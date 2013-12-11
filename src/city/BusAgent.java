@@ -156,7 +156,7 @@ public class BusAgent extends Agent implements Bus {
 				{
 					atDestination.release();
 				}
-			}, 300);
+			}, 200);
 			try {
 				atDestination.acquire();
 			}

@@ -19,6 +19,7 @@ public class BusTest extends TestCase {
 	BusStopAgent dest;
 	PersonAgent p;
 	CityData cd;
+	
 	public void setUp() throws Exception{
 		main = new MainGui();
 		cd = new CityData();

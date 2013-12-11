@@ -298,9 +298,11 @@ public class PersonAgent extends Agent
 	}
 
 	/*SCHEDULER*/
+
 	protected boolean pickAndExecuteAnAction() {
 		if(getName().equals("bankManager"))
 			print("bigState:" +bigState);
+
 		/*Emergency scheduler rules go here (v2)*/
 		if(emergencyState == EmergencyState.fire) {
 			ReactToFire();
@@ -481,7 +483,7 @@ public class PersonAgent extends Agent
 				double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100;
 				bankInfo.depositAmount = - withdrawAmount;
 				if(job.equals("bankManager"))
-				print(name+ " "+destinationBuilding.type + " " + job + " " + desiredRole);
+
 				return true;
 			}
 
@@ -490,8 +492,7 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToBank;
 				desiredRole = "Customer";
 				bankInfo.depositAmount = cash - HIGHMONEY;
-				if(job.equals("bankManager"))
-				print(name+ " "+destinationBuilding.type + " " + job + " " + desiredRole);
+
 				return true;
 			}
 			// Inventory of food stuff
@@ -499,7 +500,7 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToMarket;
 				desiredRole = "MarketCustomer";
 				if(!goToWork)
-					print(name + " " + job + " " + desiredRole);
+
 				return true;
 			}
 
@@ -507,14 +508,14 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToRestaurant;
 				desiredRole = "Customer";
 				if(!goToWork)
-					print(name + " " + job + " " + desiredRole);
+
 				return true;
 			}
 
 			bigState = BigState.goHome;
 			homeState = HomeState.onCouch;
 			if(!goToWork)
-				print(name + " " + job + " " + desiredRole);
+
 			return true;
 		}
 

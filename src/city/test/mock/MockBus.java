@@ -1,6 +1,7 @@
 package city.test.mock;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import city.BusStopAgent;
 import city.PersonAgent;
@@ -16,13 +17,13 @@ public class MockBus implements Bus {
 		System.out.println("");
 	}
 
-	@Override
-	public void msgPeopleAtStop(HashMap<PersonAgent, BusStopAgent> peopleAtStop) {
+//	@Override
+//	public void msgPeopleAtStop(HashMap<PersonAgent, BusStopAgent> peopleAtStop) {
 		// TODO Auto-generated method stub
-		System.out.println("Here are people to load");
-	}
+//		System.out.println("Here are people to load");
+//	}
 
-	@Override
+//	@Override
 	public void msgOnBus() {
 		// TODO Auto-generated method stub
 		
@@ -48,6 +49,12 @@ public class MockBus implements Bus {
 
 	@Override
 	public void msgAcquireGrid() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void msgPeopleAtStop(Map<PersonAgent, BusStopAgent> peopleAtStop) {
 		// TODO Auto-generated method stub
 		
 	}

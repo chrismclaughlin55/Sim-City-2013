@@ -18,7 +18,7 @@ public class BankRobber extends Role implements DaBankRobber {
 	private BankRobberGui gui;
 	private Bank bank;
 	
-	BankRobber(PersonAgent p, Bank b) {
+	public BankRobber(PersonAgent p, Bank b) {
 		super(p);
 		me = p;
 		bank = b;
