@@ -125,10 +125,10 @@ inventory 10
 transportation bus
 
 NewPerson
-name Teller1
+name Moneybag4
 cash 100
-bankMoney 500
-job BankTeller
+bankMoney 5000
+job Unemployed
 hunger 10
 inventory 10
 transportation bus

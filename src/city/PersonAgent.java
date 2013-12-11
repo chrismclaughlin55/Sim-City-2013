@@ -450,11 +450,10 @@ public class PersonAgent extends Agent
 
 		case doingNothing: {
 			//Decide what the next BigState will be based on current parameters
-
+			
 			if(goToWork && jobBuilding != null) {
 				destinationBuilding = jobBuilding;
 				desiredRole = job;
-				print("destinationBuilding: "+ destinationBuilding.type);
 				if(destinationBuilding.type == BuildingType.market) {
 					bigState = BigState.goToMarket;
 					return true;
@@ -473,25 +472,26 @@ public class PersonAgent extends Agent
 				bigState = BigState.goToRestaurant;
 				desiredRole = "Customer";
 				if(!goToWork)
-					 print(name + " " + job + " " + desiredRole);
 				return true;
 			}
 
 			if (cash <= LOWMONEY) {
+				if(!job.equals("bankManager")){
 				bigState = BigState.goToBank;
 				desiredRole = "Customer";
 				double withdrawAmount = (bankInfo.moneyInAccount<100)?bankInfo.moneyInAccount : 100;
 				bankInfo.depositAmount = - withdrawAmount;
-				if(job.equals("bankManager"))
+				}
 
 				return true;
 			}
 
 			if (cash >= HIGHMONEY){
-				if(job.equals("bankManager"))
+				if(!job.equals("bankManager")){
 				bigState = BigState.goToBank;
 				desiredRole = "Customer";
 				bankInfo.depositAmount = cash - HIGHMONEY;
+				}
 
 				return true;
 			}
@@ -1106,7 +1106,11 @@ public class PersonAgent extends Agent
 
 	public void exitBuilding() {
 		cityData.addGui(personGui);
-		print("Exiting the building");
+		print("Exiting the building "+ bigState);
+		if(job.equals("BankManager")||job.equals("BankTeller")){
+			bigState = BigState.goHome;
+		}
+		else
 		bigState = BigState.doingNothing;
 		super.stateChanged();
 	}

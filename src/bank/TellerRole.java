@@ -136,7 +136,6 @@ public class TellerRole extends Role implements Teller{
 			return true;
 		}
 		if(state == State.waitingForResponse && event == Event.recievedDeposit){
-			print("made it to sched procOrd");
 			processOrder();
 
 			return true;
@@ -159,6 +158,7 @@ public class TellerRole extends Role implements Teller{
 		}
 		if(wantToLeave && bm.getLine().size() == 0){
 			this.guiGoHere(9);
+			return true;
 		}
 
 		return false;
@@ -177,8 +177,9 @@ public class TellerRole extends Role implements Teller{
 	}
 
 	private void makeAvailable() {	
-		currentCustInfo = null;
 		state = State.available;
+		currentCustInfo = null;
+
 
 	}
 
@@ -237,9 +238,10 @@ public class TellerRole extends Role implements Teller{
 		catch(Exception e){}
 		if(place == 9){
 			gui.setPresent(false);
-			person.exitBuilding();
+			
 			person.msgDoneWithJob();
 			doneWithRole();
+			person.exitBuilding();
 		}
 	}
 

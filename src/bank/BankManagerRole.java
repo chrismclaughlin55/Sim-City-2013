@@ -34,7 +34,7 @@ public class BankManagerRole extends Role implements BankManager {
 	private boolean leave = false;
 	private boolean allGone = false;
 	Bank bank;
-	enum tellerState {available, needsInfo, notAvailable, updateInfo, offDuty }
+	enum tellerState {available, needsInfo, notAvailable, updateInfo, offDuty, done }
 	class myTeller{
 		public TellerRole t;
 		tellerState state;
@@ -51,7 +51,7 @@ public class BankManagerRole extends Role implements BankManager {
 		this.name = person.getName();
 		this.me = person;
 		this.bank = bank;
-		
+
 
 
 	}
@@ -61,14 +61,14 @@ public class BankManagerRole extends Role implements BankManager {
 
 	}
 	//Direct Deposit Message
-//	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
-//		print("recieved deposit from "+payer.getName()+" to "+reciever.getName()+" for $"+payment);
-//		CustInfo send = getAccount(payer);
-//		CustInfo recieve = getAccount(reciever);
-//		send.moneyInAccount-=payment;
-//		recieve.moneyInAccount+=payment;
-//		stateChanged();
-//	}
+	//	public void msgDirectDeposit(PersonAgent payer, PersonAgent reciever, double payment){
+	//		print("recieved deposit from "+payer.getName()+" to "+reciever.getName()+" for $"+payment);
+	//		CustInfo send = getAccount(payer);
+	//		CustInfo recieve = getAccount(reciever);
+	//		send.moneyInAccount-=payment;
+	//		recieve.moneyInAccount+=payment;
+	//		stateChanged();
+	//	}
 	@Override
 	public void msgINeedService(CustomerRole c) {
 		getLine().add((CustomerRole) c);
@@ -124,21 +124,17 @@ public class BankManagerRole extends Role implements BankManager {
 		//			// TODO Auto-generated catch block
 		//			e.printStackTrace();
 		//		}
-		
+
 		if (person.cityData.hour == 15 && person.cityData.increment == 0) {
 			if (tellers.size() > 1) {
 				fireTeller(tellers.get(tellers.size() - 1));
 				return true;
 			}
 		}
-		
-		for( myTeller t: tellers){
-			if(t.state == tellerState.available && getLine().size()>0){
-				helpCustomer(getLine().remove(0), t);
-				return true;
-			}
 
-		}
+
+
+
 		for(myTeller t: tellers){
 			if(t.state == tellerState.needsInfo){
 				sendInfo(t);
@@ -151,6 +147,7 @@ public class BankManagerRole extends Role implements BankManager {
 				return true;
 			}
 		}
+
 		for(myTeller t: tellers){
 			if(t.state == tellerState.offDuty){
 				tellers.remove(t);
@@ -170,12 +167,23 @@ public class BankManagerRole extends Role implements BankManager {
 			leave();
 			return true;
 		}
+		for(myTeller t: tellers){
+			if(t.state == tellerState.done){
+				t.state = tellerState.available;
+				return true;
+			}
+		}
+		for( myTeller t: tellers){
+			if(t.state == tellerState.available && getLine().size()>0){
+				helpCustomer(getLine().remove(0), t);
+				return true;
+			}
+		}
 		return false;
 	}
 	//ACTIONS
 	private void leave() {
 		tellers.clear();
-		person.bigState = BigState.goHome;
 		myTeller fakeTeller = new myTeller(null);
 		if(person.bankInfo.depositAmount < 0){
 			if(person.bankInfo.depositAmount + person.bankInfo.moneyInAccount < 0){
@@ -211,16 +219,14 @@ public class BankManagerRole extends Role implements BankManager {
 		print("bank closed. Leaving");
 		leave = false;
 		bank.payPerson(bank, me, 300);
-		print("I get paid 300 for today");
 		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Leaving. I get paid 300 for today. I have cash: $"+me.cash);
 		AlertLog.getInstance().logInfo(AlertTag.BANK, bank.name, "Bank is closed");
 		bank.setClosed(person);
-		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();
-		print(person.hungerLevel +" "+ person.cash+" "+ person.lowInventory()+" "+ person.bigState);
+		person.exitBuilding();
 	}
-	
+
 	private void fireTeller(myTeller t) {
 		t.t.msgYoureFired();
 	}
@@ -228,8 +234,9 @@ public class BankManagerRole extends Role implements BankManager {
 	private void helpCustomer(CustomerRole c, myTeller t) {
 		t.c = c;
 		bank.CustAccounts.put(c.getPerson(), c.getPerson().bankInfo);
-		c.msgGoToTeller(t.t, tellers.indexOf(t) + 5);
+		
 		t.state = tellerState.notAvailable;
+		c.msgGoToTeller(t.t, tellers.indexOf(t) + 5);
 	}
 
 	private void sendInfo(myTeller t) {
@@ -246,8 +253,9 @@ public class BankManagerRole extends Role implements BankManager {
 		print("updating db for "+t.custInfo.custName);
 		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Updating db for "+t.custInfo.custName);
 		bank.CustAccounts.put(t.custInfo.accountHolder, t.custInfo);
-		t.state = tellerState.available;
-			bank.bankGui.updatebankPanel();
+		t.state = tellerState.done;
+
+		bank.bankGui.updatebankPanel();
 
 	}
 	public List<CustomerRole> getLine() {

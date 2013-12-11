@@ -62,9 +62,9 @@ public class Bank extends Building {
 			e.printStackTrace();
 		}
 		if(roleRequest.equals("BankManager")){
-			if(manager == null){
+	
 				manager = p;
-			}
+
 			if(p.equals(manager)){
 				if(existingManagerRoles.get(p) != null){
 					setOpen(p);

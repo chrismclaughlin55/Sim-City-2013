@@ -106,6 +106,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	private void sayHello(){
 		guiGoHere(4);
 		guiGoHere(position);
+		print("say hello");
 		CustInfo tmp = new CustInfo(myInfo);
 			state = CustState.AtTeller;
 			this.t.msgHello(tmp);
@@ -113,27 +114,7 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	}
 	private void tellTeller(){
-		//		if(myInfo.loanRequestAmount == 0){
-		//			t.msgloan(myInfo.loanRequestAmount);
-		//			state = CustState.AskedForLoan;
-		//			return;
-		//		}else{
-		/*
-			double depositAmount;
-			if(myInfo.depositAmount>cash){
-				depositAmount = cash;
-				cash = 0;
-				state = CustState.SentDeposit;
-			}
-			else{
-				depositAmount = myInfo.depositAmount;
-				cash-=myInfo.depositAmount;
-				state = CustState.SentDeposit;
-			}
-			t.msgDeposit(depositAmount);
-			print("depositing $"+depositAmount);
-			print("should be depositing $"+myInfo.depositAmount);
-			print("person wants to deposit "+this.person.bankInfo.depositAmount);*/
+
 		print("depositing $"+myInfo.depositAmount);
 		AlertLog.getInstance().logMessage(AlertTag.BANK_CUSTOMER, this.name, "Depositing $"+myInfo.depositAmount);
 		if(myInfo.depositAmount < 0){
@@ -178,9 +159,9 @@ public class CustomerRole extends Role implements BankCustomer{
 		guiGoHere(9);
 		gui.setPresent(false);
 		person.bankInfo = this.myInfo;
-		person.exitBuilding();
+		doneWithRole();
 		person.msgDoneWithJob();
-		doneWithRole();	
+		person.exitBuilding();
 	}
 	private void processLoan(double approvedAmount){
 		AlertLog.getInstance().logMessage(AlertTag.BANK_CUSTOMER, this.name, "Asking for loan");
