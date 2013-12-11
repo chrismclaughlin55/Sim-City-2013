@@ -75,6 +75,7 @@ public class PersonAgent extends Agent
 	public boolean car;
 	public boolean bus;
 	public boolean walk;
+	public boolean once = true;
 
 	public Grid currGrid;
 	public RGrid currRGrid;
@@ -722,27 +723,32 @@ public class PersonAgent extends Agent
 		destinationBuilding = cityData.buildings.get(this.home.buildingNumber);
 		boolean busser = false;
 		boolean driver = false;
-		if(bus==true) {
-			busser = true;
-		}
-		if(car==true) {
-			driver = true;
-		}
-		if(bus||car) {
-			walk = true;
-			bus = false;
-			car = false;
-		}
-		GoToDestination();
 		
-		if(busser) {
-			bus = true;
-			walk=false;
+		if(once) {
+			if(bus==true) {
+				busser = true;
+			}
+			if(car==true) {
+				driver = true;
+			}
+			if(bus||car) {
+				walk = true;
+				bus = false;
+				car = false;
+			}
 		}
-		if(driver) {
-			car = true;
-			walk = false;
+	    GoToDestination();
+		if(once) {
+			if(busser) {
+				bus = true;
+				walk=false;
+			}
+			if(driver) {
+				car = true;
+				walk = false;
+			}
 		}
+		once = false;
 		personGui.DoGoToBuilding(this.home.buildingNumber); // 11 need to be replaced by the person's data of home number
 		try {
 			atBuilding.acquire();

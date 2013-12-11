@@ -57,7 +57,7 @@ name Waiter0
 cash 100
 bankMoney 500
 job Waiter
-hunger 10
+hunger 0
 inventory 5
 transportation bus
 
@@ -66,7 +66,7 @@ name Cashier0
 cash 100
 bankMoney 500
 job Cashier
-hunger 10
+hunger 0
 inventory 3
 transportation bus
 
