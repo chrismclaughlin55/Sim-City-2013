@@ -641,7 +641,7 @@ public class PersonAgent extends Agent
             
 			while (true)
 			{
-				restNumber = 4;
+				restNumber = 2;
 				//restNumber = (int)(12+(int)(Math.random()*6));
 				if(restNumber >= 17)
 				{
@@ -650,7 +650,7 @@ public class PersonAgent extends Agent
 				}
 
 
-				else if(((CMRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+				else if(((KCRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
 
 					break;
 			}
@@ -659,7 +659,7 @@ public class PersonAgent extends Agent
 		else
 		{
 			//destinationBuilding = jobBuilding;
-			restNumber = 4;
+			restNumber = 2;
 			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
         
@@ -678,7 +678,7 @@ public class PersonAgent extends Agent
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
 
-		CMRestaurantBuilding restaurant = (CMRestaurantBuilding)destinationBuilding;
+		KCRestaurantBuilding restaurant = (KCRestaurantBuilding)destinationBuilding;
 
 
 		if(goToWork && !desiredRole.equals("Customer"))

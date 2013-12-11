@@ -105,8 +105,11 @@ public class KCWaiterRole extends Role implements Waiter{
 
 
 	public void msgSitAtTable(Customer cust, int table) {
+		System.err.println(person.stateChange.availablePermits());
 		customers.add(new MyCustomer(cust, table, CustomerState.waiting));
 		stateChanged();
+		System.err.println(person.stateChange.availablePermits());
+
 	}
 
 	public void msgImReadyToOrder(Customer cust) {
@@ -128,7 +131,7 @@ public class KCWaiterRole extends Role implements Waiter{
 				mc.choice = choice;
 				mc.s = CustomerState.ordered;
 				stateChanged();
-			}		
+			}                
 
 		}
 
@@ -227,158 +230,146 @@ public class KCWaiterRole extends Role implements Waiter{
 	 */
 	public boolean pickAndExecuteAnAction() {
 
-		if (!onBreak) {
-			if(!customers.isEmpty()){
+		if(!customers.isEmpty()){
 
-				try {
-					for (MyCustomer mc : customers) {
-						if (mc.s == CustomerState.gone) {
-							customers.remove(mc);
-							return true;
-						}
-					}
-				}
-				catch (ConcurrentModificationException e) {
-					return false;
-				}
-
-				try {
-					for (MyCustomer mc : customers) {
-						if (mc.s == CustomerState.asked) {
-							orderGiven.drainPermits();
-							try {
-								orderGiven.acquire();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							return true;
-						}
-					}
-				}
-				catch (ConcurrentModificationException e) {
-					return false;
-				}
-
-				try {
-					for (MyCustomer mc : customers) {
-						if (mc.s == CustomerState.ordered) {
-							mc.s = CustomerState.orderGiven;
-							GiveOrderToCook(mc);
-							return true;
-						}
-					}
-				}
-				catch (ConcurrentModificationException e) {
-					return false;
-				}
-
-				try {
-					for (Check c : checks) {
-						if (c.state == CheckState.unpaid) {
-							DoDeliverCheck(c);
-							return true;
-						}
-					}
-				}
-				catch (ConcurrentModificationException e) {
-					return false;
-				}
-
-				try {
-					for(MyCustomer c:customers){
-						if(c.s == CustomerState.doneEating) {
-							prepareCheck(c);
-							return true;
-						}
-					}
-				}
-				catch (ConcurrentModificationException e) {
-					return false;
-				}
-
-				try {
-					for (MyCustomer mc : customers) {
-						if (mc.s == CustomerState.waiting) {
-							seatCustomer(mc); 
-							return true;
-						}
-					}
-				}
-				catch (ConcurrentModificationException e) {
-					return false;
-				}
-
-				try {
-					for (MyCustomer mc : customers) {
-						if (mc.s == CustomerState.readyToOrder) {
-							TakeOrder(mc);
-							return true;
-						}
-					}
-				}
-				catch (ConcurrentModificationException e) {
-					return false;
-				}
-
-				try {
-					for (MyCustomer mc : customers) {
-						if (mc.s == CustomerState.notAvailable) {
-							TellCustomerFoodUnavailable(mc);
-							return true;
-						}
-					}
-				}
-				catch (ConcurrentModificationException e) {
-					return false;
-				}
-
-				try {
-					for (MyCustomer mc : customers) {
-						if (mc.s == CustomerState.done) {
-							waiterGui.DoLeaveCustomer();
-						}
-					}
-				}
-				catch (ConcurrentModificationException e) {
-					return false;
-				}
-
-				if (readyOrders.size() > 0) {
-					TakeFoodToCustomer();
-					return true;
-				}
-
-				if (WantBreak) {
-					for (MyCustomer mc : customers)
-					{
-						if (mc.s != CustomerState.done) {
-							pendingActions = true;
-							break;
-						}
-						else {
-							pendingActions = false;
-						}
-					}
-
-					if (!pendingActions) {
-						host.msgIWantABreak(this);
-					}
-					return true;
-				}
-			}
-		}
-		else if (onBreak) {
-			waiterGui.setOffBreak();
-			takingBreak.drainPermits();
 			try {
-				takingBreak.acquire();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				for (MyCustomer mc : customers) {
+					if (mc.s == CustomerState.gone) {
+						customers.remove(mc);
+						return true;
+					}
+				}
 			}
-			onBreak = false;
-			WantBreak = false;
-			return true;
+			catch (ConcurrentModificationException e) {
+				return false;
+			}
+
+			try {
+				for (MyCustomer mc : customers) {
+					if (mc.s == CustomerState.asked) {
+						orderGiven.drainPermits();
+						try {
+							orderGiven.acquire();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						return true;
+					}
+				}
+			}
+			catch (ConcurrentModificationException e) {
+				return false;
+			}
+
+			try {
+				for (MyCustomer mc : customers) {
+					if (mc.s == CustomerState.ordered) {
+						mc.s = CustomerState.orderGiven;
+						GiveOrderToCook(mc);
+						return true;
+					}
+				}
+			}
+			catch (ConcurrentModificationException e) {
+				return false;
+			}
+
+			try {
+				for (Check c : checks) {
+					if (c.state == CheckState.unpaid) {
+						DoDeliverCheck(c);
+						return true;
+					}
+				}
+			}
+			catch (ConcurrentModificationException e) {
+				return false;
+			}
+
+			try {
+				for(MyCustomer c:customers){
+					if(c.s == CustomerState.doneEating) {
+						prepareCheck(c);
+						return true;
+					}
+				}
+			}
+			catch (ConcurrentModificationException e) {
+				return false;
+			}
+
+			try {
+				for (MyCustomer mc : customers) {
+					if (mc.s == CustomerState.waiting) {
+						seatCustomer(mc); 
+						return true;
+					}
+				}
+			}
+			catch (ConcurrentModificationException e) {
+				return false;
+			}
+
+			try {
+				for (MyCustomer mc : customers) {
+					if (mc.s == CustomerState.readyToOrder) {
+						TakeOrder(mc);
+						return true;
+					}
+				}
+			}
+			catch (ConcurrentModificationException e) {
+				return false;
+			}
+
+			try {
+				for (MyCustomer mc : customers) {
+					if (mc.s == CustomerState.notAvailable) {
+						TellCustomerFoodUnavailable(mc);
+						return true;
+					}
+				}
+			}
+			catch (ConcurrentModificationException e) {
+				return false;
+			}
+
+			try {
+				for (MyCustomer mc : customers) {
+					if (mc.s == CustomerState.done) {
+						waiterGui.DoLeaveCustomer();
+					}
+				}
+			}
+			catch (ConcurrentModificationException e) {
+				return false;
+			}
+
+			if (readyOrders.size() > 0) {
+				TakeFoodToCustomer();
+				return true;
+			}
+
+			if (WantBreak) {
+				for (MyCustomer mc : customers)
+				{
+					if (mc.s != CustomerState.done) {
+						pendingActions = true;
+						break;
+					}
+					else {
+						pendingActions = false;
+					}
+				}
+
+				if (!pendingActions) {
+					host.msgIWantABreak(this);
+				}
+				return true;
+			}
 		}
+
+
 
 		if(person.cityData.hour >= restPanel.CLOSINGTIME && customers.isEmpty()) {
 			LeaveRestaurant();
@@ -464,7 +455,7 @@ public class KCWaiterRole extends Role implements Waiter{
 	private void GiveOrderToCook(MyCustomer c){
 		c.s = CustomerState.orderGiven;
 		atCook.drainPermits();
-		waiterGui.DoGoToCook(-1);		
+		waiterGui.DoGoToCook(-1);                
 		try {
 			atCook.acquire();
 		} catch (InterruptedException e) {
@@ -571,7 +562,7 @@ public class KCWaiterRole extends Role implements Waiter{
 		catch(Exception e){}
 		person.exitBuilding();
 		person.msgDoneWithJob();
-		doneWithRole();	
+		doneWithRole();        
 	}
 
 	public void msgDoneLeaving() {
