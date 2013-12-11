@@ -27,10 +27,12 @@ public class SMCookRole extends Role {
 	public Request currentReq;
 	CookGui cookGui;
 	private Semaphore isMoving = new Semaphore(0,true);
+	private List<Order> pcOrders = Collections.synchronizedList(new ArrayList<Order>());
 
-	public SMCookRole(PersonAgent p) {
+	public SMCookRole(PersonAgent p, List<Order> pcO) {
 		super(p);
 		name = p.getName();
+		pcOrders = pcO;
 	}
 	
 	public void setGui(CookGui g) {
@@ -137,6 +139,16 @@ public class SMCookRole extends Role {
 				s.getStock().put(orders.get(0).getChoice(), s.getStock().get(orders.get(0).getChoice()) - 1);
 				CookOrder(orders.get(0));
 				return true;
+			}
+			synchronized (pcOrders) {
+				if (pcOrders.size() > 0) {
+					Order o = pcOrders.get(0);
+					o.orderStatus = OrderStatus.Cooking;
+					s.getStock().put(o.getChoice(), s.getStock().get(o.getChoice()) - 1);
+					CookOrder(o);
+					return true;
+				}
+				
 			}
 		}
 		return false;

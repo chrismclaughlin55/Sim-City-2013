@@ -40,7 +40,7 @@ public class TellerGui implements GuiPositions, Gui {
 			else if (yPos > yDestination)
 				yPos--;
 
-			if(xPos == xDestination && yPos == yDestination){
+			if(xPos == xDestination && yPos == yDestination && moving == true){
 					teller.msgGuiIsAtDest();
 					moving = false;
 			}
