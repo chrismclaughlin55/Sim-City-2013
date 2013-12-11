@@ -1,10 +1,14 @@
 package restaurantBK.interfaces;
 
 import java.util.HashMap;
+import java.util.List;
 
 import restaurantBK.gui.CookGui;
+import restaurantBK.Order;
 
 public interface Cook {
+	
+	//public List<Order> orders;
 
 	public abstract String getName();
 
@@ -26,5 +30,7 @@ public interface Cook {
 	public void setGui(CookGui gui);
 
 	public abstract void msgPickedUpOrder(int tableNumber);
+
+	void msgOrderIsUpdated();
 
 }
