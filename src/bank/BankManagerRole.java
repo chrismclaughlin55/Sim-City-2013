@@ -212,7 +212,7 @@ public class BankManagerRole extends Role implements BankManager {
 		leave = false;
 		bank.payPerson(bank, me, 300);
 		print("I get paid 300 for today");
-		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Leaving. I get paid 300 for today");
+		AlertLog.getInstance().logMessage(AlertTag.BANK_MANAGER, this.name, "Leaving. I get paid 300 for today. I have cash: $"+me.cash);
 		AlertLog.getInstance().logInfo(AlertTag.BANK, bank.name, "Bank is closed");
 		bank.setClosed(person);
 		person.exitBuilding();

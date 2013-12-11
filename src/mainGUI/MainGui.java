@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 
 import trace.DemoLauncher;
 import Gui.Gui;
-import bankgui.BankGui;
+import bank.gui.BankGui;
 import city.Apartment;
 import city.Building;
 import city.BusAgent;

@@ -4,8 +4,8 @@ import java.util.concurrent.Semaphore;
 
 import trace.AlertLog;
 import trace.AlertTag;
+import bank.gui.BankRobberGui;
 import bank.interfaces.DaBankRobber;
-import bankgui.BankRobberGui;
 import city.PersonAgent;
 import city.Role;
 

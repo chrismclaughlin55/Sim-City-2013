@@ -4,10 +4,10 @@ import java.util.concurrent.Semaphore;
 
 import trace.AlertLog;
 import trace.AlertTag;
+import bank.gui.BankCustomerGui;
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
-import bankgui.BankCustomerGui;
 import city.PersonAgent;
 import city.Role;
 

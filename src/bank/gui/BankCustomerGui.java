@@ -1,4 +1,4 @@
-package bankgui;
+package bank.gui;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

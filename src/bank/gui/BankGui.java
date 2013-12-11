@@ -1,4 +1,4 @@
-package bankgui;
+package bank.gui;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;

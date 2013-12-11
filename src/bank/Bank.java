@@ -9,10 +9,11 @@ import javax.swing.JFrame;
 
 import trace.AlertLog;
 import trace.AlertTag;
+import bank.gui.AnimationPanel;
+import bank.gui.BankCustomerGui;
+import bank.gui.BankGui;
+import bank.gui.TellerGui;
 import bank.utilities.CustInfo;
-import bankgui.BankCustomerGui;
-import bankgui.BankGui;
-import bankgui.TellerGui;
 import mainGUI.MainGui;
 import city.Building;
 import city.CityData;
@@ -22,7 +23,7 @@ import city.interfaces.Bus;
 
 public class Bank extends Building {
 	public Semaphore enter = new Semaphore(1, true);
-	public final static int CLOSINGTIME = 22;
+	public final static int CLOSINGTIME = 20;
 	public BankGui bankGui;
 	public BankManagerRole currentManager = null;
 	Map<PersonAgent, CustomerRole> existingCustRoles;
@@ -68,7 +69,6 @@ public class Bank extends Building {
 					AlertLog.getInstance().logInfo(AlertTag.BANK, this.name, "Bank is open for employees only");
 				}
 				else {
-					
 					existingManagerRoles.put(p, new BankManagerRole(p, this));
 					setOpen(p);
 					p.msgAssignRole(existingManagerRoles.get(p));
@@ -136,6 +136,7 @@ public class Bank extends Building {
 					currentManager.msgAddTeller(newRole);
 					newRole.msgAddManager(currentManager);
 				}
+
 				if(!printed) {
 					AlertLog.getInstance().logInfo(AlertTag.BANK, this.name, "Bank is fully employed");
 					AlertLog.getInstance().logInfo(AlertTag.BANK, this.name, "Bank is open now");
@@ -198,7 +199,6 @@ public class Bank extends Building {
 	//BUSINESS BANK ACCOUNT METHODS
 	public void addBusinessAccount(Building b, java.lang.Double startMoney){
 		BusinessAccounts.put(b, startMoney);
-		System.out.println(b.type + " added account");
 	}
 
 	public double payPerson(Building b, PersonAgent p, double amount){

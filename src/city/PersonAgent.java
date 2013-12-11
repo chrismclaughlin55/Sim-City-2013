@@ -279,7 +279,6 @@ public class PersonAgent extends Agent
     
 	/*SCHEDULER*/
 	protected boolean pickAndExecuteAnAction() {
-        
 		/*Emergency scheduler rules go here (v2)*/
 		if(emergencyState == EmergencyState.fire) {
 			ReactToFire();
@@ -737,7 +736,7 @@ public class PersonAgent extends Agent
 				car = false;
 			}
 		}
-	    GoToDestination();
+	    //GoToDestination();
 		if(once) {
 			if(busser) {
 				bus = true;
@@ -840,8 +839,11 @@ public class PersonAgent extends Agent
 		personGui.DoGoToBuilding(18);
 		currentBuilding = cityData.buildings.get(18);
 		atBuilding.drainPermits();
+		
 		try {
 			atBuilding.acquire();
+			if(currentBuilding.type == BuildingType.bank)
+			print("made it past at Building acquire");
 		} catch (InterruptedException e) {
 			//   Auto-generated catch block
 			e.printStackTrace();

@@ -1,4 +1,4 @@
-package bankgui;
+package bank.gui;
 import Gui.*;
 
 import java.awt.Color;
@@ -54,6 +54,7 @@ public class TellerGui implements GuiPositions, Gui {
 	public void draw(Graphics2D g) {
 		g.setColor(Color.red);
 		g.fillRect(xPos, yPos, 10, 10);
+
 	}
 
 
