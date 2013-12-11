@@ -102,9 +102,8 @@ public class RestaurantPanel extends JPanel {
     	}
     }
 
-    public RestaurantPanel(RestaurantGui gui, Market market) {
+    public RestaurantPanel(RestaurantGui gui) {
         this.gui = gui;
-        this.market = market;
         
         /*
         //Cashier instantiation (hack)

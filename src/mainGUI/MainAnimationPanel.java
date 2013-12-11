@@ -154,20 +154,20 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		
 		Bank b1 = new Bank(200, 420, WIDTH, HEIGHT,"bank", BuildingType.bank, mainGui, cd);
 		cd.buildings.add(b1);
-		cd.banks.add(b1);
+		cd.banks.add((Bank) b1);
 		//cd.bank.test();
 
 		Market m = new Market(340, 420, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd, 0);
 		cd.buildings.add(m);
-		cd.markets.add(m);
+		cd.markets.add((Market) m);
 		
 		Bank b2 = new Bank(20, 680, WIDTH, HEIGHT, "bank2", BuildingType.bank, mainGui, cd);
 		cd.buildings.add(b2);
-		cd.banks.add(b2);
+		cd.banks.add((Bank) b2);
 		
 		Market m2 = new Market(520, 680, WIDTH, HEIGHT, "market2", BuildingType.market, mainGui, cd, 1);
 		cd.buildings.add(m2);
-		cd.markets.add(m2);
+		cd.markets.add((Market) m2);
         
         //create bus stop for restaurants/market/bank
 		BusStopAgent bs12 = new BusStopAgent(200-20-20, 140+40+20, cd);

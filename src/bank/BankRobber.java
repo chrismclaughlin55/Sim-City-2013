@@ -4,11 +4,12 @@ import java.util.concurrent.Semaphore;
 
 import trace.AlertLog;
 import trace.AlertTag;
+import bank.interfaces.DaBankRobber;
 import bankgui.BankRobberGui;
 import city.PersonAgent;
 import city.Role;
 
-public class BankRobber extends Role {
+public class BankRobber extends Role implements DaBankRobber {
 
 	private Semaphore isMoving = new Semaphore(0, true);
 	private PersonAgent me;
@@ -26,6 +27,10 @@ public class BankRobber extends Role {
 		bank.bankGui.animationPanel.addGui(gui);
 	}
 	
+	/* (non-Javadoc)
+	 * @see bank.DaBankRobber#msgPleaseDontShoot(int)
+	 */
+	@Override
 	public void msgPleaseDontShoot(int n) {
 		me.cash += n;
 		System.err.println(me.cash);
@@ -33,10 +38,18 @@ public class BankRobber extends Role {
 		stateChanged();
 	}
 	
+	/* (non-Javadoc)
+	 * @see bank.DaBankRobber#msgDoneMoving()
+	 */
+	@Override
 	public void msgDoneMoving() {
 		isMoving.release();
 	}
 	
+	/* (non-Javadoc)
+	 * @see bank.DaBankRobber#pickAndExecuteAnAction()
+	 */
+	@Override
 	public boolean pickAndExecuteAnAction() {
 		if (robState == RobState.aboutToRob) {
 			robBank();

@@ -59,9 +59,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
      */
-    public RestaurantGui(Market market, MQRestaurantBuilding b) {
+    public RestaurantGui(MQRestaurantBuilding b) {
     	
-    	restPanel = new RestaurantPanel(this, market);
+    	restPanel = new RestaurantPanel(this);
     
 
     	building = b;

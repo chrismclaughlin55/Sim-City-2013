@@ -60,11 +60,10 @@ public class BusGui implements Gui {
 		{
 			moveOn = false;
 			released = true;
-			
 			moving = true;
 		}
 
-		if(!moving)
+		if(!moving || atStop)
 		{
 			return;
 		}
@@ -72,22 +71,21 @@ public class BusGui implements Gui {
 		if(!atStop && xPos == xDestination && yPos == yDestination) {
 			moving = false;
 			atStop = true;
+			agent.msgAcquireGrid();
 			agent.msgAtDestination();
 			return;
 		}
 
-		atStop = false;
-
 		if(readyForUpdate){
 			readyForUpdate = false;
-			if(yPos % 20 == 0 && (currGrid.direction == Direction.north || currGrid.direction == Direction.south)) {
+			if(yPos == currGrid.index2()*20 && (currGrid.direction == Direction.north || currGrid.direction == Direction.south)) {
 				moving = false;
 				agent.msgAcquireGrid(nextGrid);
 				prevGrid = currGrid;
 				currGrid = nextGrid;
 				nextGrid = cd.getNextRGrid(nextGrid);
 			}
-			else if(xPos % 20 == 0 && (currGrid.direction == Direction.east || currGrid.direction == Direction.west)) {
+			else if(xPos == currGrid.index1()*20 && (currGrid.direction == Direction.east || currGrid.direction == Direction.west)) {
 				moving = false;
 				agent.msgAcquireGrid(nextGrid);
 				prevGrid = currGrid;
@@ -246,6 +244,7 @@ public class BusGui implements Gui {
 		}
 		xDestination = x;
 		yDestination = y;
+		atStop = false;
 		moving = true;
 	}
 

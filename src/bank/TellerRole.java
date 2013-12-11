@@ -5,6 +5,7 @@ import java.util.concurrent.Semaphore;
 import trace.AlertLog;
 import trace.AlertTag;
 import bank.interfaces.BankCustomer;
+import bank.interfaces.DaBankRobber;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
 import bankgui.TellerGui;
@@ -25,7 +26,7 @@ public class TellerRole extends Role implements Teller{
 	boolean wantToLeave = false;
 	private TellerGui gui;
 	private boolean bankRobbery = false;
-	private BankRobber bankRobber;
+	private DaBankRobber bankRobber;
 	private boolean fired = false;
 
 	private Semaphore atDest = new Semaphore(0 ,true);
@@ -53,7 +54,7 @@ public class TellerRole extends Role implements Teller{
 		}
 	}
 	
-	public void msgStickEmUp(BankRobber br) {
+	public void msgStickEmUp(DaBankRobber br) {
 		bankRobbery = true;
 		bankRobber = br;
 		stateChanged();
