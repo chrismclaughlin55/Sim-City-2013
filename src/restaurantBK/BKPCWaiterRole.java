@@ -61,7 +61,7 @@ public class BKPCWaiterRole extends Role implements Waiter {
 	//private Semaphore getOrder = new Semaphore(0,true);
 	//private Semaphore 
 	public WaiterGui waiterGui = null;
-	private List<Order> orders;
+	public List<Order> orders;
 	public BKPCWaiterRole(PersonAgent person, List<Order> orders, String name, RestaurantPanel rest) {
 		super(person);
 		this.rest = rest;

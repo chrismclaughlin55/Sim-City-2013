@@ -43,7 +43,7 @@ public class BKWaiterRole extends Role implements Waiter {
 	private int restX = 30;;
 	private Cashier cashier;
 	private Host host;
-	private Cook cook;
+	public Cook cook;
 	Timer timer = new Timer();
 	public enum CustomerState {waiting,seated,readyToOrder,waitingToOrder,reorder,ordered,waitingForFood,orderIsReady,foodOnItsWay,eating,waitingForCheck,checkOrdered,checkOnItsWay,checkGiven,leaving,gone};
 	public List<myCustomer> customers	= Collections.synchronizedList(new ArrayList<myCustomer>());
