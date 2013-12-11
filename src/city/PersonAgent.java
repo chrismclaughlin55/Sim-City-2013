@@ -294,7 +294,7 @@ public class PersonAgent extends Agent
 	}
     
 	/*SCHEDULER*/
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
         
 		/*Emergency scheduler rules go here (v2)*/
 		if(emergencyState == EmergencyState.fire) {

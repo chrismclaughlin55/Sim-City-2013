@@ -145,6 +145,8 @@ public class SMCookRole extends Role {
 					Order o = pcOrders.get(0);
 					o.orderStatus = OrderStatus.Cooking;
 					s.getStock().put(o.getChoice(), s.getStock().get(o.getChoice()) - 1);
+					orders.add(o);
+					pcOrders.remove(o);
 					CookOrder(o);
 					return true;
 				}
