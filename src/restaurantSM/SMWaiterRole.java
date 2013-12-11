@@ -39,6 +39,8 @@ public class SMWaiterRole extends Role implements Waiter {
 	Timer timer = new Timer();
 	Bill b;
 	private List<Bill> bills = Collections.synchronizedList(new ArrayList<Bill>());
+	private boolean pcWaiter;
+	private List<Order> pcOrders = Collections.synchronizedList(new ArrayList<Order>());
 	
 	public void setCook(SMCookRole c) {
 		cook = c;
@@ -48,9 +50,10 @@ public class SMWaiterRole extends Role implements Waiter {
 		return custList.size();
 	}
 
-	public SMWaiterRole(PersonAgent p) {
+	public SMWaiterRole(PersonAgent p, boolean b, List<Order> pcO) {
 		super(p);
-
+		pcWaiter = b;
+		pcOrders = pcO;
 		name = p.getName();
 		// make some tables
 	
@@ -330,7 +333,12 @@ public class SMWaiterRole extends Role implements Waiter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		cook.msgHeresAnOrder(myCust.getOrder());
+		if (pcWaiter) {
+			pcOrders.add(myCust.getOrder());
+		}
+		else {
+			cook.msgHeresAnOrder(myCust.getOrder());
+		}
 	}
 	
 	private void ClearTable(MyCustomer myCust){
