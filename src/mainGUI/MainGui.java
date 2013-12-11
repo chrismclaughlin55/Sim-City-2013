@@ -55,7 +55,7 @@ public class MainGui extends JFrame implements MouseListener {
     private int landlord = 0;
     private CityData cityData;
     //public RestaurantGui restaurantGuis[] = {null, null, null, null, null, null};
-    public BankGui bankGui;
+    //public BankGui bankGui;
     //public BusStopGui busStopGui will have a list of these and add them all 
     
     public static DemoLauncher dl = new DemoLauncher();
@@ -113,10 +113,10 @@ public class MainGui extends JFrame implements MouseListener {
         	restaurantGuis[i].setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }*/
         
-        bankGui.setTitle("Bank");
+        /*bankGui.setTitle("Bank");
         bankGui.setVisible(false);
         bankGui.setResizable(false);
-        bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);*/
            	
         try {
     		scan = new Scanner( new File ("src/config/config.txt"));
