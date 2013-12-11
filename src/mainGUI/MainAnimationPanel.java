@@ -113,11 +113,17 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 
 
 		//create restaurants
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 
 			Building b = new SMRestaurantBuilding(200+i*140, 140, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
 			cd.buildings.add(b);
 			cd.restaurants.add((SMRestaurantBuilding) b);
+		}
+		
+		for(int i = 1; i < 2; ++i) {
+			Building b = new MQRestaurantBuilding(200+i*140, 140, WIDTH, HEIGHT, "", BuildingType.restaurant, mainGui, cd);
+			cd.buildings.add(b);
+			cd.restaurants.add((MQRestaurantBuilding) b);
 		}
 
 		for (int i = 0; i < 1; i++) {

@@ -107,6 +107,7 @@ public class PersonGui implements Gui{
 				moving = false;
 				getInOrOutCar();
 				agent.msgAtDestination();
+				agent.driving = false;
 				return;
 			}
 			

@@ -14,7 +14,7 @@ bankMoney 1500
 job Landlord
 hunger 10
 inventory 10
-transportation bus
+transportation car
 
 NewPerson
 name Landy2
@@ -32,7 +32,7 @@ bankMoney 3500
 job Landlord
 hunger 10
 inventory 7
-transportation bus
+transportation car
 
 NewPerson
 name Landy4
@@ -80,11 +80,146 @@ inventory 7
 transportation bus
 
 NewPerson
+name Cashier1
+cash 100
+bankMoney 500
+job Cashier
+hunger 10
+inventory 3
+transportation bus
+
+NewPerson
+name Cook1
+cash 100
+bankMoney 500
+job Cook
+hunger 0
+inventory 7
+transportation bus
+
+NewPerson
+name Cashier2
+cash 100
+bankMoney 500
+job Cashier
+hunger 10
+inventory 3
+transportation bus
+
+NewPerson
+name Cook2
+cash 100
+bankMoney 500
+job Cook
+hunger 0
+inventory 7
+transportation bus
+
+NewPerson
+name Cashier3
+cash 100
+bankMoney 500
+job Cashier
+hunger 10
+inventory 3
+transportation bus
+
+NewPerson
+name Cook3
+cash 100
+bankMoney 500
+job Cook
+hunger 0
+inventory 7
+transportation bus
+
+NewPerson
+name Cashier4
+cash 100
+bankMoney 500
+job Cashier
+hunger 10
+inventory 3
+transportation bus
+
+NewPerson
+name Cook4
+cash 100
+bankMoney 500
+job Cook
+hunger 0
+inventory 7
+transportation bus
+
+NewPerson
+name Cashier5
+cash 100
+bankMoney 500
+job Cashier
+hunger 10
+inventory 3
+transportation bus
+
+NewPerson
+name Cook5
+cash 100
+bankMoney 500
+job Cook
+hunger 0
+inventory 7
+transportation bus
+
+NewPerson
 name Host0
 cash 100
 bankMoney 500
 job Host
 hunger 0
+inventory 2
+transportation bus
+
+NewPerson
+name Host1
+cash 100
+bankMoney 500
+job Host
+hunger 10
+inventory 2
+transportation car
+
+NewPerson
+name Host2
+cash 100
+bankMoney 500
+job Host
+hunger 10
+inventory 2
+transportation bus
+
+NewPerson
+name Host3
+cash 100
+bankMoney 500
+job Host
+hunger 10
+inventory 2
+transportation car
+
+NewPerson
+name Host4
+cash 100
+bankMoney 500
+job Host
+hunger 10
+inventory 2
+transportation bus
+
+NewPerson
+name Host5
+cash 100
+bankMoney 500
+job Host
+hunger 10
 inventory 2
 transportation bus
 
@@ -99,6 +234,69 @@ transportation walk
 
 NewPerson
 name Waiter1
+cash 100
+bankMoney 500
+job Waiter
+hunger 10
+inventory 10
+transportation bus
+
+NewPerson
+name Waiter2
+cash 100
+bankMoney 500
+job Waiter
+hunger 10
+inventory 10
+transportation bus
+
+NewPerson
+name Waiter3
+cash 100
+bankMoney 500
+job Waiter
+hunger 10
+inventory 10
+transportation bus
+
+NewPerson
+name Waiter4
+cash 100
+bankMoney 500
+job Waiter
+hunger 10
+inventory 10
+transportation bus
+
+NewPerson
+name Waiter5
+cash 100
+bankMoney 500
+job Waiter
+hunger 10
+inventory 10
+transportation bus
+
+NewPerson
+name Waiter6
+cash 100
+bankMoney 500
+job Waiter
+hunger 10
+inventory 10
+transportation bus
+
+NewPerson
+name Waiter7
+cash 100
+bankMoney 500
+job Waiter
+hunger 10
+inventory 10
+transportation bus
+
+NewPerson
+name Waiter8
 cash 100
 bankMoney 500
 job Waiter
@@ -149,7 +347,7 @@ bankMoney 1000
 job Unemployed
 hunger 0
 inventory 10
-transportation bus
+transportation car
 
 NewPerson
 name MarketManager0
@@ -162,6 +360,24 @@ transportation bus
 
 NewPerson
 name MarketEmployee0
+cash 100
+bankMoney 500
+job MarketEmployee
+hunger 4
+inventory 10
+transportation bus
+
+NewPerson
+name MarketManager1
+cash 100
+bankMoney 500
+job MarketManager
+hunger 10
+inventory 100
+transportation bus
+
+NewPerson
+name MarketEmployee1
 cash 100
 bankMoney 500
 job MarketEmployee

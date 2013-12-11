@@ -660,16 +660,15 @@ public class PersonAgent extends Agent
             
 			while (true)
 			{
-				restNumber = 2;
-				//restNumber = (int)(12+(int)(Math.random()*6));
-				if(restNumber >= 17)
+				restNumber = (int)(Math.random()*7);
+				if(restNumber >= 6)
 				{
 					bigState = BigState.goHome;
 					return;
 				}
 
 
-				else if(((KCRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+				else if((cityData.restaurants.get(restNumber)).isOpen())
 
 					break;
 			}
@@ -677,9 +676,7 @@ public class PersonAgent extends Agent
 		}
 		else
 		{
-			//destinationBuilding = jobBuilding;
-			restNumber = 0;
-			destinationBuilding = cityData.restaurants.get(restNumber);
+			destinationBuilding = jobBuilding;
 		}
         
 		if(destinationBuilding != currentBuilding)
@@ -694,11 +691,10 @@ public class PersonAgent extends Agent
 				//   Auto-generated catch block
 				e.printStackTrace();
 			}
-			currentBuilding = cityData.restaurants.get(restNumber);
+			currentBuilding = destinationBuilding;
 		}
 
-		SMRestaurantBuilding restaurant = (SMRestaurantBuilding)destinationBuilding;
-
+		Building restaurant = destinationBuilding;
 
 		if(goToWork && !desiredRole.equals("Customer"))
 		{
@@ -985,11 +981,14 @@ public class PersonAgent extends Agent
 				catch(Exception e){}
 			}
 			//remember to release current and previous grids
+			currRGrid.releaseGrid();
+			prevRGrid.releaseGrid();
+			gridToAcquire.releaseGrid();
 			
 			
 			//WALKT TO THE BUILDING NOW
 			
-			currRGrid = currentBuilding.closest;
+			/*currRGrid = currentBuilding.closest;
 			//personGui.;
 			driving = true;
 			while(driving) {
@@ -1009,7 +1008,7 @@ public class PersonAgent extends Agent
 				}
 				catch(Exception e){}
 				driving = false;
-			}	
+			}*/	
 			//personGui
 			//have similar mechanisms to busgridbehavior
 			//if person's rgrid is destination.closestRgrid, then, walk to building
