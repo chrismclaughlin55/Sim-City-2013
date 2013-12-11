@@ -321,6 +321,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			leaving.acquire();
 		}
 		catch(Exception e){}
+		person.msgFull();
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();

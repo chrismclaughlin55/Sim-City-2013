@@ -1,23 +1,16 @@
 package restaurantCM;
 
 import agent.Agent;
-<<<<<<< HEAD
-import restaurantCM.myCust.*;
-=======
 import bank.Bank;
 import restaurantCM.myCust.*;
 import restaurantCM.gui.CMRestaurantBuilding;
->>>>>>> 8d4fc1ee83f9c4f8061835382413c46a8e109eda
 import restaurantCM.gui.CMWaiterGui;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
-<<<<<<< HEAD
-=======
 import com.sun.org.apache.xerces.internal.impl.xs.models.CMBuilder;
 
->>>>>>> 8d4fc1ee83f9c4f8061835382413c46a8e109eda
 import city.PersonAgent;
 import city.Role;
 import city.PersonAgent.BigState;

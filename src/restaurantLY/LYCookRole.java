@@ -183,6 +183,7 @@ public class LYCookRole extends Role implements Cook {
         try {
             left.acquire();
         } catch(Exception e){}
+        person.msgFull();
         person.exitBuilding();
         person.msgFull();
         person.msgDoneWithJob();

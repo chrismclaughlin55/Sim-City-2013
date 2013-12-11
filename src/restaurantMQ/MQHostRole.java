@@ -304,6 +304,7 @@ public class MQHostRole extends Role implements Host
 	private void LeaveRestaurant() {
 		System.out.println("host leaving");
 		AlertLog.getInstance().logMessage(AlertTag.RESTAURANTMQ_HOST, this.getName(), "Leaving the restaurant");
+		AlertLog.getInstance().logInfo(AlertTag.RESTAURANTMQ, this.restPanel.gui.building.name, "Restaurant is closed");
 		restPanel.hostLeaving();
 		person.msgDoneWithJob();
 		person.exitBuilding();
