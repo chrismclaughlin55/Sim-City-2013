@@ -381,8 +381,8 @@ public class PersonGui implements Gui{
 			agent.crossingRoad = true;
 			agent.currRGrid = (RGrid) agent.currGrid;
 			agent.nextRGrid = (RGrid) cd.getNextRGrid(agent.currGrid,d);
-			System.out.println(agent.currRGrid.index1()*20);
-			System.out.println(agent.currRGrid.index2()*20);
+			//System.out.println(agent.currRGrid.index1()*20);
+			//fSystem.out.println(agent.currRGrid.index2()*20);
 			//THIS IS JUST A REGULAR GRID agent.nextRGrid =  cd.getNextRGrid(agent.currRGrid,d);
 			agent.msgDoneGridding();
 		}

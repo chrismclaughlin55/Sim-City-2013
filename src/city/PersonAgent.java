@@ -48,6 +48,7 @@ public class PersonAgent extends Agent
 	public int tiredLevel = 16;
 	public double cash = 100;
 	public CustInfo bankInfo;
+	public boolean driving = false;
 	public boolean rentDue = true;
 	public int criminalImpulse = 0;
 	public int hungerLevel = 0;
@@ -75,6 +76,7 @@ public class PersonAgent extends Agent
 	public boolean car;
 	public boolean bus;
 	public boolean walk;
+	public boolean once = true;
 
 	public Grid currGrid;
 	public RGrid currRGrid;
@@ -83,7 +85,6 @@ public class PersonAgent extends Agent
 	public RGrid gridToAcquire = null;
 	
 	public boolean walking = false;
-	public boolean driving = false;
 	public boolean atDestination = false;
 
 
@@ -107,6 +108,7 @@ public class PersonAgent extends Agent
 	private Semaphore atBed = new Semaphore(0, true);
 	private Semaphore atEntrance = new Semaphore(0, true);
 	private Semaphore gridding = new Semaphore(0, true);
+	private Semaphore carring = new Semaphore(0, true);
     
 	/*CONSTRUCTORS*/
 	public PersonAgent(String name) {
@@ -658,7 +660,7 @@ public class PersonAgent extends Agent
             
 			while (true)
 			{
-				restNumber = 4;
+				restNumber = 2;
 				//restNumber = (int)(12+(int)(Math.random()*6));
 				if(restNumber >= 17)
 				{
@@ -667,7 +669,7 @@ public class PersonAgent extends Agent
 				}
 
 
-				else if(((CMRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
+				else if(((KCRestaurantBuilding)cityData.restaurants.get(restNumber)).isOpen())
 
 					break;
 			}
@@ -676,7 +678,7 @@ public class PersonAgent extends Agent
 		else
 		{
 			//destinationBuilding = jobBuilding;
-			restNumber = 4;
+			restNumber = 0;
 			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
         
@@ -695,7 +697,7 @@ public class PersonAgent extends Agent
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
 
-		CMRestaurantBuilding restaurant = (CMRestaurantBuilding)destinationBuilding;
+		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)destinationBuilding;
 
 
 		if(goToWork && !desiredRole.equals("Customer"))
@@ -735,6 +737,34 @@ public class PersonAgent extends Agent
 	protected void goHome() {
 		//int homeNumber = (int)((int)(Math.random()*11));
 		destinationBuilding = cityData.buildings.get(this.home.buildingNumber);
+		boolean busser = false;
+		boolean driver = false;
+		
+		if(once) {
+			if(bus==true) {
+				busser = true;
+			}
+			if(car==true) {
+				driver = true;
+			}
+			if(bus||car) {
+				walk = true;
+				bus = false;
+				car = false;
+			}
+		}
+	    GoToDestination();
+		if(once) {
+			if(busser) {
+				bus = true;
+				walk=false;
+			}
+			if(driver) {
+				car = true;
+				walk = false;
+			}
+		}
+		once = false;
 		personGui.DoGoToBuilding(this.home.buildingNumber); // 11 need to be replaced by the person's data of home number
 		try {
 			atBuilding.acquire();
@@ -889,7 +919,7 @@ public class PersonAgent extends Agent
 					}
 					catch(Exception e) {}
 					currRGrid.occupied.release();
-					//System.out.println("1");
+					//System.out.println("1");	
 					nextRGrid.occupied.release();
 					//System.out.println("0");
 					//ACQUIRE CURRENT AND NEXT
@@ -908,7 +938,7 @@ public class PersonAgent extends Agent
 	//				//personGui.MoveToNextGrid;
 	//				}
 					//print("hello");
-					//CURRGRID IS NOT BEING UPDATED PROPERLY
+
 					personGui.MoveToNextGrid(currGrid);
 					try
 					{
@@ -959,6 +989,27 @@ public class PersonAgent extends Agent
 			
 			//WALKT TO THE BUILDING NOW
 			
+			currRGrid = currentBuilding.closest;
+			//personGui.;
+			driving = true;
+			while(driving) {
+				try
+				{
+					//.acquire();
+				}
+				catch(Exception e){}
+				
+				personGui.getInOrOutCar();
+				//personGui.DriveToClosestRGrid(destinationBuilding); **** have similar mechanisms to busgridbehavior
+				//if person's rgrid is destination.closestRgrid, then, walk to building
+				
+				try
+				{
+					isMoving.acquire();
+				}
+				catch(Exception e){}
+				driving = false;
+			}	
 			//personGui
 			//have similar mechanisms to busgridbehavior
 			//if person's rgrid is destination.closestRgrid, then, walk to building
