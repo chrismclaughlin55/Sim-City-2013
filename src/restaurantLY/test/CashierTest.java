@@ -47,7 +47,7 @@ public class CashierTest extends TestCase {
             market2 = new MockMarket("MockMarket");
     }
     
-    public void testOneMarketScenario() {
+    /*public void testOneMarketScenario() {
     	System.out.print("TEST PAY ONE MARKET SCENARIO\n");
     	
 		//setUp() runs first before this test!
@@ -150,7 +150,7 @@ public class CashierTest extends TestCase {
 		//step 4
 		assertFalse("Cashier's scheduler should have returned false (no actions left to do), but didn't.", 
 		                cashier.pickAndExecuteAnAction());
-	}
+	}*/
 	
 	public void testOneNormalCustomerScenario() {
 		System.out.print("TEST ONE CUSTOMER NORMAL SCENARIO\n");
@@ -377,7 +377,7 @@ public class CashierTest extends TestCase {
                         cashier.pickAndExecuteAnAction());
 	}
 	
-	public void testOneMarketAndMultipleCustomersScenario () {
+	/*public void testOneMarketAndMultipleCustomersScenario () {
 		System.out.print("TEST BOTH PAY MARKET AND RECEIVE CUSTOMERS'S PAYMENT SCENARIO\n");
 		
 		//setUp() runs first before this test!
@@ -485,5 +485,5 @@ public class CashierTest extends TestCase {
 		//step 8
         assertFalse("Cashier's scheduler should have returned false (no actions left to do), but didn't.", 
                         cashier.pickAndExecuteAnAction());
-	}
+	}*/
 }

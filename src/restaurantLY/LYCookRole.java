@@ -21,7 +21,7 @@ import market.Market;
 public class LYCookRole extends Role implements Cook {
 	private String name;
 	
-	private List<Order> orders = Collections.synchronizedList(new ArrayList<Order>());
+	public List<Order> orders = Collections.synchronizedList(new ArrayList<Order>());
 	//private List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
     private Market market;
 	private Map<String, Amount> inventory = Collections.synchronizedMap(new TreeMap<String, Amount>());
@@ -315,7 +315,7 @@ public class LYCookRole extends Role implements Cook {
 		}
 	}
 	
-	private class Order {
+	public class Order {
 		Waiter waiter;
 		int tableNumber;
 		String choice;
