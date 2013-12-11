@@ -21,6 +21,7 @@ import bank.interfaces.BankManager;
 import bank.utilities.CustInfo;
 import city.PersonAgent;
 import city.Role;
+import city.PersonAgent.BigState;
 
 public class BankManagerRole extends Role implements BankManager {
 	Writer writer;
@@ -50,14 +51,7 @@ public class BankManagerRole extends Role implements BankManager {
 		this.name = person.getName();
 		this.me = person;
 		this.bank = bank;
-		File file = new File("tellerstate.txt");
-		try {
-			file.createNewFile();
-			writer = new FileWriter(file);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 
 
 	}
@@ -181,6 +175,7 @@ public class BankManagerRole extends Role implements BankManager {
 	//ACTIONS
 	private void leave() {
 		tellers.clear();
+		person.bigState = BigState.goHome;
 		myTeller fakeTeller = new myTeller(null);
 		if(person.bankInfo.depositAmount < 0){
 			if(person.bankInfo.depositAmount + person.bankInfo.moneyInAccount < 0){

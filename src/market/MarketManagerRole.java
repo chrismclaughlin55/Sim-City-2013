@@ -10,17 +10,16 @@ import market.gui.ManagerGui;
 import market.interfaces.MarketCustomer;
 import market.interfaces.MarketEmployee;
 import market.interfaces.MarketManager;
-import restaurantMQ.MQCookRole;
-import restaurantMQ.MarketOrder;
-import restaurantMQ.interfaces.Cashier;
-import restaurantMQ.test.mock.EventLog;
-import restaurantMQ.test.mock.LoggedEvent;
+import restaurantKC.KCCashierRole;
+import restaurantKC.KCCookRole;
+import restaurantKC.test.mock.EventLog;
+import restaurantKC.test.mock.LoggedEvent;
 import trace.AlertLog;
 import trace.AlertTag;
 import bank.BankManagerRole;
+import city.DeliveryDrone;
 import city.PersonAgent;
 import city.Role;
-import city.TestPerson;
 
 public class MarketManagerRole extends Role implements MarketManager{
 	public enum ManagerState {nothing, entering, setting, managing, working, leaving};
@@ -29,7 +28,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 	boolean endOfDay = false;
 	int bankAccountNum;
 	BankManagerRole bankManager;
-	Inventory inventory;
+	Inventory inventory = null;
 	Market market = null;
 	private ManagerGui gui = null;
 
@@ -39,6 +38,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 	public List<MyEmployee> waitingEmployees = Collections.synchronizedList(new ArrayList<MyEmployee>());
 	public List<MyEmployee> workingEmployees = Collections.synchronizedList(new ArrayList<MyEmployee>());
 	private List<MyCookCustomer> waitingCookCustomers = Collections.synchronizedList(new ArrayList<MyCookCustomer>());
+	public List<Invoice> invoice = Collections.synchronizedList(new ArrayList<Invoice>());
 
 	private Semaphore atHome = new Semaphore(0, true);
 	private Semaphore leaving = new Semaphore(0, true);
@@ -54,15 +54,18 @@ public class MarketManagerRole extends Role implements MarketManager{
 		}
 	}
 
+	public enum CookCustState {pending, delivering, done};
 	public class MyCookCustomer {
-		public MQCookRole cook;
-		public Cashier cashier;
-		public List<MarketOrder> order;
+		public KCCookRole cook;
+		public KCCashierRole cashier;
+		public List<CookMarketOrder> orders;
+		public CookCustState state;
 
-		public MyCookCustomer(MQCookRole cook, List<MarketOrder> order, Cashier cashier) {
+		public MyCookCustomer(KCCookRole cook, List<CookMarketOrder> orders, KCCashierRole cashier) {
 			this.cook = cook;
-			this.order = order;
+			this.orders = orders;
 			this.cashier = cashier;
+			state = CookCustState.pending;
 		}
 	}
 
@@ -93,9 +96,8 @@ public class MarketManagerRole extends Role implements MarketManager{
 		stateChanged();
 	}
 
-	public void msgNeedToOrder(MQCookRole cook, List<MarketOrder> marketOrders, Cashier cashier) {
-		print("Received msgNeedToOrder from cook");
-		waitingCookCustomers.add(new MyCookCustomer(cook, marketOrders, cashier));
+	public void msgHereIsMarketOrder(KCCookRole cook, KCCashierRole cashier, List<CookMarketOrder>ordersToSend) {
+		waitingCookCustomers.add(new MyCookCustomer(cook, ordersToSend, cashier));
 		stateChanged();
 	}
 
@@ -108,12 +110,17 @@ public class MarketManagerRole extends Role implements MarketManager{
 			}
 		}
 		workingEmployees.remove(employee);
-		print ("NUMBER OF WORKING EMPLOYEES" + workingEmployees.size());
+		stateChanged();
+	}
+	
+	public void msgHereIsPayment(double money) {
+		print ("Received msgHereIsMoney");
+		undepositedMoney += money;
 		stateChanged();
 	}
 
 	public void msgHereIsMoney(double money, MarketEmployee employee) {
-		print ("Received msgHereIsMoney");
+		System.err.println ("RECEIVED HERE IS MONEY");
 		undepositedMoney += money;
 		for (MyEmployee e : workingEmployees){
 			if (e.employee.equals(employee)) {
@@ -136,11 +143,6 @@ public class MarketManagerRole extends Role implements MarketManager{
 			market.setClosed(person);
 			return true;
 		}
-
-		/*if(person.cityData.hour >= market.CLOSINGTIME && !market.isOpen()) {
-			print ("NUMBER OF EMPLOYEES " + workingEmployees.size());
-			return true;
-		}*/
 
 		if(person.cityData.hour >= market.CLOSINGTIME && !market.isOpen() && workingEmployees.isEmpty())
 		{
@@ -206,13 +208,15 @@ public class MarketManagerRole extends Role implements MarketManager{
 			}
 		}
 		if (!waitingCookCustomers.isEmpty()) {
-			for (MyEmployee e : workingEmployees) {
-				if (!e.isBusy) {
-					e.isBusy = true;
-					e.employee.msgServiceCookCustomer(waitingCookCustomers.get(0));
-					waitingCustomers.remove(0);
-					return true;
-				}
+			DeliverRestaurantOrder();
+			waitingCookCustomers.clear();
+			return true;
+		}
+		
+		for(Iterator<MyCookCustomer> iter = waitingCookCustomers.iterator(); iter.hasNext(); ) {
+			MyCookCustomer c = iter.next();
+			if(c.state == CookCustState.delivering) {
+				iter.remove();
 			}
 		}
 
@@ -223,14 +227,69 @@ public class MarketManagerRole extends Role implements MarketManager{
 		return false;
 	}
 
+	private void DeliverRestaurantOrder() {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "Fulfilling restaurant's order");
+		int amountDue = 0; 
+		synchronized (waitingCookCustomers) {
+			for (MyCookCustomer c : waitingCookCustomers )	{
+				if (c.state == CookCustState.pending) {
+					for (CookMarketOrder o : c.orders) {
+						if(o.amount <= inventory.inventory.get(o.type).amount) {
+							inventory.inventory.get(o.type).amount -= o.amount;
+							inventory.update();
+							double price = o.amount * inventory.inventory.get(o.type).price;
+							Invoice i = new Invoice(o.type, o.amount, price*o.amount);
+							invoice.add(i);
+							amountDue += price;
+						}
+					}
+					
+					DeliveryDrone d = new DeliveryDrone(invoice, person.cityData, 200, 260, c.cook);
+					c.cashier.msgHereIsMarketBill(amountDue, invoice, this);
+					c.state = CookCustState.delivering;
+					
+				}
+			}
+		}
+		
+		
+	}
+
+	/*public void FulfillCookOrder(MyCookCustomer c) {
+		AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "Fulfilling restaurant's order");
+		amountDue = 0;
+		for (final restaurantMQ.MarketOrder o : c.order) {
+			if(o.amount <= inventory.inventory.get(o.name).amount) {
+				inventory.inventory.get(o.name).amount -= o.amount;
+				inventory.update();
+				final double price = o.amount * inventory.inventory.get(o.name).price;
+				timer.schedule(new TimerTask() {
+					public void run() {  
+						Invoice i = new Invoice(o.name, o.amount, price*o.amount);
+						invoice.add(i);
+						amountDue += price;
+						if (invoice.size() == currentMarketOrders.size())
+							msgDoneProcessingCookOrder();
+
+					}},
+					500);//how long to wait before running task
+			}
+			else {
+				Invoice i = new Invoice(o.name, 0, 0);
+				invoice.add(i);
+			}
+		}
+	}*/
+
 	private void LeaveRestaurant() {
-		System.out.println("manager leaving");
+		System.out.println("Manager leaving");
 		AlertLog.getInstance().logMessage(AlertTag.MARKET_MANAGER, this.getName(), "Leaving the market");
 		gui.DoLeaveMarket();
 		try{
 			leaving.acquire();
 		}
 		catch(Exception e){}
+		person.msgFull();
 		person.msgDoneWithJob();
 		person.exitBuilding();
 		doneWithRole();
@@ -257,6 +316,8 @@ public class MarketManagerRole extends Role implements MarketManager{
 		leaving.release();
 		stateChanged();
 	}
+
+
 
 
 }

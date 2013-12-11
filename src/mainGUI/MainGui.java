@@ -58,7 +58,7 @@ public class MainGui extends JFrame implements MouseListener {
     public BankGui bankGui;
     //public BusStopGui busStopGui will have a list of these and add them all 
     
-    static DemoLauncher dl = new DemoLauncher();
+    public static DemoLauncher dl = new DemoLauncher();
     
     /**
      * Constructor for RestaurantGui class.

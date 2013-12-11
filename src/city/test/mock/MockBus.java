@@ -7,6 +7,7 @@ import city.PersonAgent;
 import city.RGrid;
 import city.interfaces.Bus;
 
+
 public class MockBus implements Bus {
 
 	@Override
@@ -52,3 +53,4 @@ public class MockBus implements Bus {
 	}
 
 }
+

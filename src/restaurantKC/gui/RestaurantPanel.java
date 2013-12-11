@@ -17,12 +17,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import market.Market;
 import restaurantKC.KCCashierRole;
 import restaurantKC.KCCookRole;
 import restaurantKC.KCCustomerRole;
 import restaurantKC.KCHostRole;
 import restaurantKC.KCWaiterRole;
-import restaurantKC.MarketAgent;
 import restaurantKC.pcCookOrder;
 import restaurantKC.interfaces.Cashier;
 import restaurantKC.interfaces.Cook;
@@ -42,14 +42,16 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 
 
 	boolean isPaused = false;
-	private RestaurantGui gui; //reference to main gui
+	public RestaurantGui gui; //reference to main gui
 
 
 	private List<pcCookOrder> cookOrders = Collections.synchronizedList(new ArrayList<pcCookOrder>());
 
-	private Cook cook = null; 
-	private Host host = null; 
-	private Cashier cashier = null;
+	public Cook cook = null; 
+	public Host host = null; 
+	public Cashier cashier = null;
+
+	public Waiter w = null;
 
 	/*private Cook cook = new KCCookRole("Sarah", cookOrders, null); 
 	private CookGui cookGui = new CookGui(cook);
@@ -58,9 +60,9 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 	/*private MarketAgent market1 = new MarketAgent("Market 1", 2, 10, 10, 10, cook, cashier);
 	private MarketAgent market2 = new MarketAgent("Market 2", 0, 0, 0, 0, cook, cashier);
 	private MarketAgent market3 = new MarketAgent("Market 3", 7, 15, 21, 11, cook, cashier);*/
-	private List<Customer> customers = Collections.synchronizedList(new ArrayList<Customer>());
-	private List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
-	private List<MarketAgent> markets = new ArrayList<MarketAgent>();
+	public List<Customer> customers = Collections.synchronizedList(new ArrayList<Customer>());
+	public List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
+	private List<Market> markets = new ArrayList<Market>();
 
 	int custnum = -1;
 	private JPanel restLabel = new JPanel();
@@ -97,12 +99,6 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 		//cook.startThread();
 
 		cashier.startThread();*/
-
-
-
-		for (MarketAgent m : markets) {
-			m.startThread();
-		}
 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		group.setLayout(new BoxLayout(group, BoxLayout.Y_AXIS));
@@ -237,14 +233,19 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 		//((KCHostRole)host).setCooks(cooks);
 
 		//update other agents
-		synchronized(waiters)
-		{
-			for(Waiter w : waiters)
-			{
+		synchronized(waiters) {
+			for(Waiter w : waiters) {
 				((KCHostRole)host).msgWaiterReporting(w);;
 				((KCWaiterRole)w).setHost(host);
 			}
 		}
+
+		synchronized(customers) {
+			for(Customer c : customers) {
+				((KCCustomerRole)c).setHost(host);
+			}
+		}
+		
 		person.msgAssignRole((KCHostRole)host);
 	}
 
@@ -258,8 +259,9 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 		c.setGui(g);
 		c.setHost(host);
 		c.setCashier(cashier);
-		markHungry(person.getName());
 		person.msgAssignRole((KCCustomerRole)c);
+		markHungry(person.getName());
+
 		//c.msgGotHungry();
 		//person.startThread(); //Hack. PersonAgent's thread should already be going
 	}
@@ -270,7 +272,7 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 	public void addWaiter(PersonAgent person)
 	{
 		System.out.println ("Adding Waiter");
-		Waiter w = new KCWaiterRole(cookOrders, person, this);	
+		w = new KCWaiterRole(cookOrders, person, this);	
 		waiters.add(w);
 		int waiterNum = waiters.indexOf(w);
 		WaiterGui g = new WaiterGui(w, this, waiterNum);
@@ -282,8 +284,6 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 		g.setAnimationPanel(gui.animationPanel);
 		gui.animationPanel.addGui(g);
 
-		//w.startThread();
-		//Start the thread
 
 		person.msgAssignRole((KCWaiterRole)w);
 	}

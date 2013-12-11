@@ -68,7 +68,7 @@ public class Bank extends Building {
 					AlertLog.getInstance().logInfo(AlertTag.BANK, this.name, "Bank is open for employees only");
 				}
 				else {
-
+					
 					existingManagerRoles.put(p, new BankManagerRole(p, this));
 					setOpen(p);
 					p.msgAssignRole(existingManagerRoles.get(p));

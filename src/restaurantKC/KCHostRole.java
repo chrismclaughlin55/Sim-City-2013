@@ -58,8 +58,8 @@ public class KCHostRole extends Role implements Host {
 		super(p);
 		this.name = p.getName();
 		tables = new ArrayList<Table>(NTABLES);
-		for (int ix = 1; ix <= NTABLES; ix++) {
-			tables.add(new Table(ix));//how you add to a collections
+		for (int ix = 1; ix < NTABLES; ix++) {
+			tables.add(new Table(ix));
 		}
 		this.restPanel = restPanel;
 	}
@@ -79,16 +79,18 @@ public class KCHostRole extends Role implements Host {
 	// Messages
 
 	public void msgIWantFood(Customer cust) {
+		System.err.println("received message I want food");
 		waitingCustomers.add(cust);
 		stateChanged();
 	}
 
 	public void msgWaiterReporting(Waiter w) {
+		System.err.println("received message waiter reporting");
+
 		waiters.add((new MyWaiter(w, 0)));
 		stateChanged();
 	}
 	public void msgTableIsFree(int table) {
-		print ("Received msgTableIsFree");
 		for (Table tbl : tables) {
 			if (tbl.tableNumber == table) {
 				tbl.setUnoccupied();
@@ -102,8 +104,6 @@ public class KCHostRole extends Role implements Host {
 		if (waiters.size() > 1) {
 			for (MyWaiter mw : waiters) {
 				if (mw.waiter.equals(w)){
-					//mw.onBreak = true;
-					//mw.waiter.msgBreakApproved();
 					mw.breakApproved  = true;
 					stateChanged();
 					break;
@@ -141,7 +141,6 @@ public class KCHostRole extends Role implements Host {
 		}
 	}
 
-	// removes customer when customer chooses to leave early
 	public void msgLeaving(Customer c) {
 		if (!alreadySeated) {
 			waitingCustomers.remove(c);
@@ -149,7 +148,6 @@ public class KCHostRole extends Role implements Host {
 		}
 	}
 
-	//message from Gui once customer has been seated
 	public void msgCustomerSeated() {
 		seatCustomer.release();
 	}
@@ -172,6 +170,8 @@ public class KCHostRole extends Role implements Host {
 
 		synchronized(waitingCustomers) {
 			synchronized(waiters) {
+				System.err.println("HERE 1");
+
 				if (!waiters.isEmpty())
 				{
 					for (MyWaiter m : waiters) {
@@ -188,6 +188,8 @@ public class KCHostRole extends Role implements Host {
 					for (Table table : tables) {
 						if (!table.isOccupied()) {
 							if (waitingCustomers.size() > 0) {
+								System.err.println("HERE 2");
+
 								synchronized(waitingCustomers){
 									int i = 0;
 									for (MyWaiter m : waiters) {
@@ -210,15 +212,18 @@ public class KCHostRole extends Role implements Host {
 										}
 										waiters.get(WaiterWithMinTables).numTables++;
 									}
+									System.err.println("HERE 3");
+
 									if (waitingCustomers.size() > 0) {
+										System.err.println("HERE 4");
+
 										alreadySeated = true;
-										if (waitingCustomers.contains(waitingCustomers.get(0))) {
-											tellWaiterToSeatCustomer(waitingCustomers.get(0), table, waiters.get(WaiterWithMinTables).waiter);
-										}
+										
+										tellWaiterToSeatCustomer(waitingCustomers.get(0), table, waiters.get(WaiterWithMinTables).waiter);
+										
 										try {
 											seatCustomer.acquire();
 										} catch (InterruptedException e) {
-											// TODO Auto-generated catch block
 											e.printStackTrace();
 										}
 										return true;
@@ -237,6 +242,7 @@ public class KCHostRole extends Role implements Host {
 	// Actions
 
 	private void tellWaiterToSeatCustomer(Customer customer, Table table, Waiter waiter) {
+		System.err.println("TELLING WAITER TO SEAT CUSTOMER");
 		waiter.msgSitAtTable(customer, table.tableNumber);
 		customer.setWaiter(waiter);
 		table.setOccupant(customer);
@@ -283,6 +289,13 @@ public class KCHostRole extends Role implements Host {
 	}
 
 	private void LeaveRestaurant() {
+		restPanel.waiters.clear();
+		restPanel.customers.clear();
+		for (Table tbl : tables) {
+			tbl.setUnoccupied();
+		}
+		waitingCustomers.clear();
+		waiters.clear();
 		person.hungerLevel = 0;
 		hostGui.DoLeaveRestaurant();
 		restPanel.hostLeaving();
