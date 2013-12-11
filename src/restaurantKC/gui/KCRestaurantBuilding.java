@@ -49,6 +49,7 @@ public class KCRestaurantBuilding extends Building
 		{
 			restPanel.addHost(person);
 			isOpen = true;
+			System.err.println("RESTAURANT IS NOW OPEN");
 			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTKC, this.name, "RestaurantKC is open for employees only");
 		}
 		

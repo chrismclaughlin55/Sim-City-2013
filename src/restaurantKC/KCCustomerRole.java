@@ -87,6 +87,8 @@ public class KCCustomerRole extends Role implements Customer {
 	}
 
 	public void msgFollowMe(Menu menu) {
+		System.err.println("Received message follow me");
+
 		myMenu = menu;
 		// Customer browses menu to see what he/she can afford
 		availableOptions.clear();

@@ -42,9 +42,9 @@ public class WaiterGui implements Gui {
 		public int y;
 	}
 
-	public static List<Location> locations = null;
-	public static List<FoodGui> foodItems = null;
-	public static List<Location> plates = null;
+	public List<Location> locations = null;
+	public List<FoodGui> foodItems = null;
+	public List<Location> plates = null;
 
 	protected KCWaiterRole agent = null;
 	private FoodGui food = null;
@@ -56,7 +56,7 @@ public class WaiterGui implements Gui {
 	private int homeY = 30;
 
 	private int xPos = homeX, yPos = homeY;//default waiter position
-	
+
 	int xDestination = homeX;
 	int yDestination = homeY;
 
