@@ -218,6 +218,7 @@ public class BankManagerRole extends Role implements BankManager {
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();
+		print(person.hungerLevel +" "+ person.cash+" "+ person.lowInventory()+" "+ person.bigState);
 	}
 	
 	private void fireTeller(myTeller t) {
