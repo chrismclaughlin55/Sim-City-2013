@@ -35,4 +35,6 @@ public interface Waiter {
 	public abstract void setGui(WaiterGui waiterGui);
 
 	public abstract void msgAnimationDone();
+
+	public abstract void msgYoureFired();
 }

@@ -84,7 +84,7 @@ name Host0
 cash 100
 bankMoney 500
 job Host
-hunger 10
+hunger 0
 inventory 2
 transportation bus
 

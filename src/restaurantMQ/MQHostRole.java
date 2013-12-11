@@ -228,6 +228,13 @@ public class MQHostRole extends Role implements Host
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
+		if (person.cityData.hour == 15 && person.cityData.increment == 0) {
+			if (waiters.size() > 1) {
+				fireWaiter(waiters.get(waiters.size() - 1));
+				return true;
+			}
+		}
+		
 		if(person.cityData.hour >= restPanel.CLOSINGTIME && restPanel.isOpen())
 		{
 			restPanel.setOpen(false);
@@ -368,6 +375,10 @@ public class MQHostRole extends Role implements Host
 		System.out.println("Seating " + customer.getName() + " at " + table);
 		hostGui.DoBringToTable(customer, table.tableNumber); 
 
+	}
+	
+	private void fireWaiter(Waiter w) {
+		w.msgYoureFired();
 	}
 	
 	private void TablesFull()

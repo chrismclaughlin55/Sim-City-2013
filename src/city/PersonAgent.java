@@ -661,7 +661,7 @@ public class PersonAgent extends Agent
 		else
 		{
 			//destinationBuilding = jobBuilding;
-			restNumber = 2;
+			restNumber = 0;
 			destinationBuilding = cityData.restaurants.get(restNumber);
 		}
         
@@ -680,7 +680,7 @@ public class PersonAgent extends Agent
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
 
-		KCRestaurantBuilding restaurant = (KCRestaurantBuilding)destinationBuilding;
+		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)destinationBuilding;
 
 
 		if(goToWork && !desiredRole.equals("Customer"))
