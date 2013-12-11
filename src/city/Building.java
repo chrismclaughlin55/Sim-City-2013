@@ -163,4 +163,19 @@ public abstract class Building extends Rectangle2D.Double {
 	public void setClosestRGrid(RGrid rg) {
 		closest = rg;
 	}
+
+	public boolean hasHost() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean openToEmployee() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean hasCashier() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
