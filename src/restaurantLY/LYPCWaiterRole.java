@@ -35,6 +35,7 @@ public class LYPCWaiterRole extends Role implements Waiter {
 	
 	private Host host;
 	private List<Cook> cooks;
+	private Cook cook;
 	private Cashier cashier;
 	
 	Timer timer = new Timer();
@@ -52,11 +53,17 @@ public class LYPCWaiterRole extends Role implements Waiter {
 	
 	public EventLog log = new EventLog();
 	
-	
-	private List<PCOrder> cookOrders;
+	public List<PCOrder> cookOrders;
 	
 	public LYPCWaiterRole(PersonAgent person) {
 		super(person);
+	}
+	
+	public LYPCWaiterRole(PersonAgent person, RestaurantPanel rp, List<PCOrder> cookOrders) {
+		super(person);
+		this.name = person.getName();
+		restPanel = rp;
+		this.cookOrders = cookOrders;
 	}
     
     public LYPCWaiterRole(PersonAgent person, RestaurantPanel rp, Host host, List<Cook> cooks, Cashier cashier, JCheckBox breakBox, List<PCOrder> cookOrders) {
@@ -411,9 +418,10 @@ public class LYPCWaiterRole extends Role implements Waiter {
 		stateChanged();
 	}
 	
-	private void giveOrderToCook(myCustomer customer) {
+	public void giveOrderToCook(myCustomer customer) {
 		DoGiveOrderToCook(customer);
 		cookOrders.add(new PCOrder(this, customer.tableNumber ,customer.choice));
+		log.add(new LoggedEvent("Giving order of " + customer.choice + " to cook"));
 		for (Cook cook: cooks) {
 			cook.msgHereIsAnOrder(this, customer.tableNumber, customer.choice);
 		}
@@ -525,7 +533,7 @@ public class LYPCWaiterRole extends Role implements Waiter {
 		return waiterGui;
 	}
 	
-	class myCustomer {
+	public class myCustomer {
 		Customer customer;
 		String choice;
 		int tableNumber;
@@ -543,6 +551,16 @@ public class LYPCWaiterRole extends Role implements Waiter {
 			this.check = 0.0;
 			this.custNumber = custNumber;
 		}
+		
+		public myCustomer(Customer customer, int tableNumber, int custNumber, String choice) {
+			this.customer = customer;
+			this.choice = choice;
+			this.tableNumber = tableNumber;
+			state = customerState.DoingNothing;
+			menu = new Menu();
+			this.check = 0.0;
+			this.custNumber = custNumber;
+		}
 	}
 	public enum customerState {DoingNothing ,WaitingInRestaurant, Seated, ReadyToOrder, Asked, GettingOrder, Done, CookPendingReorder, CookGettingReorder, Leaving};
 
@@ -552,6 +570,10 @@ public class LYPCWaiterRole extends Role implements Waiter {
 	
 	public void setCashier(Cashier cashier) {
 		this.cashier = cashier;
+	}
+	
+	public void setCook(Cook cook) {
+		this.cook = cook;
 	}
 	
 	public boolean isOnBreak() {

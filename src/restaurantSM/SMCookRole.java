@@ -103,6 +103,18 @@ public class SMCookRole extends Role {
 				resubmit = false;
 				return true;
 			}
+			
+			synchronized (pcOrders) {
+				if (pcOrders.size() > 0) {
+					Order o = pcOrders.get(0);
+					o.orderStatus = OrderStatus.Received;
+					s.getStock().put(o.getChoice(), s.getStock().get(o.getChoice()) - 1);
+					orders.add(o);
+					pcOrders.remove(o);
+					return true;
+				}
+				
+			}
 		
 		
 			for (String key : menu.getItems()){
@@ -140,18 +152,7 @@ public class SMCookRole extends Role {
 				CookOrder(orders.get(0));
 				return true;
 			}
-			synchronized (pcOrders) {
-				if (pcOrders.size() > 0) {
-					Order o = pcOrders.get(0);
-					o.orderStatus = OrderStatus.Cooking;
-					s.getStock().put(o.getChoice(), s.getStock().get(o.getChoice()) - 1);
-					orders.add(o);
-					pcOrders.remove(o);
-					CookOrder(o);
-					return true;
-				}
-				
-			}
+			
 		}
 		return false;
 	}
