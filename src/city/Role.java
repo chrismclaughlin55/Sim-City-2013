@@ -63,7 +63,7 @@ public abstract class Role
 	/*Person-Role interaction methods*/
 	
 	//Release the PersonAgent's semaphore
-	protected void stateChanged()
+	public void stateChanged()
 	{
 		person.stateChanged();
 	}

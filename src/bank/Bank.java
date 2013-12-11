@@ -37,8 +37,12 @@ public class Bank extends Building {
 		super(xPos, yPos, width, height, name, bank, mainGui);
 		cityData = cd;
 		this.bankGui = new BankGui(this);
-		mainGui.bankGui = this.bankGui;
-		mainGui.bankGui.bank = this;
+		bankGui.setTitle("Bank");
+		bankGui.setVisible(false);
+		bankGui.setResizable(false);
+		bankGui.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		//mainGui.bankGui = this.bankGui;
+		//mainGui.bankGui.bank = this;
 		super.type = BuildingType.bank;
 		existingCustRoles = new HashMap<PersonAgent, CustomerRole>();
 		existingManagerRoles = new HashMap<PersonAgent, BankManagerRole>();

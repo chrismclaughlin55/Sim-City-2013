@@ -1,4 +1,5 @@
 package mainGUI;
+import bank.Bank;
 import market.Market;
 import city.Apartment;
 import city.Building;
@@ -19,7 +20,9 @@ public class BuildingPanel {
 			break;
 			
 		case bank:
-			mainGui.bankGui.setVisible(true);
+			Bank b = (Bank) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
+			b.bankGui.setVisible(true);
+			//mainGui.bankGui.setVisible(true);
 			//mainGui.bankGui.bank.test();
 			break;
 			

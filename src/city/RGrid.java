@@ -13,6 +13,10 @@ public class RGrid extends Grid {
 		
 	}
 	
+	public RGrid(Direction d) {
+		direction = d;
+	}
+	
 	public RGrid(Direction d, int i, int j) {
 		super(i, j);
 		direction = d;

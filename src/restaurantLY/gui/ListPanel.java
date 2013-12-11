@@ -2,6 +2,7 @@ package restaurantLY.gui;
 
 import javax.swing.*;
 
+import city.PersonAgent;
 import restaurantLY.interfaces.*;
 
 import java.awt.*;
@@ -57,23 +58,36 @@ public class ListPanel extends JPanel implements ActionListener {
         add(myLabel);
 		myTF = new JTextField(5);
 		myTF.setBounds(55, 35, 80, 30);
+		//if(type.equals("Customers"))
+		//	myTF.setEnabled(false);
         add(myTF);
         
-        myStateCB = new JCheckBox();
+        /*myStateCB = new JCheckBox();
         myStateCB.setVisible(false);
         myStateCB.addActionListener(this);
         myStateCB.setVisible(true);
         myStateCB.setText("Hungry?");
         myStateCB.setSelected(false);
-        myStateCB.setEnabled(true);
+        myStateCB.setBounds(155, 3, 100, 35);
+        add(myStateCB);*/
+        
+        myStateCB = new JCheckBox();
+        myStateCB.setVisible(false);
+        myStateCB.addActionListener(this);
+        myStateCB.setVisible(true);
+        myStateCB.setText("P-C Waiter");
+        myStateCB.setSelected(false);
         myStateCB.setBounds(155, 3, 100, 35);
         add(myStateCB);
 		
 		addPersonB.addActionListener(this);
 		addPersonB.setBounds(160, 35, 80, 30);
 		add(addPersonB);
+		//if(type.equals("Customers")) {
+		//	addPersonB.setEnabled(false);
+		//}
 		
-		if (type.equals("Waiters")) {
+		if (type.equals("Customers")) {
 			myStateCB.setVisible(false);
 		}
 		
@@ -88,12 +102,15 @@ public class ListPanel extends JPanel implements ActionListener {
      * Handles the event of the add button being pressed
      */
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == myStateCB) {
+		/*if(e.getSource() == myStateCB) {
     		customerBool = myStateCB.isSelected();
-    	}
+    	}*/
+		if(e.getSource() == myStateCB) {
+			restPanel.setPcWaiter(true);
+		}
 		if(e.getSource() == addPersonB) {
 			String input = myTF.getText();
-			addPerson(input, type);
+			addPerson(input);
 		}
 		else {
 			// Isn't the second for loop more beautiful?
@@ -113,25 +130,36 @@ public class ListPanel extends JPanel implements ActionListener {
      *
      * @param name name of new person
      */
-	public void addPerson(String name, String type) {
+	public void addPerson(String name) {
 		
 		if(name != null) {
 			JButton button = new JButton(name);
 			button.setBackground(Color.white);
 			JCheckBox hungry = new JCheckBox("Hungry?");
+			if(type.equals("Waiters")) {
+				hungry.setText("Break?");
+			}
 
 			Dimension paneSize = pane.getSize();
 			Dimension buttonSize = new Dimension(paneSize.width - 20,
 					(int)(paneSize.height/7));
-			button.setPreferredSize(buttonSize);
-			button.setMinimumSize(buttonSize);
-			button.setMaximumSize(buttonSize);
-			button.addActionListener(this);
-			list.add(button);
-			view.add(button);
-			restPanel.addPerson(type, name, hungry, hungerBox.isSelected());//puts customer on list
-			restPanel.showInfo(type, name);//puts hungry button on panel
-			validate();
+			//button.setPreferredSize(buttonSize);
+			//button.setMinimumSize(buttonSize);
+			//button.setMaximumSize(buttonSize);
+			//button.addActionListener(this);
+			JPanel custPanel = new JPanel();
+            custPanel.setLayout(new GridLayout(1, 2));
+            custPanel.setPreferredSize(buttonSize);
+            custPanel.setMinimumSize(buttonSize);
+            custPanel.setMaximumSize(buttonSize);
+            custPanel.add(button);
+            custPanel.add(hungry);
+            list.add(button);
+            view.add(custPanel);
+            restPanel.addPerson(type, name, hungry, hungerBox.isSelected());//puts customer on list
+            //restPanel.addWaiter(name, hungry);
+            restPanel.showInfo(type, name);//puts hungry button on panel
+            validate();
 		}
 	}
 	
