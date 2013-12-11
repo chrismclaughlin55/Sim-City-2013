@@ -697,7 +697,7 @@ public class PersonAgent extends Agent
 			currentBuilding = cityData.restaurants.get(restNumber);
 		}
 
-		MQRestaurantBuilding restaurant = (MQRestaurantBuilding)destinationBuilding;
+		SMRestaurantBuilding restaurant = (SMRestaurantBuilding)destinationBuilding;
 
 
 		if(goToWork && !desiredRole.equals("Customer"))
@@ -753,7 +753,7 @@ public class PersonAgent extends Agent
 				car = false;
 			}
 		}
-	    GoToDestination();
+	    //GoToDestination();
 		if(once) {
 			if(busser) {
 				bus = true;
