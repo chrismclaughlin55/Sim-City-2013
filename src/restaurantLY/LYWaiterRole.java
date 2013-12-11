@@ -34,6 +34,7 @@ public class LYWaiterRole extends Role implements Waiter {
 	
 	private Host host;
 	private List<Cook> cooks;
+	private Cook cook;
 	private Cashier cashier;
 	
 	Timer timer = new Timer();
@@ -53,6 +54,12 @@ public class LYWaiterRole extends Role implements Waiter {
 	
 	public LYWaiterRole(PersonAgent person) {
 		super(person);
+	}
+	
+	public LYWaiterRole(PersonAgent person, RestaurantPanel rp) {
+		super(person);
+		restPanel = rp;
+		this.name = person.getName();
 	}
     
     public LYWaiterRole(PersonAgent person, RestaurantPanel rp, Host host, List<Cook> cooks, Cashier cashier, JCheckBox breakBox) {
@@ -397,8 +404,9 @@ public class LYWaiterRole extends Role implements Waiter {
 		stateChanged();
 	}
 	
-	private void giveOrderToCook(myCustomer customer) {
+	public void giveOrderToCook(myCustomer customer) {
 		DoGiveOrderToCook(customer);
+		log.add(new LoggedEvent("Giving order of " + customer.choice + " to cook"));
 		for (Cook cook: cooks) {
 			cook.msgHereIsAnOrder(this, customer.tableNumber, customer.choice);
 		}
@@ -510,7 +518,7 @@ public class LYWaiterRole extends Role implements Waiter {
 		return waiterGui;
 	}
 	
-	class myCustomer {
+	public class myCustomer {
 		Customer customer;
 		String choice;
 		int tableNumber;
@@ -537,6 +545,10 @@ public class LYWaiterRole extends Role implements Waiter {
 	
 	public void setCashier(Cashier cashier) {
 		this.cashier = cashier;
+	}
+	
+	public void setCook(Cook cook) {
+		this.cook = cook;
 	}
 	
 	public boolean isOnBreak() {
