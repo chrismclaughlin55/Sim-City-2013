@@ -289,6 +289,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 			leaving.acquire();
 		}
 		catch(Exception e){}
+		person.msgFull();
 		person.msgDoneWithJob();
 		person.exitBuilding();
 		doneWithRole();

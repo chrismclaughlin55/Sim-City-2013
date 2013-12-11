@@ -154,20 +154,20 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		
 		Bank b1 = new Bank(200, 420, WIDTH, HEIGHT,"bank", BuildingType.bank, mainGui, cd);
 		cd.buildings.add(b1);
-		cd.banks.add(b1);
+		cd.banks.add((Bank) b1);
 		//cd.bank.test();
 
 		Market m = new Market(340, 420, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
 		cd.buildings.add(m);
-		cd.markets.add(m);
+		cd.markets.add((Market) m);
 		
 		Bank b2 = new Bank(20, 680, WIDTH, HEIGHT, "bank2", BuildingType.bank, mainGui, cd);
 		cd.buildings.add(b2);
-		cd.banks.add(b2);
+		cd.banks.add((Bank) b2);
 		
 		Market m2 = new Market(520, 680, WIDTH, HEIGHT, "market2", BuildingType.market, mainGui, cd);
 		cd.buildings.add(m2);
-		cd.markets.add(m2);
+		cd.markets.add((Market) m2);
         
         //create bus stop for restaurants/market/bank
 		BusStopAgent bs12 = new BusStopAgent(200-20-20, 140+40+20, cd);
@@ -314,7 +314,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(19).setName("market");
 		cd.buildings.get(19).setBuildingNumber(19);
 
-		cd.markets.add((Market) cd.buildings.get(19));
+		//cd.markets.add((Market) cd.buildings.get(19));
 		cd.banks.get(0).addBusinessAccount(cd.buildings.get(19), 5000.0);
 		cd.banks.get(1).addBusinessAccount(cd.buildings.get(19), cd.banks.get(0).BusinessAccounts.get(cd.buildings.get(19)));
 		
@@ -322,7 +322,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.get(21).setName("market2");
 		cd.buildings.get(21).setBuildingNumber(21);
 
-		cd.markets.add((Market) cd.buildings.get(21));
+		//cd.markets.add((Market) cd.buildings.get(21));
 		cd.banks.get(0).addBusinessAccount(cd.buildings.get(21), 5000.0);
 		cd.banks.get(1).addBusinessAccount(cd.buildings.get(21), cd.banks.get(0).BusinessAccounts.get(cd.buildings.get(21)));
 

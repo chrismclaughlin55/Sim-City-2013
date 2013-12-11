@@ -1,5 +1,7 @@
 package restaurantLY.gui;
 
+import restaurantKC.KCWaiterRole;
+import restaurantLY.LYWaiterRole;
 import restaurantLY.interfaces.*;
 import restaurantLY.gui.RestaurantPanel;
 import restaurantLY.interfaces.Customer;
@@ -20,7 +22,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * and the animation frame, (in variable animationFrame within gui)
      */
 	AnimationPanel animationPanel = new AnimationPanel();
-	LYRestaurantBuilding building;
+	public LYRestaurantBuilding building;
 	
     /* restPanel holds 2 panels
      * 1) the staff listing, menu, and lists of current customers all constructed
@@ -30,11 +32,11 @@ public class RestaurantGui extends JFrame implements ActionListener {
 	private RestaurantPanel restPanel;
 	
 	/* infoPanel holds information about the clicked customer, if there is one*/
-	/*private JPanel infoPanel;
+	private JPanel infoPanel;
 	private JLabel infoLabel; //part of infoPanel
-	private JCheckBox stateCB;//part of infoLabel*/
+	private JCheckBox stateCB;//part of infoLabel
 	
-	/*private Object currentPerson;/* Holds the agent that the info is about.
+	private Object currentPerson;/* Holds the agent that the info is about.
 									Seems like a hack */
 	
 	//private JButton pause = new JButton("Pause");
@@ -52,7 +54,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
 		int xPos = 50;
 		int yPos = 10;
 		int WIDTH = 973;
-		int HEIGHT = 655;
+		int HEIGHT = 538;
 		int panelX = 1;
 		int panelY = 1;
 		int panelW = 970;
@@ -160,9 +162,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
 				c.gotHungry();
 				stateCB.setEnabled(false);
 			}
-			else if (currentPerson instanceof Waiter) {
-				Waiter w = (Waiter) currentPerson;
-				//w.getGui().setOnBreak();
+			else if (currentPerson instanceof LYWaiterRole) {
+				LYWaiterRole w = (LYWaiterRole) currentPerson;
+				w.getGui().setOnBreak();
 				w.setOnBreak(stateCB.isSelected());
 			}
 		}

@@ -80,7 +80,7 @@ public class RestaurantPanel extends JPanel {
     
     Menu menu = new Menu();
 
-    private RestaurantGui gui; //reference to main gui
+    public RestaurantGui gui; //reference to main gui
     
     class HungerListener implements ActionListener
     {
@@ -102,9 +102,8 @@ public class RestaurantPanel extends JPanel {
     	}
     }
 
-    public RestaurantPanel(RestaurantGui gui, Market market) {
+    public RestaurantPanel(RestaurantGui gui) {
         this.gui = gui;
-        this.market = market;
         
         /*
         //Cashier instantiation (hack)

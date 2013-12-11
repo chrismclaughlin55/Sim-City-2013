@@ -5,7 +5,7 @@ bankMoney 500
 job Landlord
 hunger 10
 inventory 10
-transportation bus
+transportation walk
 
 NewPerson
 name Landy1
@@ -57,7 +57,7 @@ name Waiter0
 cash 100
 bankMoney 500
 job Waiter
-hunger 10
+hunger 0
 inventory 5
 transportation bus
 
@@ -66,7 +66,7 @@ name Cashier0
 cash 100
 bankMoney 500
 job Cashier
-hunger 10
+hunger 0
 inventory 3
 transportation bus
 
@@ -84,18 +84,18 @@ name Host0
 cash 100
 bankMoney 500
 job Host
-hunger 10
+hunger 0
 inventory 2
 transportation bus
 
 NewPerson
 name Moneybag0
-cash 10000
+cash 100
 bankMoney 1500
 job Unemployed
 hunger 5
-inventory 20
-transportation bus
+inventory 0
+transportation walk
 
 NewPerson
 name Waiter1
@@ -174,8 +174,8 @@ name Moneybag1
 cash 10000
 bankMoney 500
 job Unemployed
-hunger 0
-inventory 9
+hunger 10
+inventory 2
 transportation bus
 
 NewPerson
@@ -183,6 +183,6 @@ name Moneybag2
 cash 10000
 bankMoney 500
 job Unemployed
-hunger 0
-inventory 20
-transportation bus
+hunger 10
+inventory 2
+transportation car

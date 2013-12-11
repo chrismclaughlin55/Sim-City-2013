@@ -1,17 +1,16 @@
 package restaurantSM.gui;
 
 import restaurantSM.*;
+import restaurantSM.utils.Order;
 
 import javax.swing.*;
 
 import city.PersonAgent;
 
-
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.*;
 import java.util.*;
-import java.util.Collections;
 
 /**
  * Panel in frame that contains all the restaurant information,
@@ -29,6 +28,8 @@ public class RestaurantPanel extends JPanel {
     private JPanel restLabel = new JPanel();
     private ListPanel customerPanel = new ListPanel(this, "Customers");
     private JPanel group = new JPanel();
+    private boolean pcWaiter = true;
+    private List<Order> pcOrders = Collections.synchronizedList(new ArrayList<Order>());
 
     private RestaurantGui gui; //reference to main gui
 
@@ -146,7 +147,8 @@ public class RestaurantPanel extends JPanel {
     
     public void addWaiter(PersonAgent p) {
     	if (waiters.size() < 3) {
-    		SMWaiterRole w = new SMWaiterRole(p);
+    		SMWaiterRole w = new SMWaiterRole(p, pcWaiter, pcOrders);
+    		pcWaiter = !pcWaiter;
     		WaiterGui wGui = new WaiterGui(w, waiters.size());
     		w.setGui(wGui);
     		w.setHost(host);
@@ -171,7 +173,7 @@ public class RestaurantPanel extends JPanel {
     
     public void addCook(PersonAgent p) {
     	if (cook == null) {
-    		cook = new SMCookRole(p);
+    		cook = new SMCookRole(p, pcOrders);
     		CookGui cGui = new CookGui(cook, gui);
     		cook.setGui(cGui);
     		p.msgAssignRole(cook);

@@ -26,7 +26,7 @@ import city.Role;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class BKWaiterRole extends Role implements Waiter {
+public class BKPCWaiterRole extends Role implements Waiter {
 	//static final int NTABLES = 3;//a global for the number of tables.
 	static final int WIDTH = 50;
 	//Notice that we implement waitingCustomers using ArrayList, but type it
@@ -43,7 +43,7 @@ public class BKWaiterRole extends Role implements Waiter {
 	private int restX = 30;;
 	private Cashier cashier;
 	private Host host;
-	public Cook cook;
+	private Cook cook;
 	Timer timer = new Timer();
 	public enum CustomerState {waiting,seated,readyToOrder,waitingToOrder,reorder,ordered,waitingForFood,orderIsReady,foodOnItsWay,eating,waitingForCheck,checkOrdered,checkOnItsWay,checkGiven,leaving,gone};
 	public List<myCustomer> customers	= Collections.synchronizedList(new ArrayList<myCustomer>());
@@ -61,14 +61,16 @@ public class BKWaiterRole extends Role implements Waiter {
 	//private Semaphore getOrder = new Semaphore(0,true);
 	//private Semaphore 
 	public WaiterGui waiterGui = null;
-	public BKWaiterRole(PersonAgent person, String name, RestaurantPanel rest) {
+	public List<Order> orders;
+	public BKPCWaiterRole(PersonAgent person, List<Order> orders, String name, RestaurantPanel rest) {
 		super(person);
 		this.rest = rest;
 		ws = WorkingState.working;
 		this.name = name;
 		m = new ItalianMenu();
+		this.orders=orders; 
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see restaurant.Waiter#wantsBreak()
 	 */
@@ -571,8 +573,9 @@ public class BKWaiterRole extends Role implements Waiter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		cook.msgHereIsAnOrder(this, choice,tn);
-		//cook.orders.add(new Order(choice,this,tn));
+		//cook.msgHereIsAnOrder(this, choice,tn);
+		orders.add(new Order(choice,this,tn));
+		cook.msgOrderIsUpdated();
 	}
 	private void PickUpOrder(myCustomer c) {
 		

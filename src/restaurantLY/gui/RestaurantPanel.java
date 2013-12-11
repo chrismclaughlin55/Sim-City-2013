@@ -1,11 +1,14 @@
 package restaurantLY.gui;
 
+import restaurantKC.pcCookOrder;
 import restaurantLY.LYCustomerRole;
 import restaurantLY.LYWaiterRole;
 import restaurantLY.interfaces.*;
 import restaurantLY.LYHostRole;
 import restaurantLY.LYCashierRole;
 import restaurantLY.LYCookRole;
+import restaurantLY.LYPCWaiterRole;
+import restaurantLY.PCOrder;
 
 import javax.swing.*;
 
@@ -25,6 +28,7 @@ import java.util.concurrent.*;
  * including host, cook, waiters, and customers.
  */
 public class RestaurantPanel extends JPanel {
+	
 	AnimationPanel animationPanel =  new AnimationPanel();
 	
 	//Host, cook, waiters and customers
@@ -32,7 +36,7 @@ public class RestaurantPanel extends JPanel {
 	private Host host; //this is the active host
 	private List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
 	private List<Cook> cooks = Collections.synchronizedList(new ArrayList<Cook>());
-	//private Cook cook;
+	private Cook cook;
 	private List<Customer> customers = Collections.synchronizedList(new ArrayList<Customer>());
 	private List<Cashier> cashiers = Collections.synchronizedList(new ArrayList<Cashier>());
 	private Cashier cashier; //this is the active cashier
@@ -44,11 +48,14 @@ public class RestaurantPanel extends JPanel {
 	private ListPanel waiterPanel = new ListPanel(this, "Waiters");
 	private JPanel group = new JPanel();
     
-    private List<JCheckBox> breakBoxes = new ArrayList<JCheckBox>();
+	public RestaurantGui gui;
 	
-	private RestaurantGui gui;
+	private List<JCheckBox> breakBoxes = new ArrayList<JCheckBox>();
+	
+	private List<PCOrder> cookOrders = Collections.synchronizedList(new ArrayList<PCOrder>());
 	
 	public static final int CLOSINGTIME = 20;
+	private boolean pcWaiter = false;
 	
     class HungerListener implements ActionListener
     {
@@ -106,7 +113,7 @@ public class RestaurantPanel extends JPanel {
 		restLabel.setLayout(new BorderLayout());
 		//label.setText(
         //        "<html><h3><u>Tonight's Staff</u></h3><table><tr><td>host:</td><td>" + host.getName() + "</td></tr></table><h3><u> Menu</u></h3><table><tr><td>Steak</td><td>$15.99</td></tr><tr><td>Chicken</td><td>$10.99</td></tr><tr><td>Salad</td><td>$5.99</td></tr><tr><td>Pizza</td><td>$8.99</td></tr></table><br></html>");
-
+		label.setText("RestaurantLY");
 		restLabel.setBorder(BorderFactory.createRaisedBevelBorder());
 		restLabel.add(label, BorderLayout.CENTER);
 		restLabel.add(new JLabel("               "), BorderLayout.EAST );
@@ -131,13 +138,13 @@ public class RestaurantPanel extends JPanel {
 					gui.updateInfoPanel(temp);
 			}
 		}
-		else if (type.equals("Waiters")) {
+		/*else if (type.equals("Waiters")) {
 			for (int i = 0; i < waiters.size(); i++) {
 				Waiter temp = waiters.get(i);
 				if (temp.getName() == name)
 					gui.updateInfoPanel(temp);
 			}
-		}
+		}*/
 	}
 
 	/**
@@ -147,12 +154,16 @@ public class RestaurantPanel extends JPanel {
      * @param name name of person
      */
 	//Adding from restaurant
-	public void addPerson(String type, String name, JCheckBox hungry, boolean hunger) {
+	public void addPerson(String type, String name, final JCheckBox hungry, boolean hunger) {
 		if (type.equals("Customers")) {
 			PersonAgent p = new PersonAgent(name);
 			LYCustomerRole c = new LYCustomerRole(p, this, hungry);
-			customers.add(c);
-			CustomerGui g = new CustomerGui(c, gui, 30+host.getWaitingCustomers().size()*25, 5);
+			int size = 0;
+			if (host != null) {
+				size = host.getWaitingCustomers().size();
+			}
+			size++;
+			CustomerGui g = new CustomerGui(c, gui, 30+size*25, 5);
 			
             hungry.addActionListener(gui);
 			gui.addRestaurantCustomer(c, hungry);
@@ -164,15 +175,17 @@ public class RestaurantPanel extends JPanel {
             if(hunger) {
                 hungry.doClick();
             }
-			//customers.add(c);
+			customers.add((Customer) c);
 			p.msgAssignRole(c);
-			p.startThread();
+			if(gui.building.isOpen())
+				p.startThread();
 			//c.gotHungry();
 			/*if (customerPanel.customerBool == true) {
     			//c.gotHungry();
     			c.getGui().setHungry();
     		}*/
 		}
+	//}
 		/*else if (type.equals("Waiters")) {
 			PersonAgent p = new PersonAgent(name);
 			LYWaiterRole w = new LYWaiterRole(p, this, host);
@@ -191,44 +204,78 @@ public class RestaurantPanel extends JPanel {
 			p.msgAssignRole(w);
 			p.startThread();
 		}*/
-	}
+	//}
     
-    //Adding from restaurant
-    public void addWaiter(String name, final JCheckBox breakBox) {
-        PersonAgent p = new PersonAgent(name);
-        LYWaiterRole w = new LYWaiterRole(p, this, host, cooks, cashier, breakBox);
-        waiters.add(w);
-        ((LYHostRole)host).addWaiter(w);
-        for(Cook c: cooks) {
-            c.addWaiter(w);
-        }
-        /*final Waiter waiter = w;
-    	breakBoxes.add(breakBox);
-    	breakBox.addActionListener(new ActionListener()
-                                   {
-            public void actionPerformed(ActionEvent e)
-            {
-                if(breakBox.getText().equals("Want Break"))
-                {
-                    breakBox.setEnabled(true);
-                    waiter.msgWantBreak();
-                }
-                else if(breakBox.getText().equals("Back to Work"))
-                {
-                    breakBox.setEnabled(true);
-                    waiter.msgBackFromBreak();
-                }
-            }
-        });*/
-    	
-		WaiterGui waiterGui = new WaiterGui(w, 5, 30+(waiters.size()-1)*25);
-		w.setGui(waiterGui);
-		gui.animationPanel.addGui(waiterGui);
-		
-		//Start the thread
-		p.msgAssignRole(w);
-		p.startThread(); //hack. PersonAgent's thread should already be running
-    }
+	//public void addWaiter(String name, final JCheckBox breakBox) {
+	else if(type.equals("Waiters")){
+		PersonAgent p = new PersonAgent(name);
+		if(!pcWaiter) {
+			LYWaiterRole w = new LYWaiterRole(p, this, host, cooks, cashier, hungry);
+			waiters.add(w);
+	    	if(host != null) {
+	    		((LYHostRole)host).addWaiter(w);
+	    	}
+	    	for(Cook c : cooks) {
+	    		c.addWaiter(w);
+	    	}
+	    	
+	    	final Waiter waiter = w;
+	    	breakBoxes.add(hungry);
+	    	hungry.addActionListener(new ActionListener()
+	    		{
+	    			public void actionPerformed(ActionEvent e)
+	    			{
+	    				if(hungry.getText().equals("On Break"))
+	    				{
+	    					hungry.setEnabled(true);
+	    					waiter.msgOnBreak();
+	    				}
+	    			}
+	    		});
+	    	
+	    	WaiterGui waiterGui = new WaiterGui(w, 5, 30+(waiters.size()-1)*25);
+			w.setGui(waiterGui);
+			gui.animationPanel.addGui(waiterGui);
+			
+			//Start the thread
+			p.msgAssignRole(w);
+			if(gui.building.isOpen())
+				p.startThread(); //hack. PersonAgent's thread should already be running
+		}
+		else {
+			LYPCWaiterRole w = new LYPCWaiterRole(p, this, host, cooks, cashier, hungry, cookOrders);
+			waiters.add(w);
+	    	if(host != null) {
+	    		((LYHostRole)host).addWaiter(w);
+	    	}
+	    	for(Cook c : cooks) {
+	    		c.addWaiter(w);
+	    	}
+	    	
+	    	final Waiter waiter = w;
+	    	breakBoxes.add(hungry);
+	    	hungry.addActionListener(new ActionListener()
+	    		{
+	    			public void actionPerformed(ActionEvent e)
+	    			{
+	    				if(hungry.getText().equals("On Break"))
+	    				{
+	    					hungry.setEnabled(true);
+	    					waiter.msgOnBreak();
+	    				}
+	    			}
+	    		});
+	    	
+	    	WaiterGui waiterGui = new WaiterGui(w, 5, 30+(waiters.size()-1)*25);
+			w.setGui(waiterGui);
+			gui.animationPanel.addGui(waiterGui);
+			
+			//Start the thread
+			p.msgAssignRole(w);
+			if(gui.building.isOpen())
+				p.startThread(); //hack. PersonAgent's thread should already be running
+	    }
+	}}
 	
 	/*public void setPause() {
 		host.setPause();
@@ -323,20 +370,16 @@ public class RestaurantPanel extends JPanel {
     		c.addWaiter(w);
     	}
             
-        /*final Waiter w2 = w;
+        final Waiter w2 = w;
         breakBoxes.add(breakBox);
         breakBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(breakBox.getText().equals("Want Break")) {
+                if(breakBox.getText().equals("On Break")) {
                     breakBox.setEnabled(true);
-                    w2.msgWantBreak();
-                }
-                else if(breakBox.getText().equals("Back to Work")) {
-                    breakBox.setEnabled(true);
-                    w2.msgBackFromBreak();
+                    w2.msgOnBreak();
                 }
             }
-        });*/
+        });
     	
 		WaiterGui waiterGui = new WaiterGui(w, 5, 30+(waiters.size()-1)*25);
 		w.setGui(waiterGui);
@@ -487,5 +530,9 @@ public class RestaurantPanel extends JPanel {
 
 	public boolean isOpen() {
 		return gui.isOpen();
+	}
+	
+	public void setPcWaiter(boolean set) {
+		pcWaiter = set;
 	}
 }

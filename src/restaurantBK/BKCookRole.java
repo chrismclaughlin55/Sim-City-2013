@@ -5,12 +5,14 @@ import agent.Agent;
 
 
 
+
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
 import city.PersonAgent;
 import city.Role;
 import restaurantBK.BKCustomerRole.AgentEvent;
+import restaurantBK.Order.OrderState;
 import restaurantBK.gui.CookGui;
 import restaurantBK.gui.RestaurantPanel;
 import restaurantBK.gui.WaiterGui;
@@ -59,22 +61,11 @@ public class BKCookRole extends Role implements Cook {
 	//public HashMap<String,Food> times;
 	private String name;
 	//private Semaphore cooking = new Semaphore(0);
-	public class Order{
-		String name;
-		OrderState os;
-		Waiter w;
-		int tablenumber;
-		public Order(String choice, Waiter w, int tn) {
-			this.name=choice;
-			this.w=w;
-			this.tablenumber=tn;
-			this.os=OrderState.pending;
-		}
-	}
+	
 	public List<Order> orders = Collections.synchronizedList(new ArrayList<Order>());
-	public enum OrderState {pending,cooking,plated,done};
+	
 	private Semaphore atDestination = new Semaphore(0,true);
-	public BKCookRole(PersonAgent person, String name, RestaurantPanel rest) {
+	public BKCookRole(PersonAgent person, List<Order>orders, String name, RestaurantPanel rest) {
 		super(person);
 		this.rest = rest;
 		markets = new ArrayList<myMarket>();
@@ -87,7 +78,8 @@ public class BKCookRole extends Role implements Cook {
 		foods.put("Chicken", ch);
 		foods.put("Salad", sa);
 		foods.put("Pizza", pi);
-		this.name = name;		
+		this.name = name;	
+		this.orders = orders;
 		
 	}
 	
@@ -120,6 +112,11 @@ public class BKCookRole extends Role implements Cook {
 	public void msgAtDestination() {//from animation
 		atDestination.release();// = true;
 		stateChanged();										
+	}
+	
+	@Override
+	public void msgOrderIsUpdated() {
+		stateChanged();
 	}
 	
 	@Override

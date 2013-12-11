@@ -35,6 +35,7 @@ public class MQWaiterRole extends Role implements Waiter
 	private int waiterNumber;
 	private List<CookOrder> cookOrders;
 	RestaurantPanel restPanel;
+	private boolean fired = false;
 	
 	Menu menu = null;
 	
@@ -142,6 +143,11 @@ public class MQWaiterRole extends Role implements Waiter
 				return;
 			}
 		}
+	}
+	
+	public void msgYoureFired() {
+		fired = true;
+		stateChanged();
 	}
 	
 	public void msgSeatCustomer(Customer customer, int table)
@@ -261,6 +267,13 @@ public class MQWaiterRole extends Role implements Waiter
 	/*SCHEDULER*/
 	public boolean pickAndExecuteAnAction()
 	{
+		
+		if (fired) {
+			LeaveRestaurant();
+			return true;
+		}
+		
+		
 		//Come back from break
 		if(breakStatus == breakStatus.Back)
 		{
