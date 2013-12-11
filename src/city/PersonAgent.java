@@ -25,6 +25,7 @@ import market.MyOrder;
 import market.Inventory;
 import agent.Agent;
 import city.Building.BuildingType;
+import city.RGrid.Direction;
 import city.gui.PersonGui;
 import city.interfaces.BusStop;
 
@@ -78,8 +79,12 @@ public class PersonAgent extends Agent
 	public Grid currGrid;
 	public RGrid currRGrid;
 	public RGrid nextRGrid;
+	public RGrid prevRGrid = new RGrid();
+	public RGrid gridToAcquire = null;
 	
 	public boolean walking = false;
+	public boolean driving = false;
+	public boolean atDestination = false;
 
 
 
@@ -222,6 +227,18 @@ public class PersonAgent extends Agent
 		hungerLevel = 0;
 	}
     
+	public void msgAcquireGrid(RGrid grid)
+	{
+		gridToAcquire = grid;
+		isMoving.release();
+	}
+	
+	public void msgAtDestination()
+	{
+		driving = false;
+		isMoving.release();
+	}
+	
 	public void msgDoneMoving() {
 		isMoving.release();
 	}
@@ -852,7 +869,6 @@ public class PersonAgent extends Agent
 			while(walking) {
 				
 				if(crossingRoad) {
-					print("blah");
 					try {
 						currRGrid.occupied.acquire();
 						//System.out.println("1");
@@ -901,44 +917,56 @@ public class PersonAgent extends Agent
 					catch(Exception e){}
 				}
 			}
-
-			
-			currentBuilding = destinationBuilding;
-			
-			
 		}
 		if(car==true) {
-			
-			//personGui.DoWalkToClosestRGrid(currentBuilding);
+			currentBuilding.closest.acquireGrid();
+			currRGrid = currentBuilding.closest;
+			personGui.DoWalkToRGrid(currentBuilding.buildingNumber);
 			//personGui.//acquire the semaphore of the road(currentBuilding.closest.index1(),currentBuilding.closest.index2())
 				//then he moves like a bus until he gets to his destinatoin's rgrid, gets off road
 				//then he releases last road semaphore
+			isMoving.drainPermits();
 			try
 			{
 				isMoving.acquire();
 			}
 			catch(Exception e){}
 			
+			System.err.println("hello");
+			
 			personGui.getInOrOutCar();
+			personGui.DriveToDestination(destinationBuilding);
 			//personGui.DriveToClosestRGrid(destinationBuilding); **** have similar mechanisms to busgridbehavior
 			//if person's rgrid is destination.closestRgrid, then, walk to building
 			
-			try
-			{
-				isMoving.acquire();
+			driving = true;
+			while(driving) {
+				
+				if(gridToAcquire != null) {
+					MoveToGrid();
+					continue;
+				}
+				
+				//puts this "mini-scheduler" to sleep
+				try
+				{
+					isMoving.acquire();
+				}
+				catch(Exception e){}
 			}
-			catch(Exception e){}
+			//remember to release current and previous grids
+			
+			
+			//WALKT TO THE BUILDING NOW
 			
 			//personGui
 			//have similar mechanisms to busgridbehavior
 			//if person's rgrid is destination.closestRgrid, then, walk to building
 			//YOU WILL TURN INTO A ROBOT
-			currentBuilding = destinationBuilding;
 		}
 		if(bus==true) {
 			destinationBusStop = currentBuilding.busStop;
 			personGui.DoGoToBusStop(destinationBusStop);
-			isMoving.drainPermits();
 			try
 			{
 				isMoving.acquire();
@@ -953,8 +981,15 @@ public class PersonAgent extends Agent
 				isMoving.acquire();
 			}
 			catch(Exception e) {}
-            
-			currentBus = cityData.buses.get(0);
+			
+			if(currentBus == null) {
+				try
+				{
+					isMoving.acquire();
+				}
+				catch(Exception e) {}
+			}
+           
 			personGui.DoGoToBus(currentBus);
 			try
 			{
@@ -981,10 +1016,9 @@ public class PersonAgent extends Agent
 				isMoving.acquire();
 			}
 			catch(Exception e) {}
-			currentBuilding = destinationBuilding;
 		}
 		
-		
+		currentBuilding = destinationBuilding;
 	}
     
 	public void setRoomNumber(int number) {
@@ -1006,6 +1040,32 @@ public class PersonAgent extends Agent
 		print("Exiting the building");
 		bigState = BigState.doingNothing;
 		super.stateChanged();
+	}
+	
+	private void MoveToGrid()
+	{
+		prevRGrid.releaseGrid();
+		gridToAcquire.acquireGrid();
+		if(gridToAcquire.direction == Direction.none)
+		{
+			timer.schedule(new TimerTask() {
+				public void run()
+				{
+					isMoving.release();
+				}
+			}, 300);
+			try {
+				isMoving.acquire();
+			}
+			catch(Exception e) {}
+		}
+		prevRGrid = currRGrid;
+		currRGrid = gridToAcquire;
+		personGui.moveOn();
+		try {
+	    	isMoving.acquire();
+	    }
+	    catch(Exception e) {}
 	}
 	
 	/*METHODS TO BE USED FOR PERSON-ROLE INTERACTIONS*/
