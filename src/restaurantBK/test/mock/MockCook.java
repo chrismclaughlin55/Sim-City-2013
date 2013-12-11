@@ -63,4 +63,10 @@ public class MockCook extends Mock implements Cook{
 		
 	}
 
+	@Override
+	public void msgOrderIsUpdated() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
