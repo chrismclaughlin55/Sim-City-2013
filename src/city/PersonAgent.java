@@ -733,7 +733,7 @@ public class PersonAgent extends Agent
 			bus = false;
 			car = false;
 		}
-		//GoToDestination();
+		GoToDestination();
 		
 		if(busser) {
 			bus = true;

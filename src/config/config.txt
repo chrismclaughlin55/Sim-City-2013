@@ -5,7 +5,7 @@ bankMoney 500
 job Landlord
 hunger 10
 inventory 10
-transportation bus
+transportation walk
 
 NewPerson
 name Landy1
