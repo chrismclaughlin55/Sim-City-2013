@@ -44,13 +44,13 @@ public class CMRestaurantGui extends JFrame implements ActionListener {
 	private JLabel infoLabel; //part of infoPanel
 	private JCheckBox stateCB;//part of infoLabel
 	private Object currentPerson;
-	
+
     public	CMRestaurantBuilding building;
 
 	/**
 	 * Constructor for RestaurantGui class.
 	 * Sets up all the gui components.
-	 */
+    */
 	public CMRestaurantGui(CMRestaurantBuilding b) {
 		building = b;
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

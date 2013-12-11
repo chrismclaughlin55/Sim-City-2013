@@ -45,6 +45,7 @@ public class CMCashierRole extends Role{
 			this.totalBill = bill;
 		}
 	}
+
 	//Actions
 	//Constructor
 	//TODO 
@@ -142,7 +143,6 @@ public class CMCashierRole extends Role{
 		
 	}
 	private void leave() {
-		
 		person.exitBuilding();
 		person.msgDoneWithJob();
 		doneWithRole();	

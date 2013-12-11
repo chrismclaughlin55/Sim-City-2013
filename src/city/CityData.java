@@ -320,21 +320,19 @@ public class CityData implements ActionListener {
 		//CHECK ITS TYPE AND TRY TO RETURN GRID OF SAME TYPE
 		//otherwise you're at an intersection?
 		//jk it's handled by direction equaling none
-		RGrid a = null;
-		String dir = curr.getDirection();
-		if(dir.equals("north")) {
+		if(curr.direction == Direction.north) {
 			return (RGrid)cityGrid[curr.index1()][curr.index2()-1];
 		}
-		if(dir.equals("south")) {
+		if(curr.direction == Direction.south) {
 			return (RGrid)cityGrid[curr.index1()][curr.index2()+1];
 		}
-		if(dir.equals("east")) {
+		if(curr.direction == Direction.east) {
 			return (RGrid)cityGrid[curr.index1()+1][curr.index2()];
 		}
-		if(dir.equals("west")) {
+		if(curr.direction == Direction.west) {
 			return (RGrid)cityGrid[curr.index1()-1][curr.index2()];
 		}	
-		return a;
+		return null;
 	}
 	public RGrid getNextRGrid(RGrid g, Direction dir) {
 		RGrid x = null;
