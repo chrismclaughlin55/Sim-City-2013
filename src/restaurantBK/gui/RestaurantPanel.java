@@ -4,9 +4,11 @@ import agent.Agent;
 import restaurantBK.BKCashierRole;
 import restaurantBK.BKCustomerRole;
 import restaurantBK.BKHostRole;
+import restaurantBK.BKPCWaiterRole;
 import restaurantBK.MarketAgent;
 import restaurantBK.BKWaiterRole;
 import restaurantBK.BKCookRole;
+import restaurantBK.Order;
 import restaurantBK.interfaces.Customer;
 import restaurantBK.interfaces.Waiter;
 import restaurantBK.ItalianMenu;
@@ -51,7 +53,7 @@ public class RestaurantPanel extends JPanel {
 	 private List<Cook> cooks = Collections.synchronizedList(new ArrayList<Cook>());
 	 //private List<MarketAgent> markets = Collections.synchronizedList(new ArrayList<MarketAgent>());
 	 private List<Cashier> cashiers = Collections.synchronizedList(new ArrayList<Cashier>());
-
+	 private List<Order> orders = Collections.synchronizedList(new ArrayList<Order>());
 	 
     //private Vector<BKWaiterRole> waiters = new Vector<BKWaiterRole>();
     //private WaiterGui waiter1Gui = new WaiterGui(waiter1, gui);
@@ -300,26 +302,50 @@ public class RestaurantPanel extends JPanel {
 	    		}
 	    	}
     	}
-    	BKWaiterRole w = new BKWaiterRole(person, person.getName(), this);//, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu));
-    	waiters.add(w);
-    	if(host != null)
-    		((BKHostRole)host).addWaiter(w);
-    	w.setHost(host);
-    	if(cook!=null) {
-    		w.setCook(cook);
+    	if(waiters.size()%2==0) {
+    		BKWaiterRole w = new BKWaiterRole(person, person.getName(), this);//, waiters.size(), host, cooks, cookOrders, cashier, new Menu(menu));
+    		waiters.add(w);
+        	if(host != null)
+        		((BKHostRole)host).addWaiter(w);
+        	w.setHost(host);
+        	if(cook!=null) {
+        		w.setCook(cook);
+        	}
+        	if(cashier != null) {
+        		w.setCashier(cashier);
+        	}
+        	WaiterGui waiterGui = new WaiterGui(w,gui,waiters.size());
+    		w.setGui(waiterGui);
+    		gui.animationPanel.addGui(waiterGui);
+    		
+    		//Start the thread
+    		person.msgAssignRole(w);
     	}
-    	if(cashier != null) {
-    		w.setCashier(cashier);
+    	else {
+    		BKPCWaiterRole w = new BKPCWaiterRole(person,orders,person.getName(),this);
+    		waiters.add(w);
+        	if(host != null)
+        		((BKHostRole)host).addWaiter(w);
+        	w.setHost(host);
+        	if(cook!=null) {
+        		w.setCook(cook);
+        	}
+        	if(cashier != null) {
+        		w.setCashier(cashier);
+        	}
+        	WaiterGui waiterGui = new WaiterGui(w,gui,waiters.size());
+    		w.setGui(waiterGui);
+    		gui.animationPanel.addGui(waiterGui);
+    		
+    		//Start the thread
+    		person.msgAssignRole(w);
     	}
+    	
+    	
     		//c.addWaiter(w);
     	
     	
-		WaiterGui waiterGui = new WaiterGui(w,gui,waiters.size());
-		w.setGui(waiterGui);
-		gui.animationPanel.addGui(waiterGui);
 		
-		//Start the thread
-		person.msgAssignRole(w);
     	
     }
     
@@ -351,7 +377,7 @@ public class RestaurantPanel extends JPanel {
     
     public void addCook(PersonAgent person)
     {
-    	BKCookRole c = new BKCookRole(person, person.getName(), this);//, cookOrders, market, cashier, timer);
+    	BKCookRole c = new BKCookRole(person, orders, person.getName(), this);//, cookOrders, market, cashier, timer);
 		cook = c;
 		CookGui cg = new CookGui(cook,gui);
 		cook.setGui(cg);
