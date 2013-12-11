@@ -2,6 +2,8 @@ package city;
 
 import java.util.*;
 
+import javax.swing.JFrame;
+
 import city.Building.BuildingType;
 import mainGUI.MainGui;
 
@@ -54,6 +56,10 @@ public class Apartment extends Building {
 			}
 		}
 		return -1;
+	}
+
+	public JFrame getBuildingGui() {
+		return apartmentGui;
 	}
 	
 	

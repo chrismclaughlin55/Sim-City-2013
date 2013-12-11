@@ -7,12 +7,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JFrame;
 import javax.swing.Timer;
 
+import restaurantCM.gui.CMRestaurantBuilding;
 import mainGUI.BuildingPanel;
 import mainGUI.MainGui;
 
-public class Building extends Rectangle2D.Double {
+public abstract class Building extends Rectangle2D.Double {
 
 	public String name;
 	public BuildingType type;
@@ -33,6 +35,8 @@ public class Building extends Rectangle2D.Double {
 
 	public BusStopAgent busStop;
 	public boolean hasManager=false;
+	
+	public RGrid closest;
 	
 	public Building(int xPos, int yPos, int width, int height, MainGui mainGui) {
 		super(xPos, yPos, width, height);
@@ -112,6 +116,7 @@ public class Building extends Rectangle2D.Double {
 	public boolean isOpen() {
 		return isOpen;
 	}
+	
 	public void setOpen(PersonAgent p) {
 		if (p.equals(manager)) {
 			isOpen = true;
@@ -142,11 +147,35 @@ public class Building extends Rectangle2D.Double {
 		hasManager = true;
 	}
 	
-	public void setBusStop(BusStopAgent bs) {
+	public void setBusStop(BusStopAgent bs, int routeNumber) {
 		busStop = bs;
 	}
 
 	public void display(Building building, int buildingNumber) {
 		buildingPanel.displayBuildingPanel(building, buildingNumber);
+		if(building instanceof CMRestaurantBuilding){
+		//	((CMRestaurantBuilding) building).test();
+		}
+	}
+	
+	public abstract JFrame getBuildingGui();
+	
+	public void setClosestRGrid(RGrid rg) {
+		closest = rg;
+	}
+
+	public boolean hasHost() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean openToEmployee() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean hasCashier() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -1,19 +1,9 @@
 package mainGUI;
-import city.*;
-
-import java.util.List;
-
-import javax.swing.JFrame;
-
-import Gui.Gui;
-import bankgui.BankGui;
+import bank.Bank;
 import market.Market;
-import market.gui.MarketGui;
-import restaurantMQ.gui.RestaurantGui;
+import city.Apartment;
 import city.Building;
-import city.Building.BuildingType;
 import city.Home;
-import restaurantMQ.gui.*;
 
 public class BuildingPanel {
 	
@@ -26,11 +16,14 @@ public class BuildingPanel {
 	public void displayBuildingPanel(Building building, int buildingNumber) {
 		switch (building.type) {
 		case restaurant:
-			((MQRestaurantBuilding)building).getRestaurantGui().setVisible(true);
+			building.getBuildingGui().setVisible(true);
 			break;
 			
 		case bank:
-			mainGui.bankGui.setVisible(true);
+
+			Bank b = (Bank) mainGui.mainAnimationPanel.cd.buildings.get(buildingNumber);
+			b.bankGui.setVisible(true);
+			//mainGui.bankGui.setVisible(true);
 			//mainGui.bankGui.bank.test();
 			break;
 			

@@ -25,14 +25,14 @@ public class RestaurantGui extends JFrame implements ActionListener {
 	//JFrame animationFrame = new JFrame("Restaurant Animation");
 	JPanel mainPanel = new JPanel();
 	AnimationPanel animationPanel = new AnimationPanel();
-	MQRestaurantBuilding building;
+	public MQRestaurantBuilding building;
 	
     /* restPanel holds 2 panels
      * 1) the staff listing, menu, and lists of current customers all constructed
      *    in RestaurantPanel()
      * 2) the infoPanel about the clicked Customer (created just below)
      */    
-    private RestaurantPanel restPanel;
+    public RestaurantPanel restPanel;
     
     /* infoPanel holds information about the clicked customer, if there is one*/
     /*private JPanel infoPanel;
@@ -59,9 +59,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * Constructor for RestaurantGui class.
      * Sets up all the gui components.
      */
-    public RestaurantGui(Market market, MQRestaurantBuilding b) {
+    public RestaurantGui(MQRestaurantBuilding b) {
     	
-    	restPanel = new RestaurantPanel(this, market);
+    	restPanel = new RestaurantPanel(this);
     
 
     	building = b;

@@ -19,12 +19,13 @@ public class BusTest extends TestCase {
 	BusStopAgent dest;
 	PersonAgent p;
 	CityData cd;
+	
 	public void setUp() throws Exception{
 		main = new MainGui();
 		cd = new CityData();
 		super.setUp();		
 		p = new PersonAgent("Hello",main,cd);
-		mbus = new BusAgent(cd);		
+		mbus = new BusAgent(cd, 1);
 		mbusstop = new BusStopAgent(1,1,cd);
 		p.currentBusStop = mbusstop;
 		mbus.curr = mbusstop;

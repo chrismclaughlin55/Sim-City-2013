@@ -6,10 +6,11 @@ import java.util.concurrent.Semaphore;
  * Base class for simple agents
  */
 public abstract class Agent {
-	protected Semaphore stateChange = new Semaphore(1, true); 
+	public Semaphore stateChange = new Semaphore(1, true); 
 	Semaphore pause = new Semaphore(0, true);
 	boolean isPaused = false;
 	private AgentThread agentThread;
+	boolean paused = false;
 	
 	protected Agent() {
 	}
@@ -80,6 +81,10 @@ public abstract class Agent {
 			isPaused = false;
 		}
 	}
+	
+	public void pause() {
+    	paused = !paused;
+    }
 
 	/**
 	 * Start agent scheduler thread.  Should be called once at init time.

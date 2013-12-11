@@ -2,8 +2,8 @@ package market;
 
 public class Invoice {
 
-	String type;
-	int amount;
+	public String type;
+	public int amount;
 	double price;
 	public int marketNum;
 

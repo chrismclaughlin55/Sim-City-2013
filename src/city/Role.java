@@ -4,6 +4,7 @@ public abstract class Role
 {
 	/*DATA MEMBERS*/
 	protected PersonAgent person;
+	//protected TestPerson test;
 	private boolean isActive = false;
 	
 	/*CONSTRUCTORS*/
@@ -12,9 +13,16 @@ public abstract class Role
 		this.person = person;
 	}
 	
+	/*public Role(TestPerson test) {
+		this.test = test;
+	}*/
+	
 	
 	/*GETTERS/SETTERS*/
 	
+	
+
+
 	//PersonAgent will only run a particular Role's scheduler if the Role is active
 	public PersonAgent getPerson()
 	{
@@ -55,7 +63,7 @@ public abstract class Role
 	/*Person-Role interaction methods*/
 	
 	//Release the PersonAgent's semaphore
-	protected void stateChanged()
+	public void stateChanged()
 	{
 		person.stateChanged();
 	}

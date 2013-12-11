@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import agent.Agent;
+import city.RGrid.Direction;
 import city.gui.BusGui;
 import city.interfaces.Bus;
 import city.interfaces.BusStop;
@@ -26,6 +32,9 @@ public class BusAgent extends Agent implements Bus {
 	        ps=PassengerState.gotOn;
 	    }
 	}
+	
+	Timer timer = new Timer();
+	
 	CityData cd;
 	BusState myState;
 	BusGui busgui;
@@ -34,11 +43,23 @@ public class BusAgent extends Agent implements Bus {
 	public BusStopAgent curr;
 	public BusStopAgent next;
 	private Semaphore atDestination = new Semaphore(0,true);
-	
-	public BusAgent(CityData cd) {
+	private Semaphore boarding = new Semaphore(0, true);
+	private Semaphore gridding = new Semaphore(0, true);
+    public int routeNumber;
+    public RGrid previousGrid = new RGrid();
+    public RGrid currGrid = null;
+    public RGrid gridToAcquire = null;
+	public BusAgent(CityData cd, int routeNumber) {
 		this.cd = cd;
-		curr = cd.busStops.get(0);
-		next = cd.busStops.get(1);
+        this.routeNumber = routeNumber;
+        if (routeNumber == 1) {
+            curr = cd.busStops.get(0);
+            next = cd.busStops.get(1);
+        }
+        if (routeNumber == 2) {
+            curr = cd.busStops.get(12);
+            next = cd.busStops.get(13);
+        }
 		myState = BusState.leavingStop;
 		passengers = Collections.synchronizedList(new ArrayList<myPassenger>());
 		//SHOULD ALSO HAVE A DEFAULT STARTING POSITION
@@ -47,13 +68,23 @@ public class BusAgent extends Agent implements Bus {
 	public void setGui(BusGui bg) {
 		busgui = bg;
 	}
+	
+	public void setCurrentGrid(RGrid currGrid)
+	{
+		this.currGrid = currGrid;
+		currGrid.acquireGrid();
+	}
 	//MESSAGES
 	
 	//CALLED BY BUSGUI
 	/* (non-Javadoc)
 	 * @see city.Bus#msgAtDestination()
 	 */
-	@Override
+	public void msgAcquireGrid()
+	{
+		gridding.release();
+	}
+	
 	public void msgAtDestination() {
 		
 		myState = BusState.atStop;
@@ -61,15 +92,14 @@ public class BusAgent extends Agent implements Bus {
 		// TODO Auto-generated method stub
 		
 	}
-	/* (non-Javadoc)
-	 * @see city.Bus#msgPeopleAtStop(java.util.HashMap)
-	 */
-	@Override
-	public void msgPeopleAtStop(HashMap<PersonAgent,BusStopAgent>peopleAtStop) {
-       readyToBoard = true;
+	
+	public void msgPeopleAtStop(Map<PersonAgent,BusStopAgent> peopleAtStop) {
+		synchronized(peopleAtStop) {
         for ( PersonAgent p : peopleAtStop.keySet()) {
         	passengers.add(new myPassenger(p,peopleAtStop.get(p)));
         }
+		}
+        readyToBoard = true;
         stateChanged();
 	}
 	
@@ -79,7 +109,7 @@ public class BusAgent extends Agent implements Bus {
 	@Override
 	public void msgOnBus()
 	{
-		atDestination.release();
+		boarding.release();
 	}
 
 
@@ -89,7 +119,6 @@ public class BusAgent extends Agent implements Bus {
 	protected boolean pickAndExecuteAnAction() {
 		
 		if(myState==BusState.atStop) {
-			curr.msgArrivedAtStop(this);
 			for(myPassenger p : passengers) {
 				if(p.dest == curr) {
 					UnloadPassenger(p);
@@ -97,19 +126,8 @@ public class BusAgent extends Agent implements Bus {
 					return true;
 				}
 			}
-			myState = BusState.unloading;   
-			return true;
-		}
-
-		if(myState==BusState.unloading) {
-			myState=BusState.waitingForResponse;
-			return true;
-	
-		}
-		
-		if(myState == BusState.waitingForResponse && !readyToBoard)
-		{
-			super.stateChange.drainPermits();
+			curr.msgArrivedAtStop(this);
+			myState = BusState.unloading;
 			return false;
 		}
 		
@@ -127,22 +145,54 @@ public class BusAgent extends Agent implements Bus {
 	    return false;
 	}
 	
-	private void LeaveStop() {
-		BusStopAgent temp=curr.nextStop;
-		curr = next;
-		next = temp;
-		busgui.DoGoToNextStop(next.getX(),next.getY());
-	    myState=BusState.moving;
-	    atDestination.drainPermits();
-	    try {
-	    	atDestination.acquire();
+	private void MoveToGrid()
+	{
+		previousGrid.releaseGrid();
+		gridToAcquire.acquireGrid();
+		if(gridToAcquire.direction == Direction.none)
+		{
+			timer.schedule(new TimerTask() {
+				public void run()
+				{
+					atDestination.release();
+				}
+			}, 200);
+			try {
+				atDestination.acquire();
+			}
+			catch(Exception e) {}
+		}
+		previousGrid = currGrid;
+		currGrid = gridToAcquire;
+		gridToAcquire = null;
+		busgui.moveOn();
+		try {
+	    	gridding.acquire();
 	    }
 	    catch(Exception e) {}
-	    
+	}
+	
+	private void LeaveStop() {
+		BusStopAgent temp=next.nextStop;
+		myState = BusState.moving;
+		curr = next;
+		next = temp;
+		busgui.moveOn();
+		busgui.DoGoToNextStop(curr.getX(),curr.getY());
+	    try {
+	    	gridding.acquire();
+	    }
+	    catch(Exception e) {}
+	    while(gridToAcquire != null) {
+	    	MoveToGrid();
+	    }
+	    try {
+	    atDestination.acquire();
+	    }
+	    catch(Exception e) {}
 	}
 
 	private void BoardPassengers() {
-		atDestination.drainPermits();
 	    for(myPassenger p: passengers) {
 	        if(p.ps==PassengerState.gotOn) {
 	        	//Message the people and have a semaphore acquire 
@@ -151,9 +201,11 @@ public class BusAgent extends Agent implements Bus {
 	        	p.ps = PassengerState.beenOn;
 	            p.p.msgBusIsHere(this);
 	            try {
-	            	atDestination.acquire();
+	            	boarding.acquire();
 	            }
 	            catch(Exception e){}
+	            AlertLog.getInstance().logMessage(AlertTag.BUS, "bus", "Boarding passengers");
+	            return;
 	        }
 	    }
 	    myState=BusState.leavingStop;
@@ -164,11 +216,11 @@ public class BusAgent extends Agent implements Bus {
 		
 		//have a wait time for loading and unloading
 		p.p.msgDoneMoving();
-		atDestination.drainPermits();
 		try {
-        	atDestination.acquire();
+        	boarding.acquire();
         }
         catch(Exception e){}
+		AlertLog.getInstance().logMessage(AlertTag.BUS, "bus", "Unloading passengers");
 	}
 
 	protected void stateChanged() {
@@ -186,5 +238,13 @@ public class BusAgent extends Agent implements Bus {
 		
 	}
 
-	
+	public int getRouteNumber() {
+		return routeNumber;
+	}
+
+	public void msgAcquireGrid(RGrid nextRGrid) {
+		gridToAcquire = nextRGrid;
+		gridding.release();
+	}
+
 }

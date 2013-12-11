@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 public class ApartmentGui extends JFrame implements ActionListener {
 
 	ApartmentPanel aptPanel;
+	AptInfoPanel aptInfoPanel;
 	List<Room> rooms;
 	
 	public ApartmentGui(List<Room> r) {
@@ -28,13 +29,9 @@ public class ApartmentGui extends JFrame implements ActionListener {
 		setLayout(new BorderLayout());
 		rooms = r;
 		
-		JPanel infoPanel = new JPanel();
-		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-		infoPanel.setPreferredSize(new Dimension(200, 400));
-		infoPanel.add(new JLabel("Tenants", JLabel.CENTER));
-		infoPanel.add(new JLabel("Landlord apt in gray"));
-		infoPanel.add(new JLabel("More coming in v2"));
-		this.add(infoPanel, BorderLayout.WEST);
+		aptInfoPanel = new AptInfoPanel();
+		aptInfoPanel.setPreferredSize(new Dimension(200, 400));
+		this.add(aptInfoPanel, BorderLayout.WEST);
 		
 		aptPanel = new ApartmentPanel();
 		aptPanel.setPreferredSize(new Dimension(400, 400));
@@ -51,6 +48,10 @@ public class ApartmentGui extends JFrame implements ActionListener {
 
 	public ApartmentPanel getAptPanel() {
 		return aptPanel;
+	}
+	
+	public AptInfoPanel getAptInfoPanel() {
+		return aptInfoPanel;
 	}
 
 }

@@ -3,10 +3,13 @@ package bank;
 
 import java.util.concurrent.Semaphore;
 
+import trace.AlertLog;
+import trace.AlertTag;
+import bank.gui.BankCustomerGui;
 import bank.interfaces.BankCustomer;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
-import bankgui.BankCustomerGui;
+import bank.gui.BankCustomerGui;
 
 import city.PersonAgent;
 import city.Role;
@@ -17,6 +20,7 @@ public class CustomerRole extends Role implements BankCustomer{
 	private double cash;
 	private String name;
 	private Teller t;
+	private int position;
 	CustInfo myInfo;
 	enum CustState { InLine, AtTeller, AskedForLoan, SentDeposit, Left, ProcessLoan};
 	enum CustEvent { GoToTeller, AskedWhatToDo, RecievedMoney, Done, RecievedLoanInfo};
@@ -39,17 +43,20 @@ public class CustomerRole extends Role implements BankCustomer{
 	}
 	//MESSAGES
 	@Override
-	public void msgGoToTeller(Teller t) {
+	public void msgGoToTeller(Teller t, int pos) {
 		this.t = t;
 		event = CustEvent.GoToTeller;
-		print("going to teller "+ state + event);
+		position = pos;
+		print("going to teller");
+		print("event: "+ event+" state: "+state);
 		stateChanged();
 	}
 
 	@Override
 	public void msgWhatWouldYouLike() {
 		event = CustEvent.AskedWhatToDo;
-		print("asked What to do");
+		print("recieved asked What to do");
+		print("event: "+ event+" state: "+state);
 		stateChanged();
 
 	}
@@ -57,9 +64,12 @@ public class CustomerRole extends Role implements BankCustomer{
 	@Override
 	public void msgHaveANiceDay(double amount) {
 		person.cash+=amount;
+		print("total cash: "+ person.cash);
+		print("total money in bank "+ this.myInfo.moneyInAccount);
 		event = CustEvent.Done;
+		print("recieved have nice day");
+		print("event: "+ event+" state: "+state);
 		stateChanged();
-
 	}
 
 	@Override
@@ -70,7 +80,6 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	//SCHEDULER
 	public boolean pickAndExecuteAnAction() {
-		print("made it to scheduler");
 		if(state == CustState.InLine && event == CustEvent.GoToTeller){
 			sayHello();
 			return true;
@@ -98,71 +107,96 @@ public class CustomerRole extends Role implements BankCustomer{
 
 	//ACTIONS
 	private void sayHello(){
-		guiGoHere(1);
-		print("say hello to teller");
-		guiGoHere(2);
-		this.t.msgHello(new CustInfo(myInfo));
-		state = CustState.AtTeller;
+		guiGoHere(4);
+		guiGoHere(position);
+		print("say hello");
+		CustInfo tmp = new CustInfo(myInfo);
+			state = CustState.AtTeller;
+			this.t.msgHello(tmp);
+	
 
 	}
 	private void tellTeller(){
-		if(myInfo.loanRequestAmount>0){
-			t.msgloan(myInfo.loanRequestAmount);
-			state = CustState.AskedForLoan;
-			return;
-		}else{
-			double depositAmount;
-			if(myInfo.depositAmount>cash){
-				depositAmount = cash;
-				cash = 0;
+
+		print("depositing $"+myInfo.depositAmount);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_CUSTOMER, this.name, "Depositing $"+myInfo.depositAmount);
+		if(myInfo.depositAmount < 0){
+			if(myInfo.depositAmount + myInfo.moneyInAccount < 0){
+				this.cash += person.bankInfo.moneyInAccount;
+				myInfo.moneyInAccount = 0;
+				t.msgDeposit(myInfo.depositAmount);
+				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
 			}
 			else{
-				depositAmount = myInfo.depositAmount;
-				cash-=myInfo.depositAmount;
+				person.cash -= myInfo.depositAmount;
+				myInfo.moneyInAccount += myInfo.depositAmount;
+				t.msgDeposit(myInfo.depositAmount);
+				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
 			}
-			t.msgDeposit(depositAmount);
 
+		}else if(myInfo.depositAmount > 0){
+			if(person.cash - myInfo.depositAmount < 0){
+				myInfo.moneyInAccount += person.cash;
+				person.cash = 0;
+				t.msgDeposit(myInfo.depositAmount);
+				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
+			}
+			else{
+				myInfo.moneyInAccount += myInfo.depositAmount;
+				person.cash -=myInfo.depositAmount;
+				t.msgDeposit(myInfo.depositAmount);
+				myInfo.depositAmount = 0;
+				state = CustState.SentDeposit;
+
+			}
 		}
-		print("made it to tell teller");
+	
 	}
+
 	private void leave(){
-		
+		AlertLog.getInstance().logMessage(AlertTag.BANK_CUSTOMER, this.name, "Leaving the bank");
 		state = CustState.Left;	
-		guiGoHere(3);
+		guiGoHere(9);
+		gui.setPresent(false);
 		person.bankInfo = this.myInfo;
-		person.exitBuilding();
+		doneWithRole();
 		person.msgDoneWithJob();
-		doneWithRole();	
+		person.exitBuilding();
 	}
 	private void processLoan(double approvedAmount){
+		AlertLog.getInstance().logMessage(AlertTag.BANK_CUSTOMER, this.name, "Asking for loan");
 		double requestAmount = approvedAmount;  
 		if(approvedAmount< .75 * myInfo.loanRequestAmount)
-		  requestAmount = 0;
-		   
+			requestAmount = 0;
+
 		state = CustState.ProcessLoan;
-		 t.msgITakeIt(requestAmount);
-		 myInfo.loanAmount = requestAmount;
-		 myInfo.loanRequestAmount = 0;
+		t.msgITakeIt(requestAmount);
+		myInfo.loanAmount = requestAmount;
+		myInfo.loanRequestAmount = 0;
 	}
 	@Override
 	public PersonAgent returnPerson() {
 		return this.person;
 	}
+
 	public void msgGuiIsAtDest() {
-		print("released a atDest");
 		atDest.release();
-		
+
+
 	}
 
 	private void guiGoHere(int place){
+		if(gui != null)
 			gui.goTo(place);
 		try {
 			atDest.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		}
+	}
 }
 
 

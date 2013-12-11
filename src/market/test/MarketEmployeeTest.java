@@ -50,7 +50,7 @@ public class MarketEmployeeTest extends TestCase
 	public void setUp() throws Exception{
 		super.setUp();		
 		
-		market = new Market(0, 0, 0, 0, mainGui);
+	//	market = new Market(0, 0, 0, 0, mainGui);
 		
 		chickenData = new MarketData("Chicken", 10, 5.99);
 		saladData = new MarketData("Salad", 10, 3.99);
@@ -63,7 +63,7 @@ public class MarketEmployeeTest extends TestCase
 		PersonAgent person = new PersonAgent("Employee");
 		customer = new MockMarketCustomer("mockcustomer");
 		manager = new MockMarketManager("mockmanager");
-		employee = new MarketEmployeeRole(person, manager, inventory);
+		//employee = new MarketEmployeeRole(person, manager, inventory);
 		
 		customer2 = new MockMarketCustomer("mockcustomer2");
 

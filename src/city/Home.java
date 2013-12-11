@@ -2,6 +2,8 @@ package city;
 
 import java.util.*;
 
+import javax.swing.JFrame;
+
 import city.Building.BuildingType;
 import mainGUI.MainGui;
 
@@ -37,5 +39,9 @@ public class Home extends Building {
 	public void LeaveBuilding(PersonAgent p) {
 		homeGui.getHomePanel().removeGui(p.getGui(), p.currentBuilding.buildingNumber);
 		cityData.addGui(p.getGui(), p.currentBuilding.buildingNumber);
+	}
+
+	public JFrame getBuildingGui() {
+		return homeGui;
 	}
 }

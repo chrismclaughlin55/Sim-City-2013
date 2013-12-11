@@ -45,6 +45,9 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	private JPanel view = new JPanel();
 	public JPanel namePane = new JPanel();
 	private JButton addPerson = new JButton("Add");
+	private JButton robBank = new JButton("Rob the bank!");
+	private JButton carCrash = new JButton("Cause car crash!");
+	private JButton runOver = new JButton("Run someone over!");
 	private JTextField nameField = new JTextField(10);
 	private ButtonGroup jobs = new ButtonGroup();
 	
@@ -61,6 +64,8 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	private String name;
 	private String job;
 	private MainGui mainGui;
+	private CityData cityData;
+	private boolean robberAdded = false;
 
 	JRadioButton unemployed;
 	JRadioButton landlord;
@@ -77,10 +82,13 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 	JRadioButton bankManager;
 	JRadioButton bankTeller;
 	JRadioButton bankCustomer;
+	
+	private JButton trace = new JButton("Trace Panel");
 
-	public PersonCreationPanel(MainGui mainGui) {
+	public PersonCreationPanel(MainGui mainGui, CityData cd) {
 		this.mainGui = mainGui;
 		this.type = "person";
+		cityData = cd;
 		setLayout(null);//new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		timePane.setLayout(new FlowLayout());
@@ -89,6 +97,13 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		timePane.add(timeIntervalLabel);
 		timeIntervalLabel.setText("\t\t\tTime Interval = "+mainGui.mainAnimationPanel.GLOBALINTERVAL);
 
+		JPanel nonNorms = new JPanel();
+		nonNorms.setVisible(true);
+		nonNorms.setLayout(new GridLayout(1, 3));
+		nonNorms.add(robBank);
+		nonNorms.add(carCrash);
+		nonNorms.add(runOver);
+		
 		nameField.setHorizontalAlignment(JTextField.CENTER);
 		namePane.setLayout(new FlowLayout());
 		
@@ -120,16 +135,16 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		jobs.add(bankTeller);
 		
 		jobsPane.setLayout(null);
-		unemployed.setBounds(0, 0, 150, 30);
-		landlord.setBounds(145, 0, 140, 30);
-		restMQhost.setBounds(0, 30, 140, 30);
-		restMQwaiter.setBounds(145, 30, 145, 30);
-		restMQcook.setBounds(300, 30, 140, 30);
-		restMQcashier.setBounds(450, 30, 170, 30);
-		marketManager.setBounds(0, 60, 140, 30);
-		marketEmployee.setBounds(145, 60, 140, 30);
-		bankManager.setBounds(0, 90, 140, 30);
-		bankTeller.setBounds(145, 90, 140, 30);
+		unemployed.setBounds(0, 0, 160, 30);
+		landlord.setBounds(145, 0, 150, 30);
+		restMQhost.setBounds(0, 30, 160, 30);
+		restMQwaiter.setBounds(145, 30, 155, 30);
+		restMQcook.setBounds(300, 30, 150, 30);
+		restMQcashier.setBounds(450, 30, 180, 30);
+		marketManager.setBounds(0, 60, 150, 30);
+		marketEmployee.setBounds(145, 60, 150, 30);
+		bankManager.setBounds(0, 90, 150, 30);
+		bankTeller.setBounds(145, 90, 150, 30);
 		jobsPane.add(unemployed);
 		jobsPane.add(landlord);
 		jobsPane.add(restMQwaiter);
@@ -145,6 +160,9 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		addPerson.addActionListener(this);
 		nameField.addKeyListener(this);
 		fire.addActionListener(this);
+		robBank.addActionListener(this);
+		carCrash.addActionListener(this);
+		runOver.addActionListener(this);
 		timeSetting.addActionListener(this);
 		timeField.addKeyListener(this);
 
@@ -153,21 +171,31 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 		pane.setMinimumSize(new Dimension(PANEDIM, PANEDIM));
 		pane.setPreferredSize(new Dimension(PANEDIM, PANEDIM));  
 
-		fire.setBounds(5, 5, 605, 50);
-		timePane.setBounds(0, 65, 615, 50);
-		jobsPane.setBounds(0, 0, 615, 125);
-		nameField.setBounds(0, 125, 615, 90);
-		addPerson.setBounds(0, 215, 615, 90);
+		fire.setBounds(5, 5, 150, 50);
+		robBank.setBounds(160, 5, 150, 50);
+		carCrash.setBounds(315, 5, 150, 50);
+		runOver.setBounds(470, 5, 150, 50);
+		timePane.setBounds(0, 65, 625, 50);
+		jobsPane.setBounds(0, 0, 625, 125);
+		nameField.setBounds(0, 125, 625, 90);
+		addPerson.setBounds(0, 215, 625, 90);
 		personPane.add(jobsPane);	
 		personPane.add(nameField);
 		personPane.add(addPerson);
-		personPane.setBounds(0, 120, 615, 305);
-		pane.setBounds(0, 430, 615, 343);
+		personPane.setBounds(0, 120, 625, 305);
+		pane.setBounds(0, 430, 625, 250);
 
+		trace.setBounds(0, 685, 625, 90);
+		trace.addActionListener(this);
+		
 		add(fire);
+		add(robBank);
+		add(carCrash);
+		add(runOver);
 		add(timePane);
 		add(personPane);
 		add(pane);
+		add(trace);
 
 		addPerson.setEnabled(false);
 	}
@@ -204,6 +232,12 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 			
 			String role = "";
 			String destination;
+			
+			if (robberAdded) {
+				role = "BankRobber";
+				destination = "Bank";
+				robberAdded = false;
+			}
 			
 			if(getSelectedButtonText(jobs).contains("Bank")){
 				destination = "Bank";
@@ -326,6 +360,29 @@ public class PersonCreationPanel extends JPanel implements ActionListener, KeyLi
 			for (PersonAgent p : persons) {
 				p.msgFire();
 			}
+		}
+		
+		else if (e.getSource() == robBank) {
+			if (cityData.banks.get(0).isOpen()) {
+				robberAdded = true;
+				addPerson("DaBankRobba");
+			}
+			else {
+				JFrame frame = new JFrame();
+	    		JOptionPane.showMessageDialog(frame, "You can't rob the bank unless it's open, silly!");
+			}
+		}
+		
+		else if (e.getSource() == carCrash) {
+			//car accident
+		}
+		
+		else if (e.getSource() == runOver) {
+			//run a pedestrian over
+		}
+		
+		if (e.getSource() == trace) {
+			mainGui.dl.setVisible(true);
 		}
 	}
 

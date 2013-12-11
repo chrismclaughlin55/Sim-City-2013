@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import trace.AlertLog;
+import trace.AlertTag;
 import agent.Agent;
 import city.gui.BusStopGui;
 import city.interfaces.Bus;
@@ -24,7 +26,7 @@ public class BusStopAgent extends Agent implements BusStop{
 	public enum BusStopState {waitingForBus, busHere, busLeaving };
 	BusStopState stopState;
 	CityData cd;
-    public HashMap<PersonAgent, BusStopAgent> peopleWaiting;
+    public Map<PersonAgent, BusStopAgent> peopleWaiting;
     BusStopAgent nextStop;
     public Bus currentBus;
     BusStopGui busStopGui;
@@ -45,8 +47,8 @@ public class BusStopAgent extends Agent implements BusStop{
 		stopState = BusStopState.waitingForBus;
 		xPosition = xPos;
 		yPosition = yPos;
-		waitingPeople = new ArrayList<PersonAgent>();
-		peopleWaiting = new HashMap<PersonAgent, BusStopAgent>();
+		waitingPeople = Collections.synchronizedList(new ArrayList<PersonAgent>());
+		peopleWaiting = Collections.synchronizedMap(new HashMap<PersonAgent, BusStopAgent>());
 	}
 	
 	public void setNextStop(BusStopAgent nextStop) {
@@ -80,6 +82,7 @@ public class BusStopAgent extends Agent implements BusStop{
 	@Override
 	public void msgWaitingAtStop(PersonAgent p, BusStopAgent destination) {
         peopleWaiting.put(p, destination);
+        AlertLog.getInstance().logMessage(AlertTag.BUS_STOP, "busStop", "Passengers are waiting for bus");
     }
 	
     /* (non-Javadoc)
@@ -97,11 +100,10 @@ public class BusStopAgent extends Agent implements BusStop{
     	if(stopState == BusStopState.busHere)
         {
             BoardPassengers();
-            return true;
         }
     	if(stopState == BusStopState.busLeaving) {
     		ClearPassengers();
-    		return true;
+    		return false;
     	}
     	return false;
     }
@@ -109,14 +111,15 @@ public class BusStopAgent extends Agent implements BusStop{
     
     private void BoardPassengers()
     {
-        currentBus.msgPeopleAtStop(peopleWaiting);
-        stopState = BusStopState.busLeaving;
-          
+    	if(currentBus != null) {
+	        currentBus.msgPeopleAtStop(peopleWaiting);
+	        currentBus = null;
+	        stopState = BusStopState.busLeaving;
+    	}
     }
     
     private void ClearPassengers() {
     	peopleWaiting.clear();
-    	stopState = BusStopState.waitingForBus;
     }
     
     protected void stateChanged() {

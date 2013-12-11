@@ -6,17 +6,15 @@ import city.*;
 import city.PersonAgent;
 import city.Role;
 
-
-public class TellerRole extends Role implements Teller{
-
-
-=======
 import java.util.concurrent.Semaphore;
 
+import trace.AlertLog;
+import trace.AlertTag;
+import bank.gui.TellerGui;
 import bank.interfaces.BankCustomer;
+import bank.interfaces.DaBankRobber;
 import bank.interfaces.Teller;
 import bank.utilities.CustInfo;
-import bankgui.TellerGui;
 import city.PersonAgent;
 import city.Role;
 /*
@@ -28,12 +26,19 @@ public class TellerRole extends Role implements Teller{
 	BankManagerRole bm;
 	CustInfo currentCustInfo;
 	enum State {available, waitingForInfo, waitingForResponse, doneWithCustomer, customerDecidingLoan}
-	enum Event {none, recievedHello, recievedInfo, recievedDeposit,updatedBank,loanReq, iTakeIt}
+	enum Event {none, recievedHello, recievedInfo, recievedDeposit,updatedBank,loanReq, iTakeIt, gotFired}
 	State state;
 	Event event;
+	boolean wantToLeave = false;
 	private TellerGui gui;
+	private boolean bankRobbery = false;
+	private DaBankRobber bankRobber;
+	private boolean fired = false;
+
 	private Semaphore atDest = new Semaphore(0 ,true);
-	
+	private Semaphore atHome = new Semaphore(0, true);
+
+
 	//Constructor
 
 	public TellerRole(PersonAgent person) {
@@ -42,22 +47,40 @@ public class TellerRole extends Role implements Teller{
 		this.me = person;
 		state = State.available;
 		event = Event.none;
-		// TODO Auto-generated constructor stub
 	}
 	//GUI messages
 	public void msgAddGui(TellerGui tellerGui) {
 		this.gui = tellerGui;
-		
 	}
+	public void msgWaitForGui(){
+		try {
+			atHome.acquire();
+		} catch (InterruptedException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
+	public void msgStickEmUp(DaBankRobber br) {
+		bankRobbery = true;
+		bankRobber = br;
+		stateChanged();
+	}
+
 	//MESSAGES
 	public void msgAddManager(BankManagerRole bm){
 		this.bm = bm;
 		stateChanged();
 	}
+	
+	public void msgYoureFired() {
+		event = Event.gotFired;
+		stateChanged();
+	}
+	
 	@Override
 	public void msgHello(CustInfo c) {
 		currentCustInfo = c;
-		print(c.custName + " said hello");
 		event = Event.recievedHello;
 		stateChanged();
 	}
@@ -65,9 +88,12 @@ public class TellerRole extends Role implements Teller{
 	@Override
 	public void msgHereIsInfo(CustInfo info) {
 		event = Event.recievedInfo;
-		print("recieved info for "+ info.custName);
-		if(info != null)
-		this.currentCustInfo = info;
+		if(info != null){
+			this.currentCustInfo.moneyInAccount = info.moneyInAccount;
+			this.currentCustInfo.loanApproveAmount = info.loanApproveAmount;
+			this.currentCustInfo.loanAmount = info.loanAmount;
+		}
+
 		stateChanged();
 	}
 
@@ -76,7 +102,6 @@ public class TellerRole extends Role implements Teller{
 		currentCustInfo.depositAmount = 0;
 		currentCustInfo.moneyInAccount += money;
 		event = Event.recievedDeposit;
-		print("recieved deposit");
 		stateChanged();
 	}
 
@@ -92,13 +117,23 @@ public class TellerRole extends Role implements Teller{
 		currentCustInfo.loanApproveAmount-= loanAmount;
 		event = Event.iTakeIt;
 		stateChanged();
-		
+
 	}
-	
-	
+
+
 	//SCHEDULER
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		if (bankRobbery) {
+			payTheMan();
+			return true;
+		}
+		
+		if (event == Event.gotFired) {
+			leaveJob();
+			return true;
+		}
+		
 		if(state == State.available && event == Event.recievedHello){
 			getInfo();
 			return true;
@@ -109,6 +144,7 @@ public class TellerRole extends Role implements Teller{
 		}
 		if(state == State.waitingForResponse && event == Event.recievedDeposit){
 			processOrder();
+
 			return true;
 		}
 		if(state == State.doneWithCustomer && event == Event.updatedBank){
@@ -123,32 +159,45 @@ public class TellerRole extends Role implements Teller{
 			processOrder();
 			return true;
 		}
-		if(person.cityData.hour > Bank.CLOSINGTIME && bm.getLine().size()==0){
-			this.leaveBank();
+
+		if(person.cityData.hour > Bank.CLOSINGTIME){
+			wantToLeave = true;
+		}
+		if(wantToLeave && bm.getLine().size() == 0){
+			this.guiGoHere(9);
 			return true;
 		}
+
 		return false;
 	}
 	//ACTIONS
 	private void ask() {
-	print("asked what to do");
 		currentCustInfo.customer.msgWhatWouldYouLike();
 		state = State.waitingForResponse;
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Serving "+currentCustInfo.custName);
 	}
 
 	private void getInfo() {
-	print("asking for info from manager");
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Getting info for "+currentCustInfo.custName);
 		bm.msgGiveMeInfo(currentCustInfo.customer, this);
-			state = State.waitingForInfo;
+		state = State.waitingForInfo;
 	}
 
 	private void makeAvailable() {	
-		currentCustInfo = null;
 		state = State.available;
-		
+		currentCustInfo = null;
+
+
 	}
 
+	private void payTheMan() {
+		bankRobbery = false;
+		AlertLog.getInstance().logError(AlertTag.BANK_TELLER, this.name, "IM BEING ROBBED");
+		bankRobber.msgPleaseDontShoot(400);
+	}
+	
 	private void processLoan() {
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Processing loan for "+currentCustInfo.custName);
 		if(currentCustInfo.loanRequestAmount>currentCustInfo.loanApproveAmount)
 			currentCustInfo.customer.msgCanDoThisAmount(currentCustInfo.loanApproveAmount);
 		else 
@@ -157,29 +206,51 @@ public class TellerRole extends Role implements Teller{
 	}
 
 	private void processOrder() {
-		//TODO this could cause problems. could lose semaphore by updating event in action
+		//
+		print("processing order for "+currentCustInfo.custName);
+		AlertLog.getInstance().logMessage(AlertTag.BANK_TELLER, this.name, "Processing order for "+currentCustInfo.custName);
 		bm.msgUpdateInfo(currentCustInfo, this);
+		currentCustInfo.customer.msgHaveANiceDay(currentCustInfo.depositAmount);
 		state = State.doneWithCustomer;
 		event = Event.updatedBank;
 	}
 	public void msgGuiIsAtDest() {
-		print("released a atDest");
 		atDest.release();
-		
+	}
+	
+	private void leaveJob() {
+		event = Event.none;
+		bm.msgLeavingNow(this);
+		gui.goTo(9);
+		try {
+			atDest.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//gui.setPresent(false);
+		person.exitBuilding();
+		person.msgDoneWithJob();
+		doneWithRole();
 	}
 
-	private void leaveBank() {
-		bm.msgLeavingNow(this);
-		gui.DoLeaveBank();
+	private void guiGoHere(int place) {
+		if(place == 9)
+			bm.msgLeavingNow(this);
+		gui.goTo(place);
 		try
 		{
 			atDest.acquire();
 		}
 		catch(Exception e){}
-		person.exitBuilding();
-		person.msgDoneWithJob();
-		doneWithRole();	
+		if(place == 9){
+			gui.setPresent(false);
+			
+			person.msgDoneWithJob();
+			doneWithRole();
+			person.exitBuilding();
+		}
 	}
-	
+
 
 }
