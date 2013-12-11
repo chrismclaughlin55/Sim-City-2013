@@ -184,7 +184,9 @@ public class SMCookRole extends Role {
 		}
 		timer.schedule(new TimerTask() {
 			public void run() {
+				if(!orders.isEmpty()) {
 				orders.get(0).orderStatus = OrderStatus.Cooked;
+				}
 				stateChanged();
 				cookGui.DoGoToPlating();
 				cookGui.setStatusText("Plating");

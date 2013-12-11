@@ -10,53 +10,43 @@ import javax.swing.ImageIcon;
 
 import restaurantKC.KCCookRole;
 import market.Invoice;
+import market.MarketManagerRole;
 import Gui.Gui;
 
 public class DeliveryDrone implements Gui{
 	
-	int xDestination = 340, yDestination = 420;
-	int xPos = 340, yPos = 420; 
+	
+	int homeX, homeY;
+	public int xDestination, yDestination, xPos, yPos, origX, origY; 
 	CityData cd;
 	KCCookRole cook;
-	boolean isPresent = false;
+	public boolean isPresent = false;
 	public List<Invoice> invoice = Collections.synchronizedList(new ArrayList<Invoice>());
 	
-	private enum Command {noCommand, goToBuilding, goBack};
-	private Command command=Command.noCommand;
+	public enum Command {noCommand, goToBuilding, goBack};
+	public Command command=Command.noCommand;
 	
-	public DeliveryDrone(List<Invoice> invoice, CityData cd, int x, int y, KCCookRole cook) {
+	MarketManagerRole m = null;
+	
+	public DeliveryDrone(List<Invoice> invoice, CityData cd, int x, int y, KCCookRole cook, int homeX, int homeY, MarketManagerRole m) {
+		this.homeX = homeX;
+		this.homeY = homeY;
+		xPos = homeX;
+		yPos = homeY;
 		isPresent = true;
 		this.cd = cd;
 		this.cook = cook;
 		this.invoice = invoice;
+		this.m = m;
 		
 		cd.guis.add(this);
 		
 		xDestination = x;
 		yDestination = y;
+		origX = x;
+		origY = y;
 		
 		command = Command.goToBuilding;
-		
-		/*if (b instanceof SMRestaurantBuilding) {
-			xDestination = 200;
-			yDestination = 140;
-		}
-		if (b instanceof KCRestaurantBuilding) {
-			xDestination = 200;
-			yDestination = 260;
-		}
-		if (b instanceof BKRestaurantBuilding) {
-			xDestination = 340;
-			yDestination = 260;
-		}
-		if (b instanceof MQRestaurantBuilding) {
-			xDestination = 200;
-			yDestination = 540;
-		}
-		if (b instanceof LYRestaurantBuilding) {
-			xDestination = 340;
-			yDestination = 540;
-		}*/
 		
 	}
 
@@ -76,10 +66,13 @@ public class DeliveryDrone implements Gui{
 			
 			if (command == Command.goToBuilding) {
 				if ((xDestination == 200) && (yDestination == 260)) {
-					cook.msgOrdersFulfilled(invoice);
-					
-					xDestination = 340;
-					yDestination = 420;
+					if (cd.restaurants.get(2).isOpen)
+						cook.msgOrdersFulfilled(invoice);
+					else
+						m.msgDeliveryFailed(this);
+						
+					xDestination = homeX;
+					yDestination = homeY;
 					command = command.goBack;
 					
 					return;

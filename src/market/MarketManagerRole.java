@@ -17,6 +17,7 @@ import restaurantKC.test.mock.LoggedEvent;
 import trace.AlertLog;
 import trace.AlertTag;
 import bank.BankManagerRole;
+import city.CityData;
 import city.DeliveryDrone;
 import city.PersonAgent;
 import city.Role;
@@ -25,13 +26,11 @@ public class MarketManagerRole extends Role implements MarketManager{
 	public enum ManagerState {nothing, entering, setting, managing, working, leaving};
 	public ManagerState state;
 	double undepositedMoney;
-	boolean endOfDay = false;
-	int bankAccountNum;
 	BankManagerRole bankManager;
 	Inventory inventory = null;
 	Market market = null;
 	private ManagerGui gui = null;
-
+	private int marketNum;
 	public EventLog log = new EventLog();
 
 	public List<MarketCustomer> waitingCustomers = Collections.synchronizedList(new ArrayList<MarketCustomer>());
@@ -69,12 +68,27 @@ public class MarketManagerRole extends Role implements MarketManager{
 		}
 	}
 
+	public enum droneState {pending, delivered};
 
-	public MarketManagerRole(PersonAgent person, Inventory inventory, Market market) {
+	public class MyDrone {
+		DeliveryDrone d;
+		droneState state;
+
+		public MyDrone(DeliveryDrone d) {
+			this.d = d;
+			state = droneState.pending;
+		}
+	}
+
+	public List<MyDrone> failedDrones = Collections.synchronizedList(new ArrayList<MyDrone>());
+
+
+	public MarketManagerRole(PersonAgent person, Inventory inventory, Market market, int num) {
 		super(person);
 		this.inventory = inventory;
 		this.market = market;
 		state = ManagerState.nothing;
+		marketNum = num;
 	}
 
 	/*public MarketManagerRole(TestPerson person, Inventory inventory, Market market) {
@@ -85,13 +99,11 @@ public class MarketManagerRole extends Role implements MarketManager{
 	}*/
 
 	public void msgReportingForWork(MarketEmployee employee) {
-		print("Received msgReportingForWork"); 
 		waitingEmployees.add(new MyEmployee(employee));
 		stateChanged();
 	}
 
 	public void msgNeedToOrder(MarketCustomer cust) {
-		print("Received msgNeedToOrder from customer"); 
 		waitingCustomers.add(cust);
 		stateChanged();
 	}
@@ -112,15 +124,13 @@ public class MarketManagerRole extends Role implements MarketManager{
 		workingEmployees.remove(employee);
 		stateChanged();
 	}
-	
+
 	public void msgHereIsPayment(double money) {
-		print ("Received msgHereIsMoney");
 		undepositedMoney += money;
 		stateChanged();
 	}
 
 	public void msgHereIsMoney(double money, MarketEmployee employee) {
-		System.err.println ("RECEIVED HERE IS MONEY");
 		undepositedMoney += money;
 		for (MyEmployee e : workingEmployees){
 			if (e.employee.equals(employee)) {
@@ -130,14 +140,36 @@ public class MarketManagerRole extends Role implements MarketManager{
 		stateChanged();
 	}
 
+	public void msgDeliveryFailed(DeliveryDrone d) {
+		failedDrones.add(new MyDrone(d));
+		System.err.println("Drone failed ");
+
+		stateChanged();
+	}
+
 
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
 
+		if (person.cityData.restaurants.get(2).isOpen()) {
+			if (!failedDrones.isEmpty()) {
+				for (MyDrone d : failedDrones) {
+					System.err.println("here 2");
+					if (d.state == droneState.pending) {
+						d.d.isPresent = true;
+						d.d.xDestination = d.d.origX;
+						d.d.yDestination = d.d.origY;
+						d.d.command = d.d.command.goToBuilding;
+						d.state = droneState.delivered;
+					}
+
+				}
+			}
+		}
+		
 		if(person.cityData.hour >= market.CLOSINGTIME && market.isOpen())
 		{
-			print ("CLOSING THE MARKET");
 			AlertLog.getInstance().logInfo(AlertTag.MARKET, this.getName(), "Market is closed");
 			AlertLog.getInstance().logMessage(AlertTag.MARKET_MANAGER, this.getName(), "CLOSING THE MARKET");
 			market.setClosed(person);
@@ -212,7 +244,7 @@ public class MarketManagerRole extends Role implements MarketManager{
 			waitingCookCustomers.clear();
 			return true;
 		}
-		
+
 		for(Iterator<MyCookCustomer> iter = waitingCookCustomers.iterator(); iter.hasNext(); ) {
 			MyCookCustomer c = iter.next();
 			if(c.state == CookCustState.delivering) {
@@ -220,10 +252,6 @@ public class MarketManagerRole extends Role implements MarketManager{
 			}
 		}
 
-		if ((undepositedMoney > 0) && (endOfDay)) {
-			DepositMoney();
-			return true;
-		}
 		return false;
 	}
 
@@ -243,45 +271,23 @@ public class MarketManagerRole extends Role implements MarketManager{
 							amountDue += price;
 						}
 					}
-					
-					DeliveryDrone d = new DeliveryDrone(invoice, person.cityData, 200, 260, c.cook);
+
+					DeliveryDrone d = new DeliveryDrone(invoice, person.cityData, (int)person.cityData.restaurants.get(2).getX()
+							, (int)person.cityData.restaurants.get(2).getY(), c.cook, (int)person.cityData.markets.get(marketNum).getX(), 
+							(int) (int)person.cityData.markets.get(marketNum).getY(), this);
+
 					c.cashier.msgHereIsMarketBill(amountDue, invoice, this);
 					c.state = CookCustState.delivering;
-					
+
 				}
 			}
 		}
-		
-		
 	}
 
-	/*public void FulfillCookOrder(MyCookCustomer c) {
-		AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "Fulfilling restaurant's order");
-		amountDue = 0;
-		for (final restaurantMQ.MarketOrder o : c.order) {
-			if(o.amount <= inventory.inventory.get(o.name).amount) {
-				inventory.inventory.get(o.name).amount -= o.amount;
-				inventory.update();
-				final double price = o.amount * inventory.inventory.get(o.name).price;
-				timer.schedule(new TimerTask() {
-					public void run() {  
-						Invoice i = new Invoice(o.name, o.amount, price*o.amount);
-						invoice.add(i);
-						amountDue += price;
-						if (invoice.size() == currentMarketOrders.size())
-							msgDoneProcessingCookOrder();
-
-					}},
-					500);//how long to wait before running task
-			}
-			else {
-				Invoice i = new Invoice(o.name, 0, 0);
-				invoice.add(i);
-			}
-		}
-	}*/
 
 	private void LeaveRestaurant() {
+		person.cityData.banks.get(0).depositMoney(person.cityData.markets.get(marketNum), undepositedMoney);
+		undepositedMoney = 0;
 		System.out.println("Manager leaving");
 		AlertLog.getInstance().logMessage(AlertTag.MARKET_MANAGER, this.getName(), "Leaving the market");
 		gui.DoLeaveMarket();
@@ -294,11 +300,6 @@ public class MarketManagerRole extends Role implements MarketManager{
 		person.exitBuilding();
 		doneWithRole();
 
-	}
-
-	private void DepositMoney() {
-		//bankManager.msgDepositMoney(bankAccountNum, undepositedMoney);
-		endOfDay = false;
 	}
 
 	public void setGui (ManagerGui gui) {

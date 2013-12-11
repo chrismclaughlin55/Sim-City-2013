@@ -81,7 +81,7 @@ public class KCWaiterRole extends Role implements Waiter{
 	private KCHostRole host;
 
 
-
+	private boolean pcWaiter;
 
 	public KCWaiterRole(List<pcCookOrder> cookOrders, PersonAgent p, RestaurantPanel restPanel) {
 		super(p);
@@ -105,10 +105,8 @@ public class KCWaiterRole extends Role implements Waiter{
 
 
 	public void msgSitAtTable(Customer cust, int table) {
-		System.err.println(person.stateChange.availablePermits());
 		customers.add(new MyCustomer(cust, table, CustomerState.waiting));
 		stateChanged();
-		System.err.println(person.stateChange.availablePermits());
 
 	}
 
@@ -265,7 +263,9 @@ public class KCWaiterRole extends Role implements Waiter{
 				for (MyCustomer mc : customers) {
 					if (mc.s == CustomerState.ordered) {
 						mc.s = CustomerState.orderGiven;
+
 						GiveOrderToCook(mc);
+
 						return true;
 					}
 				}
@@ -465,6 +465,17 @@ public class KCWaiterRole extends Role implements Waiter{
 		cook.msgOrdersUpdated();
 	}
 
+	/*private void GiveOrderToCook2(MyCustomer c){
+		c.s = CustomerState.orderGiven;
+		atCook.drainPermits();
+		waiterGui.DoGoToCook(-1);                
+		try {
+			atCook.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		cook.msgHereIsAnOrder(this, c.choice, c.t);
+	}*/
 
 	private void TakeFoodToCustomer()
 	{
