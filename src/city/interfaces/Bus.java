@@ -1,6 +1,7 @@
 package city.interfaces;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import city.BusStopAgent;
 import city.PersonAgent;
@@ -11,9 +12,6 @@ public interface Bus {
 	//CALLED BY BUSGUI
 	public abstract void msgAtDestination();
 
-	public abstract void msgPeopleAtStop(
-			HashMap<PersonAgent, BusStopAgent> peopleAtStop);
-
 	public abstract void msgOnBus();
 
     public abstract int getRouteNumber();
@@ -23,4 +21,6 @@ public interface Bus {
 	public abstract void setCurrentGrid(RGrid currGrid);
 
 	public abstract void msgAcquireGrid();
+
+	void msgPeopleAtStop(Map<PersonAgent, BusStopAgent> peopleAtStop);
 }

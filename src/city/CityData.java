@@ -389,7 +389,7 @@ public class CityData implements ActionListener {
 	}
 	public Grid getNextGrid(Grid g, Direction dir) {
 		Grid x = null;
-	//	System.out.println("final cross" + g.index1()+ " "+g.index2());
+
 		if(dir==Direction.north) {
 			x = cityGrid[g.index1()][g.index2()-1];
 		}

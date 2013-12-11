@@ -1,6 +1,7 @@
 package restaurantLY;
 
 import agent.Agent;
+import restaurantKC.pcCookOrder;
 import restaurantLY.gui.*;
 import restaurantLY.interfaces.*;
 import restaurantLY.test.mock.EventLog;
@@ -22,7 +23,7 @@ import city.Role;
  * Restaurant Waiter Agent
  */
 
-public class LYWaiterRole extends Role implements Waiter {
+public class LYPCWaiterRole extends Role implements Waiter {
 	private String name;
 	private List<myCustomer> customers = Collections.synchronizedList(new ArrayList<myCustomer>());
 	private Semaphore atTable = new Semaphore(0, true);
@@ -51,11 +52,14 @@ public class LYWaiterRole extends Role implements Waiter {
 	
 	public EventLog log = new EventLog();
 	
-	public LYWaiterRole(PersonAgent person) {
+	
+	private List<PCOrder> cookOrders;
+	
+	public LYPCWaiterRole(PersonAgent person) {
 		super(person);
 	}
     
-    public LYWaiterRole(PersonAgent person, RestaurantPanel rp, Host host, List<Cook> cooks, Cashier cashier, JCheckBox breakBox) {
+    public LYPCWaiterRole(PersonAgent person, RestaurantPanel rp, Host host, List<Cook> cooks, Cashier cashier, JCheckBox breakBox, List<PCOrder> cookOrders) {
         super(person);
         restPanel = rp;
         this.name = person.getName();
@@ -63,6 +67,7 @@ public class LYWaiterRole extends Role implements Waiter {
         this.breakBox = breakBox;
         this.cooks = cooks;
         this.cashier = cashier;
+        this.cookOrders = cookOrders;
     }
 	
 	public String getMaitreDName() {
@@ -257,8 +262,7 @@ public class LYWaiterRole extends Role implements Waiter {
 		
 		if(!customers.isEmpty()){
 			myCustomer temp = null;
-			try {
-				temp = null;
+			synchronized(customers) {
 				for (myCustomer mc : customers) {
 					if(mc.state == customerState.WaitingInRestaurant) {
 						temp = mc;
@@ -269,7 +273,9 @@ public class LYWaiterRole extends Role implements Waiter {
 					seatCustomer(temp);
 					return true;
 				}
+			}
 			
+			synchronized(customers) {
 				temp = null;
 				for (myCustomer mc : customers) {
 					if(mc.state == customerState.ReadyToOrder) {
@@ -284,7 +290,9 @@ public class LYWaiterRole extends Role implements Waiter {
 					giveOrderToCook(temp);
 					return true;
 				}
+			}
 				
+			synchronized(customers) {
 				temp = null;
 				for (myCustomer mc : customers) {
 					if(mc.state == customerState.CookPendingReorder){
@@ -296,7 +304,9 @@ public class LYWaiterRole extends Role implements Waiter {
 					takeReorderFromCustomer(temp);
 					return true;
 				}
+			}
 			
+			synchronized(customers) {
 				temp = null;
 				for (myCustomer mc : customers) {
 					if(mc.state == customerState.GettingOrder) {
@@ -309,7 +319,9 @@ public class LYWaiterRole extends Role implements Waiter {
 					serveFoodToCustomer(temp);
 					return true;
 				}
+			}
 			
+			synchronized(customers) {
 				temp = null;
 				for (myCustomer mc : customers) {
 					if(mc.state == customerState.Done && mc.check != 0) {
@@ -322,7 +334,9 @@ public class LYWaiterRole extends Role implements Waiter {
 					giveCheckToCustomer(temp);
 					return true;
 				}
+			}
 			
+			synchronized(customers) {
 				temp = null;
 				for (myCustomer mc : customers) {
 					if(mc.state == customerState.Leaving) {
@@ -334,7 +348,7 @@ public class LYWaiterRole extends Role implements Waiter {
 					clearTable(temp);
 					return true;
 			}
-		} catch (ConcurrentModificationException e) {return true;}
+		}
 		}
 		
 		if(person != null && restPanel != null && customers != null) {
@@ -399,6 +413,7 @@ public class LYWaiterRole extends Role implements Waiter {
 	
 	private void giveOrderToCook(myCustomer customer) {
 		DoGiveOrderToCook(customer);
+		cookOrders.add(new PCOrder(this, customer.tableNumber ,customer.choice));
 		for (Cook cook: cooks) {
 			cook.msgHereIsAnOrder(this, customer.tableNumber, customer.choice);
 		}

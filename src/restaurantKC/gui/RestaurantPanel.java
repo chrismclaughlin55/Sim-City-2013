@@ -54,12 +54,12 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 	public Waiter w = null;
 
 	/*private Cook cook = new KCCookRole("Sarah", cookOrders, null); 
-	private CookGui cookGui = new CookGui(cook);
-	private CashierAgent cashier = new CashierAgent("Cashier");*/
+        private CookGui cookGui = new CookGui(cook);
+        private CashierAgent cashier = new CashierAgent("Cashier");*/
 
 	/*private MarketAgent market1 = new MarketAgent("Market 1", 2, 10, 10, 10, cook, cashier);
-	private MarketAgent market2 = new MarketAgent("Market 2", 0, 0, 0, 0, cook, cashier);
-	private MarketAgent market3 = new MarketAgent("Market 3", 7, 15, 21, 11, cook, cashier);*/
+        private MarketAgent market2 = new MarketAgent("Market 2", 0, 0, 0, 0, cook, cashier);
+        private MarketAgent market3 = new MarketAgent("Market 3", 7, 15, 21, 11, cook, cashier);*/
 	public List<Customer> customers = Collections.synchronizedList(new ArrayList<Customer>());
 	public List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
 	private List<Market> markets = new ArrayList<Market>();
@@ -85,20 +85,20 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 		/*host.setGui(hostGui);
 
 
-		gui.animationPanel.addGui(hostGui);
-		//host.startThread();
+                gui.animationPanel.addGui(hostGui);
+                //host.startThread();
 
-		markets.add(market1);
-		markets.add(market2);
-		markets.add(market3);
-		cook.addMarkets(markets);
+                markets.add(market1);
+                markets.add(market2);
+                markets.add(market3);
+                cook.addMarkets(markets);
 
-		gui.animationPanel.addGui(cookGui);
-		cook.setGui(cookGui);
-		cookGui.setAnimationPanel(gui.animationPanel);
-		//cook.startThread();
+                gui.animationPanel.addGui(cookGui);
+                cook.setGui(cookGui);
+                cookGui.setAnimationPanel(gui.animationPanel);
+                //cook.startThread();
 
-		cashier.startThread();*/
+                cashier.startThread();*/
 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		group.setLayout(new BoxLayout(group, BoxLayout.Y_AXIS));
@@ -160,34 +160,34 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 	 */
 	/*public void addPerson(String type, String name) {
 
-		if (type.equals("Customers")) {
-			PersonAgent p = new PersonAgent(name);
-    		Customer c = new KCCustomerRole(p);	
-    		CustomerGui g = new CustomerGui(c, gui, 0);
-    		gui.animationPanel.addGui(g);// dw
-    		c.setHost(host);
-    		c.setCashier(cashier);
-    		c.setGui(g);
+                if (type.equals("Customers")) {
+                        PersonAgent p = new PersonAgent(name);
+                    Customer c = new KCCustomerRole(p);        
+                    CustomerGui g = new CustomerGui(c, gui, 0);
+                    gui.animationPanel.addGui(g);// dw
+                    c.setHost(host);
+                    c.setCashier(cashier);
+                    c.setGui(g);
 
-    		p.msgAssignRole((KCCustomerRole)c);
-    		p.startThread(); //Hack. PersonAgent's thread should already be going
-		}
+                    p.msgAssignRole((KCCustomerRole)c);
+                    p.startThread(); //Hack. PersonAgent's thread should already be going
+                }
 
-		if (type.equals("Waiters")) {
-			System.out.println ("adding waiter");
-			WaiterAgent w = new WaiterAgent(name, cookOrders);	
-			WaiterGui g = new WaiterGui(w, this);
-			waiters.add(w);
-			w.setGui(g);
-			w.setCook(cook);
-			w.setHost(host);
-			w.setCashier(cashier);
-			host.msgWaiterReporting(w);
-			g.setAnimationPanel(gui.animationPanel);
-			gui.animationPanel.addGui(g);
-			w.startThread();
-		}
-	}*/
+                if (type.equals("Waiters")) {
+                        System.out.println ("adding waiter");
+                        WaiterAgent w = new WaiterAgent(name, cookOrders);        
+                        WaiterGui g = new WaiterGui(w, this);
+                        waiters.add(w);
+                        w.setGui(g);
+                        w.setCook(cook);
+                        w.setHost(host);
+                        w.setCashier(cashier);
+                        host.msgWaiterReporting(w);
+                        g.setAnimationPanel(gui.animationPanel);
+                        gui.animationPanel.addGui(g);
+                        w.startThread();
+                }
+        }*/
 
 
 
@@ -200,7 +200,7 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 			{
 				temp.getGui().setHungry();
 			}
-		}	
+		}        
 	}
 
 	public void markBreak(String name)
@@ -212,7 +212,7 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 			{
 				temp.getGui().setBreak();
 			}
-		}	
+		}        
 	}
 
 	@Override
@@ -245,13 +245,13 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 				((KCCustomerRole)c).setHost(host);
 			}
 		}
-		
+
 		person.msgAssignRole((KCHostRole)host);
 	}
 
 	public void addCustomer(PersonAgent person) {
 		System.out.println("Adding Customer");
-		Customer c = new KCCustomerRole(person);	
+		Customer c = new KCCustomerRole(person);        
 		CustomerGui g = new CustomerGui(c, gui);
 		c.setGui(g);
 		gui.animationPanel.addGui(g);
@@ -267,12 +267,12 @@ public class RestaurantPanel extends JPanel implements ActionListener {
 	}
 
 	/*c.setHost(host);
-	c.setCashier(cashier);*/
+        c.setCashier(cashier);*/
 
 	public void addWaiter(PersonAgent person)
 	{
 		System.out.println ("Adding Waiter");
-		w = new KCWaiterRole(cookOrders, person, this);	
+		w = new KCWaiterRole(cookOrders, person, this);        
 		waiters.add(w);
 		int waiterNum = waiters.indexOf(w);
 		WaiterGui g = new WaiterGui(w, this, waiterNum);

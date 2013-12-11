@@ -25,6 +25,11 @@ public class PersonGui implements Gui{
 	private boolean crossRoad = false;
 	boolean moving = false;
 	boolean inCar = false;
+	private RGrid currGrid;
+	private RGrid prevGrid;
+	private RGrid nextGrid;
+	private RGrid destGrid;
+	boolean uturn = false;
 	
 	private static final int INITX = 40;
 	private static final int INITY = 40;
@@ -35,6 +40,9 @@ public class PersonGui implements Gui{
 	private int xPos, yPos;
 	private int xDestination, yDestination;
 	private int xNextGrid,yNextGrid;
+	private boolean moveOn = false;
+	private boolean released = false;
+	private boolean readyForUpdate = true;
 	
 	public static final int xBuilding[] = {60, 60, 60, 60, 240, 380, 560, 560, 560, 560, 380, 240, 260, 400, 260, 400, 260, 400, 240, 380, 60, 560};
 	public static final int yBuilding[] = {200, 320, 480, 600, 740, 740, 600, 480, 320, 200, 60, 60, 200, 200, 320, 320, 600, 600, 480, 480, 740, 740};
@@ -51,6 +59,11 @@ public class PersonGui implements Gui{
 		cd=agent.cityData;
 		xDestination = xBuilding[agent.getHomeNumber()]-50;
 		yDestination = yBuilding[agent.getHomeNumber()]+10;
+	}
+	
+	public void moveOn()
+	{
+		moveOn = true;
 	}
 	
 	public int getX() {
@@ -78,12 +91,188 @@ public class PersonGui implements Gui{
 	public void updatePosition() {
 		
 		if(inCar) {
-			if(agent.driving) {
-				//move like a car
+			if(moveOn)
+			{
+				moveOn = false;
+				released = true;
+				moving = true;
 			}
-			//MOVE LIKE A CAR DOES WHICH MOVES LIKE A BUS DOES.
+
+			if(!moving)
+			{
+				return;
+			}
 			
+			if(currGrid == destGrid) {
+				moving = false;
+				getInOrOutCar();
+				agent.msgAtDestination();
+				return;
+			}
 			
+			if(readyForUpdate){
+				readyForUpdate = false;
+				if(yPos == currGrid.index2()*20 && (currGrid.direction == Direction.north || currGrid.direction == Direction.south)) {
+					moving = false;
+					agent.msgAcquireGrid(nextGrid);
+					prevGrid = currGrid;
+					currGrid = nextGrid;
+					nextGrid = cd.getNextRGrid(nextGrid);
+				}
+				else if(xPos == currGrid.index1()*20 && (currGrid.direction == Direction.east || currGrid.direction == Direction.west)) {
+					moving = false;
+					agent.msgAcquireGrid(nextGrid);
+					prevGrid = currGrid;
+					currGrid = nextGrid;
+					nextGrid = cd.getNextRGrid(nextGrid);
+				}
+				//Moving through an intersection
+				else if(currGrid.direction == Direction.none 
+						&& (((prevGrid.direction == Direction.east || prevGrid.direction == Direction.west) && xPos == currGrid.index1()*20) 
+						|| ((prevGrid.direction == Direction.north || prevGrid.direction == Direction.south) && yPos == currGrid.index2()*20))) {
+					if(uturn) {
+						uturn = false;
+						if(prevGrid.direction == Direction.north)
+							prevGrid = new RGrid(Direction.west);
+						else if(prevGrid.direction == Direction.west)
+							prevGrid = new RGrid(Direction.south);
+						else if(prevGrid.direction == Direction.south)
+							prevGrid = new RGrid(Direction.east);
+						else if(prevGrid.direction == Direction.east)
+							prevGrid = new RGrid(Direction.north);
+						readyForUpdate = true;
+						return;
+					}
+					moving = false;
+					agent.msgAcquireGrid(nextGrid);
+					prevGrid = currGrid;
+					currGrid = nextGrid;
+					nextGrid = cd.getNextRGrid(nextGrid);
+				}
+				if(nextGrid == null) {
+					//This means we are at an intersection so we need to decide how to turn
+					if(Math.abs(destGrid.index2() - currGrid.index2()) < 2) {
+						//go east
+						if(destGrid.index1() > currGrid.index1()) {
+							if(prevGrid.direction == Direction.north)
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()+1][prevGrid.index2()-1];
+							else if(prevGrid.direction == Direction.south) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()+2][prevGrid.index2()+2];
+								currGrid = (RGrid)cd.cityGrid[prevGrid.index1()+1][prevGrid.index2()+2];
+							}
+							else if(prevGrid.direction == Direction.west) {
+								//U-TURN
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()][prevGrid.index2()+1];
+								currGrid = (RGrid)cd.cityGrid[prevGrid.index1()-1][prevGrid.index2()+1];
+								uturn = true;
+							}
+						}
+						//go west
+						else {
+							if(prevGrid.direction == Direction.north) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()-2][prevGrid.index2()-2];
+								currGrid = (RGrid)cd.cityGrid[prevGrid.index1()-1][prevGrid.index2()-2];
+							}
+							else if(prevGrid.direction == Direction.south) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()-1][prevGrid.index2()+1];
+							}
+							else if(prevGrid.direction == Direction.east) {
+								//U-TURN
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()][prevGrid.index2()-1];
+								currGrid = (RGrid)cd.cityGrid[prevGrid.index1()+1][prevGrid.index2()-1];
+								uturn = true;
+							}
+						}
+					}
+					else {
+						//go north
+						if(destGrid.index2() < currGrid.index2()) {
+							if(prevGrid.direction == Direction.north) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()][prevGrid.index2()-3];
+								currGrid = (RGrid)cd.cityGrid[prevGrid.index1()][prevGrid.index2()-2];
+							}
+							else if(prevGrid.direction == Direction.east) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()+2][prevGrid.index2()-2];
+								currGrid = (RGrid)cd.cityGrid[prevGrid.index1()+2][prevGrid.index2()-1];
+							}
+							else if(prevGrid.direction == Direction.west) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()-1][prevGrid.index2()-1];
+							}
+							else { //prevGrid.direction == Direction.south
+								//U-turn if necessary
+								if(Math.abs(destGrid.index1() - currGrid.index1()) < 2) {
+									nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()+1][prevGrid.index2()];
+									currGrid = (RGrid)cd.cityGrid[prevGrid.index1()+1][prevGrid.index2()+1];
+									uturn = true;
+								}
+								else {//Turn left
+									nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()+2][prevGrid.index2()+2];
+									currGrid = (RGrid)cd.cityGrid[prevGrid.index1()+1][prevGrid.index2()+2];
+								}
+							}
+						}
+						else {
+							//go south
+							if(prevGrid.direction == Direction.south) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()][prevGrid.index2()+3];
+								currGrid = (RGrid)cd.cityGrid[prevGrid.index1()][prevGrid.index2()+2];
+							}
+							else if(prevGrid.direction == Direction.east) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()+1][prevGrid.index2()+1];
+							}
+							else if(prevGrid.direction == Direction.west) {
+								nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()-2][prevGrid.index2()+2];
+								currGrid = (RGrid)cd.cityGrid[prevGrid.index1()-2][prevGrid.index2()+1];
+							}
+							else { //prevGrid.direction == Direction.north
+								//U-turn if necessary
+								if(Math.abs(destGrid.index1() - currGrid.index1()) < 2) {
+									nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()-1][prevGrid.index2()];
+									currGrid = (RGrid)cd.cityGrid[prevGrid.index1()-1][prevGrid.index2()-1];
+									uturn = true;
+								}
+								else { //turn left
+									nextGrid = (RGrid)cd.cityGrid[prevGrid.index1()-2][prevGrid.index2()-2];
+									currGrid = (RGrid)cd.cityGrid[prevGrid.index1()-1][prevGrid.index2()-2];
+								}
+							}
+						}
+					}
+					
+					readyForUpdate = true;
+					return;
+				}
+			
+					
+			//move depending on the desired direction
+			if(currGrid.direction == Direction.north){
+				yPos -= 5;
+			}
+			else if(currGrid.direction == Direction.south) {
+				yPos += 5;
+			}
+			else if(currGrid.direction == Direction.east) {
+				xPos += 5;
+			}
+			else if(currGrid.direction == Direction.west) {
+				xPos -= 5;
+			}
+			//Reaching this point means that currGrid.direction == none, meaning we are crossing an intersection
+			
+			else if(prevGrid.direction == Direction.north) {
+				yPos -= 5;
+			}
+			else if(prevGrid.direction == Direction.south) {
+				yPos += 5;
+			}
+			else if(prevGrid.direction == Direction.east) {
+				xPos += 5;
+			}
+			else if(prevGrid.direction == Direction.west) {
+				xPos -= 5;
+			}
+			readyForUpdate = true;
+			}
 		}
 		
 		else {
@@ -173,7 +362,6 @@ public class PersonGui implements Gui{
 			if (xPos == xDestination && yPos == yDestination
 	        			& (xDestination == 0) & (yDestination == 340)) {
 				agent.msgAtEntrance();
-				
 			}
 		}
 	}
@@ -208,13 +396,26 @@ public class PersonGui implements Gui{
 		agent.crossingRoad = false;
 	}
 	public void DoWalkToRGrid(int number) {
-		//WALK TO cd.buildings.get(number).getClosestRGrid(); 
+		//WALK TO cd.buildings.get(number).getClosestRGrid();
+		xDestination = cd.buildings.get(number).closest.index1()*20;
+		yDestination = cd.buildings.get(number).closest.index2()*20;
+		System.err.println(xDestination + " " + yDestination);
+		currGrid = cd.buildings.get(number).closest;
+		nextGrid = cd.getNextRGrid(currGrid);
+		moving = true;
+	}
+	
+	public void DriveToDestination(Building dest)
+	{
+		xDestination = dest.closest.index1()*20;
+		yDestination = dest.closest.index2()*20;
+		destGrid = dest.closest;
+		moving = true;
 	}
 
 	public void getInOrOutCar() {
 		inCar=!inCar;
 	}
-	@Override
 	public void draw(Graphics2D g) {
 		if(!inCar) {
 			Graphics2D g2 = (Graphics2D)g;
@@ -224,8 +425,9 @@ public class PersonGui implements Gui{
 		}
 		else {
 			Graphics2D g2 = (Graphics2D)g;
-			ImageIcon person = new ImageIcon("res/car.png");
+			ImageIcon person = new ImageIcon("res/car.jpg");
 			g2.drawImage(person.getImage(),xPos,yPos,null);
+			g2.drawString(agent.getName(), xPos, yPos);
 		}
 	}
 	

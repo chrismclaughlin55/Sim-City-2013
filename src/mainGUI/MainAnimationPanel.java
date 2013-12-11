@@ -157,7 +157,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.banks.add((Bank) b1);
 		//cd.bank.test();
 
-		Market m = new Market(340, 420, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd);
+		Market m = new Market(340, 420, WIDTH, HEIGHT, "market", BuildingType.market, mainGui, cd, 0);
 		cd.buildings.add(m);
 		cd.markets.add((Market) m);
 		
@@ -165,7 +165,7 @@ public class MainAnimationPanel extends JPanel implements ActionListener {
 		cd.buildings.add(b2);
 		cd.banks.add((Bank) b2);
 		
-		Market m2 = new Market(520, 680, WIDTH, HEIGHT, "market2", BuildingType.market, mainGui, cd);
+		Market m2 = new Market(520, 680, WIDTH, HEIGHT, "market2", BuildingType.market, mainGui, cd, 1);
 		cd.buildings.add(m2);
 		cd.markets.add((Market) m2);
         

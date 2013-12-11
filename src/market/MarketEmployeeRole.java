@@ -73,7 +73,6 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}*/
 
 	public void msgGoToDesk(int deskNum) {
-		print ("Received msgGoToDesk " + deskNum);
 		this.deskNum = deskNum;
 		state = EmployeeState.entering;
 		stateChanged();
@@ -86,14 +85,12 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 
 
 	public void msgServiceCustomer(MarketCustomer customer) {
-		print ("Received msgServiceCustomer");
 		currentCustomer = customer;
 		waitingCustomers.add(customer);
 		stateChanged();
 	}
 
 	public void msgServiceCookCustomer(MyCookCustomer cook) {
-		print ("Received msgServiceCookCustomer");
 		currentCookCustomer = cook;
 		waitingCookCustomers.add(cook);
 		stateChanged();
@@ -105,7 +102,6 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			MarketOrder marketOrder = new MarketOrder(o.type, o.amount, cust, orderState.pending, "person");
 			currentMarketOrders.add(marketOrder);
 		}
-		print ("Received msgHereAreMyOrders " + currentMarketOrders.size());
 
 		stateChanged();
 	}
@@ -121,13 +117,11 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 	}
 
 	public void msgHereIsPayment(double payment) {
-		print ("Received msgHereIsPayment");
 		payments.add(payment);
 		stateChanged();
 	}
 
 	public void msgHereIsRestPayment(double payment) {
-		print ("Received msgHereIsPayment from cashier");
 		restPayments.add(payment);
 		stateChanged();
 	}
@@ -202,9 +196,7 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}	
-		
-		print ("HERE");
-		
+				
 		for (final MarketOrder o : currentMarketOrders) {
 			if(o.quantity <= inventory.inventory.get(o.type).amount) {
 				o.state = orderState.completed;
@@ -228,34 +220,6 @@ public class MarketEmployeeRole extends Role implements MarketEmployee {
 			}
 		}
 	}
-
-
-	/*public void FulfillCookOrder(MyCookCustomer c) {
-		AlertLog.getInstance().logMessage(AlertTag.MARKET_EMPLOYEE, this.getName(), "Fulfilling restaurant's order");
-		amountDue = 0;
-		for (final restaurantMQ.MarketOrder o : c.order) {
-			if(o.amount <= inventory.inventory.get(o.name).amount) {
-				inventory.inventory.get(o.name).amount -= o.amount;
-				inventory.update();
-				final double price = o.amount * inventory.inventory.get(o.name).price;
-				timer.schedule(new TimerTask() {
-					public void run() {  
-						Invoice i = new Invoice(o.name, o.amount, price*o.amount);
-						invoice.add(i);
-						amountDue += price;
-						if (invoice.size() == currentMarketOrders.size())
-							msgDoneProcessingCookOrder();
-
-					}},
-					500);//how long to wait before running task
-			}
-			else {
-				Invoice i = new Invoice(o.name, 0, 0);
-				invoice.add(i);
-			}
-		}
-	}*/
-
 
 
 	public void ProcessPayment() {

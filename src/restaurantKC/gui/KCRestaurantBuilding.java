@@ -12,12 +12,12 @@ import city.PersonAgent;
 public class KCRestaurantBuilding extends Building
 {
 	public static final int MAXCUSTOMERS = 8;
-	
+
 	RestaurantGui restGui;
 	RestaurantPanel restPanel;
-	
+
 	private boolean printed = false;
-	
+
 	public KCRestaurantBuilding(int xPos, int yPos, int width, int height,
 			String name, BuildingType type, MainGui mainGui, CityData cd) 
 	{
@@ -25,7 +25,7 @@ public class KCRestaurantBuilding extends Building
 		restGui = new RestaurantGui(this);
 		restPanel = restGui.restPanel;
 	}
-	
+
 	public void EnterBuilding(PersonAgent person, String roleRequest)
 	{
 		System.out.println(person.getName() + ": Entering RestaurantKC as " + roleRequest);
@@ -52,9 +52,9 @@ public class KCRestaurantBuilding extends Building
 			System.err.println("RESTAURANT IS NOW OPEN");
 			AlertLog.getInstance().logInfo(AlertTag.RESTAURANTKC, this.name, "RestaurantKC is open for employees only");
 		}
-		
+
 	}
-	
+
 	public boolean isOpen()
 	{
 		if(isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed() && !printed) {
@@ -64,22 +64,22 @@ public class KCRestaurantBuilding extends Building
 		}
 		return isOpen && (restPanel.activeCustomers() < MAXCUSTOMERS) && restPanel.fullyStaffed();
 	}
-	
+
 	public boolean openToEmployee()
 	{
 		return isOpen && restPanel.hasHost();
 	}
-	
+
 	public boolean hasHost()
 	{
 		return restPanel.hasHost();
 	}
-	
+
 	public boolean hasCashier()
 	{
 		return restPanel.hasCashier();
 	}
-	
+
 	public RestaurantGui getRestaurantGui()
 	{
 		return restGui;
@@ -87,7 +87,7 @@ public class KCRestaurantBuilding extends Building
 
 	public void setOpen(Boolean b) {
 		isOpen = b;
-		
+
 	}
 
 	public JFrame getBuildingGui() {

@@ -17,10 +17,7 @@ import city.Role;
 /**
  * Restaurant Host Agent
  */
-//We only have 2 types of agents in this prototype. A customer and an agent that
-//does all the rest. Rather than calling the other agent a waiter, we called him
-//the HostAgent. A Host is the manager of a restaurant who sees that all
-//is proceeded as he wishes.
+
 public class KCHostRole extends Role implements Host {
 	static final int NTABLES = 3;//a global for the number of tables.
 
@@ -58,7 +55,7 @@ public class KCHostRole extends Role implements Host {
 		super(p);
 		this.name = p.getName();
 		tables = new ArrayList<Table>(NTABLES);
-		for (int ix = 1; ix < NTABLES; ix++) {
+		for (int ix = 1; ix <= NTABLES; ix++) {
 			tables.add(new Table(ix));
 		}
 		this.restPanel = restPanel;
@@ -79,14 +76,11 @@ public class KCHostRole extends Role implements Host {
 	// Messages
 
 	public void msgIWantFood(Customer cust) {
-		System.err.println("received message I want food");
 		waitingCustomers.add(cust);
 		stateChanged();
 	}
 
 	public void msgWaiterReporting(Waiter w) {
-		System.err.println("received message waiter reporting");
-
 		waiters.add((new MyWaiter(w, 0)));
 		stateChanged();
 	}
@@ -170,7 +164,6 @@ public class KCHostRole extends Role implements Host {
 
 		synchronized(waitingCustomers) {
 			synchronized(waiters) {
-				System.err.println("HERE 1");
 
 				if (!waiters.isEmpty())
 				{
@@ -188,7 +181,6 @@ public class KCHostRole extends Role implements Host {
 					for (Table table : tables) {
 						if (!table.isOccupied()) {
 							if (waitingCustomers.size() > 0) {
-								System.err.println("HERE 2");
 
 								synchronized(waitingCustomers){
 									int i = 0;
@@ -212,11 +204,7 @@ public class KCHostRole extends Role implements Host {
 										}
 										waiters.get(WaiterWithMinTables).numTables++;
 									}
-									System.err.println("HERE 3");
-
 									if (waitingCustomers.size() > 0) {
-										System.err.println("HERE 4");
-
 										alreadySeated = true;
 										
 										tellWaiterToSeatCustomer(waitingCustomers.get(0), table, waiters.get(WaiterWithMinTables).waiter);
@@ -242,7 +230,6 @@ public class KCHostRole extends Role implements Host {
 	// Actions
 
 	private void tellWaiterToSeatCustomer(Customer customer, Table table, Waiter waiter) {
-		System.err.println("TELLING WAITER TO SEAT CUSTOMER");
 		waiter.msgSitAtTable(customer, table.tableNumber);
 		customer.setWaiter(waiter);
 		table.setOccupant(customer);
