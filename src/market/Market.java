@@ -22,15 +22,16 @@ public class Market extends Building {
 	public MarketManagerRole currentManager = null;
 	MainGui mainGui;
 	public MarketGui marketGui;
-
+	private int marketNum;
 	public final int CLOSINGTIME = 22;
 
 
 	public boolean isOpenForEmployees = false;
 
-	public Market(int xPos, int yPos, int width, int height, MainGui mainGui) {
+	public Market(int xPos, int yPos, int width, int height, MainGui mainGui, int num) {
 		super(xPos, yPos, width, height, mainGui);
 		this.mainGui = mainGui;
+		marketNum = num;
 		super.type = BuildingType.market;
 
 		MarketData chickenData = new MarketData("Chicken", 1000, 5.99);
@@ -52,10 +53,11 @@ public class Market extends Building {
 		//test();
 	}
 
-	public Market(int i, int j, int width, int height, String string, BuildingType apartment, MainGui mainGui, CityData cd) {
+	public Market(int i, int j, int width, int height, String string, BuildingType apartment, MainGui mainGui, CityData cd, int num) {
 		super(i, j, width, height, string, apartment, mainGui);
 		//public Market(int xPos, int yPos, int width, int height, String name, BuildingType type, MainGui mainGui, CityData cd) {
 		cityData = cd;
+		marketNum = num;
 		this.mainGui = mainGui;
 		MarketData chickenData = new MarketData("Chicken", 1000, 5.99);
 		MarketData saladData = new MarketData("Salad", 1000, 3.99);
@@ -99,7 +101,7 @@ public class Market extends Building {
 				person.msgAssignRole(currentManager);
 			}
 			else {
-				currentManager = new MarketManagerRole(person, inventory, this);
+				currentManager = new MarketManagerRole(person, inventory, this, marketNum);
 				existingManagerRoles.put(person,currentManager);
 				ManagerGui managerGui = new ManagerGui(currentManager);
 				currentManager.setGui(managerGui);
